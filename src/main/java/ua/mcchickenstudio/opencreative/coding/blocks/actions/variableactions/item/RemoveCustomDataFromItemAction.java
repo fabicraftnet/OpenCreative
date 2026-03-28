@@ -15,7 +15,7 @@ import ua.mcchickenstudio.opencreative.coding.variables.VariableLink;
 
 import java.util.List;
 
-public class RemoveCustomDataFromItemAction extends VariableAction {
+public final class RemoveCustomDataFromItemAction extends VariableAction {
     public RemoveCustomDataFromItemAction(Executor executor, Target target, int x, Arguments args) {
         super(executor, target, x, args);
     }

@@ -183,7 +183,6 @@ public class PlanetTerritory {
         planet.setLastActivityTime(System.currentTimeMillis());
         world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
         world.getWorldBorder().setSize(worldSize);
-        planet.getVariables().load();
         new PlanetLoadEvent(planet).callEvent();
 
         long endTime = System.currentTimeMillis();

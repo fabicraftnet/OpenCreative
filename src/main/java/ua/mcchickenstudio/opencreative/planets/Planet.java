@@ -806,6 +806,7 @@ public class Planet {
                 player.sendMessage(getLocaleMessage("settings.autosave.warning"));
             }
             if (!wasLoaded) {
+                variables.load();
                 territory.getScript().loadCode();
                 new GamePlayEvent(this).callEvent();
             }
@@ -941,9 +942,10 @@ public class Planet {
         connectToDevPlanet(player);
         if (x > 0 && y > 0 && z > 0 && y < 30 && !isOutOfBorders(new Location(devPlanet.getWorld(), x + 1, y, z + 2))) {
             Location location = new Location(this.getDevPlanet().getWorld(), x + 1, y, z + 2, 180, 5);
+            boolean blockExists = !new Location(devPlanet.getWorld(), x, y, z).getBlock().isEmpty();
             player.teleportAsync(location).thenAccept(success -> {
                 if (success) {
-                    spawnGlowingBlock(player, new Location(this.getDevPlanet().getWorld(), x + 0.5, y, z + 0.5));
+                    if (blockExists) spawnGlowingBlock(player, new Location(this.getDevPlanet().getWorld(), x + 0.5, y, z + 0.5));
                     translateSigns(player, 5);
                 }
             });

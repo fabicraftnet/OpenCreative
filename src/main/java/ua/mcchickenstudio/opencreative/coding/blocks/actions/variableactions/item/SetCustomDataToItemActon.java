@@ -14,7 +14,7 @@ import ua.mcchickenstudio.opencreative.coding.blocks.actions.variableactions.Var
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
 import ua.mcchickenstudio.opencreative.coding.variables.VariableLink;
 
-public class SetCustomDataToItemActon extends VariableAction {
+public final class SetCustomDataToItemActon extends VariableAction {
     public SetCustomDataToItemActon(Executor executor, Target target, int x, Arguments args) {
         super(executor, target, x, args);
     }
