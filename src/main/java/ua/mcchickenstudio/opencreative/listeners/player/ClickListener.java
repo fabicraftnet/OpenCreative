@@ -18,6 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.listeners.player;
 
+import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -82,6 +83,11 @@ public final class ClickListener implements Listener {
         event.setCancelled(true);
         event.getInventory().close();
         new EnderChestMenu(planet, event.getInventory().getLocation()).open(player);
+    }
+
+    @EventHandler
+    public void onArmorChange(PlayerArmorChangeEvent event) {
+        new ChangedArmorEvent(event.getPlayer(), event).callEvent();
     }
 
     @EventHandler

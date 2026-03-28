@@ -112,8 +112,8 @@ public class Group {
         fillPermissions(playPermissions, config, path + "world.play-permissions", parent, Group::getPlayPermissions);
         fillPermissions(buildPermissions, config, path + "world.build-permissions", parent, Group::getBuildPermissions);
         fillPermissions(devPermissions, config, path + "world.dev-permissions", parent, Group::getDevPermissions);
-        fillPermissions(lobbyPermissions, config, path + "lobby-permissions", parent, Group::getLobbyPermissions);
         fillPermissions(visitorPermissions, config, path + "world.visitor-permissions", parent, Group::getVisitorPermissions);
+        fillPermissions(lobbyPermissions, config, path + "lobby-permissions", parent, Group::getLobbyPermissions);
 
         boolean changedConfig = false;
         for (LimitType type : LimitType.values()) {
@@ -392,6 +392,9 @@ public class Group {
     private void fillPermissions(Set<String> target, FileConfiguration config, String path, Group parent, Function<Group, Set<String>> getter) {
         if (parent != null) target.addAll(getter.apply(parent));
         target.addAll(config.getStringList(path));
+        config.getStringList(path
+                .replace("world.", "world.remove-")
+                .replace("lobby-permissions", "remove-lobby-permissions")).forEach(target::remove);
     }
 
 }
