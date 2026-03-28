@@ -208,25 +208,37 @@ public final class FileUtils {
         try {
             convertOldPlanetFolders();
             File[] planetsFolders = getWorldsFolders();
-            if (planetsFolders.length == 0) {
+            int foundWorlds = planetsFolders.length;
+            if (foundWorlds == 0) {
                 OpenCreative.getPlugin().getLogger().info("No worlds have been detected.");
                 return;
             }
-            OpenCreative.getPlugin().getLogger().info("Found " + planetsFolders.length + " worlds, adding...");
+            OpenCreative.getPlugin().getLogger().info("Found " + foundWorlds + " worlds, adding...");
             int corruptedWorlds = 0;
             int deprecatedWorlds = 0;
+            int addedWorlds = 0;
+            int nextPercent = 10;
+            boolean shouldLogEveryWorld = OpenCreative.getSettings().isDebug() || foundWorlds < 100;
             long currentTime = System.currentTimeMillis();
             for (File planetFolder : planetsFolders) {
                 String worldName = planetFolder.getPath().replace(Bukkit.getServer().getWorldContainer() + File.separator, "").replace("planets" + File.separator, "");
                 if (!worldName.endsWith("dev")) {
-                    OpenCreative.getPlugin().getLogger().info("Adding world " + worldName + " to base...");
                     int id = -1;
                     try {
                         id = Integer.parseInt(worldName.replace("planet", ""));
-                    } catch (NumberFormatException ignored) {
-                    }
+                    } catch (NumberFormatException ignored) {}
                     if (id == -1) continue;
+                    if (shouldLogEveryWorld) {
+                        OpenCreative.getPlugin().getLogger().info("Adding world " + id + " to base...");
+                    } else {
+                        int percent = (addedWorlds * 100) / foundWorlds;
+                        if (percent >= nextPercent) {
+                            OpenCreative.getPlugin().getLogger().info("Added " + nextPercent + "% worlds to base... (" + addedWorlds + "/" + foundWorlds + ")");
+                            nextPercent += 10;
+                        }
+                    }
                     Planet planet = new Planet(id);
+                    addedWorlds++;
                     if (planet.isCorrupted()) {
                         corruptedWorlds++;
                     } else if (currentTime - planet.getCreationTime() > 2592000000L) {
@@ -238,6 +250,8 @@ public final class FileUtils {
                 }
             }
             OpenCreative.getPlugin().getLogger().info("Loaded " + OpenCreative.getPlanetsManager().getPlanets().size() + " worlds for " + (System.currentTimeMillis() - currentTime) + " ms.");
+            if (!shouldLogEveryWorld) OpenCreative.getPlugin().getLogger().info(" All worlds: " + String.join(", ", OpenCreative.getPlanetsManager().getPlanets()
+                    .stream().map(planet -> String.valueOf(planet.getId())).toList()));
             OpenCreative.getPlugin().getLogger().info(" Deprecated worlds: " + deprecatedWorlds);
             OpenCreative.getPlugin().getLogger().info(" Corrupted worlds: " + corruptedWorlds);
         } catch (Exception error) {
@@ -256,24 +270,39 @@ public final class FileUtils {
                 OpenCreative.getPlugin().getLogger().info("No modules have been detected.");
                 return;
             }
+            int foundModules = modulesList.length;
             OpenCreative.getPlugin().getLogger().info("Found " + modulesList.length + " modules, adding...");
             long currentTime = System.currentTimeMillis();
+            int addedModules = 0;
+            int nextPercent = 10;
+            boolean shouldLogEveryModule = OpenCreative.getSettings().isDebug() || foundModules < 100;
             for (File moduleFile : getModulesFiles()) {
                 String moduleName = moduleFile.getPath()
                         .replace(Bukkit.getServer().getWorldContainer() + File.separator, "")
                         .replace("modules" + File.separator, "")
                         .replace(".yml", "");
-                OpenCreative.getPlugin().getLogger().info("Adding module " + moduleName + " to base...");
                 int id = -1;
                 try {
                     id = Integer.parseInt(moduleName.replace("module", ""));
                 } catch (NumberFormatException ignored) {
                 }
                 if (id == -1) continue;
+                if (shouldLogEveryModule) {
+                    OpenCreative.getPlugin().getLogger().info("Adding module " + id + " to base...");
+                } else {
+                    int percent = (addedModules * 100) / foundModules;
+                    if (percent >= nextPercent) {
+                        OpenCreative.getPlugin().getLogger().info("Added " + nextPercent + "% modules to base... (" + addedModules + "/" + foundModules + ")");
+                        nextPercent += 10;
+                    }
+                }
                 Module module = new Module(id);
                 OpenCreative.getModuleManager().registerModule(module);
+                addedModules++;
             }
             OpenCreative.getPlugin().getLogger().info("Loaded " + OpenCreative.getModuleManager().getModules().size() + " modules for " + (System.currentTimeMillis() - currentTime) + " ms.");
+            if (!shouldLogEveryModule) OpenCreative.getPlugin().getLogger().info(" All modules: " + String.join(", ", OpenCreative.getModuleManager().getModules()
+                    .stream().map(module -> String.valueOf(module.getId())).toList()));
         } catch (Exception error) {
             sendCriticalErrorMessage("An error has occurred while loading modules...", error);
         }
@@ -411,7 +440,7 @@ public final class FileUtils {
             return worldsFolders.toArray(new File[0]);
         }
         for (File file : planetsWorlds) {
-            if (isPlanetFolder(file)) worldsFolders.add(file);
+            if (isPlanetFolder(file) && !file.getName().endsWith("dev")) worldsFolders.add(file);
         }
         return worldsFolders.toArray(new File[0]);
     }

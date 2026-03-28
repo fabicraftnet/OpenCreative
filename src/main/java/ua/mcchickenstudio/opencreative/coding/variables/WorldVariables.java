@@ -523,7 +523,17 @@ public final class WorldVariables {
                     String varName = (String) varMap.get("name");
                     return new VariableLink(varName, VariableLink.VariableType.SAVED);
                 }
-                case NUMBER, TEXT, BOOLEAN -> {
+                case NUMBER -> {
+                    String text = String.valueOf(value);
+                    if (text.contains(".")) {
+                        return Double.parseDouble(text);
+                    }
+                    return Long.parseLong(text);
+                }
+                case BOOLEAN -> {
+                    return Boolean.parseBoolean(String.valueOf(value));
+                }
+                case TEXT -> {
                     return String.valueOf(value);
                 }
                 default -> {

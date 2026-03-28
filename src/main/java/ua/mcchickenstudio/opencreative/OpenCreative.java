@@ -213,7 +213,7 @@ public final class OpenCreative extends JavaPlugin {
     private void loadCore() {
         settings = new Settings();
         HookUtils.loadHooks();
-        settings.load();
+        settings.load(false);
         registerCommands();
         registerEvents();
         //Ticker.runTicker();

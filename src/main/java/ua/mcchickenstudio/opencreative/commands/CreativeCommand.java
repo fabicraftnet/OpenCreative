@@ -101,7 +101,7 @@ public class CreativeCommand extends CommandHandler {
                 if (OpenCreative.getDownloadManager().isEnabled()) {
                     OpenCreative.getDownloadManager().shutdown();
                 }
-                OpenCreative.getSettings().load();
+                OpenCreative.getSettings().load(true);
                 loadLocales();
                 OpenCreative.getDownloadManager().init();
                 sender.sendMessage(getLocaleMessage("creative.reloaded"));
@@ -1128,6 +1128,7 @@ public class CreativeCommand extends CommandHandler {
     }
 
     private BukkitRunnable maintenanceRunnable;
+    private BukkitRunnable restartRunnable;
 
     public void handleMaintenanceCommand(@NotNull CommandSender sender, String[] args) {
         if (!sender.hasPermission("opencreative.maintenance")) {
@@ -1139,6 +1140,10 @@ public class CreativeCommand extends CommandHandler {
             return;
         }
         if ("start".equalsIgnoreCase(args[1])) {
+            if (OpenCreative.getSettings().isMaintenance()) {
+                sender.sendMessage(getLocaleMessage("creative.maintenance.already-started"));
+                return;
+            }
             int seconds = 5;
             if (args.length > 2) {
                 try {
@@ -1183,8 +1188,47 @@ public class CreativeCommand extends CommandHandler {
             if (maintenanceRunnable != null) {
                 maintenanceRunnable.cancel();
                 maintenanceRunnable = null;
+            } else if (!OpenCreative.getSettings().isMaintenance()) {
+                sender.sendMessage(getLocaleMessage("creative.maintenance.already-ended"));
+                return;
             }
             OpenCreative.getSettings().setMaintenance(false);
+        } else if ("restart".equalsIgnoreCase(args[1])) {
+            if (!OpenCreative.getSettings().isMaintenance()) {
+                sender.sendMessage(getLocaleMessage("creative.maintenance.already-ended"));
+                return;
+            }
+            if (restartRunnable != null) {
+                restartRunnable.cancel();
+            }
+            if (args.length > 2) {
+                if ("end".equalsIgnoreCase(args[2])) {
+                    OpenCreative.getPlugin().getLogger().info("Maintenance mode will be ended after shutdown.");
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        player.sendMessage(getLocaleMessage("creative.maintenance.restarting-end"));
+                    }
+                    restartRunnable = new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            OpenCreative.getSettings().setMaintenance(false);
+                            Bukkit.shutdown();
+                        }
+                    };
+                    restartRunnable.runTaskLater(OpenCreative.getPlugin(), 60L);
+                    return;
+                }
+            }
+            OpenCreative.getPlugin().getLogger().info("Maintenance mode will be continued after shutdown.");
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                player.sendMessage(getLocaleMessage("creative.maintenance.restarting"));
+            }
+            restartRunnable = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    Bukkit.shutdown();
+                }
+            };
+            restartRunnable.runTaskLater(OpenCreative.getPlugin(), 60L);
         }
     }
 
@@ -1675,6 +1719,7 @@ public class CreativeCommand extends CommandHandler {
         } else if (args.length == 2) {
             if ("maintenance".equalsIgnoreCase(args[0])) {
                 tabCompleter.add("start");
+                tabCompleter.add("restart");
                 tabCompleter.add("end");
             } else if ("kick-all".equalsIgnoreCase(args[0])) {
                 tabCompleter.add("starts");
@@ -1758,6 +1803,8 @@ public class CreativeCommand extends CommandHandler {
                 tabCompleter.add("60");
                 tabCompleter.add("30");
                 tabCompleter.add("15");
+            } if ("restart".equalsIgnoreCase(args[1])) {
+                tabCompleter.add("end");
             } else if ("setsize".equalsIgnoreCase(args[0])) {
                 tabCompleter.add("0");
                 tabCompleter.add("25");

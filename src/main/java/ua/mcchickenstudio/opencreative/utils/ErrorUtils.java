@@ -542,7 +542,7 @@ public final class ErrorUtils {
      */
     public static void sendCriticalErrorMessage(String errorMessage) {
         if (OpenCreative.getSettings().shouldLogCriticalErrors()) {
-            OpenCreative.getPlugin().getLogger().severe("CRITICAL ERROR has occured: " + errorMessage);
+            OpenCreative.getPlugin().getLogger().severe(":( Oops! An error has occurred: " + errorMessage);
         }
     }
 
@@ -555,7 +555,7 @@ public final class ErrorUtils {
      */
     public static void sendCriticalErrorMessage(String errorMessage, Exception error) {
         if (OpenCreative.getSettings().shouldLogCriticalErrors()) {
-            OpenCreative.getPlugin().getLogger().severe("CRITICAL ERROR has occurred: " + errorMessage + " " + parseException(error, false));
+            OpenCreative.getPlugin().getLogger().severe(":( Oops! An error has occurred: " + errorMessage + " " + parseException(error, false));
         }
     }
 

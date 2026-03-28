@@ -146,7 +146,7 @@ public enum ValueType {
      * @return value type, or null if it's unknown type.
      */
     public static @Nullable ValueType getByObject(Object object) {
-        if (object instanceof Float || object instanceof Double || object instanceof Integer || object instanceof Byte) {
+        if (object instanceof Float || object instanceof Long || object instanceof Double || object instanceof Integer || object instanceof Byte) {
             return NUMBER;
         } else if (object instanceof String) {
             return TEXT;

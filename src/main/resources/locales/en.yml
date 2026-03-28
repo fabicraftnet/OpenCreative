@@ -220,6 +220,7 @@ environment:
     help: "%prefix%You can try to generate a simple code by your words:\n &6/env make [Your wishes]"
     thinking: "%prefix%Thinking, please wait..."
     disabled: "%prefix%&cPrompt generation is disabled :("
+    few-args: "%prefix%&cYou need to describe your ideas in more detail, this is too few words.. O_o"
     limited: "%prefix%&cSeems like the prompt handler reached limit of requests, try again later :("
     bad-prompt: "%prefix%&cTry to explain your wishes more clear, for example: When player clicks on magma block, it will give random item to player."
     timeout: "%prefix%&cSeems like the prompt handler was thinking for too long.. Well, you have to make your wishes smaller :("
@@ -306,6 +307,10 @@ creative:
     starting-in: "%prefix%&fMaintenance break will start in &6%time% seconds&f."
     started: "\n%prefix%Maintenance break has &6begun&f, during which the server may be restarted.\n \n &fIt's time to take a break from the game, &6make yourself some tea&f and &6wait for the maintenance to end&f!"
     ended: "%prefix%Maintenance break has &aended&f, you can now play in your worlds. Enjoy the game!"
+    restarting: "%prefix%&fThe maintenance break will &6continue&f after the &6server restart&f.\n \n &fYou can rejoin later, and for now &6have some tea&f and take a break from the game."
+    restarting-end: "%prefix%&fThe maintenance break will &6end &fafter the &6server restart&f."
+    already-started: "%prefix%&cThe maintenance break has already started.. O_o"
+    already-ended: "%prefix%&cThe maintenance break has not started yet.. O_o"
   debug:
     enabled: "%prefix%&fDebug mode is &6enabled&f, some experimental features will be able and console will get additional logs."
     disabled: "%prefix%&fDebug mode is &6disabled&f, goodbye experiments!"

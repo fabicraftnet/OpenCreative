@@ -117,7 +117,7 @@ public final class Settings {
     /**
      * Loads settings values from configuration file.
      */
-    public void load() {
+    public void load(boolean reload) {
         File configFile = new File(OpenCreative.getPlugin().getDataFolder(), "config.yml");
         FileConfiguration config = new YamlConfiguration();
         if (!configFile.exists()) {
@@ -126,6 +126,10 @@ public final class Settings {
         try {
             config.load(configFile);
             fillMissingLines(config);
+            if (reload) {
+                config.save(configFile);
+                OpenCreative.getPlugin().reloadConfig();
+            }
         } catch (Exception error) {
             String corruptedName = "config-corrupted-" + new SimpleDateFormat("hh-mm--dd-MM-yyyy")
                     .format(new Date()) + ".yml";
@@ -228,7 +232,7 @@ public final class Settings {
             }
             if (!addedKeys.isEmpty()) {
                 config.set("version", OpenCreative.getVersion());
-                config.setComments("version", List.of("Last launch: " +
+                config.setComments("version", List.of("Last config update: " +
                         new SimpleDateFormat("HH:mm:ss (dd/MM/yyyy)").format(new Date())));
                 OpenCreative.getPlugin().getLogger().warning("Added " + addedKeys.size() +
                         " missing lines in config.yml: " + String.join(", ", addedKeys));
@@ -661,7 +665,7 @@ public final class Settings {
         if (debug) {
             announcer = new BukkitRunnable() {
                 private final Component actionbar = MiniMessage.miniMessage()
-                        .deserialize("<white>Open<gradient:#dbdbdb:#A3E2FF>Creative</gradient><color:#74D3FF>+ <white>" + OpenCreative.getVersion() + "<gray> Debug Mode. <white>Shhh, let's not leak our hard work...");
+                        .deserialize("<white>Open<gradient:#dbdbdb:#A3E2FF>Creative</gradient><color:#74D3FF>+ <white>" + OpenCreative.getVersion() + "<gray> Debug Mode. <white>Let's make it possible...");
 
                 @Override
                 public void run() {

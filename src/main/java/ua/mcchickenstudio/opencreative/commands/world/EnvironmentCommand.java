@@ -681,7 +681,7 @@ public class EnvironmentCommand extends CommandHandler {
                         return;
                     }
                     if (args.length <= 4) {
-                        player.sendMessage(getLocaleMessage("too-few-args"));
+                        player.sendMessage(getLocaleMessage("environment.prompter.few-args"));
                         return;
                     }
                     if (!checkAndSetCooldownWithMessage(player, CooldownType.PROMPTER_REQUEST)) return;
