@@ -19,6 +19,7 @@
 package ua.mcchickenstudio.opencreative.coding;
 
 import org.apache.commons.io.FileUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.FileUtils.getPlanetScriptFile;
@@ -58,28 +60,32 @@ public class CodeScript {
     /**
      * Loads code from codeScript.yml file.
      */
-    public boolean loadCode() {
-        sendCodingDebugLog(planet, getLocaleMessage("coding-debug.loading-code", false));
-        File scriptFile = getPlanetScriptFile(planet);
-        long totalSize = ua.mcchickenstudio.opencreative.utils.FileUtils.getFileSize(scriptFile);
-        long limit = planet.getGroup().getScriptSizeLimit() * 1024L * 1024L;
-        if (totalSize > limit) {
-            sendPlanetErrorMessage(planet, getLocaleMessage("world.script-size-limit")
-                    .replace("%amount%", FileUtils.byteCountToDisplaySize(totalSize))
-                    .replace("%limit%", String.valueOf(planet.getGroup().getScriptSizeLimit())));
-            sendCodingDebugLog(planet, "Script File is too large to load :(");
-            return false;
-        }
-        scriptConfig = new CodeConfiguration();
-        scriptConfig.loadCode(scriptFile);
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                executors.load(getPlanetScriptFile(planet));
-                lastLaunch = System.currentTimeMillis();
+    public @NotNull CompletableFuture<Boolean> loadCode() {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
+            sendCodingDebugLog(planet, getLocaleMessage("coding-debug.loading-code", false));
+            File scriptFile = getPlanetScriptFile(planet);
+            long totalSize = ua.mcchickenstudio.opencreative.utils.FileUtils.getFileSize(scriptFile);
+            long limit = planet.getGroup().getScriptSizeLimit() * 1024L * 1024L;
+            if (totalSize > limit) {
+                sendPlanetErrorMessage(planet, getLocaleMessage("world.script-size-limit")
+                        .replace("%amount%", FileUtils.byteCountToDisplaySize(totalSize))
+                        .replace("%limit%", String.valueOf(planet.getGroup().getScriptSizeLimit())));
+                sendCodingDebugLog(planet, "Script File is too large to load :(");
+                future.complete(false);
             }
-        }.run();
-        return true;
+            scriptConfig = new CodeConfiguration();
+            scriptConfig.loadCode(scriptFile);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    executors.load(getPlanetScriptFile(planet));
+                    lastLaunch = System.currentTimeMillis();
+                    future.complete(true);
+                }
+            }.run();
+        });
+        return future;
     }
 
     /**

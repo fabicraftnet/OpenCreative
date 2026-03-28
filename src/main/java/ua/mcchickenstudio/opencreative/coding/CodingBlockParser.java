@@ -266,9 +266,8 @@ public class CodingBlockParser {
                 devPlanet.getPlanet().getTerritory().stopBukkitRunnables();
                 devPlanet.setCurrentlySavingCode(false);
                 if (!devPlanet.getPlanet().isLoaded()) return;
-                Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
-                    devPlanet.getPlanet().getTerritory().getScript().loadCode();
-                    future.complete(true);
+                devPlanet.getPlanet().getTerritory().getScript().loadCode().thenAccept((result) -> {
+                   future.complete(true);
                 });
             }
         });

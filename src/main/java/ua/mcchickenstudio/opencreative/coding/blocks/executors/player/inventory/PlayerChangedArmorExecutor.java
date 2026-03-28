@@ -16,40 +16,40 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ua.mcchickenstudio.opencreative.coding.blocks.executors.player.interaction;
+package ua.mcchickenstudio.opencreative.coding.blocks.executors.player.inventory;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.WorldEvent;
-import ua.mcchickenstudio.opencreative.coding.blocks.events.player.interaction.ChangedSignEvent;
+import ua.mcchickenstudio.opencreative.coding.blocks.events.player.inventory.ChangedArmorEvent;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.player.PlayerExecutor;
 import ua.mcchickenstudio.opencreative.coding.menus.MenusCategory;
 
-public final class PlayerChangedSignExecutor extends PlayerExecutor {
+public final class PlayerChangedArmorExecutor extends PlayerExecutor {
 
-    public PlayerChangedSignExecutor() {
-        super("changed_sign");
+    public PlayerChangedArmorExecutor() {
+        super("changed_armor");
     }
 
     @Override
     public @NotNull ItemStack getDisplayIcon() {
-        return new ItemStack(Material.OAK_SIGN);
+        return new ItemStack(Material.DIAMOND_CHESTPLATE);
     }
 
     @Override
     public @NotNull Class<? extends WorldEvent> getEventClass() {
-        return ChangedSignEvent.class;
+        return ChangedArmorEvent.class;
     }
 
     @Override
     public @NotNull String getName() {
-        return "Player Sign Change Event";
+        return "Player Changed Armor Event";
     }
 
     @Override
     public @NotNull String getDescription() {
-        return "When player edits a text on sign";
+        return "When player changes armor equipment";
     }
 
     @Override
@@ -59,6 +59,6 @@ public final class PlayerChangedSignExecutor extends PlayerExecutor {
 
     @Override
     public @NotNull MenusCategory getCategory() {
-        return MenusCategory.INTERACTION;
+        return MenusCategory.INVENTORY;
     }
 }

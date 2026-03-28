@@ -105,7 +105,7 @@ public class PlayCommand extends CommandHandler {
                 }
                 planet.setMode(Planet.Mode.PLAYING);
                 if (isEntityInDevPlanet(player)) {
-                    afterCompilation(player, playerDevPlanet);
+                    afterCompilation(player, playerDevPlanet, false);
                 }
             } else {
                 sender.sendMessage(getPlayerLocaleMessage("not-owner", player));
@@ -130,7 +130,7 @@ public class PlayCommand extends CommandHandler {
                             CompletableFuture<Boolean> parserResult = new CodingBlockParser(planet.getDevPlanet()).parseCode(planet.getDevPlanet());
                             parserResult.thenAccept(success -> {
                                 if (success) {
-                                    afterCompilation(player, playerDevPlanet);
+                                    afterCompilation(player, playerDevPlanet, true);
                                 }
                             });
                             return;
@@ -143,28 +143,30 @@ public class PlayCommand extends CommandHandler {
         } else {
             player.sendMessage(getLocaleMessage("world.play-mode.message.players"));
         }
-        afterCompilation(player, playerDevPlanet);
+        afterCompilation(player, playerDevPlanet, true);
     }
 
-    private void afterCompilation(@NotNull Player player, @Nullable DevPlanet devPlanet) {
-        if (!player.isOnline()) return;
-        Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
-        if (planet == null) return;
-        DevPlanet current = OpenCreative.getPlanetsManager().getDevPlanet(player);
-        if (devPlanet != null && !devPlanet.equals(current)) return;
-        if (devPlanet == null) {
-            givePlayPermissions(player);
-            new QuitEvent(player).callEvent();
-        }
-        clearPlayer(player, false);
-        player.teleportAsync(planet.getTerritory().getSpawnLocation()).thenAccept(success -> {
-            if (success) {
-                planet.getTerritory().showBorders(player);
-                if (planet.isOwner(player)) {
-                    ItemsGroup.PLAY_OWNER.setItems(player);
-                }
-                new JoinEvent(player).callEvent();
+    private void afterCompilation(@NotNull Player player, @Nullable DevPlanet devPlanet, boolean executeEvents) {
+        Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
+            if (!player.isOnline()) return;
+            Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
+            if (planet == null) return;
+            DevPlanet current = OpenCreative.getPlanetsManager().getDevPlanet(player);
+            if (devPlanet != null && !devPlanet.equals(current)) return;
+            if (devPlanet == null) {
+                givePlayPermissions(player);
+                new QuitEvent(player).callEvent();
             }
+            clearPlayer(player, false);
+            player.teleportAsync(planet.getTerritory().getSpawnLocation()).thenAccept(success -> {
+                if (success) {
+                    planet.getTerritory().showBorders(player);
+                    if (planet.isOwner(player)) {
+                        ItemsGroup.PLAY_OWNER.setItems(player);
+                    }
+                    if (executeEvents) new JoinEvent(player).callEvent();
+                }
+            });
         });
     }
 

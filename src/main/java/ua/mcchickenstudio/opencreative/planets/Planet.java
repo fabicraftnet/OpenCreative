@@ -556,27 +556,28 @@ public class Planet {
                 if (devPlanet.isLoaded() && devPlanet.isCodeChanged()) {
                     CompletableFuture<Boolean> parseFuture = new CodingBlockParser(devPlanet).parseCode(devPlanet);
                     parseFuture.thenAccept(success -> {
-                        if (success) {
-                            if (!ignoreEvents) {
+                        if (success && !ignoreEvents) {
+                            new GamePlayEvent(this).callEvent();
+                            for (Player player : getPlayers()) {
+                                if (OpenCreative.getPlanetsManager().getDevPlanet(player) == null) {
+                                    new JoinEvent(player).callEvent();
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    territory.getScript().loadCode().thenAccept((success) -> {
+                        if (success && !ignoreEvents) {
+                            Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
                                 new GamePlayEvent(this).callEvent();
                                 for (Player player : getPlayers()) {
                                     if (OpenCreative.getPlanetsManager().getDevPlanet(player) == null) {
                                         new JoinEvent(player).callEvent();
                                     }
                                 }
-                            }
+                            });
                         }
                     });
-                } else {
-                    territory.getScript().loadCode();
-                    if (!ignoreEvents) {
-                        new GamePlayEvent(this).callEvent();
-                        for (Player player : getPlayers()) {
-                            if (OpenCreative.getPlanetsManager().getDevPlanet(player) == null) {
-                                new JoinEvent(player).callEvent();
-                            }
-                        }
-                    }
                 }
             }
         } catch (Exception error) {
@@ -791,15 +792,12 @@ public class Planet {
                     player.sendMessage(MessageUtils.getPlayerLocaleMessage("world.connecting.owner-help", player));
                 }
             }
-            if (this.isOwner(player.getName())) {
+            if (this.isOwner(player)) {
                 ownerGroup = OpenCreative.getSettings().getGroups().getGroup(player).getName().toLowerCase();
                 if (mode == Mode.BUILD) {
                     ItemsGroup.BUILD_OWNER.setItems(player);
                 } else if (mode == Mode.PLAYING) {
                     ItemsGroup.PLAY_OWNER.setItems(player);
-                }
-                if (this.getDevPlanet().isLoaded() && OpenCreative.getStability().isFine()) {
-                    new CodingBlockParser(devPlanet).parseCode(this.getDevPlanet());
                 }
             }
             if (!territory.isAutoSave() && worldPlayers.canBuild(player)) {
@@ -807,8 +805,12 @@ public class Planet {
             }
             if (!wasLoaded) {
                 variables.load();
-                territory.getScript().loadCode();
-                new GamePlayEvent(this).callEvent();
+                territory.getScript().loadCode().thenAccept((result) -> {
+                    Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
+                        new GamePlayEvent(this).callEvent();
+                        new JoinEvent(player).callEvent();
+                    });
+                });
             }
             if (!hidePlayer) {
                 new JoinEvent(player).callEvent();
