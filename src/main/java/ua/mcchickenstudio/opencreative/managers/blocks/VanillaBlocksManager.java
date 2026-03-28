@@ -20,14 +20,32 @@ package ua.mcchickenstudio.opencreative.managers.blocks;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.jetbrains.annotations.NotNull;
 
-public final class DisabledBlocksManager implements BlocksManager {
+import java.util.concurrent.CompletableFuture;
+
+public final class VanillaBlocksManager implements BlocksManager {
 
     @Override
-    public int setBlocksType(@NotNull Location first, @NotNull Location second, @NotNull Material material, int limit) {
-        return 0;
+    public @NotNull CompletableFuture<Integer> setBlocksType(@NotNull Location first, @NotNull Location second, @NotNull Material material, int limit) {
+        CompletableFuture<Integer> future = new CompletableFuture<>();
+        World world = first.getWorld();
+        int changed = 0;
+        for (int x = first.getBlockX(); x <= second.getBlockX(); x++) {
+            for (int z = first.getBlockZ(); z <= second.getBlockZ(); z++) {
+                if (changed > limit) {
+                    future.complete(changed);
+                    return future;
+                }
+                Block block = world.getBlockAt(x, 0, z);
+                block.setType(material);
+                changed++;
+            }
+        }
+        future.complete(changed);
+        return future;
     }
 
     @Override
@@ -36,11 +54,11 @@ public final class DisabledBlocksManager implements BlocksManager {
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 
     @Override
     public String getName() {
-        return "Disabled Blocks Manager";
+        return "Vanilla Blocks Manager";
     }
 }

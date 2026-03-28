@@ -18,10 +18,12 @@
 
 package ua.mcchickenstudio.opencreative.managers.packets;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -30,6 +32,10 @@ import org.jetbrains.annotations.NotNull;
  * not do anything on methods usage.
  */
 public final class DisabledPacketManager implements PacketManager {
+
+    @Override
+    public void showAdvancement(@NotNull Player player, @NotNull ItemStack item, @NotNull Component title, @NotNull Component message) {
+    }
 
     @Override
     public void displayGlowingBlock(@NotNull Player player, @NotNull Location location) {

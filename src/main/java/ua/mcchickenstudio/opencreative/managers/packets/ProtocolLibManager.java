@@ -24,10 +24,12 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.*;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.OpenCreative;
@@ -50,6 +52,10 @@ public final class ProtocolLibManager implements PacketManager {
     public void init() {
         manager = ProtocolLibrary.getProtocolManager();
         manager.addPacketListener(new ChunkPacketListener(OpenCreative.getPlugin()));
+    }
+
+    @Override
+    public void showAdvancement(@NotNull Player player, @NotNull ItemStack item, @NotNull Component title, @NotNull Component message) {
     }
 
     @Override

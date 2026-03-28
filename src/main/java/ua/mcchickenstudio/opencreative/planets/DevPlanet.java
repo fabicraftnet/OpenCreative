@@ -30,6 +30,7 @@ import ua.mcchickenstudio.opencreative.coding.blocks.executors.ExecutorCategory;
 import ua.mcchickenstudio.opencreative.coding.menus.layouts.Layout;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
 import ua.mcchickenstudio.opencreative.utils.world.DevPlanetChunkGenerator;
+import ua.mcchickenstudio.opencreative.utils.world.cache.ChunkCache;
 import ua.mcchickenstudio.opencreative.utils.world.platforms.DevPlatformer;
 import ua.mcchickenstudio.opencreative.utils.world.platforms.DevPlatformers;
 import ua.mcchickenstudio.opencreative.utils.world.platforms.HasVisibleBorder;
@@ -286,8 +287,9 @@ public class DevPlanet {
         if (platformX >= 30 || platformZ >= 30 || platformX <= 0 || platformZ <= 0) {
             return false;
         }
-        return getDevPlatformer().buildPlatform(new DevPlatform(getWorld(), getDevPlatformer(), platformX, platformZ),
+        getDevPlatformer().buildPlatform(new DevPlatform(getWorld(), getDevPlatformer(), platformX, platformZ),
                 DEFAULT_FLOOR_MATERIAL, DEFAULT_EVENT_MATERIAL, DEFAULT_ACTION_MATERIAL);
+        return true;
     }
 
     /**
@@ -305,6 +307,9 @@ public class DevPlanet {
             player.teleport(platform.getSpawnLocation());
             player.sendMessage(getLocaleMessage("environment.platform.claimed"));
             Sounds.DEV_PLATFORM_CLAIM.play(player);
+            Location location = getDevPlatformer().getPlatformBeginLocation(platform);
+            Chunk chunk = location.getChunk();
+            ChunkCache.load(getWorld(), chunk.getX(), chunk.getZ());
             return true;
         } else {
             return false;

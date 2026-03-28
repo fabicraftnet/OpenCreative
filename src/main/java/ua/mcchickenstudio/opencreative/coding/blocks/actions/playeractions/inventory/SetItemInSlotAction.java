@@ -16,41 +16,41 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ua.mcchickenstudio.opencreative.coding.blocks.actions.controlactions.lines;
+package ua.mcchickenstudio.opencreative.coding.blocks.actions.playeractions.inventory;
 
-import org.bukkit.entity.Entity;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;
-import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionCategory;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
-import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionsHandler;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
-import ua.mcchickenstudio.opencreative.coding.blocks.actions.controlactions.ControlAction;
-import ua.mcchickenstudio.opencreative.coding.blocks.actions.repeatactions.RepeatAction;
+import ua.mcchickenstudio.opencreative.coding.blocks.actions.playeractions.PlayerAction;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
 
-public final class StopCodeLineAction extends ControlAction {
-    public StopCodeLineAction(Executor executor, Target target, int x, Arguments args) {
+import java.util.List;
+
+public final class SetItemInSlotAction extends PlayerAction {
+    public SetItemInSlotAction(Executor executor, Target target, int x, Arguments args) {
         super(executor, target, x, args);
     }
 
     @Override
-    protected void execute(Entity entity) {
-        getHandler().removeAllActions();
-        getHandler().setStopped(true);
-        getHandler().stopAllParentHandlers();
-        ActionsHandler handler = getHandler().getFirstActionsHandler(ActionCategory.REPEAT_ACTION);
-        if (handler == null) {
-            return;
-        }
-        if (handler.getAction() instanceof RepeatAction repeatAction) {
-            repeatAction.setMustStop(true);
-            handler.removeAllActions();
+    public void executePlayer(@NotNull Player player) {
+        List<Double> slots = getArguments().getNumbersList("slots", this);
+        ItemStack item = getArguments().getItem("item", new ItemStack(Material.AIR), this);
+        boolean replaceWithAir = getArguments().getBoolean("replace-with-air", false, this);
+        for (double slotDouble : slots) {
+            int slot = ((Double) slotDouble).intValue() - 1;
+            if (slot < 0 || slot > player.getInventory().getSize()) continue;
+            if (replaceWithAir || !item.isEmpty()) {
+                player.getInventory().setItem(slot, item);
+            }
         }
     }
 
     @Override
     public @NotNull ActionType getActionType() {
-        return ActionType.CONTROL_STOP_CODE_LINE;
+        return ActionType.PLAYER_SET_ITEM_IN_HAND;
     }
 }

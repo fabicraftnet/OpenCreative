@@ -101,6 +101,10 @@ public final class EntitySpawnListener implements Listener {
                     event.setCancelled(true);
                 }
             }
+            if (event.getEntity().getEntitySpawnReason().name().contains("SPAWNER") && planet.getLimits().isTooManyMobSpawnsBySpawner()) {
+                event.setCancelled(true);
+                return;
+            }
             if (planet.getDevPlanet() != null && planet.getDevPlanet().getWorld() != null) {
                 count += planet.getDevPlanet().getWorld().getEntityCount();
             }

@@ -36,6 +36,7 @@ import com.sk89q.worldedit.world.block.BaseBlock;
 import com.sk89q.worldedit.world.block.BlockState;
 import com.sk89q.worldedit.world.block.BlockStateHolder;
 import com.sk89q.worldedit.world.block.BlockTypes;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -44,20 +45,46 @@ import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.utils.SystemUtils;
+import ua.mcchickenstudio.opencreative.utils.hooks.HookUtils;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.CompletableFuture;
 
 import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isLobbyWorld;
 
+/**
+ * <h1>WorldEditManager</h1>
+ * This class represents a manager, that controls changing
+ * many blocks, using WorldEdit.
+ */
 public final class WorldEditManager implements BlocksManager {
 
     @Override
-    public int setBlocksType(@NotNull Location first, @NotNull Location second, @NotNull Material material, int limit) {
+    public @NotNull CompletableFuture<Integer> setBlocksType(@NotNull Location first, @NotNull Location second, @NotNull Material material, int limit) {
         World world = BukkitAdapter.adapt(first.getWorld());
-        Region selection = new CuboidRegion(world, BlockVector3.at(0, 80, 0), BlockVector3.at(10, 80, 10));
+        CompletableFuture<Integer> future = new CompletableFuture<>();
+        // Checks whether its FastAsyncWorldEdit or classic WorldEdit
+        if (HookUtils.isPluginEnabled("FastAsyncWorldEdit")) {
+            Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
+                setBlocks(world, future, first, second, material, limit);
+            });
+        } else {
+            setBlocks(world, future, first, second, material, limit);
+        }
+        return future;
+    }
+
+    private void setBlocks(@NotNull World world, @NotNull CompletableFuture<Integer> future,
+                           @NotNull Location first, @NotNull Location second,
+                           @NotNull Material material, int limit) {
+        Region selection = new CuboidRegion(world, BlockVector3.at(
+                first.getBlockX(), first.getBlockY(), first.getBlockZ()),
+                BlockVector3.at(second.getBlockX(), second.getBlockY(), second.getBlockZ()));
         try (EditSession editSession = WorldEdit.getInstance().newEditSessionBuilder().world(world).maxBlocks(limit).build()) {
             BlockState blockState = BukkitAdapter.adapt(material.createBlockData());
-            return editSession.setBlocks(selection, blockState);
-        } catch (MaxChangedBlocksException ex) {
-            return 0;
+            future.complete(editSession.setBlocks(selection, blockState));
+        } catch (MaxChangedBlocksException error) {
+            future.complete(limit);
         }
     }
 

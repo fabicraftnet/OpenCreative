@@ -22,6 +22,7 @@ import io.papermc.paper.persistence.PersistentDataContainerView;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -515,40 +516,38 @@ public final class ItemUtils {
                 }
             }
             if (meta.hasDisplayName()) {
-                Component component = meta.displayName();
-                if (component != null) {
-                    String displayName = LegacyComponentSerializer.legacySection().serialize(component);
-                    if (displayName.length() > displayNameMaxLength) {
+                String displayName = meta.getDisplayName(); // Using legacy, because components are heavy :(
+                if (!displayName.isEmpty()) {
+                    if (ChatColor.stripColor(displayName).length() > displayNameMaxLength) {
                         displayName = displayName.substring(0, displayNameMaxLength);
-                        meta.displayName(LegacyComponentSerializer.legacySection().deserialize(displayName));
+                        meta.setDisplayName(displayName);
                         item.setItemMeta(meta);
                         sendDebug("[ITEMS] Fixed too long display name");
                     }
                 }
             }
             if (meta.hasLore()) {
-                List<Component> lore = item.lore();
+                List<String> lore = item.getLore(); // Using legacy, because components are heavy :(
                 if (lore != null) {
                     if (lore.size() > loreLinesLimit) {
                         meta.lore(null);
                         item.setItemMeta(meta);
                         sendDebug("[ITEMS] Fixed too many lore lines");
                     }
-                    List<Component> newLore = new ArrayList<>(lore);
+                    List<String> newLore = new ArrayList<>(lore);
                     int loreIndex = 0;
                     boolean needsToChange = false;
-                    for (Component loreLine : lore) {
-                        String line = LegacyComponentSerializer.legacySection().serialize(loreLine);
-                        if (line.length() > loreLineMaxLength) {
+                    for (String line : lore) {
+                        if (ChatColor.stripColor(line).length() > loreLineMaxLength) {
                             needsToChange = true;
                             line = line.substring(0, loreLineMaxLength);
-                            newLore.set(loreIndex, LegacyComponentSerializer.legacySection().deserialize(line));
+                            newLore.set(loreIndex, line);
                             sendDebug("[ITEMS] Fixed too long lore line");
                         }
                         loreIndex++;
                     }
                     if (needsToChange) {
-                        meta.lore(newLore);
+                        meta.setLore(newLore);
                         item.setItemMeta(meta);
                     }
                 }

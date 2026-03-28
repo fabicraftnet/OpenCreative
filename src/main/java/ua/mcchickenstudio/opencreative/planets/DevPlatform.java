@@ -168,28 +168,32 @@ public class DevPlatform {
         if (cantBePlatformMaterial(floor) || cantBePlatformMaterial(event) || cantBePlatformMaterial(action))
             return false;
         if (floor == event || floor == action || event == action) return false;
-        return platformer.buildPlatform(this, floor, event, action);
+        platformer.buildPlatform(this, floor, event, action);
+        return true;
     }
 
     public boolean setFloorMaterial(Material floor) {
         if (cantBePlatformMaterial(floor)) return false;
         if (floor == getEventMaterial()) return false;
         if (floor == getActionMaterial()) return false;
-        return platformer.buildPlatform(this, floor, getEventMaterial(), getActionMaterial());
+        platformer.buildPlatform(this, floor, getEventMaterial(), getActionMaterial());
+        return true;
     }
 
     public boolean setEventMaterial(Material event) {
         if (cantBePlatformMaterial(event)) return false;
         if (event == getFloorMaterial()) return false;
         if (event == getActionMaterial()) return false;
-        return platformer.buildPlatform(this, getFloorMaterial(), event, getActionMaterial());
+        platformer.buildPlatform(this, getFloorMaterial(), event, getActionMaterial());
+        return true;
     }
 
     public boolean setActionMaterial(Material action) {
         if (cantBePlatformMaterial(action)) return false;
         if (action == getEventMaterial()) return false;
         if (action == getActionMaterial()) return false;
-        return platformer.buildPlatform(this, getFloorMaterial(), getEventMaterial(), action);
+        platformer.buildPlatform(this, getFloorMaterial(), getEventMaterial(), action);
+        return true;
     }
 
     public void setContainerMaterial(Material containerMaterial) {

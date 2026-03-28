@@ -131,6 +131,7 @@ public enum ActionType implements CodingBlockType {
     PLAYER_SAVE_INVENTORY(ActionCategory.PLAYER_ACTION, MenusCategory.INVENTORY, SaveInventoryAction.class, Material.HOPPER),
     PLAYER_RESTORE_INVENTORY(ActionCategory.PLAYER_ACTION, MenusCategory.INVENTORY, RestoreInventoryAction.class, Material.DROPPER),
     PLAYER_SET_ITEM_IN_HAND(ActionCategory.PLAYER_ACTION, MenusCategory.INVENTORY, SetItemInHandAction.class, Material.NETHERITE_SWORD, new ArgumentSlot("main", ValueType.ITEM), new ParameterSlot("replace-with-air"), new ArgumentSlot("off", ValueType.ITEM)),
+    PLAYER_SET_ITEM_IN_SLOT(ActionCategory.PLAYER_ACTION, MenusCategory.INVENTORY, SetItemInSlotAction.class, Material.SLIME_BLOCK, new ArgumentSlot("slots", ValueType.NUMBER, (byte) 18), new ArgumentSlot("item", ValueType.ITEM), new ParameterSlot("replace-with-air")),
     PLAYER_SET_CURSOR_ITEM(ActionCategory.PLAYER_ACTION, MenusCategory.INVENTORY, SetCursorItemAction.class, Material.TRIPWIRE_HOOK, new ArgumentSlot("item", ValueType.ITEM)),
     PLAYER_SET_ITEMS(ActionCategory.PLAYER_ACTION, MenusCategory.INVENTORY, SetItemsAction.class, Material.DARK_OAK_CHEST_BOAT, new ArgumentSlot("items", ValueType.ITEM, (byte) 27, true)),
     PLAYER_SET_ARMOR(ActionCategory.PLAYER_ACTION, MenusCategory.INVENTORY, SetArmorAction.class, Material.NETHERITE_CHESTPLATE, new ArgumentSlot("helmet", ValueType.ITEM), new ArgumentSlot("chestplate", ValueType.ITEM), new ArgumentSlot("leggings", ValueType.ITEM), new ArgumentSlot("boots", ValueType.ITEM), new ParameterSlot("replace-with-air")),

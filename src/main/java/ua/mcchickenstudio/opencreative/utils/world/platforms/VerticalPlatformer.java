@@ -18,6 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.utils.world.platforms;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -31,6 +32,7 @@ import ua.mcchickenstudio.opencreative.OpenCreative;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * <h1>VerticalPlatformer</h1>
@@ -112,43 +114,54 @@ public final class VerticalPlatformer extends DevPlatformer {
         if (!devPlanet.isLoaded()) return false;
         if (platform.exists()) return false;
         buildPlatform(platform, DevPlanet.getDefaultFloorMaterial(), DevPlanet.getDefaultEventMaterial(),
-                DevPlanet.getDefaultActionMaterial());
-        setWorldBorder(devPlanet);
-        devPlanet.displayWorldBorders();
+                DevPlanet.getDefaultActionMaterial()).thenAccept((ignored) -> {
+            Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
+                setWorldBorder(devPlanet);
+                devPlanet.displayWorldBorders();
+            });
+        });
         return true;
     }
 
     @Override
-    public boolean buildPlatform(@NotNull DevPlatform platform, Material floorMaterial, Material eventMaterial, Material actionMaterial) {
+    public @NotNull CompletableFuture<Void> buildPlatform(@NotNull DevPlatform platform, Material floorMaterial, Material eventMaterial, Material actionMaterial) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
         Location begin = getPlatformBeginLocation(platform);
+        int beginX = begin.getBlockX();
+        boolean notchEnabled = OpenCreative.getSettings().getCodingSettings().isVerticalPlatformNotchEnabled() && platform.getZ() > 1;
+        int notchMaxX = beginX + OpenCreative.getSettings().getCodingSettings().getVerticalPlatformNotchWidth() - 1;
+        if (notchEnabled) {
+            begin.setX(notchMaxX + 1);
+        }
+
         Location end = getPlatformEndLocation(platform);
         int height = begin.getBlockY();
-        int beginX = begin.getBlockX();
         int endX = end.getBlockX();
         int beginZ = begin.getBlockZ();
         int endZ = end.getBlockZ();
         int executorX = beginX + 4;
-        boolean notchEnabled = OpenCreative.getSettings().getCodingSettings().isVerticalPlatformNotchEnabled()
-                && platform.getZ() > 1;
-        int notchMaxX = beginX + OpenCreative.getSettings().getCodingSettings().getVerticalPlatformNotchWidth() - 1;
-        for (int x = beginX; x <= endX; x++) {
-            for (int z = beginZ; z <= endZ; z++) {
-                Block block = platform.getWorld().getBlockAt(x, height, z);
-                if (notchEnabled && x <= notchMaxX) {
-                    block.setType(Material.AIR);
-                    continue;
+
+        CompletableFuture<Integer> built = OpenCreative.getBlocksManager().setBlocksType(begin, end, floorMaterial, 10300);
+        built.thenAccept((changed) -> {
+            Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
+                if (Bukkit.getWorld(platform.getWorld().getName()) == null) {
+                    return;
                 }
-                if (x == executorX && (z - beginZ) % 4 == 0 && z != beginZ && z != endZ) {
-                    block.setType(eventMaterial);
-                } else if (x > executorX && (x - executorX) % 2 == 0 && x < endX - 2 && (z - beginZ) % 4 == 0 && z != beginZ && z != endZ) {
-                    block.setType(actionMaterial);
-                } else {
-                    block.setType(floorMaterial);
+                for (int x = beginX; x <= endX; x++) {
+                    for (int z = beginZ; z <= endZ; z++) {
+                        Block block = platform.getWorld().getBlockAt(x, height, z);
+                        if (x == executorX && (z - beginZ) % 4 == 0 && z != beginZ && z != endZ) {
+                            block.setType(eventMaterial);
+                        } else if (x > executorX && (x - executorX) % 2 == 0 && x < endX - 2 && (z - beginZ) % 4 == 0 && z != beginZ && z != endZ) {
+                            block.setType(actionMaterial);
+                        }
+                        block.setBiome(Biome.ICE_SPIKES);
+                    }
                 }
-                block.setBiome(Biome.ICE_SPIKES);
-            }
-        }
-        return true;
+                future.complete(null);
+            });
+        });
+        return future;
     }
 
     public @NotNull Location getPlatformBeginLocation(@NotNull DevPlatform platform) {

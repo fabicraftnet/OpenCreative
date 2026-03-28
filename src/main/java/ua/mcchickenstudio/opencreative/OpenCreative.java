@@ -124,7 +124,10 @@ public final class OpenCreative extends JavaPlugin {
     }
 
     /**
-     * Plugin startup operations. It registers commands, events; loads config, worlds, localization file.
+     * Plugin startup operations.
+     * <p>
+     * Loads settings, registers commands and events,
+     * starts managers and notifies players about startup.
      *
      * @see #onDisable
      **/
@@ -132,89 +135,19 @@ public final class OpenCreative extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         long startTime = System.currentTimeMillis();
-        getLogger().info("Starting OpenCreative+ " + version + ": " + codename + ", please wait...");
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 1));
-            player.showTitle(Title.title(
-                    MiniMessage.miniMessage().deserialize("<white>Open<gradient:#dbdbdb:#A3E2FF>Creative</gradient><color:#74D3FF>+ <gray>" + version),
-                    Component.text("§f" + codename + "..."),
-                    Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(5), Duration.ofSeconds(0))
-            ));
-        }
-        saveDefaultConfig();
-        settings = new Settings();
-        HookUtils.loadHooks();
-        settings.load();
-        registerCommands();
-        registerEvents();
-        //Ticker.runTicker();
-        FileUtils.loadLocales();
+        logStartup();
 
-        space = new Space();
-        space.init();
-        moduler = new Moduler();
-        moduler.init();
-        if (devPlatformer == null) devPlatformer = new HorizontalPlatformer();
-        if (prompter == null) prompter = new DisabledCodingPrompter();
-        if (watchdog == null) watchdog = new DisabledWatchdog();
-        if (downloader == null) downloader = new DisabledDownloader();
-        if (economy == null) economy = new DisabledEconomy();
+        loadCore();
+        loadManagers();
 
-        PlayerUtils.loadPermissions();
-        FileUtils.loadPlanets();
-        PhysService.run();
-        FileUtils.loadModules();
-        watchdog.init();
-        downloader.init();
-
-        updater = new HangarUpdater();
-        updater.init();
-        packet = HookUtils.getPacketManager();
-        packet.init();
-        blocks = HookUtils.getBlocks();
-        blocks.init();
-        disguiser = HookUtils.getDisguises();
-        disguiser.init();
-        hints = new Hints();
-        hints.init();
-
-        long loadedTime = System.currentTimeMillis() - startTime;
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (WorldUtils.isPlanet(player.getWorld())) {
-                teleportToLobby(player);
-            } else if (isEntityInLobby(player)) {
-                player.removePotionEffect(PotionEffectType.BLINDNESS);
-                Sounds.LOBBY.play(player);
-                player.clearTitle();
-                player.sendMessage(
-                        MiniMessage.miniMessage().deserialize("\n <white>Open<gradient:#dbdbdb:#A3E2FF>Creative</gradient><color:#74D3FF>+ <gray>" + version + " <white>is loaded <green>:) \n ")
-                );
-            }
-            getServer().sendActionBar(
-                    MiniMessage.miniMessage().deserialize(
-                            "<white>Open<gradient:#dbdbdb:#A3E2FF>Creative</gradient><color:#74D3FF>+ <gray>" + version + "<white> is loaded for " + loadedTime + " ms."
-                    )
-            );
-        }
-        getLogger().info(String.join("\n",
-                "OpenCreative+ " + version + ": " + codename + " is loaded for " + loadedTime + " ms.",
-                "",
-                " Welcome to OpenCreative+ " + version + "!",
-                "",
-                "  Running on " + Bukkit.getMinecraftVersion() + " server",
-                "  Current time " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),
-                isChristmas() ? "  Ho-ho-ho! Merry Christmas, server owners! :-) ❆" :
-                        isHalloween() ? "  Spo-o-o-oky Halloween, server owners! O_o 🎃" : "",
-                "  " + codename,
-                "  Made by McChicken Studio 2017–2026",
-                ""
-        ));
+        finalizeStartup(startTime);
         new Metrics(this, 22001);
     }
 
-
     /**
-     * Plugin shutdown operations. It unloads worlds when plugin is being disabled.
+     * Plugin shutdown operations.
+     * <p>
+     * Unloads worlds when plugin is being disabled.
      *
      * @see #onEnable
      */
@@ -248,12 +181,130 @@ public final class OpenCreative extends JavaPlugin {
 
 
     /**
-     * Get a plugin instance for operations with it. For example: for accessing config.yml.
+     * Get a plugin instance for operations with it.
+     * <p>
+     * Useful for accessing planets manager, or settings.
      *
      * @return plugin instance.
      **/
-    public static OpenCreative getPlugin() {
+    public static @NotNull OpenCreative getPlugin() {
         return plugin;
+    }
+
+    /**
+     * Notifies console and players about OpenCreative+ startup.
+     */
+    private void logStartup() {
+        getLogger().info("Starting OpenCreative+ " + version + ": " + codename + ", please wait...");
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 1));
+            player.showTitle(Title.title(
+                    MiniMessage.miniMessage().deserialize("<white>Open<gradient:#dbdbdb:#A3E2FF>Creative</gradient><color:#74D3FF>+ <gray>" + version),
+                    Component.text("§f" + codename + "..."),
+                    Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(5), Duration.ofSeconds(0))
+            ));
+        }
+    }
+
+    /**
+     * Loads OpenCreative+ settings, localization files,
+     * registers commands and events.
+     */
+    private void loadCore() {
+        settings = new Settings();
+        HookUtils.loadHooks();
+        settings.load(false);
+        registerCommands();
+        registerEvents();
+        //Ticker.runTicker();
+        FileUtils.loadLocales();
+        PlayerUtils.loadPermissions();
+    }
+
+    /**
+     * Loads and assigns OpenCreative+ managers.
+     */
+    private void loadManagers() {
+        space = new Space();
+        space.init();
+        moduler = new Moduler();
+        moduler.init();
+        if (devPlatformer == null) devPlatformer = new HorizontalPlatformer();
+        if (prompter == null) prompter = new DisabledCodingPrompter();
+        if (watchdog == null) watchdog = new DisabledWatchdog();
+        if (downloader == null) downloader = new DisabledDownloader();
+        if (economy == null) economy = new DisabledEconomy();
+
+        FileUtils.loadPlanets();
+        PhysService.run();
+        FileUtils.loadModules();
+        watchdog.init();
+        downloader.init();
+
+        updater = new HangarUpdater();
+        updater.init();
+        packet = HookUtils.getPacketManager();
+        packet.init();
+        blocks = HookUtils.getBlocks();
+        blocks.init();
+        disguiser = HookUtils.getDisguises();
+        disguiser.init();
+        hints = new Hints();
+        hints.init();
+    }
+
+    /**
+     * Notifies console and players about successful
+     * startup of OpenCreative+.
+     *
+     * @param startTime timestamp of the beginning of startup.
+     */
+    private void finalizeStartup(long startTime) {
+        long loadedTime = System.currentTimeMillis() - startTime;
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (WorldUtils.isPlanet(player.getWorld())) {
+                teleportToLobby(player);
+            } else if (isEntityInLobby(player)) {
+                player.removePotionEffect(PotionEffectType.BLINDNESS);
+                Sounds.LOBBY.play(player);
+                player.clearTitle();
+                player.sendMessage(
+                        MiniMessage.miniMessage().deserialize("\n <white>Open<gradient:#dbdbdb:#A3E2FF>Creative</gradient><color:#74D3FF>+ <gray>" + version + " <white>is loaded <green>:) \n ")
+                );
+            }
+        }
+        getServer().sendActionBar(
+                MiniMessage.miniMessage().deserialize(
+                        "<white>Open<gradient:#dbdbdb:#A3E2FF>Creative</gradient><color:#74D3FF>+ <gray>" + version + "<white> is loaded for " + loadedTime + " ms."
+                )
+        );
+        getLogger().info(String.join("\n",
+                "OpenCreative+ " + version + ": " + codename + " is loaded for " + loadedTime + " ms.",
+                "",
+                " Welcome to OpenCreative+ " + version + "!",
+                "",
+                "  Running on " + Bukkit.getMinecraftVersion() + " server",
+                "  Current time " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),
+                isChristmas() ? "  Ho-ho-ho! Merry Christmas, server owners! :-) ❆" :
+                        isHalloween() ? "  Spo-o-o-oky Halloween, server owners! O_o 🎃" : "",
+                "  " + codename,
+                "  Made by McChicken Studio 2017–2026",
+                ""
+        ));
+        if (settings.isFirstLaunch()) {
+            Bukkit.getScheduler().runTaskLater(this, () -> {
+                Bukkit.getConsoleSender().sendMessage(String.join("\n",
+                        "[" + getLogger().getName() + "] Thank you for installing §fOpen§7Creative§b+§f!",
+                        "",
+                        " You can always get help on our Discord server:",
+                        " §bhttps://discord.gg/sSFCXUeq63",
+                        "",
+                        " §fCheck wiki pages about setting up:",
+                        " §6https://gitlab.com/eagles-creative/opencreative/-/wikis/home",
+                        ""
+                ));
+            }, 30L);
+        }
     }
 
     /**

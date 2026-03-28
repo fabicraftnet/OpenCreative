@@ -251,6 +251,19 @@ public final class PlaceBlockListener implements Listener {
                         directional.setFacing(block.getRelative(BlockFace.WEST).isEmpty() ? BlockFace.WEST : BlockFace.EAST);
                     }
                     block.setBlockData(directional);
+                } else if (block.getType() == Material.REDSTONE_WALL_TORCH) {
+                    if (block.getRelative(BlockFace.EAST)
+                            .getRelative(BlockFace.DOWN).getType() != platform.getEventMaterial()) {
+                        Sounds.DEV_NOT_ALLOWED.play(player);
+                        event.setCancelled(true);
+                    } else {
+                        devPlanet.setCodeChanged(true);
+                        if (block.getBlockData() instanceof Powerable powerable) {
+                            powerable.setPowered(true);
+                            block.setBlockData(powerable);
+                        }
+                        Sounds.DEV_SET_DEBUG_TORCH.play(player);
+                    }
                 } else if ((!(block.getType().name().contains("SIGN") && supportBlock.getX() >= 4 && (supportBlock.getX() % 2) == 0)) && (!devPlanet.getAllowedBlocks().contains(block.getType())) || block.getY() <= 0) {
                     player.sendActionBar(getLocaleMessage("world.dev-mode.cant-place-on-floor"));
                     Sounds.DEV_NOT_ALLOWED.play(player);
@@ -299,20 +312,7 @@ public final class PlaceBlockListener implements Listener {
                     Sounds.DEV_NOT_ALLOWED.play(player);
                     event.setCancelled(true);
                 }
-            } else if (block.getType() == Material.REDSTONE_WALL_TORCH) {
-                if (block.getRelative(BlockFace.EAST)
-                        .getRelative(BlockFace.DOWN).getType() != platform.getEventMaterial()) {
-                    Sounds.DEV_NOT_ALLOWED.play(player);
-                    event.setCancelled(true);
-                } else {
-                    devPlanet.setCodeChanged(true);
-                    if (block.getBlockData() instanceof Powerable powerable) {
-                        powerable.setPowered(true);
-                        block.setBlockData(powerable);
-                    }
-                    Sounds.DEV_SET_DEBUG_TORCH.play(player);
-                }
-            } else {
+            }  else {
                 if (block.getType() != Material.COMPARATOR) {
                     Sounds.DEV_NOT_ALLOWED.play(player);
                 }
