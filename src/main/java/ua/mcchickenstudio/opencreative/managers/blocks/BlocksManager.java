@@ -18,14 +18,35 @@
 
 package ua.mcchickenstudio.opencreative.managers.blocks;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.managers.Manager;
 
+import java.util.concurrent.CompletableFuture;
+
+/**
+ * <h1>BlocksManager</h1>
+ * This interface represents a manager, that controls
+ * changing many blocks in world.
+ */
 public interface BlocksManager extends Manager {
 
-    int setBlocksType(@NotNull Location first, @NotNull Location second, @NotNull Material material, int limit);
+    /**
+     * Sets blocks type in region.
+     * <p>
+     * <b>NOTE:</b> thenAccept methods should be used with {@link org.bukkit.scheduler.BukkitScheduler#runTask(Plugin, Runnable)},
+     * if they require synchronous usage (changing some blocks after setting area).
+     *
+     * @param first begin.
+     * @param second end.
+     * @param material material to set.
+     * @param limit limit of changed blocks.
+     * @return future with changed blocks amount.
+     */
+    @NotNull CompletableFuture<Integer> setBlocksType(@NotNull Location first, @NotNull Location second, @NotNull Material material, int limit);
 
 }

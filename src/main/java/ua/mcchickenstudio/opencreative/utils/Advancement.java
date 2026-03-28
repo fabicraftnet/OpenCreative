@@ -24,6 +24,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 
 import java.util.UUID;
@@ -55,18 +56,20 @@ public final class Advancement {
     }
 
     public void show(@NotNull Player player) {
-        load();
-        org.bukkit.advancement.Advancement advancement = Bukkit.getAdvancement(nameSpacedKey);
-        if (advancement == null) return;
+        org.bukkit.advancement.Advancement advancement = load();
+        if (advancement == null) {
+            return;
+        }
         player.getAdvancementProgress(advancement).awardCriteria("trigger");
         Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
             player.getAdvancementProgress(advancement).revokeCriteria("trigger");
+            Bukkit.getUnsafe().removeAdvancement(nameSpacedKey);
         }, 10);
     }
 
     @SuppressWarnings("deprecation")
-    private void load() {
-        Bukkit.getUnsafe().loadAdvancement(nameSpacedKey, "{\n" +
+    private @Nullable org.bukkit.advancement.Advancement load() {
+        return Bukkit.getUnsafe().loadAdvancement(nameSpacedKey, "{\n" +
                 "    \"criteria\": {\n" +
                 "        \"trigger\": {\n" +
                 "            \"trigger\": \"minecraft:impossible\"\n" +

@@ -33,8 +33,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import static ua.mcchickenstudio.opencreative.utils.FileUtils.getWorldsFolders;
-
 /**
  * <h1>WorldUtils</h1>
  * This class contains methods for changing

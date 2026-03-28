@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * <h1>Group</h1>
@@ -70,42 +72,48 @@ public class Group {
         String path = "groups." + name + ".";
         this.permission = config.getString(path + "permission", "default");
 
+        String inheritGroup = config.getString(path + "inherits", "");
+        Group parent = null;
+        if (!inheritGroup.isEmpty()) {
+            parent = OpenCreative.getSettings().getGroups().getGroupOrNull(inheritGroup);
+        }
+
         /*
          * Registering constant values.
          */
-        worldSize = config.getInt(path + "world.size", 25);
-        likeReward = config.getInt(path + "world.like-reward", 1);
-        advertisementPrice = config.getInt(path + "world.advertisement-cost", 0);
-        canUsePrompter = config.getBoolean(path + "world.coding-prompter", false);
+        worldSize = getInt(config, path + "world.size", 25, parent, Group::getWorldSize);
+        likeReward = getDouble(config, path + "world.like-reward", 1, parent, Group::getLikeReward);
+        advertisementPrice = getDouble(config, path + "world.advertisement-cost", 0, parent, Group::getAdvertisementPrice);
+        canUsePrompter = getBoolean(config, path + "world.coding-prompter", false, parent, Group::canUsePrompter);
 
         /*
          * Registering specific limits, that don't require modifiers.
          */
-        worldsLimit = config.getInt(path + "creating-world.limit", 1);
-        modulesLimit = config.getInt(path + "creating-module.limit", 1);
-        codingPlatformsLimit = config.getInt(path + "world.limits.coding-platforms", 1);
-        scriptSizeLimit = config.getInt(path + "world.limits.script-size", 10);
+        worldsLimit = getInt(config, path + "creating-world.limit", 1, parent, Group::getWorldsLimit);
+        modulesLimit = getInt(config, path + "creating-module.limit", 1, parent, Group::getModulesLimit);
+        codingPlatformsLimit = getInt(config, path + "world.limits.coding-platforms", 1, parent, Group::getCodingPlatformsLimit);
+        scriptSizeLimit = getInt(config, path + "world.limits.script-size", 10, parent, Group::getScriptSizeLimit);
 
         /*
          * Registering cooldowns.
          */
-        genericCommandCooldown = config.getInt(path + "cooldowns.generic-command", 5);
-        advertisementCooldown = config.getInt(path + "cooldowns.advertisement", 120);
-        creativeChatCooldown = config.getInt(path + "cooldowns.creative-chat", 5);
-        modulesUsageCooldown = config.getInt(path + "cooldowns.module-usage", 7);
-        blocksDuplicationCooldown = config.getInt(path + "cooldowns.duplication-usage", 7);
-        worldDownloadCooldown  = config.getInt(path + "cooldowns.world-download", 120);
-        prompterUsageCooldown  = config.getInt(path + "cooldowns.prompter-usage", 60);
-        chatCooldown = config.getInt(path + "cooldowns.world-chat", 2);
+        genericCommandCooldown = getInt(config, path + "cooldowns.generic-command", 5, parent, Group::getGenericCommandCooldown);
+        advertisementCooldown = getInt(config, path + "cooldowns.advertisement", 120, parent, Group::getAdvertisementCooldown);
+        creativeChatCooldown = getInt(config, path + "cooldowns.creative-chat", 5, parent, Group::getCreativeChatCooldown);
+        modulesUsageCooldown = getInt(config, path + "cooldowns.module-usage", 7, parent, Group::getModuleManipulationCooldown);
+        blocksDuplicationCooldown = getInt(config, path + "cooldowns.duplication-usage", 7, parent, Group::getBlocksDuplicationCooldown);
+        worldDownloadCooldown = getInt(config, path + "cooldowns.world-download", 120, parent, Group::getWorldDownloadCooldown);
+        prompterUsageCooldown = getInt(config, path + "cooldowns.prompter-usage", 60, parent, Group::getPrompterUsageCooldown);
+        chatCooldown = getInt(config, path + "cooldowns.world-chat", 2, parent, Group::getChatCooldown);
 
         /*
          * Registering sets of permissions.
          */
-        playPermissions.addAll(config.getStringList(path + "world.play-permissions"));
-        buildPermissions.addAll(config.getStringList(path + "world.build-permissions"));
-        devPermissions.addAll(config.getStringList(path + "world.dev-permissions"));
-        lobbyPermissions.addAll(config.getStringList(path + "lobby-permissions"));
-        visitorPermissions.addAll(config.getStringList(path + "world.visitor-permissions"));
+        fillPermissions(playPermissions, config, path + "world.play-permissions", parent, Group::getPlayPermissions);
+        fillPermissions(buildPermissions, config, path + "world.build-permissions", parent, Group::getBuildPermissions);
+        fillPermissions(devPermissions, config, path + "world.dev-permissions", parent, Group::getDevPermissions);
+        fillPermissions(lobbyPermissions, config, path + "lobby-permissions", parent, Group::getLobbyPermissions);
+        fillPermissions(visitorPermissions, config, path + "world.visitor-permissions", parent, Group::getVisitorPermissions);
 
         boolean changedConfig = false;
         for (LimitType type : LimitType.values()) {
@@ -113,8 +121,8 @@ public class Group {
             String modifierPath = path + "world.per-player-limit-modifiers." + type.getPath();
             limits.put(type,
                     new LimitModifier(
-                            config.getInt(limitPath, type.getDefaultLimit()),
-                            config.getInt(modifierPath, type.getDefaultModifier())
+                            getInt(config, limitPath, type.getDefaultLimit(), parent, group -> group.getLimit(type).limit()),
+                            getInt(config, modifierPath, type.getDefaultModifier(), parent, group -> group.getLimit(type).modifier())
                     ));
 
             if (!config.contains(limitPath)) {
@@ -361,4 +369,29 @@ public class Group {
     public int getScriptSizeLimit() {
         return scriptSizeLimit;
     }
+
+    private int getInt(FileConfiguration config, String path,
+                                int defaultValue, Group parent,
+                                Function<Group, Integer> getter) {
+        if (config.contains(path, true)) {
+            return config.getInt(path);
+        }
+        return parent != null ? getter.apply(parent) : defaultValue;
+    }
+
+    private double getDouble(FileConfiguration config, String path, double defaultValue, Group parent, Function<Group, Double> getter) {
+        if (config.contains(path, true)) return config.getDouble(path);
+        return parent != null ? getter.apply(parent) : defaultValue;
+    }
+
+    private boolean getBoolean(FileConfiguration config, String path, boolean defaultValue, Group parent, Predicate<Group> getter) {
+        if (config.contains(path, true)) return config.getBoolean(path);
+        return parent != null ? getter.test(parent) : defaultValue;
+    }
+
+    private void fillPermissions(Set<String> target, FileConfiguration config, String path, Group parent, Function<Group, Set<String>> getter) {
+        if (parent != null) target.addAll(getter.apply(parent));
+        target.addAll(config.getStringList(path));
+    }
+
 }

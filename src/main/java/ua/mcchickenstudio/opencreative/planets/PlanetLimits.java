@@ -37,8 +37,10 @@ import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendPlanetLimitWa
 public class PlanetLimits {
 
     private final Planet planet;
+
     private final LinkedList<Long> lastRecipeOperations = new LinkedList<>();
     private final LinkedList<Long> lastWebRequests = new LinkedList<>();
+    private final LinkedList<Long> lastMobSpawnsBySpawner = new LinkedList<>();
     private final LinkedList<Long> lastLightningsStrikes = new LinkedList<>();
     private final LinkedList<Long> lastBeesSpawns = new LinkedList<>();
     private final LinkedList<Long> lastCodingErrors = new LinkedList<>();
@@ -417,6 +419,30 @@ public class PlanetLimits {
     }
 
     /**
+     * Checks if world has a lot of spawned mobs by spawner block.
+     * Useful to prevent "too many spawns" crash.
+     *
+     * @return true - if it's disallowed to spawn a mob by spawner, false - it's allowed.
+     */
+    public boolean isTooManyMobSpawnsBySpawner() {
+
+        long now = System.currentTimeMillis();
+
+        // Removes time from list, if it's more than 5 seconds.
+        while (!lastMobSpawnsBySpawner.isEmpty() && (now - lastMobSpawnsBySpawner.peek()) > 5000) {
+            lastMobSpawnsBySpawner.poll();
+        }
+
+        if (lastMobSpawnsBySpawner.size() >= 2) {
+            return true;
+        } else {
+            lastMobSpawnsBySpawner.add(now);
+            return false;
+        }
+
+    }
+
+    /**
      * Checks if world can send web request. Used to prevent
      * web attacks. Checks if the amount of sent web requests
      * in last 5 seconds is not greater than limit.
@@ -611,6 +637,7 @@ public class PlanetLimits {
         lastPlayerInventoryLoads.clear();
         lastActionsCalls.clear();
         lastRecipeOperations.clear();
+        lastMobSpawnsBySpawner.clear();
     }
 
 }

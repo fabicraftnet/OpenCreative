@@ -250,7 +250,7 @@ public final class ChatListener implements Listener {
                         .deserialize(message.replace("%space%", " "));
                 meta.displayName(newName);
                 if (message.equals("{")) {
-                    meta.displayName(Component.text("{"));
+                    meta.setDisplayName("{");
                 }
                 itemInHand.setItemMeta(meta);
                 Sounds.DEV_TEXT_SET.play(player);

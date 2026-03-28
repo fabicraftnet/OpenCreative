@@ -27,6 +27,7 @@ import ua.mcchickenstudio.opencreative.planets.DevPlanet;
 import ua.mcchickenstudio.opencreative.planets.DevPlatform;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * <h1>DevPlatformer</h1>
@@ -121,7 +122,7 @@ public abstract class DevPlatformer implements ExtensionContent {
      * @param actionMaterial material of block, that will be placed as cells for action blocks placement.
      * @return true - created coding platform, false - cannot build it.
      */
-    public abstract boolean buildPlatform(@NotNull DevPlatform platform, Material floorMaterial, Material eventMaterial, Material actionMaterial);
+    public abstract @NotNull CompletableFuture<Void> buildPlatform(@NotNull DevPlatform platform, Material floorMaterial, Material eventMaterial, Material actionMaterial);
 
     /**
      * Returns location of top left corner of platform.

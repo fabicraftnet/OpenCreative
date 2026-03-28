@@ -61,6 +61,18 @@ public class ChunkCache {
     }
 
     /**
+     * Saves chunk's hashcode into map.
+     *
+     * @param world world with chunk.
+     * @param x     x coordinate of chunk.
+     * @param z     z coordinate of chunk.
+     */
+    public static void load(@NotNull World world, int x, int z) {
+        long hash = hash(world, x, z);
+        statusKeeper.put(hash, true);
+    }
+
+    /**
      * Marks chunk as unloaded.
      *
      * @param world world with chunk.

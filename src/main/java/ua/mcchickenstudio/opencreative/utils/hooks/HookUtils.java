@@ -25,7 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.managers.blocks.BlocksManager;
-import ua.mcchickenstudio.opencreative.managers.blocks.DisabledBlocksManager;
+import ua.mcchickenstudio.opencreative.managers.blocks.VanillaBlocksManager;
 import ua.mcchickenstudio.opencreative.managers.blocks.WorldEditManager;
 import ua.mcchickenstudio.opencreative.managers.disguises.DisabledDisguises;
 import ua.mcchickenstudio.opencreative.managers.disguises.DisguiseManager;
@@ -104,7 +104,7 @@ public final class HookUtils {
         if (isWorldEditEnabled) {
             return new WorldEditManager();
         } else {
-            return new DisabledBlocksManager();
+            return new VanillaBlocksManager();
         }
     }
 

@@ -40,7 +40,6 @@ import static ua.mcchickenstudio.opencreative.utils.BlockUtils.isOutOfBorders;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.isEntityInDevPlanet;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.translateSigns;
 
-
 public final class MoveListener implements Listener {
 
     @EventHandler

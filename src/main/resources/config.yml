@@ -460,6 +460,7 @@ groups:
                              # visitor permissions will be removed from player.
   premium:
     permission: "opencreative.group.premium"
+    inherits: "default"
     cooldowns:
       generic-command: 3
       advertisement: 100
