@@ -40,6 +40,7 @@ import ua.mcchickenstudio.opencreative.utils.world.generators.StructuresCapable;
 import ua.mcchickenstudio.opencreative.utils.world.generators.WorldGenerator;
 import ua.mcchickenstudio.opencreative.utils.world.generators.WorldGenerators;
 
+import java.lang.reflect.Method;
 import java.util.*;
 
 import static ua.mcchickenstudio.opencreative.utils.FileUtils.getPlanetConfig;
@@ -183,7 +184,6 @@ public class PlanetTerritory {
         planet.setLastActivityTime(System.currentTimeMillis());
         world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
         world.getWorldBorder().setSize(worldSize);
-        planet.getVariables().load();
         new PlanetLoadEvent(planet).callEvent();
 
         long endTime = System.currentTimeMillis();
@@ -239,9 +239,15 @@ public class PlanetTerritory {
         if (world != null) {
             if (asyncSaveData) {
                 for (Chunk chunk : world.getLoadedChunks()) {
-                    chunk.unload(autoSave);
+                    world.unloadChunk(chunk.getX(), chunk.getZ(), autoSave);
                 }
-                world.save();
+                try {
+                    // 1.21+ Content:
+                    Method saveMethod = world.getClass().getMethod("save", boolean.class);
+                    saveMethod.invoke(world, false);
+                } catch (Exception ignored) {
+                    world.save();
+                }
                 busy = true;
                 Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
                     Bukkit.unloadWorld(planet.getWorldName(), false);

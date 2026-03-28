@@ -29,6 +29,7 @@ import ua.mcchickenstudio.opencreative.coding.blocks.events.player.interaction.B
 import ua.mcchickenstudio.opencreative.coding.blocks.events.player.interaction.BucketEntityEvent;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.player.interaction.BucketFillEvent;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.player.inventory.BookWriteEvent;
+import ua.mcchickenstudio.opencreative.coding.blocks.events.player.inventory.ChangedArmorEvent;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.player.inventory.ItemConsumeEvent;
 import ua.mcchickenstudio.opencreative.coding.menus.MenusCategory;
 import ua.mcchickenstudio.opencreative.coding.values.ItemEventValue;
@@ -47,6 +48,7 @@ public final class EventNewItemValue extends ItemEventValue {
             case BucketEmptyEvent event -> event.getNewItem();
             case BucketFillEvent event -> event.getNewItem();
             case BookWriteEvent event -> event.getNewBook();
+            case ChangedArmorEvent event -> event.getNewItem();
             default -> new ItemStack(Material.AIR);
         };
     }

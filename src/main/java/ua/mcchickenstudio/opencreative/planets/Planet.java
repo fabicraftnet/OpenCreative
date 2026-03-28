@@ -556,27 +556,28 @@ public class Planet {
                 if (devPlanet.isLoaded() && devPlanet.isCodeChanged()) {
                     CompletableFuture<Boolean> parseFuture = new CodingBlockParser(devPlanet).parseCode(devPlanet);
                     parseFuture.thenAccept(success -> {
-                        if (success) {
-                            if (!ignoreEvents) {
+                        if (success && !ignoreEvents) {
+                            new GamePlayEvent(this).callEvent();
+                            for (Player player : getPlayers()) {
+                                if (OpenCreative.getPlanetsManager().getDevPlanet(player) == null) {
+                                    new JoinEvent(player).callEvent();
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    territory.getScript().loadCode().thenAccept((success) -> {
+                        if (success && !ignoreEvents) {
+                            Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
                                 new GamePlayEvent(this).callEvent();
                                 for (Player player : getPlayers()) {
                                     if (OpenCreative.getPlanetsManager().getDevPlanet(player) == null) {
                                         new JoinEvent(player).callEvent();
                                     }
                                 }
-                            }
+                            });
                         }
                     });
-                } else {
-                    territory.getScript().loadCode();
-                    if (!ignoreEvents) {
-                        new GamePlayEvent(this).callEvent();
-                        for (Player player : getPlayers()) {
-                            if (OpenCreative.getPlanetsManager().getDevPlanet(player) == null) {
-                                new JoinEvent(player).callEvent();
-                            }
-                        }
-                    }
                 }
             }
         } catch (Exception error) {
@@ -791,23 +792,25 @@ public class Planet {
                     player.sendMessage(MessageUtils.getPlayerLocaleMessage("world.connecting.owner-help", player));
                 }
             }
-            if (this.isOwner(player.getName())) {
+            if (this.isOwner(player)) {
                 ownerGroup = OpenCreative.getSettings().getGroups().getGroup(player).getName().toLowerCase();
                 if (mode == Mode.BUILD) {
                     ItemsGroup.BUILD_OWNER.setItems(player);
                 } else if (mode == Mode.PLAYING) {
                     ItemsGroup.PLAY_OWNER.setItems(player);
                 }
-                if (this.getDevPlanet().isLoaded() && OpenCreative.getStability().isFine()) {
-                    new CodingBlockParser(devPlanet).parseCode(this.getDevPlanet());
-                }
             }
             if (!territory.isAutoSave() && worldPlayers.canBuild(player)) {
                 player.sendMessage(getLocaleMessage("settings.autosave.warning"));
             }
             if (!wasLoaded) {
-                territory.getScript().loadCode();
-                new GamePlayEvent(this).callEvent();
+                variables.load();
+                territory.getScript().loadCode().thenAccept((result) -> {
+                    Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
+                        new GamePlayEvent(this).callEvent();
+                        new JoinEvent(player).callEvent();
+                    });
+                });
             }
             if (!hidePlayer) {
                 new JoinEvent(player).callEvent();
@@ -941,9 +944,10 @@ public class Planet {
         connectToDevPlanet(player);
         if (x > 0 && y > 0 && z > 0 && y < 30 && !isOutOfBorders(new Location(devPlanet.getWorld(), x + 1, y, z + 2))) {
             Location location = new Location(this.getDevPlanet().getWorld(), x + 1, y, z + 2, 180, 5);
+            boolean blockExists = !new Location(devPlanet.getWorld(), x, y, z).getBlock().isEmpty();
             player.teleportAsync(location).thenAccept(success -> {
                 if (success) {
-                    spawnGlowingBlock(player, new Location(this.getDevPlanet().getWorld(), x + 0.5, y, z + 0.5));
+                    if (blockExists) spawnGlowingBlock(player, new Location(this.getDevPlanet().getWorld(), x + 0.5, y, z + 0.5));
                     translateSigns(player, 5);
                 }
             });

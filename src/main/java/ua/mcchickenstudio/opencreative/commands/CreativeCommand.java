@@ -1280,7 +1280,7 @@ public class CreativeCommand extends CommandHandler {
                     sender.sendMessage(getLocaleMessage("no-perms"));
                     return;
                 }
-                if (args.length == 5) {
+                if (args.length <= 5) {
                     sender.sendMessage(getLocaleMessage("too-few-args"));
                     return;
                 }

@@ -25,14 +25,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
-import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.coding.blocks.DisplayableIcon;
-import ua.mcchickenstudio.opencreative.coding.blocks.actions.Action;
-import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionsHandler;
-import ua.mcchickenstudio.opencreative.coding.blocks.events.entity.movement.EntityJumpedEvent;
-import ua.mcchickenstudio.opencreative.coding.blocks.events.player.fighting.PlayerKilledPlayerEvent;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.entity.fighting.*;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.entity.interaction.*;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.entity.movement.*;
@@ -49,7 +44,6 @@ import ua.mcchickenstudio.opencreative.coding.blocks.executors.world.blocks.*;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.world.inventory.*;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.world.other.*;
 import ua.mcchickenstudio.opencreative.coding.menus.MenusCategory;
-import ua.mcchickenstudio.opencreative.coding.blocks.executors.*;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -145,7 +139,7 @@ public final class Executors {
                 new PlayerBlockInteractExecutor(), new PlayerMobInteractExecutor(), new PlayerBedEnterExecutor(),
                 new PlayerBedLeaveExecutor(), new PlayerFishingExecutor(), new PlayerSpectatingExecutor(),
                 new PlayerStopSpectatingExecutor(), new PlayerChangedSignExecutor(), new PlayerBucketFillExecutor(),
-                new PlayerBucketEmptyExecutor(), new PlayerBucketEntityExecutor());
+                new PlayerBucketEmptyExecutor(), new PlayerBucketEntityExecutor(), new PlayerChangedArmorExecutor());
         registerExecutor(new PlayerGetDamagedExecutor(), new MobDamagePlayerExecutor(), new PlayerDamageMobExecutor(),
                 new PlayerDamagePlayerExecutor(), new PlayerHungerChangeExecutor(), new PlayerKilledPlayerExecutor(),
                 new PlayerKilledMobExecutor(), new PlayerDeathExecutor(), new PlayerRespawnExecutor(),

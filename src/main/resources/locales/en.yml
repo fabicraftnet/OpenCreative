@@ -2100,6 +2100,17 @@ items:
           - "&7an inventory."
           - " "
           - "&eClick to set event."
+      player-changed-armor:
+        name: "&bPlayer changed armor"
+        lore:
+          - "&7This is when a player removes"
+          - "&7a piece of armor or equips a new one."
+          - " "
+          - "&7Received values:"
+          - "&6 Item in event"
+          - "&e New item"
+          - " "
+          - "&eClick to set the event."
       player-changed-sign:
         name: "&6Player changed sign text"
         lore:
@@ -18807,6 +18818,7 @@ blocks:
   player_killed_mob: "Killed a mob"
   player_damage_player: "Hit a player"
   player_changed_sign: "Sign changed"
+  player_changed_armor: "Armor changed"
   player_entered_vehicle: "Entered Vehicle"
   player_vehicle_exit: "Vehicle Exit"
   player_set_bee_stingers_in_body: "Number of stingers"
