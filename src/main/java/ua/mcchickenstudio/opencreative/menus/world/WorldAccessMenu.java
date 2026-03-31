@@ -227,6 +227,7 @@ public final class WorldAccessMenu extends AbstractMenu implements WorldMenu {
                                             return;
                                         }
                                         Sounds.WORLD_DELETION.play(player);
+                                        OpenCreative.getPlugin().getLogger().info("Planet " + planet.getId() + " is being deleted by world's owner " + player.getName());
                                         OpenCreative.getPlanetsManager().deletePlanet(planet);
                                         Bukkit.getServer().getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> player.sendMessage(MessageUtils.getLocaleMessage("deleting-world.message")), 60);
                                     }

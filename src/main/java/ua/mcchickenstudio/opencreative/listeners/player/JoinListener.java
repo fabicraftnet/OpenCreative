@@ -28,6 +28,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.commands.experiments.Experiments;
+import ua.mcchickenstudio.opencreative.settings.WorldFixerSettings;
 import ua.mcchickenstudio.opencreative.utils.PlayerUtils;
 
 import java.util.ArrayList;
@@ -66,6 +67,9 @@ public final class JoinListener implements Listener {
                         hidePlayerInTab(onlinePlayer, event.getPlayer());
                         hidePlayerInTab(event.getPlayer(), onlinePlayer);
                     }
+                }
+                if (OpenCreative.getSettings().getWorldFixerSettings().getRecipesUnlocker() == WorldFixerSettings.RecipesUnlocker.JOIN) {
+                    WorldFixerSettings.RecipesUnlocker.unlockAllRecipes(event.getPlayer());
                 }
             }
         }.runTaskLater(OpenCreative.getPlugin(), 1L);

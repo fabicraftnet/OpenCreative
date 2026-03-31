@@ -18,9 +18,19 @@
 
 package ua.mcchickenstudio.opencreative.settings;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Keyed;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Recipe;
+import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.OpenCreative;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCriticalErrorMessage;
 
@@ -32,6 +42,7 @@ public final class WorldFixerSettings {
 
     private boolean fixVehicleCollisions = true;
     private int maxMinecartCollisionsAmount = 100;
+    private RecipesUnlocker recipesUnlocker = RecipesUnlocker.NONE;
 
     private boolean fixBadEntitiesInAir = true;
 
@@ -49,6 +60,11 @@ public final class WorldFixerSettings {
         maxMinecartCollisionsAmount = section.getInt("vehicle-collisions.max-collisions", 100);
 
         fixBadEntitiesInAir = section.getBoolean("bad-entities-in-air.enabled", true);
+        recipesUnlocker = switch (section.getString("give-all-recipes-on", "none").toLowerCase()) {
+            case "crafting" -> RecipesUnlocker.CRAFTING;
+            case "join" -> RecipesUnlocker.JOIN;
+            default -> RecipesUnlocker.NONE;
+        };
     }
 
     /**
@@ -77,6 +93,73 @@ public final class WorldFixerSettings {
      */
     public int getMaxMinecartCollisionsAmount() {
         return maxMinecartCollisionsAmount;
+    }
+
+    /**
+     * Returns option, when all crafting recipes should be
+     * unlocked for player.
+     *
+     * @return recipes unlocker type.
+     */
+    public @NotNull RecipesUnlocker getRecipesUnlocker() {
+        return recipesUnlocker;
+    }
+
+    /**
+     * <h1>RecipesUnlocker</h1>
+     * This enum represents all options to unlock player
+     * all crafting recipes at once. Required only, if
+     * server has disabled advancements.
+     */
+    public enum RecipesUnlocker {
+
+        /**
+         * When player opens crafting table menu.
+         */
+        CRAFTING,
+        /**
+         * When player joins the server.
+         */
+        JOIN,
+        /**
+         * Don't unlock recipes.
+         */
+        NONE;
+
+        private static int recipesAmount = -1;
+
+        /**
+         * Unlocks all Minecraft recipes for player.
+         *
+         * @param player player to unlock recipe.
+         */
+        public static void unlockAllRecipes(@NotNull Player player) {
+            if (recipesAmount == -1) {
+                recipesAmount = getMinecraftRecipes().size();
+            }
+            if (player.getDiscoveredRecipes().size() < recipesAmount) {
+                player.discoverRecipes(getMinecraftRecipes());
+            }
+
+        }
+
+        /**
+         * Returns list of all registered Minecraft recipes.
+         */
+        public static @NotNull List<NamespacedKey> getMinecraftRecipes() {
+            List<NamespacedKey> recipes = new ArrayList<>();
+            for (@NotNull Iterator<Recipe> it = Bukkit.recipeIterator(); it.hasNext();) {
+                Recipe recipe = it.next();
+                if (recipe instanceof Keyed keyed) {
+                    NamespacedKey key = keyed.getKey();
+                    if (key.getNamespace().equals("minecraft")) {
+                        recipes.add(key);
+                    }
+                }
+            }
+            return recipes;
+        }
+
     }
 
 }

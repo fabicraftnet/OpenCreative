@@ -620,6 +620,22 @@ public final class FileUtils {
         }
     }
 
+
+    /**
+     * Deletes world folders from other plugins.
+     *
+     * @param planetId id of planet.
+     */
+    public static void deleteWorldFoldersInPlugins(int planetId) {
+        if (!new File(Bukkit.getWorldContainer(), "plugins/WorldGuard").exists()) {
+            return;
+        }
+        File worldGuardWorld = new File(Bukkit.getWorldContainer(), "plugins/WorldGuard/worlds/planets/planet" + planetId);
+        File worldGuardDevWorld = new File(Bukkit.getWorldContainer(), "plugins/WorldGuard/worlds/planets/planet" + planetId + "dev");
+        deleteFolder(worldGuardWorld);
+        deleteFolder(worldGuardDevWorld);
+    }
+
     /**
      * Deletes directory and files inside it, if exists.
      *
