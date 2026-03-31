@@ -113,6 +113,7 @@ public class ModuleCommand extends CommandHandler {
                 }
                 sender.sendMessage(getLocaleMessage("modules.deleted")
                         .replace("%moduleID%", String.valueOf(module.getId())));
+                OpenCreative.getPlugin().getLogger().info("Module " + module.getId() + " is being deleted by " + sender.getName());
                 OpenCreative.getModuleManager().deleteModule(module);
             }
             case "list" -> {

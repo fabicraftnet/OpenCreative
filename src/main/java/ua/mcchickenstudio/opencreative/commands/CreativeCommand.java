@@ -505,6 +505,7 @@ public class CreativeCommand extends CommandHandler {
                 }
                 if (OpenCreative.getPlanetsManager().deletePlanet(planet)) {
                     Sounds.WORLD_DELETION.play(sender);
+                    OpenCreative.getPlugin().getLogger().info("Planet " + planet.getId() + " is being deleted by " + sender.getName());
                     sender.sendMessage(getLocaleMessage("deleting-world.message"));
                 }
             }

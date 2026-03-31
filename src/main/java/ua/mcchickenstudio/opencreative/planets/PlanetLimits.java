@@ -531,7 +531,7 @@ public class PlanetLimits {
         }
 
         long passedTimeAfterLaunch = System.currentTimeMillis() - planet.getTerritory().getScript().getLastLaunch();
-        if (lastRecipeOperations.size() > (passedTimeAfterLaunch > 100 ? 3 : planet.getLimits().getRecipesLimit())) {
+        if (lastRecipeOperations.size() > (passedTimeAfterLaunch > 100 ? planet.getLimits().getRecipesLimit()/2 : planet.getLimits().getRecipesLimit())) {
             return true;
         }
 

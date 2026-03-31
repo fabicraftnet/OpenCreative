@@ -40,7 +40,7 @@ public final class Advancement {
     private final AdvancementStyle style;
     private final String title;
     private final String message;
-    private final NamespacedKey nameSpacedKey = new NamespacedKey(OpenCreative.getPlugin(), UUID.randomUUID().toString());
+    private final NamespacedKey nameSpacedKey = new NamespacedKey(OpenCreative.getPlugin(), "oc-advancement-" + UUID.randomUUID().toString());
 
     private Advancement(@NotNull ItemStack itemStack, @NotNull AdvancementStyle style,
                         @NotNull String title, @NotNull String message) {
