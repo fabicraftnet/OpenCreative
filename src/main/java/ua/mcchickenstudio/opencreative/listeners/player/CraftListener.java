@@ -22,12 +22,26 @@ import org.bukkit.Keyed;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.planets.Planet;
+import ua.mcchickenstudio.opencreative.settings.WorldFixerSettings;
 
 public final class CraftListener implements Listener {
+
+    @EventHandler
+    public void onCraftingOpen(InventoryOpenEvent event) {
+        if (OpenCreative.getSettings().getWorldFixerSettings().getRecipesUnlocker() != WorldFixerSettings.RecipesUnlocker.CRAFTING)
+            return;
+        if (!event.getInventory().getType().name().contains("CRAFT") && event.getInventory().getType() != InventoryType.WORKBENCH)
+            return;
+        if (event.getPlayer() instanceof Player player) {
+            WorldFixerSettings.RecipesUnlocker.unlockAllRecipes(player);
+        }
+    }
 
     @EventHandler
     public void onCraftTry(PrepareItemCraftEvent event) {
