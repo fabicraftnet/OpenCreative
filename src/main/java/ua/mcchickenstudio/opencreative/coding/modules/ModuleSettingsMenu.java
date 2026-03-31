@@ -196,6 +196,7 @@ public final class ModuleSettingsMenu extends AbstractMenu {
                                         return;
                                     }
                                     Sounds.WORLD_DELETION.play(player);
+                                    OpenCreative.getPlugin().getLogger().info("Module " + module.getId() + " is being deleted by module's owner " + player.getName());
                                     OpenCreative.getModuleManager().deleteModule(module);
                                     Bukkit.getServer().getScheduler().runTaskLater(OpenCreative.getPlugin(), () ->
                                             player.sendMessage(MessageUtils.getLocaleMessage("modules.deleted")
