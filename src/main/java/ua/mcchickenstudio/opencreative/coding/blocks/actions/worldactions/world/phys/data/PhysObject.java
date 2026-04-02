@@ -48,9 +48,16 @@ public class PhysObject {
     private final int hitCount;
     private final Location location;
     private final List<PotionEffect> potionEffect;
-    public double speed, weight, speedAccel, speedLimit,
-            weightAccel, weightLimit, damage, explosion,
-            shockwaveRadius, shockwavePower;
+    public double speed;
+    public double weight;
+    public final double speedAccel;
+    public final double speedLimit;
+    public final double weightAccel;
+    public final double weightLimit;
+    public final double damage;
+    public final double explosion;
+    public final double shockwaveRadius;
+    public final double shockwavePower;
     public int timeExist = 0;
     private boolean living = true;
 

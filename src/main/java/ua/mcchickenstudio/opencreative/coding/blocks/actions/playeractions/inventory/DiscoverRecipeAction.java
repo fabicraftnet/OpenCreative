@@ -29,8 +29,6 @@ import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
 
 import java.util.List;
 
-import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCodingDebugLog;
-
 public final class DiscoverRecipeAction extends PlayerAction {
     public DiscoverRecipeAction(Executor executor, Target target, int x, Arguments args) {
         super(executor, target, x, args);

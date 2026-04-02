@@ -36,7 +36,6 @@ import java.util.Set;
 
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
-import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.removePassengers;
 
 /**
  * <h1>JoinCommand</h1>

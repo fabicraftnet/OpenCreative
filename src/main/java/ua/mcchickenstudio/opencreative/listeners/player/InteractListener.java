@@ -87,10 +87,7 @@ import ua.mcchickenstudio.opencreative.utils.CooldownUtils;
 import ua.mcchickenstudio.opencreative.utils.ItemUtils;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static ua.mcchickenstudio.opencreative.listeners.player.ChangedWorld.*;
 import static ua.mcchickenstudio.opencreative.listeners.player.PlaceBlockListener.move;
@@ -294,7 +291,7 @@ public final class InteractListener implements Listener {
                     if (layout != null && slot < layout.getArgsSlots().size()) {
                         layout.setItem(layout.getArgsSlots().get(slot), item);
                     }
-                    devPlanet.setCodeChanged(true);
+                    devPlanet.addInsideCodeColumnChange(clickedBlock.getRelative(BlockFace.DOWN).getLocation());
                     return true;
                 }
             }
@@ -341,7 +338,7 @@ public final class InteractListener implements Listener {
             }
             return true;
         } catch (IllegalArgumentException e) {
-            player.sendActionBar(getLocaleMessage("coding-error.unknown-layout"));
+            player.sendActionBar(getLocaleComponent("coding-error.unknown-layout"));
             event.setCancelled(false);
             return true;
         }
@@ -378,7 +375,7 @@ public final class InteractListener implements Listener {
                 if (actionBlockCategory == ActionCategory.ELSE_CONDITION) {
                     return false;
                 }
-                devPlanet.setCodeChanged(true);
+                devPlanet.addInsideCodeColumnChange(clickedBlock.getRelative(BlockFace.NORTH).getLocation());
                 if (isSignLineEmpty(clickedBlock.getLocation(), (byte) 1)) {
                     setSignLine(clickedBlock.getLocation(), (byte) 1, "not");
                     Sounds.DEV_CONDITION_NOT.play(player);
@@ -392,12 +389,12 @@ public final class InteractListener implements Listener {
                 if (type == null) return false;
                 ActionType actionType = ActionType.getType(type);
                 if (actionType == ActionType.REPEAT_WHILE) {
-                    devPlanet.setCodeChanged(true);
+                    devPlanet.addInsideCodeColumnChange(clickedBlock.getLocation());
                     setSignLine(clickedBlock.getLocation(), (byte) 1, ActionType.REPEAT_WHILE_NOT.name().toLowerCase());
                     Sounds.DEV_CONDITION_NOT.play(player);
                     translateBlockSign(clickedBlock);
                 } else if (actionType == ActionType.REPEAT_WHILE_NOT) {
-                    devPlanet.setCodeChanged(true);
+                    devPlanet.addInsideCodeColumnChange(clickedBlock.getLocation());
                     setSignLine(clickedBlock.getLocation(), (byte) 1, ActionType.REPEAT_WHILE.name().toLowerCase());
                     Sounds.DEV_CONDITION_DEFAULT.play(player);
                     translateBlockSign(clickedBlock);
@@ -408,7 +405,7 @@ public final class InteractListener implements Listener {
         } else if (currentItem.getType() == Material.REDSTONE_TORCH && event.getHand() == EquipmentSlot.HAND) {
             if (mainBlockCategory == null) return false;
             Block torchBlock = mainBlock.getRelative(BlockFace.WEST);
-            devPlanet.setCodeChanged(true);
+            devPlanet.addChangedColumn(mainBlock.getLocation());
             if (torchBlock.getType() == Material.REDSTONE_WALL_TORCH) {
                 torchBlock.setType(Material.AIR);
                 Sounds.DEV_UNSET_DEBUG_TORCH.play(player);
@@ -603,14 +600,14 @@ public final class InteractListener implements Listener {
                 } else {
                     Sounds.DEV_NOT_ALLOWED.play(player);
                 }
-                devPlanet.setCodeChanged(true);
+                devPlanet.addInsideCodeColumnChange(clickedBlock.getLocation());
             } else if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
                 if (move(clickedBlock.getRelative(-2, 0, 0).getLocation(), BlockFace.WEST)) {
                     Sounds.DEV_MOVE_BLOCKS_LEFT.play(player);
                 } else {
                     Sounds.DEV_NOT_ALLOWED.play(player);
                 }
-                devPlanet.setCodeChanged(true);
+                devPlanet.addInsideCodeColumnChange(clickedBlock.getLocation());
             }
         } else if (ExecutorCategory.getByMaterial(clickedBlock.getType()) != null) {
             if (event.getAction() != Action.LEFT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
@@ -663,22 +660,26 @@ public final class InteractListener implements Listener {
             setCooldown(player, OpenCreative.getSettings().getGroups().getGroup(player)
                     .getBlocksDuplicationCooldown(), CooldownUtils.CooldownType.BLOCKS_DUPLICATION);
             CodeStorage temporary = new CodeConfiguration();
-            new CodingBlockParser(devPlanet, true).parseExecutors(devPlanet, temporary, new LinkedList<>(markedExecutors));
+            new CodingBlockParser(devPlanet, true).parseExecutors(devPlanet, temporary, new LinkedHashSet<>(markedExecutors));
             devPlanet.clearMarkedExecutors(player);
             ConfigurationSection section = temporary.getSection("code.blocks");
             if (section == null) return;
             CodingBlockPlacer.CodePlacementResult result = new CodingBlockPlacer(devPlanet).placeCodingLines(devPlanet, section, clickedBlock.getLocation());
-            if (result == CodingBlockPlacer.CodePlacementResult.NOT_ENOUGH_CODING_LINES) {
+            if (result.getType() == CodingBlockPlacer.CodePlacementResult.Type.NOT_ENOUGH_SPACE) {
                 player.sendMessage(getLocaleMessage("environment.duplication.few-space")
                         .replace("%required%", String.valueOf(markedExecutors.size())));
                 Sounds.DEV_NOT_ALLOWED.play(player);
-            } else if (result == CodingBlockPlacer.CodePlacementResult.ERROR) {
+            } else if (result.getType() == CodingBlockPlacer.CodePlacementResult.Type.ERROR) {
                 player.sendMessage(getLocaleMessage("environment.duplication.error"));
-                devPlanet.setCodeChanged(true);
+                for (Location placedExecutor : result.getPlacedColumns()) {
+                    devPlanet.addChangedColumn(placedExecutor);
+                }
                 Sounds.PLAYER_ERROR.play(player);
             } else {
                 player.sendMessage(getLocaleMessage("environment.duplication.success"));
-                devPlanet.setCodeChanged(true);
+                for (Location placedExecutor : result.getPlacedColumns()) {
+                    devPlanet.addChangedColumn(placedExecutor);
+                }
                 Sounds.DEV_BLOCKS_DUPLICATED.play(player);
             }
         }

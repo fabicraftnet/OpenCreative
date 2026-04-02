@@ -23,7 +23,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.WorldEvent;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.entity.entities.EntitySpawnEvent;
-import ua.mcchickenstudio.opencreative.coding.blocks.events.entity.movement.EndermanEscapedEvent;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.entity.EntityExecutor;
 import ua.mcchickenstudio.opencreative.coding.menus.MenusCategory;
 

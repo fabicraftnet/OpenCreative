@@ -22,7 +22,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.WorldEvent;
-import ua.mcchickenstudio.opencreative.coding.blocks.events.player.inventory.PlayerItemCraftEvent;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.player.inventory.PlayerItemDamagedEvent;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.player.PlayerExecutor;
 import ua.mcchickenstudio.opencreative.coding.menus.MenusCategory;

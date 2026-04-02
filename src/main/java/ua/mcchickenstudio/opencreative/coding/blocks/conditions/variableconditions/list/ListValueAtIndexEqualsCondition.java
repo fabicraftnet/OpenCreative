@@ -9,7 +9,6 @@ import ua.mcchickenstudio.opencreative.coding.blocks.conditions.variableconditio
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
 
 import java.util.List;
-import java.util.Objects;
 
 public final class ListValueAtIndexEqualsCondition extends VariableCondition {
     public ListValueAtIndexEqualsCondition(Executor executor, Target target, int x, Arguments args, List<Action> actions, List<Action> reactions, boolean isOpposed) {

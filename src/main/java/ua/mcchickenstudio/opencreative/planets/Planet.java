@@ -26,12 +26,10 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.CodingBlockParser;
@@ -864,7 +862,7 @@ public class Planet {
             getDevPlanet().loadDevPlanetWorld();
         }
         getDevPlanet().getWorld().getSpawnLocation().getChunk().load(true);
-        Location lastLocation = this.getDevPlanet().getLastLocations().get(player);
+        Location lastLocation = this.getDevPlanet().getLastLocations().get(player.getUniqueId());
         if (!this.getDevPlanet().isLoaded()) {
             return;
         }
@@ -907,7 +905,7 @@ public class Planet {
                         onlinePlayer.hidePlayer(OpenCreative.getPlugin(), player);
                     }
                 }
-                if (devPlanet.isSaveLocation()) devPlanet.getLastLocations().put(player, player.getLocation());
+                if (devPlanet.isSaveLocation()) devPlanet.getLastLocations().put(player.getUniqueId(), player.getLocation());
                 if (devPlanet.isNightVision())
                     player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false, false));
                 Sounds.DEV_CONNECTED.play(player);

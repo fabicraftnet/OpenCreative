@@ -86,20 +86,24 @@ public final class ProtocolLibManager implements PacketManager {
 
     @Override
     public void sendChestOpenAnimation(@NotNull Player player, @NotNull Block block) {
-        PacketContainer blockActionPacket = manager.createPacket(BLOCK_ACTION);
-        blockActionPacket.getBlockPositionModifier().write(0, new BlockPosition(block.getLocation().toVector()));
-        blockActionPacket.getIntegers().write(0, 1);
-        blockActionPacket.getIntegers().write(1, 1);
-        manager.sendServerPacket(player, blockActionPacket);
+        Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
+            PacketContainer blockActionPacket = manager.createPacket(BLOCK_ACTION);
+            blockActionPacket.getBlockPositionModifier().write(0, new BlockPosition(block.getLocation().toVector()));
+            blockActionPacket.getIntegers().write(0, 1);
+            blockActionPacket.getIntegers().write(1, 1);
+            manager.sendServerPacket(player, blockActionPacket);
+        });
     }
 
     @Override
     public void sendChestCloseAnimation(@NotNull Player player, @NotNull Block block) {
-        PacketContainer blockActionPacket = manager.createPacket(BLOCK_ACTION);
-        blockActionPacket.getBlockPositionModifier().write(0, new BlockPosition(block.getLocation().toVector()));
-        blockActionPacket.getIntegers().write(0, 1);
-        blockActionPacket.getIntegers().write(1, 0);
-        manager.sendServerPacket(player, blockActionPacket);
+        Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
+            PacketContainer blockActionPacket = manager.createPacket(BLOCK_ACTION);
+            blockActionPacket.getBlockPositionModifier().write(0, new BlockPosition(block.getLocation().toVector()));
+            blockActionPacket.getIntegers().write(0, 1);
+            blockActionPacket.getIntegers().write(1, 0);
+            manager.sendServerPacket(player, blockActionPacket);
+        });
     }
 
     @Override

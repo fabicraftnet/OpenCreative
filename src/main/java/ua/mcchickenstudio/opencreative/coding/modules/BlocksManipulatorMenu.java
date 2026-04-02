@@ -36,7 +36,7 @@ import ua.mcchickenstudio.opencreative.settings.Sounds;
 import ua.mcchickenstudio.opencreative.settings.groups.LimitType;
 import ua.mcchickenstudio.opencreative.utils.CooldownUtils;
 
-import java.util.LinkedList;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.getCooldown;
@@ -107,23 +107,28 @@ public final class BlocksManipulatorMenu extends AbstractMenu {
             player.closeInventory();
             CodeConfiguration temporary = new CodeConfiguration();
             Set<Location> markedExecutors = devPlanet.getMarkedExecutors(player);
-            new CodingBlockParser(devPlanet, true).parseExecutors(devPlanet, temporary, new LinkedList<>(markedExecutors));
+            new CodingBlockParser(devPlanet, true).parseExecutors(devPlanet, temporary, new LinkedHashSet<>(markedExecutors));
             devPlanet.clearMarkedExecutors(player);
             ConfigurationSection section = temporary.getConfigurationSection("code.blocks");
             if (section == null) return;
             CodingBlockPlacer.CodePlacementResult result = new CodingBlockPlacer(devPlanet).placeCodingLines(devPlanet, section);
-            if (result == CodingBlockPlacer.CodePlacementResult.NOT_ENOUGH_CODING_LINES) {
+
+            if (result.getType() == CodingBlockPlacer.CodePlacementResult.Type.NOT_ENOUGH_SPACE) {
                 player.sendMessage(getLocaleMessage("environment.duplication.few-space")
                         .replace("%required%", String.valueOf(markedExecutors.size())));
                 Sounds.DEV_NOT_ALLOWED.play(player);
-            } else if (result == CodingBlockPlacer.CodePlacementResult.ERROR) {
+            } else if (result.getType() == CodingBlockPlacer.CodePlacementResult.Type.ERROR) {
                 player.sendMessage(getLocaleMessage("environment.duplication.error"));
-                devPlanet.setCodeChanged(true);
                 Sounds.PLAYER_ERROR.play(player);
+                for (Location placedExecutor : result.getPlacedColumns()) {
+                    devPlanet.addChangedColumn(placedExecutor);
+                }
             } else {
                 player.sendMessage(getLocaleMessage("environment.duplication.success"));
-                devPlanet.setCodeChanged(true);
                 Sounds.DEV_BLOCKS_DUPLICATED.play(player);
+                for (Location placedExecutor : result.getPlacedColumns()) {
+                    devPlanet.addChangedColumn(placedExecutor);
+                }
             }
         } else if (itemEquals(currentItem, createModule)) {
             if (getCooldown(player, CooldownUtils.CooldownType.MODULE_MANIPULATION) > 0) {

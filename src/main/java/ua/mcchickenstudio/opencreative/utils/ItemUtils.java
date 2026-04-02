@@ -20,7 +20,6 @@ package ua.mcchickenstudio.opencreative.utils;
 
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -57,6 +56,10 @@ import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendDebugError;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleItemDescription;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleItemName;
 
+/**
+ * <h1>ItemUtils</h1>
+ * This class represents an utils for changing items.
+ */
 public final class ItemUtils {
 
     private final static NamespacedKey ITEM_ID_KEY = new NamespacedKey(OpenCreative.getPlugin(), "oc_item_id");
@@ -72,51 +75,51 @@ public final class ItemUtils {
     private final static NamespacedKey CODING_LOCATION_Y = new NamespacedKey(OpenCreative.getPlugin(), "oc_loc_y");
     private final static NamespacedKey CODING_LOCATION_Z = new NamespacedKey(OpenCreative.getPlugin(), "oc_loc_z");
 
-    public static NamespacedKey getCodingValueKey() {
+    public static @NotNull NamespacedKey getCodingValueKey() {
         return CODING_VALUE_KEY;
     }
 
-    public static NamespacedKey getCodingVariableTypeKey() {
+    public static @NotNull NamespacedKey getCodingVariableTypeKey() {
         return CODING_VARIABLE_TYPE_KEY;
     }
 
-    public static NamespacedKey getCodingDoNotDropMeKey() {
+    public static @NotNull NamespacedKey getCodingDoNotDropMeKey() {
         return CODING_DO_NOT_DROP_ME_KEY;
     }
 
-    public static NamespacedKey getCodingLocationX() {
+    public static @NotNull NamespacedKey getCodingLocationX() {
         return CODING_LOCATION_X;
     }
 
-    public static NamespacedKey getCodingLocationY() {
+    public static @NotNull NamespacedKey getCodingLocationY() {
         return CODING_LOCATION_Y;
     }
 
-    public static NamespacedKey getCodingLocationZ() {
+    public static @NotNull NamespacedKey getCodingLocationZ() {
         return CODING_LOCATION_Z;
     }
 
-    public static NamespacedKey getCodingParticleTypeKey() {
+    public static @NotNull NamespacedKey getCodingParticleTypeKey() {
         return CODING_PARTICLE_TYPE_KEY;
     }
 
-    public static NamespacedKey getItemTypeKey() {
+    public static @NotNull NamespacedKey getItemTypeKey() {
         return ITEM_TYPE_KEY;
     }
 
-    public static NamespacedKey getItemIdKey() {
+    public static @NotNull NamespacedKey getItemIdKey() {
         return ITEM_ID_KEY;
     }
 
-    public static NamespacedKey getCodingTargetTypeKey() {
+    public static @NotNull NamespacedKey getCodingTargetTypeKey() {
         return CODING_TARGET_TYPE_KEY;
     }
 
-    public static NamespacedKey getItemEntityInvisible() {
+    public static @NotNull NamespacedKey getItemEntityInvisible() {
         return ITEM_ENTITY_INVISIBLE;
     }
 
-    public static ItemStack setPersistentData(ItemStack item, NamespacedKey key, String value) {
+    public static @NotNull ItemStack setPersistentData(@NotNull ItemStack item, @NotNull NamespacedKey key, @NotNull String value) {
         ItemMeta meta = item.getItemMeta();
         PersistentDataContainer container = meta.getPersistentDataContainer();
         container.set(key, PersistentDataType.STRING, value);
@@ -124,7 +127,7 @@ public final class ItemUtils {
         return item;
     }
 
-    public static ItemStack setPersistentData(ItemStack item, NamespacedKey key, double value) {
+    public static @NotNull ItemStack setPersistentData(@NotNull ItemStack item, @NotNull NamespacedKey key, double value) {
         ItemMeta meta = item.getItemMeta();
         PersistentDataContainer container = meta.getPersistentDataContainer();
         container.set(key, PersistentDataType.DOUBLE, value);
@@ -135,7 +138,7 @@ public final class ItemUtils {
     /**
      * Returns item stack with name, description found in localization file and persistent data.
      **/
-    public static ItemStack createItem(ItemStack item, String localizationPath, String persistentData) {
+    public static @NotNull ItemStack createItem(@NotNull ItemStack item, @NotNull String localizationPath, @NotNull String persistentData) {
 
         ItemStack itemStack = clearItemFlags(item.clone());
         ItemMeta itemMeta = itemStack.getItemMeta();
@@ -150,7 +153,8 @@ public final class ItemUtils {
     /**
      * Returns item stack with name, description found in localization file and persistent data.
      **/
-    public static ItemStack createItem(Material material, int amount, String localizationPath, String persistentData) {
+    public static @NotNull ItemStack createItem(@NotNull Material material, int amount,
+                                                @NotNull String localizationPath, @NotNull String persistentData) {
 
         amount = Math.max(1, amount);
         if (!material.isItem()) material = Material.REDSTONE;
@@ -167,7 +171,7 @@ public final class ItemUtils {
     /**
      * Returns item stack with name and description found in localization file.
      **/
-    public static ItemStack createItem(Material material, int amount, String localizationPath) {
+    public static @NotNull ItemStack createItem(@NotNull Material material, int amount, @NotNull String localizationPath) {
 
         amount = Math.max(1, amount);
         if (!material.isItem()) material = Material.REDSTONE;
@@ -183,7 +187,7 @@ public final class ItemUtils {
     /**
      * Returns item stack with name and description found in localization file.
      **/
-    public static ItemStack createItem(ItemStack item, String localizationPath) {
+    public static @NotNull ItemStack createItem(@NotNull ItemStack item, @NotNull String localizationPath) {
 
         ItemStack itemStack = clearItemFlags(item.clone());
         ItemMeta itemMeta = itemStack.getItemMeta();
@@ -197,7 +201,8 @@ public final class ItemUtils {
     /**
      * Returns item stack with name and description found in localization file.
      **/
-    public static ItemStack createItem(Material material, int amount, String localizationPath, Object value) {
+    public static @NotNull ItemStack createItem(@NotNull Material material, int amount,
+                                       @NotNull String localizationPath, Object value) {
 
         ItemStack itemStack = createItem(material, amount, localizationPath);
         ItemMeta meta = getOrCreateItemMeta(itemStack);
@@ -209,7 +214,7 @@ public final class ItemUtils {
 
     }
 
-    public static ItemStack createItem(Material material, int amount) {
+    public static @NotNull ItemStack createItem(@NotNull Material material, int amount) {
 
         ItemStack itemStack = new ItemStack(material, amount);
         ItemMeta itemMeta = getOrCreateItemMeta(itemStack);
@@ -219,7 +224,7 @@ public final class ItemUtils {
 
     }
 
-    public static ItemStack clearItemFlags(ItemStack itemStack) {
+    public static @NotNull ItemStack clearItemFlags(@NotNull ItemStack itemStack) {
         ItemMeta meta = itemStack.getItemMeta();
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES,
                 ItemFlag.HIDE_ADDITIONAL_TOOLTIP,
@@ -239,7 +244,7 @@ public final class ItemUtils {
         return itemStack;
     }
 
-    public static ItemStack clearItemMeta(ItemStack itemStack) {
+    public static @NotNull ItemStack clearItemMeta(@NotNull ItemStack itemStack) {
         ItemMeta meta = getOrCreateItemMeta(itemStack);
         meta.displayName(null);
         meta.lore(null);
@@ -264,7 +269,9 @@ public final class ItemUtils {
         return true;
     }
 
-    public static ItemStack replacePlaceholderInName(ItemStack item, String placeholder, Object value) {
+    public static @NotNull ItemStack replacePlaceholderInName(@NotNull ItemStack item,
+                                                              @NotNull String placeholder,
+                                                              @NotNull Object value) {
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
             meta.setDisplayName(meta.getDisplayName().replace(placeholder, value.toString()));
@@ -273,7 +280,9 @@ public final class ItemUtils {
         return item;
     }
 
-    public static ItemStack replacePlaceholderInLore(ItemStack item, String placeholder, Object value) {
+    public static @NotNull ItemStack replacePlaceholderInLore(@NotNull ItemStack item,
+                                                     @NotNull String placeholder,
+                                                     @NotNull Object value) {
         ItemMeta meta = item.getItemMeta();
         if (meta != null && meta.getLore() != null) {
             List<String> newLore = new ArrayList<>();
@@ -287,7 +296,7 @@ public final class ItemUtils {
         return item;
     }
 
-    public static ItemStack setDisplayName(ItemStack item, String displayName) {
+    public static @NotNull ItemStack setDisplayName(@NotNull ItemStack item, @Nullable String displayName) {
         if (item.hasItemMeta()) {
             ItemMeta meta = item.getItemMeta();
             meta.setDisplayName(displayName);
@@ -296,7 +305,7 @@ public final class ItemUtils {
         return item;
     }
 
-    public static ItemStack setLore(ItemStack item, List<String> lore) {
+    public static @NotNull ItemStack setLore(@NotNull ItemStack item, @Nullable List<String> lore) {
         if (item.hasItemMeta()) {
             ItemMeta meta = item.getItemMeta();
             meta.setLore(lore);
@@ -305,7 +314,8 @@ public final class ItemUtils {
         return item;
     }
 
-    public static ItemStack addLoreAtBegin(ItemStack item, String loreLine) {
+    public static @NotNull ItemStack addLoreAtBegin(@NotNull ItemStack item,
+                                                    @NotNull String loreLine) {
         if (loreLine.isEmpty()) return item;
         if (item.hasItemMeta()) {
             ItemMeta meta = item.getItemMeta();
@@ -320,7 +330,8 @@ public final class ItemUtils {
         return item;
     }
 
-    public static ItemStack addLoreAtEnd(ItemStack item, String loreLine) {
+    public static @NotNull ItemStack addLoreAtEnd(@NotNull ItemStack item,
+                                                  @NotNull String loreLine) {
         if (loreLine.isEmpty()) return item;
         if (item.hasItemMeta()) {
             ItemMeta meta = item.getItemMeta();
@@ -335,7 +346,7 @@ public final class ItemUtils {
         return item;
     }
 
-    public static ValueType getValueType(ItemStack item) {
+    public static @NotNull ValueType getValueType(@NotNull ItemStack item) {
         String typeString = getPersistentData(item, getCodingValueKey());
         try {
             return ValueType.valueOf(typeString);
@@ -344,14 +355,11 @@ public final class ItemUtils {
         }
     }
 
-    public static String getItemType(ItemStack item) {
+    public static @NotNull String getItemType(@NotNull ItemStack item) {
         return getPersistentData(item, getItemTypeKey());
     }
 
-    public static String getPersistentData(ItemStack item, NamespacedKey key) {
-        if (item == null) {
-            return "";
-        }
+    public static @NotNull String getPersistentData(@NotNull ItemStack item, @NotNull NamespacedKey key) {
         if (item.getItemMeta() == null) {
             return "";
         }
@@ -366,7 +374,11 @@ public final class ItemUtils {
         return dataType;
     }
 
-    public static ItemStack getItemWithIgnoreData(ItemStack item, boolean removeAmount, boolean removeName, boolean removeLore, boolean removeFlags, boolean removeEnchantments, boolean removeMaterial, boolean removeDurability) {
+    public static @NotNull ItemStack getItemWithIgnoreData(@NotNull ItemStack item,
+                                                           boolean removeAmount, boolean removeName,
+                                                           boolean removeLore, boolean removeFlags,
+                                                           boolean removeEnchantments, boolean removeMaterial,
+                                                           boolean removeDurability) {
         ItemStack newItem = item.clone();
         ItemMeta meta = newItem.getItemMeta();
         if (removeAmount) {
@@ -450,7 +462,7 @@ public final class ItemUtils {
      * @param clearCommandBlocksData removes commands from command blocks.
      */
     @SuppressWarnings("deprecation")
-    public static ItemStack fixItem(@NotNull ItemStack item,
+    public static @NotNull ItemStack fixItem(@NotNull ItemStack item,
                                     int displayNameMaxLength,
                                     int loreLineMaxLength,
                                     int loreLinesLimit,

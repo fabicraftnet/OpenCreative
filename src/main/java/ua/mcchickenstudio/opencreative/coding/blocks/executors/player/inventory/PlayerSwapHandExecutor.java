@@ -23,7 +23,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.WorldEvent;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.player.inventory.ItemChangeEvent;
-import ua.mcchickenstudio.opencreative.coding.blocks.events.player.inventory.ItemDropEvent;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.player.PlayerExecutor;
 import ua.mcchickenstudio.opencreative.coding.menus.MenusCategory;
 

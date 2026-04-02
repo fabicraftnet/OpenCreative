@@ -79,6 +79,14 @@ public abstract class DevPlatformer implements ExtensionContent {
     public abstract @Nullable DevPlatform getPlatformInLocation(@NotNull DevPlanet devPlanet, @NotNull Location location);
 
     /**
+     * Returns begin location of coding line by location.
+     *
+     * @param location location to get platform.
+     * @return executor block location - if location is related to actions or its executor location itself.
+     */
+    public abstract @Nullable Location getColumnBeginLocation(@NotNull DevPlanet devPlanet, @NotNull Location location);
+
+    /**
      * Returns the most far platform by X coordinate.
      *
      * @param devPlanet developer planet to get platform.
