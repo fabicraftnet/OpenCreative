@@ -24,7 +24,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Player;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -249,14 +249,14 @@ public class CodingBlockParser {
             future.complete(true);
             return future;
         }
-        devPlanet.setCodeChanged(false);
         devPlanet.setCurrentlySavingCode(true);
         long time = System.currentTimeMillis();
         OpenCreative.getPlugin().getLogger().info("Parsing code in planet " + devPlanet.getPlanet().getId() + "...");
         sendCodingDebugLog(devPlanet.getPlanet(), getLocaleMessage("coding-debug.parsing-code", false));
         CodeScript script = devPlanet.getPlanet().getTerritory().getScript();
-        script.clear();
-        parseAllExecutors(devPlanet, script.getConfig());
+        script.clear(false);
+        parseExecutors(devPlanet, script.getConfig(), devPlanet.getChangedColumns());
+        devPlanet.clearColumnsChanges();
         OpenCreative.getPlugin().getLogger().info("Parsed code in planet " + devPlanet.getPlanet().getId() + " in " + (System.currentTimeMillis() - time) + " ms.");
         sendCodingDebugLog(devPlanet.getPlanet(), getLocaleMessage("coding-debug.parsed-code", false)
                 .replace("%time%", String.valueOf(Math.floor((System.currentTimeMillis() - time) / 10.0) / 100.0)));
@@ -275,6 +275,44 @@ public class CodingBlockParser {
     }
 
     /**
+     * Saves all code lines in developer planet and
+     * launches new code.
+     *
+     * @param devPlanet developer planet to parse code.
+     */
+    public CompletableFuture<Boolean> recompileCode(@NotNull DevPlanet devPlanet) {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        if (!devPlanet.isCodeChanged()) {
+            sendCodingDebugLog(devPlanet.getPlanet(), "Not recompiling code, nothing was changed.");
+            future.complete(true);
+            return future;
+        }
+        devPlanet.setCurrentlySavingCode(true);
+        long time = System.currentTimeMillis();
+        OpenCreative.getPlugin().getLogger().info("Recompiling code in planet " + devPlanet.getPlanet().getId() + "...");
+        sendCodingDebugLog(devPlanet.getPlanet(), getLocaleMessage("coding-debug.parsing-code", false));
+        CodeScript script = devPlanet.getPlanet().getTerritory().getScript();
+        script.clear(true);
+        parseAllExecutors(devPlanet, script.getConfig());
+        devPlanet.clearColumnsChanges();
+        OpenCreative.getPlugin().getLogger().info("Recompiled code in planet " + devPlanet.getPlanet().getId() + " in " + (System.currentTimeMillis() - time) + " ms.");
+        sendCodingDebugLog(devPlanet.getPlanet(), getLocaleMessage("coding-debug.parsed-code", false)
+                .replace("%time%", String.valueOf(Math.floor((System.currentTimeMillis() - time) / 10.0) / 100.0)));
+        Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
+            if (script.saveCode()) {
+                sendCodingDebugLog(devPlanet.getPlanet(), "Shutting down executors...");
+                devPlanet.getPlanet().getTerritory().stopBukkitRunnables();
+                devPlanet.setCurrentlySavingCode(false);
+                if (!devPlanet.getPlanet().isLoaded()) return;
+                devPlanet.getPlanet().getTerritory().getScript().loadCode().thenAccept((result) -> {
+                    future.complete(true);
+                });
+            }
+        });
+        return future;
+    }
+
+    /**
      * Adds all code lines from developer planet to configuration.
      * Don't forget to save it.
      *
@@ -283,7 +321,7 @@ public class CodingBlockParser {
      */
     public void parseAllExecutors(DevPlanet devPlanet, CodeStorage config) {
 
-        List<Location> locations = new ArrayList<>();
+        Set<Location> locations = new HashSet<>();
         List<DevPlatform> platforms = devPlanet.getPlatforms();
 
         // For platforms
@@ -311,14 +349,11 @@ public class CodingBlockParser {
      * @param config    config to add executors.
      * @return true - code is fine, false - troubles while parsing.
      */
-    public boolean parseExecutors(DevPlanet devPlanet, CodeStorage config, List<Location> executorsLocations) {
-
+    public boolean parseExecutors(DevPlanet devPlanet, CodeStorage config, Set<Location> executorsLocations) {
         boolean isCodeFine = true;
         World world = devPlanet.getWorld();
 
         List<Block> unknownBlocks = new ArrayList<>();
-        List<DevPlatform> platforms = devPlanet.getPlatforms();
-        Collections.reverse(platforms); // Reversing to make executors from first platform as first
         boolean notDependsOnHeight = devPlanet.getDevPlatformer().notDependsOnHeight();
         long argumentsSize = 0;
 
@@ -330,6 +365,11 @@ public class CodingBlockParser {
             int z = executorLocation.getBlockZ();
 
             Block executorBlock = world.getBlockAt(executorX, y, z);
+            config.removeExecutorBlock(executorBlock, notDependsOnHeight);
+            if (executorBlock.isEmpty()) {
+                continue;
+            }
+
             ExecutorCategory executorCategory = ExecutorCategory.getByMaterial(executorBlock.getType());
             Executor executor = Executors.getInstance().getByBlock(executorBlock);
             boolean debug = executorBlock.getRelative(BlockFace.WEST).getType() == Material.REDSTONE_WALL_TORCH;

@@ -255,7 +255,7 @@ public final class PlaceBlockListener implements Listener {
                         Sounds.DEV_NOT_ALLOWED.play(player);
                         event.setCancelled(true);
                     } else {
-                        devPlanet.setCodeChanged(true);
+                        devPlanet.addChangedColumn(block.getRelative(BlockFace.EAST).getLocation());
                         if (block.getBlockData() instanceof Powerable powerable) {
                             powerable.setPowered(true);
                             block.setBlockData(powerable);
@@ -280,7 +280,7 @@ public final class PlaceBlockListener implements Listener {
                         signText = actionCategory.name().toLowerCase();
                         additionalBlockMaterial = actionCategory.getAdditionalBlock();
                     }
-                    devPlanet.setCodeChanged(true);
+                    devPlanet.addChangedColumn(block.getLocation());
                     placeDevBlock(block.getLocation(), block.getType(), additionalBlockMaterial, devPlanet.getSignMaterial(), signText);
                 } else {
                     player.sendActionBar(getLocaleMessage("world.dev-mode.cant-place-action-on-event"));
@@ -303,7 +303,7 @@ public final class PlaceBlockListener implements Listener {
                     if (block.getRelative(BlockFace.EAST).getType() == Material.PISTON) {
                         move(block.getLocation(), BlockFace.EAST);
                     }
-                    devPlanet.setCodeChanged(true);
+                    devPlanet.addInsideCodeColumnChange(block.getLocation());
                     placeDevBlock(block.getLocation(), block.getType(), additionalBlockMaterial, devPlanet.getSignMaterial(), signText);
                 } else {
                     player.sendActionBar(getLocaleMessage("world.dev-mode.cant-place-event-on-action"));

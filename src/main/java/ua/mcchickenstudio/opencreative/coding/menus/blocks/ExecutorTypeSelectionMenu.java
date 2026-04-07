@@ -87,11 +87,11 @@ public final class ExecutorTypeSelectionMenu extends BlocksWithMenusCategoryMenu
             Executor executor = Executors.getInstance().getById(typeString);
             ExecutorCategory executorCategory = executor == null ? null : ExecutorCategory.getByMaterial(codingBlock.getType());
             if (executorCategory != null) {
-                devPlanet.setCodeChanged(true);
+                devPlanet.addInsideCodeColumnChange(signLocation.getBlock().getRelative(BlockFace.NORTH).getLocation());
                 setSignLine(signLocation, 2, executorCategory.name().toLowerCase());
             }
             if (setSignLine(signLocation, 3, typeString.toLowerCase())) {
-                devPlanet.setCodeChanged(true);
+                devPlanet.addInsideCodeColumnChange(signLocation.getBlock().getRelative(BlockFace.NORTH).getLocation());
                 translateBlockSign(signLocation.getBlock());
                 getPlayer().closeInventory();
                 getPlayer().showTitle(Title.title(

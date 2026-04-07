@@ -78,6 +78,27 @@ public final class VerticalPlatformer extends DevPlatformer {
     }
 
     @Override
+    public @Nullable Location getColumnBeginLocation(@NotNull DevPlanet devPlanet, @NotNull Location location) {
+        DevPlatform platform = getPlatformInLocation(devPlanet, location);
+        if (platform == null) return null;
+
+        Location begin = getPlatformBeginLocation(platform);
+
+        int executorX = begin.getBlockX() + 4;
+        int relativeZ = location.getBlockZ() - begin.getBlockZ();
+
+        if (relativeZ < 4) return null;
+        if ((relativeZ % 4) != 0) return null;
+
+        int executorIndex = relativeZ / 4;
+        int executorZ = begin.getBlockZ() + (executorIndex * 4);
+
+        if (executorZ >= getPlatformEndLocation(platform).getBlockZ()) return null;
+
+        return new Location(platform.getWorld(), executorX, location.getY(), executorZ);
+    }
+
+    @Override
     public @NotNull DevPlatform getFarPlatformByX(@NotNull DevPlanet devPlanet) {
         // Floors are stacking on each other, so we return 1, 1.
         return new DevPlatform(devPlanet, 1, 1);

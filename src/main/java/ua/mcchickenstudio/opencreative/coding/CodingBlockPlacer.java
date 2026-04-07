@@ -50,10 +50,7 @@ import ua.mcchickenstudio.opencreative.listeners.player.InteractListener;
 import ua.mcchickenstudio.opencreative.planets.DevPlanet;
 import ua.mcchickenstudio.opencreative.planets.DevPlatform;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import static ua.mcchickenstudio.opencreative.listeners.player.PlaceBlockListener.placeDebugTorch;
@@ -100,7 +97,7 @@ public class CodingBlockPlacer {
      */
     public @NotNull CodePlacementResult placeCodingLines(@NotNull DevPlanet devPlanet, @NotNull ConfigurationSection blocks) {
 
-        if (!devPlanet.isLoaded()) return CodePlacementResult.CANNOT_PLACE;
+        if (!devPlanet.isLoaded()) return CodePlacementResult.cannotPlace();
 
         List<Location> freeColumns = new ArrayList<>();
         int requiredColumns = blocks.getKeys(false).size();
@@ -122,16 +119,16 @@ public class CodingBlockPlacer {
      *
      * @param devPlanet      developers planet where coding blocks will be built.
      * @param blocks         configuration section containing coding blocks.
-     * @param columnLocation location of column, where first coding line will be placed
+     * @param columnLocation location of column, where first coding line will be placed.
      * @return result of placing blocks.
      */
     public @NotNull CodePlacementResult placeCodingLines(@NotNull DevPlanet devPlanet, @NotNull ConfigurationSection blocks, @NotNull Location columnLocation) {
 
-        if (!devPlanet.isLoaded()) return CodePlacementResult.CANNOT_PLACE;
-
+        if (!devPlanet.isLoaded()) return CodePlacementResult.cannotPlace();
         DevPlatform platform = devPlanet.getPlatformInLocation(columnLocation);
+        if (platform == null) return CodePlacementResult.cannotPlace();
         Integer column = platform.getColumn(columnLocation);
-        if (column == null) return CodePlacementResult.CANNOT_PLACE;
+        if (column == null) return CodePlacementResult.cannotPlace();
         List<Location> freeColumns = platform.getFreeColumns(column);
 
         return placeCodingLines(freeColumns, blocks);
@@ -150,23 +147,25 @@ public class CodingBlockPlacer {
     public @NotNull CodePlacementResult placeCodingLines(@NotNull List<Location> freeColumns, @NotNull ConfigurationSection blocks) {
 
         int requiredColumns = blocks.getKeys(false).size();
-        if (requiredColumns == 0) return CodePlacementResult.NOTHING_TO_BUILD;
+        if (requiredColumns == 0) return CodePlacementResult.nothingToPlace();
 
         if (freeColumns.size() < requiredColumns) {
-            return CodePlacementResult.NOT_ENOUGH_CODING_LINES;
+            return CodePlacementResult.notEnoughSpace();
         }
 
+        Set<Location> placedExecutors = new LinkedHashSet<>();
         int columnIndex = 0;
         for (String key : blocks.getKeys(false)) {
             ConfigurationSection executorBlock = blocks.getConfigurationSection(key);
             if (executorBlock == null) continue;
             Location executorLocation = freeColumns.get(columnIndex).add(0, 1, 0);
             if (!placeExecutor(executorLocation, executorBlock)) {
-                return CodePlacementResult.ERROR;
+                return CodePlacementResult.error(placedExecutors);
             }
+            placedExecutors.add(executorLocation);
             columnIndex++;
         }
-        return CodePlacementResult.SUCCESSFULLY;
+        return CodePlacementResult.success(placedExecutors);
 
     }
 
@@ -608,17 +607,109 @@ public class CodingBlockPlacer {
         location.add(-1, 0, 0); // Returns to free slot before piston
     }
 
-    public enum CodePlacementResult {
+    /**
+     * <h1>CodePlacementResult</h1>
+     * This class represents a result of placing coding lines.
+     */
+    public static class CodePlacementResult {
 
-        SUCCESSFULLY,
-        NOTHING_TO_BUILD,
-        ERROR,
-        CANNOT_PLACE,
-        NOT_ENOUGH_CODING_LINES;
+        private final Type type;
+        private final Set<Location> placedColumns;
 
-        public boolean isSuccess() {
-            return this == SUCCESSFULLY || this == NOTHING_TO_BUILD;
+        private CodePlacementResult(@NotNull Type type) {
+            this.type = type;
+            this.placedColumns = new HashSet<>();
         }
+
+        private CodePlacementResult(@NotNull Type type, @NotNull Set<Location> placedColumns) {
+            this.type = type;
+            this.placedColumns = placedColumns;
+        }
+
+        /**
+         * Creates successful result.
+         *
+         * @param placedColumns set of locations with placed columns.
+         * @return result.
+         */
+        public static @NotNull CodePlacementResult success(@NotNull Set<Location> placedColumns) {
+            return new CodePlacementResult(Type.SUCCESS, placedColumns);
+        }
+
+        /**
+         * Creates "cannot place" error result.
+         *
+         * @return result.
+         */
+        public static @NotNull CodePlacementResult cannotPlace() {
+            return new CodePlacementResult(Type.CANNOT_PLACE);
+        }
+
+        /**
+         * Creates "not enough space" error result.
+         *
+         * @return result.
+         */
+        public static @NotNull CodePlacementResult notEnoughSpace() {
+            return new CodePlacementResult(Type.NOT_ENOUGH_SPACE);
+        }
+
+        /**
+         * Creates "nothing to place" result.
+         *
+         * @return result.
+         */
+        public static @NotNull CodePlacementResult nothingToPlace() {
+            return new CodePlacementResult(Type.CANNOT_PLACE);
+        }
+
+        /**
+         * Creates error result.
+         *
+         * @param placedColumns set of locations with placed columns.
+         * @return result.
+         */
+        public static @NotNull CodePlacementResult error(@NotNull Set<Location> placedColumns) {
+            return new CodePlacementResult(Type.ERROR, placedColumns);
+        }
+
+        /**
+         * Returns set of locations with placed columns.
+         *
+         * @return set of placed columns.
+         */
+        public @NotNull Set<Location> getPlacedColumns() {
+            return placedColumns;
+        }
+
+        /**
+         * Returns type of result.
+         *
+         * @return type of result.
+         */
+        public @NotNull Type getType() {
+            return type;
+        }
+
+        public enum Type {
+
+            SUCCESS,
+            NOTHING_TO_PLACE,
+            ERROR,
+            CANNOT_PLACE,
+            NOT_ENOUGH_SPACE;
+
+            /**
+             * Checks whether code placement operation is successful.
+             *
+             * @return true - successful, false - failed.
+             */
+            public boolean isSuccess() {
+                return this == SUCCESS || this == NOTHING_TO_PLACE;
+            }
+
+        }
+
 
     }
 

@@ -25,7 +25,7 @@ import java.util.function.Predicate;
 @SuppressWarnings("unused")
 public class TryIgnore {
 
-    public static ThrowableHandler throwableHandler = Throwable::printStackTrace;
+    public static final ThrowableHandler throwableHandler = Throwable::printStackTrace;
 
     public static <T> T unchecked(SupplierThrows<T> supplier) {
         try {

@@ -116,11 +116,10 @@ public final class FunctionChooserMenu extends ListBrowserMenu<Location> {
                         double y = container.get(getCodingLocationY(), PersistentDataType.DOUBLE);
                         double z = container.get(getCodingLocationZ(), PersistentDataType.DOUBLE);
                         event.getWhoClicked().teleport(new Location(event.getWhoClicked().getWorld(), x, y, z + 2, 180, 0));
-                    } catch (NullPointerException ignored) {
-                    }
+                    } catch (NullPointerException ignored) {}
                 }
             } else {
-                devPlanet.setCodeChanged(true);
+                devPlanet.addInsideCodeColumnChange(signLocation.getBlock().getRelative(BlockFace.NORTH).getLocation());
                 setSignLine(signLocation, 3, name);
                 translateBlockSign(signLocation.getBlock());
                 getPlayer().showTitle(Title.title(

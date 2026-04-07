@@ -95,7 +95,7 @@ public final class Moduler implements ModuleManager {
 
     public void createModule(@NotNull Player owner, @NotNull DevPlanet devPlanet, @NotNull Set<Location> locations) {
         CodeStorage configuration = new CodeConfiguration();
-        if (!new CodingBlockParser(devPlanet, true).parseExecutors(devPlanet, configuration, new LinkedList<>(locations))) {
+        if (!new CodingBlockParser(devPlanet, true).parseExecutors(devPlanet, configuration, new LinkedHashSet<>(locations))) {
             owner.sendMessage(getLocaleMessage("modules.error"));
             return;
         }

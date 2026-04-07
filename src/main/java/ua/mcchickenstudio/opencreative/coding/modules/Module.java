@@ -133,23 +133,27 @@ public class Module {
         }
         CodingBlockPlacer placer = new CodingBlockPlacer(devPlanet);
         CodingBlockPlacer.CodePlacementResult result = placer.placeCodingLines(devPlanet, section);
-        if (result == CodingBlockPlacer.CodePlacementResult.NOT_ENOUGH_CODING_LINES) {
+        if (result.getType() == CodingBlockPlacer.CodePlacementResult.Type.NOT_ENOUGH_SPACE) {
             player.sendMessage(getLocaleMessage("modules.few-space")
                     .replace("%required%", String.valueOf(requiredColumns)));
             Sounds.DEV_NOT_ALLOWED.play(player);
             return false;
-        } else if (result == CodingBlockPlacer.CodePlacementResult.ERROR) {
-            devPlanet.setCodeChanged(true);
+        } else if (result.getType() == CodingBlockPlacer.CodePlacementResult.Type.ERROR) {
             player.sendMessage(parseModuleLines(this, MessageUtils.getPlayerLocaleMessage("modules.fail", player)));
             Sounds.PLAYER_FAIL.play(player);
+            for (Location placedExecutor : result.getPlacedColumns()) {
+                devPlanet.addChangedColumn(placedExecutor);
+            }
             return false;
         } else {
-            devPlanet.setCodeChanged(true);
             Sounds.DEV_MODULE_INSTALLED.play(player);
             for (Player planetPlayer : devPlanet.getPlanet().getPlayers()) {
                 if (devPlanet.getPlanet().getWorldPlayers().canDevelop(planetPlayer)) {
                     planetPlayer.sendMessage(parseModuleLines(this, MessageUtils.getPlayerLocaleMessage("modules.installed", player)));
                 }
+            }
+            for (Location placedExecutor : result.getPlacedColumns()) {
+                devPlanet.addChangedColumn(placedExecutor);
             }
             getInformation().addDownload(devPlanet.getPlanet());
             return true;

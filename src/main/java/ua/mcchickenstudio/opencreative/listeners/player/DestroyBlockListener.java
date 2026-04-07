@@ -18,6 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.listeners.player;
 
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -37,6 +38,10 @@ import ua.mcchickenstudio.opencreative.planets.DevPlanet;
 import ua.mcchickenstudio.opencreative.planets.DevPlatform;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
+import ua.mcchickenstudio.opencreative.settings.items.Items;
+
+import java.util.List;
+import java.util.Random;
 
 import static ua.mcchickenstudio.opencreative.listeners.player.PlaceBlockListener.move;
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.getClosingBracketX;
@@ -50,7 +55,9 @@ import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.translateBlockSi
  * destroys block or damages block in world.
  */
 public final class DestroyBlockListener implements Listener {
+
     private static final int SHIFT_COMPACT_MAX_PASSES = 20;
+    private final Random random = new Random();
 
     @EventHandler
     public void onBreak(BlockBreakEvent event) {
@@ -83,7 +90,7 @@ public final class DestroyBlockListener implements Listener {
             }
 
             if (block.getType() == Material.REDSTONE_WALL_TORCH) {
-                devPlanet.setCodeChanged(true);
+                devPlanet.addInsideCodeColumnChange(block.getRelative(BlockFace.EAST).getLocation());
                 Sounds.DEV_UNSET_DEBUG_TORCH.play(player);
                 return;
             }
@@ -91,6 +98,7 @@ public final class DestroyBlockListener implements Listener {
             if (devPlanet.getAllCodingBlocksForPlacing().contains(block.getType())) {
                 ActionCategory category = ActionCategory.getByMaterial(block.getType());
                 if (category != null) {
+                    devPlanet.addInsideCodeColumnChange(block.getLocation());
                     boolean usedShiftChainOnMulti = false;
                     if (chainBreak && category.isMultiAction()) {
                         usedShiftChainOnMulti = true;
@@ -100,7 +108,6 @@ public final class DestroyBlockListener implements Listener {
                     } else {
                         platform.destroyCodingBlock(block.getLocation(), devPlanet.isDropItems());
                     }
-                    devPlanet.setCodeChanged(true);
                     if (usedShiftChainOnMulti && OpenCreative.getSettings().getCodingSettings().isShiftBreakChainCompactFull()) {
                         compactCodingLineLeftByVanillaMove(devPlanet, platform, block);
                     } else {
@@ -109,10 +116,10 @@ public final class DestroyBlockListener implements Listener {
                 } else {
                     if (ExecutorCategory.getByMaterial(block.getType()) != null
                             && chainBreak) {
+                        devPlanet.addChangedColumn(block.getLocation());
                         platform.destroyCodingLine(block.getLocation(), devPlanet.isDropItems());
-                        devPlanet.setCodeChanged(true);
                     } else {
-                        devPlanet.setCodeChanged(true);
+                        devPlanet.addChangedColumn(block.getLocation());
                         platform.destroyCodingBlock(block.getLocation(), devPlanet.isDropItems());
                         devPlanet.clearMarkedExecutors(block.getLocation());
                     }

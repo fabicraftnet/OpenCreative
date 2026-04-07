@@ -47,7 +47,6 @@ import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.utils.SystemUtils;
 import ua.mcchickenstudio.opencreative.utils.hooks.HookUtils;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.CompletableFuture;
 
 import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isLobbyWorld;
@@ -135,9 +134,10 @@ public final class WorldEditManager implements BlocksManager {
 
     static class PlanetExtent extends AbstractDelegateExtent {
 
-        public static BlockState AIRSTATE = BlockTypes.AIR.getDefaultState();
-        public static BaseBlock AIRBASE = BlockTypes.AIR.getDefaultState().toBaseBlock();
+        private static final BlockState AIRSTATE = BlockTypes.AIR.getDefaultState();
+        private static final BaseBlock AIRBASE = BlockTypes.AIR.getDefaultState().toBaseBlock();
         private final Planet planet;
+
         public PlanetExtent(Planet planet, Extent extent) {
             super(extent);
             this.planet = planet;
@@ -206,8 +206,8 @@ public final class WorldEditManager implements BlocksManager {
 
     static class DisallowedExtent extends AbstractDelegateExtent {
 
-        public static BlockState AIRSTATE = BlockTypes.AIR.getDefaultState();
-        public static BaseBlock AIRBASE = BlockTypes.AIR.getDefaultState().toBaseBlock();
+        public static final BlockState AIRSTATE = BlockTypes.AIR.getDefaultState();
+        public static final BaseBlock AIRBASE = BlockTypes.AIR.getDefaultState().toBaseBlock();
         public DisallowedExtent(Extent extent) {
             super(extent);
         }

@@ -116,7 +116,7 @@ public final class CodeDownloaderExperiment extends Experiment {
                     }
                     Bukkit.getScheduler().runTask(OpenCreative.getPlugin(),
                             () -> {
-                                if ((new CodingBlockPlacer(devPlanet).placeCodingLines(devPlanet, section)).isSuccess()) {
+                                if ((new CodingBlockPlacer(devPlanet).placeCodingLines(devPlanet, section)).getType().isSuccess()) {
                                     sender.sendMessage("Placed");
                                 } else {
                                     sender.sendMessage("Failed to place");

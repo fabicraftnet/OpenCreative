@@ -76,6 +76,27 @@ public final class HorizontalPlatformer extends DevPlatformer {
     }
 
     @Override
+    public @Nullable Location getColumnBeginLocation(@NotNull DevPlanet devPlanet, @NotNull Location location) {
+        DevPlatform platform = getPlatformInLocation(devPlanet, location);
+        if (platform == null) return null;
+
+        Location begin = getPlatformBeginLocation(platform);
+
+        int executorX = begin.getBlockX() + 4;
+        int relativeZ = location.getBlockZ() - begin.getBlockZ();
+
+        if (relativeZ < 4) return null;
+        if ((relativeZ % 4) != 0) return null;
+
+        int executorIndex = relativeZ / 4;
+        int executorZ = begin.getBlockZ() + (executorIndex * 4);
+
+        if (executorZ >= getPlatformEndLocation(platform).getBlockZ()) return null;
+
+        return new Location(platform.getWorld(), executorX, location.getY(), executorZ);
+    }
+
+    @Override
     public @Nullable DevPlatform getPlatformInLocation(@NotNull DevPlanet devPlanet, @NotNull Location location) {
         double x = location.getX();
         double z = location.getZ();

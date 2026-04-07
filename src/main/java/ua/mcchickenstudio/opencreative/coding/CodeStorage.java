@@ -51,6 +51,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * <h1>CodeStorage</h1>
+ * This class represents a storage,
+ * that stores planet's code.
+ */
 public interface CodeStorage {
 
     /**
@@ -65,6 +70,14 @@ public interface CodeStorage {
      * @param file Input file
      */
     void loadCode(@NotNull File file);
+
+    /**
+     * Removes executor block data from configuration file, if it exists.
+     *
+     * @param block executor coding block.
+     * @param notDependsOnHeight whether its horizontal or vertical platformer.
+     */
+    void removeExecutorBlock(@NotNull Block block, boolean notDependsOnHeight);
 
     /**
      * Saves executor block data in configuration file.

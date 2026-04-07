@@ -32,8 +32,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCriticalErrorMessage;
-
 /**
  * <h1>WorldFixerSettings</h1>
  * This class represents a settings of world fixer.

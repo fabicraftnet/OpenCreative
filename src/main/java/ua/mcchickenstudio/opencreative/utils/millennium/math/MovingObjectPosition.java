@@ -25,12 +25,12 @@ public final class MovingObjectPosition {
     /**
      * What type of ray trace hit was this? 0 = block, 1 = entity
      */
-    public MovingObjectType typeOfHit;
-    public EnumFacing sideHit;
+    public final MovingObjectType typeOfHit;
+    public final EnumFacing sideHit;
     /**
      * The vector position of the hit
      */
-    public Vec3 hitVec;
+    public final Vec3 hitVec;
     private final BlockPos blockPos;
 
     public MovingObjectPosition(Vec3 vec3, EnumFacing facing) {

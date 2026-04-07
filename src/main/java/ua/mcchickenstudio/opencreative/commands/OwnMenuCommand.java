@@ -26,7 +26,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.menus.world.browsers.OwnWorldsBrowserMenu;
-import ua.mcchickenstudio.opencreative.menus.world.browsers.WorldsCompassMenu;
 import ua.mcchickenstudio.opencreative.utils.CooldownUtils;
 
 import java.util.List;

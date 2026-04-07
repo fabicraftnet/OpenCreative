@@ -33,7 +33,6 @@ import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.playeractions.PlayerAction;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
 import ua.mcchickenstudio.opencreative.coding.exceptions.TooLongTextException;
-import ua.mcchickenstudio.opencreative.utils.hooks.HookUtils;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -97,7 +96,7 @@ public final class SetResourcePackAction extends PlayerAction {
         });
     }
 
-    private boolean isAllowed(String url) {
+    private boolean isAllowed(@NotNull String url) {
         /*
          * We check url, because some world owners
          * can use IP logger when player downloads

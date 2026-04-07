@@ -163,6 +163,7 @@ public class PlanetTerritory {
         if (world == null) return;
         world.setAutoSave(autoSave);
         setGameRuleIfExists("spawn_chunk_radius", 1);
+        setGameRuleIfExists("command_blocks_work", false);
         world.setGameRule(GameRule.GLOBAL_SOUND_EVENTS, false);
         world.setGameRule(GameRule.DO_LIMITED_CRAFTING, true);
         if (world.getEnvironment() == World.Environment.THE_END) {

@@ -42,7 +42,6 @@ import java.util.UUID;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isDevPlanet;
-import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isOpenCreativeWorld;
 
 public final class ChangedWorld implements Listener {
 

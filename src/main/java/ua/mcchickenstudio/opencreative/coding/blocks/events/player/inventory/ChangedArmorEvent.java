@@ -20,13 +20,10 @@ package ua.mcchickenstudio.opencreative.coding.blocks.events.player.inventory;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.player.PlayerEditBookEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.ItemEvent;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.WorldEvent;
-import ua.mcchickenstudio.opencreative.managers.space.PlanetsManager;
 
 public final class ChangedArmorEvent extends WorldEvent implements ItemEvent {
 
