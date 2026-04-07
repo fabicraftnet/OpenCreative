@@ -19,6 +19,7 @@
 package ua.mcchickenstudio.opencreative.coding.menus.layouts;
 
 import org.bukkit.block.Block;
+import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 
 /**
@@ -28,155 +29,51 @@ import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
  */
 public final class LayoutMaker extends Layout {
 
-    public LayoutMaker(ActionType action, Block chestBlock) {
+    public LayoutMaker(@NotNull ActionType action, @NotNull Block chestBlock) {
         super(3, action, chestBlock);
     }
 
     @Override
     protected void fillArgumentItems() {
         if (actionType == ActionType.WORLD_ADD_CRAFTING_RECIPE) {
-            setRows(5);
-            setItem(DECORATION_PANE_ITEM, 0, 4, 5, 6, 7, 8, 15, 33, 36, 40, 41, 42);
-            setGlass(1, 1, 2, 3, 9, 13, 18, 22, 27, 31, 37, 38, 39);
-            setArgSlot(1, 10, 11, 12, 19, 20, 21, 28, 29, 30);
-
-            setArgSlot(2, 23);
-            setGlass(2, 14, 24, 32);
-
-            setGlass(3, 16);
-            setArgSlot(3, 17);
-
-            setGlass(4, 25);
-            setArgSlot(4, 26);
-
-            setGlass(5, 34);
-            setArgSlot(5, 35);
-
-            setGlass(6, 43);
-            setArgSlot(6, 44);
+            fillCraftingRecipeLayout();
             return;
         }
-        if (actionType.getArgumentsSlots().length > 0 && actionType.getArgumentsSlots()[0].isList()) {
-            switch (actionType.getArgumentsSlots()[0].getListSize()) {
-                case 9: {
-                    setRows(3);
-                    if (actionType == ActionType.WORLD_SPAWN_ENTITY) {
-                        setRows(6);
-                    }
-                    for (int slot = 0; slot < 9; slot++) {
-                        setGlass(1, slot);
-                    }
-                    for (int slot = 9; slot < 18; slot++) {
-                        setArgSlot(1, slot);
-                    }
-                    for (int slot = 18; slot < 27; slot++) {
-                        setGlass(1, slot);
-                    }
-                    if (actionType == ActionType.WORLD_SPAWN_ENTITY) {
-                        int slot = 36;
-                        for (int argNumber = 2; argNumber <= actionType.getArgumentsSlots().length; argNumber++) {
-                            if (slot <= 44) {
-                                setArgSlotVertical(argNumber, slot);
-                                slot++;
-                            }
-                        }
-                        return;
-                    }
-                    if (actionType.getArgumentsSlots().length > 1) {
-                        if (actionType.getArgumentsSlots()[1].isList()) {
-                            setRows(6);
-                            for (int slot = 27; slot < 36; slot++) {
-                                setGlass(2, slot);
-                            }
-                            for (int slot = 36; slot < 45; slot++) {
-                                setArgSlot(2, slot);
-                            }
-                            for (int slot = 45; slot < 54; slot++) {
-                                setGlass(2, slot);
-                            }
-                            if (actionType.getArgumentsSlots().length > 2) {
-                                setArgSlotHorizontal(3, 49);
-                            }
-                        } else {
-                            setRows(4);
-                            for (int slot = 27; slot < 36; slot++) {
-                                setItem(slot, DECORATION_PANE_ITEM);
-                            }
-                            int remainingSlots = actionType.getArgumentsSlots().length - 1;
-                            int i = 2;
-                            for (int slot : getCentredSlots(remainingSlots, 4)) {
-                                if (remainingSlots > 3) {
-                                    setGlass(i, (slot - 9));
-                                    setArgSlot(i, slot);
-                                } else {
-                                    setArgSlotHorizontal(i, slot);
-                                }
-                                i++;
-                            }
-                        }
-                    }
-                    break;
-                }
-                case 18: {
-                    setRows(4);
-                    for (int slot = 0; slot < 9; slot++) {
-                        setGlass(1, slot);
-                    }
-                    for (int slot = 9; slot < 27; slot++) {
-                        setArgSlot(1, slot);
-                    }
-                    for (int slot = 27; slot < 36; slot++) {
-                        setGlass(1, slot);
-                    }
-                    if (actionType.getArgumentsSlots().length > 1 && !actionType.getArgumentsSlots()[1].isList()) {
-                        setRows(6);
-                        for (int slot = 36; slot < 54; slot++) {
-                            setItem(slot, DECORATION_PANE_ITEM);
-                        }
-                        int remainingSlots = actionType.getArgumentsSlots().length - 1;
-                        int i = 2;
-                        for (int slot : getCentredSlots(remainingSlots, 6)) {
-                            if (remainingSlots > 3) {
-                                setGlass(i, (slot - 9));
-                                setArgSlot(i, slot);
-                            } else {
-                                setArgSlotHorizontal(i, slot);
-                            }
-                            i++;
-                        }
-                    }
-                    break;
-                }
-                case 27: {
-                    setRows(5);
-                    for (int slot = 0; slot < 9; slot++) {
-                        setGlass(1, slot);
-                    }
-                    for (int slot = 9; slot < 36; slot++) {
-                        setArgSlot(1, slot);
-                    }
-                    for (int slot = 36; slot < 45; slot++) {
-                        setGlass(1, slot);
-                    }
-                    if (actionType.getArgumentsSlots().length > 1 && !actionType.getArgumentsSlots()[1].isList()) {
-                        setArgSlotHorizontal(2, 40);
-                    }
-                    break;
-                }
-                case 45: {
-                    setRows(6);
-                    int number = 1;
-                    for (int slot = 9; slot < 45; slot++) {
-                        setArgSlot(number++, slot);
-                    }
-                    for (int slot = 45; slot < 54; slot++) {
-                        setGlass(1, slot);
-                    }
-                }
-            }
+        ArgumentSlot[] args = requiredSlots;
+        if (args.length > 0 && args[0].isList()) {
+            fillWithFirstList(args);
             return;
         }
-        switch (getRequiredSlots().length) {
+        fillWithArguments(args);
+    }
+
+    private void fillCraftingRecipeLayout() {
+        setRows(5);
+        setItem(DECORATION_PANE_ITEM, 0, 4, 5, 6, 7, 8, 15, 33, 36, 40, 41, 42);
+        setGlass(1, 1, 2, 3, 9, 13, 18, 22, 27, 31, 37, 38, 39);
+        setArgSlot(1, 10, 11, 12, 19, 20, 21, 28, 29, 30);
+
+        setArgSlot(2, 23);
+        setGlass(2, 14, 24, 32);
+
+        setGlass(3, 16);
+        setArgSlot(3, 17);
+
+        setGlass(4, 25);
+        setArgSlot(4, 26);
+
+        setGlass(5, 34);
+        setArgSlot(5, 35);
+
+        setGlass(6, 43);
+        setArgSlot(6, 44);
+    }
+
+    private void fillWithArguments(@NotNull ArgumentSlot[] args) {
+        for (int slot = 0; slot < 3 * 9; slot++) {
+            setItem(slot, DECORATION_PANE_ITEM);
+        }
+        switch (args.length) {
             case 1:
                 setArgSlotCross(1, 13);
                 break;
@@ -240,6 +137,108 @@ public final class LayoutMaker extends Layout {
                 setArgSlotVertical(8, 16);
                 setArgSlotVertical(9, 17);
                 break;
+        }
+    }
+
+    private void fillWithFirstList(@NotNull ArgumentSlot[] args) {
+        switch (args[0].getListSize()) {
+            case 9: {
+                setRows(3);
+                if (actionType == ActionType.WORLD_SPAWN_ENTITY) {
+                    setRows(6);
+                }
+                setGlass(1, 0, 1, 2, 3, 4, 5, 6, 7, 8,
+                        18, 19, 20, 21, 22, 23, 24, 25, 26);
+                for (int slot = 9; slot < 18; slot++) {
+                    setArgSlot(1, slot);
+                }
+                if (actionType == ActionType.WORLD_SPAWN_ENTITY) {
+                    int slot = 36;
+                    for (int argNumber = 2; argNumber <= args.length; argNumber++) {
+                        if (slot <= 44) {
+                            setArgSlotVertical(argNumber, slot);
+                            slot++;
+                        }
+                    }
+                    return;
+                }
+                if (args.length > 1) {
+                    if (args[1].isList()) {
+                        setRows(6);
+                        setGlass(2, 27, 28, 29, 30, 31, 32, 33, 34, 35,
+                                45, 46, 47, 48, 49, 50, 51, 52, 53);
+                        for (int slot = 36; slot < 45; slot++) {
+                            setArgSlot(2, slot);
+                        }
+                        if (args.length > 2) {
+                            setArgSlotHorizontal(3, 49);
+                        }
+                    } else {
+                        setRows(4);
+                        for (int slot = 27; slot < 36; slot++) {
+                            setItem(slot, DECORATION_PANE_ITEM);
+                        }
+                        int remainingSlots = args.length - 1;
+                        int i = 2;
+                        for (int slot : getCentredSlots(remainingSlots, 4)) {
+                            if (remainingSlots > 3) {
+                                setGlass(i, (slot - 9));
+                                setArgSlot(i, slot);
+                            } else {
+                                setArgSlotHorizontal(i, slot);
+                            }
+                            i++;
+                        }
+                    }
+                }
+                break;
+            }
+            case 18: {
+                setRows(4);
+                setGlass(1, 0, 1, 2, 3, 4, 5, 6, 7, 8,
+                        27, 28, 29, 30, 31, 32, 33, 34, 35);
+                for (int slot = 9; slot < 27; slot++) {
+                    setArgSlot(1, slot);
+                }
+                if (args.length > 1 && !args[1].isList()) {
+                    setRows(6);
+                    for (int slot = 36; slot < 54; slot++) {
+                        setItem(slot, DECORATION_PANE_ITEM);
+                    }
+                    int remainingSlots = args.length - 1;
+                    int i = 2;
+                    for (int slot : getCentredSlots(remainingSlots, 6)) {
+                        if (remainingSlots > 3) {
+                            setGlass(i, (slot - 9));
+                            setArgSlot(i, slot);
+                        } else {
+                            setArgSlotHorizontal(i, slot);
+                        }
+                        i++;
+                    }
+                }
+                break;
+            }
+            case 27: {
+                setRows(5);
+                setGlass(1, 0, 1, 2, 3, 4, 5, 6, 7, 8,
+                        36, 37, 38, 39, 40, 41, 42, 43, 44);
+                for (int slot = 9; slot < 36; slot++) {
+                    setArgSlot(1, slot);
+                }
+                if (args.length > 1 && !args[1].isList()) {
+                    setArgSlotHorizontal(2, 40);
+                }
+                break;
+            }
+            case 45: {
+                setRows(6);
+                int number = 1;
+                for (int slot = 9; slot < 45; slot++) {
+                    setArgSlot(number++, slot);
+                }
+                setGlass(1, 45, 46, 47, 48, 49, 50, 51, 52, 53);
+            }
         }
     }
 

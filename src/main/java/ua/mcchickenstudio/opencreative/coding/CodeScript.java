@@ -112,7 +112,6 @@ public class CodeScript {
             if (OpenCreative.getSettings().getCodingSettings().shouldSaveScriptsHistory()) {
                 copyToHistoryFolder(time);
             }
-
             OpenCreative.getPlugin().getLogger().info("Saved code in planet " + planet.getId() + " in " + (System.currentTimeMillis() - time) + " ms.");
             sendCodingDebugLog(planet, getLocaleMessage("coding-debug.saved-code", false)
                     .replace("%time%", String.valueOf(Math.floor((System.currentTimeMillis() - time) / 10.0) / 100.0)));
@@ -126,21 +125,10 @@ public class CodeScript {
     /**
      * Moves stored code in old-code section to prevent being overwritten by new code.
      */
-    public void clear() {
+    public void clear(boolean removeCurrentCode) {
         executors.clear();
         lastLaunch = 0;
         ConfigurationSection section = scriptConfig.getSection("code.blocks");
-        if (section == null) return;
-        scriptConfig.set("old-code.blocks", null);
-        Map<String, Object> newCode = section.getValues(false);
-        scriptConfig.set("old-code.blocks", newCode);
-        scriptConfig.set("code.blocks", null);
-        scriptConfig.set("last-activity-time", System.currentTimeMillis());
-        try {
-            scriptConfig.saveToFile(getPlanetScriptFile(planet));
-        } catch (IOException exception) {
-            sendCriticalErrorMessage("An error has occurred while clearing and saving code script " + this.getPlanet().getWorldName(), exception);
-        }
     }
 
     /**

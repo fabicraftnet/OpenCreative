@@ -120,7 +120,7 @@ public final class MethodChooserMenu extends ListBrowserMenu<Location> {
                     }
                 }
             } else {
-                devPlanet.setCodeChanged(true);
+                devPlanet.addInsideCodeColumnChange(signLocation.getBlock().getRelative(BlockFace.NORTH).getLocation());
                 setSignLine(signLocation, 3, name);
                 translateBlockSign(signLocation.getBlock());
                 getPlayer().showTitle(Title.title(

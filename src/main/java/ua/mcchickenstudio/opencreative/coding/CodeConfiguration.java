@@ -59,6 +59,13 @@ public class CodeConfiguration extends YamlConfiguration implements CodeStorage 
     }
 
     @Override
+    public void removeExecutorBlock(@NotNull Block block, boolean notDependsOnHeight) {
+        String path = "code.blocks." + getExecutorKey(block);
+        set(path, null);
+        set("code.blocks.exec_block_" + (notDependsOnHeight ? block.getZ() : block.getY()) + "_" + block.getX(), null);
+    }
+
+    @Override
     public void saveExecutorBlock(@NotNull Block block, boolean notDependsOnHeight,
                                   @NotNull ExecutorCategory category,
                                   @NotNull Executor executor, boolean debug) {

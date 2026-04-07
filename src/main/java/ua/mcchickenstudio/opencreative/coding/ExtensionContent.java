@@ -26,6 +26,8 @@ import org.jetbrains.annotations.NotNull;
  * that can be added by developers to OpenCreative+.
  *
  * @see ua.mcchickenstudio.opencreative.coding.placeholders.Placeholder
+ * @see ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor
+ * @see ua.mcchickenstudio.opencreative.coding.values.EventValue
  */
 public interface ExtensionContent {
 

@@ -541,13 +541,13 @@ public final class PlayerUtils {
     public static void translateBlockSign(Block block, Player player) {
         if (block == null) return;
         if (!block.getType().toString().contains("SIGN")) return;
-        Sign sign = (Sign) block.getState();
         List<Component> newLines = new ArrayList<>();
+        Sign sign = (Sign) block.getState();
         for (Component line : sign.getSide(Side.FRONT).lines()) {
             String content = ((TextComponent) line).content();
             String path = "blocks." + content;
             if (content.isEmpty()) {
-                newLines.add(Component.text(""));
+                newLines.add(Component.text(" "));
             } else if (!messageExists(path)) {
                 newLines.add(Component.text(content));
             } else {

@@ -24,6 +24,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionCategory;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.ExecutorCategory;
@@ -43,7 +44,6 @@ import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCriticalError
 import static ua.mcchickenstudio.opencreative.utils.FileUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.teleportToLobby;
-import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.translateSigns;
 
 /**
  * <h1>DevPlanet</h1>
@@ -63,16 +63,17 @@ public class DevPlanet {
     private final static Material DEFAULT_ACTION_MATERIAL = Material.GRAY_STAINED_GLASS;
     private final static Material DEFAULT_FLOOR_MATERIAL = Material.WHITE_STAINED_GLASS;
     private final Planet planet;
-    private final Map<Player, Location> lastLocations = new HashMap<>();
+    private final Map<UUID, Location> lastLocations = new HashMap<>();
     private final Map<Location, Layout> openedBlocksMenus = new HashMap<>();
-    private final Map<Player, Set<Location>> selectedExecutors = new HashMap<>();
+    private final Map<UUID, Set<Location>> selectedExecutors = new HashMap<>();
+    private final Set<Location> changedColumns = new HashSet<>();
+
     private String platformerID = "";
     private Material signMaterial = Material.BIRCH_WALL_SIGN;
     private Material containerMaterial = Material.CHEST;
     private boolean dropItems = true;
     private boolean saveLocation = true;
     private boolean nightVision = true;
-    private boolean isCodeChanged = false;
     private boolean currentlySavingCode = false;
 
     /**
@@ -193,6 +194,8 @@ public class DevPlanet {
     public void unload(boolean asyncSave) {
         if (!isLoaded()) return;
 
+        changedColumns.clear();
+
         long startTime = System.currentTimeMillis();
 
         for (Player player : getWorld().getPlayers()) {
@@ -206,9 +209,7 @@ public class DevPlanet {
                     chunk.unload(true);
                 }
                 getWorld().save();
-                Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
-                    Bukkit.unloadWorld(getWorldName(), false);
-                }, 40);
+                Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> Bukkit.unloadWorld(getWorldName(), false), 40);
             } else {
                 Bukkit.unloadWorld(getWorldName(), true);
             }
@@ -234,7 +235,7 @@ public class DevPlanet {
         this.getWorld().setGameRule(GameRule.DO_FIRE_TICK, false);
         this.getWorld().setGameRule(GameRule.GLOBAL_SOUND_EVENTS, false);
         getDevPlatformer().setWorldBorder(this);
-        isCodeChanged = false;
+        changedColumns.clear();
     }
 
     /**
@@ -245,16 +246,6 @@ public class DevPlanet {
     public boolean exists() {
         File folder = getDevPlanetFolder(this);
         return folder.exists() && folder.isDirectory();
-    }
-
-    /**
-     * Translates coding blocks for player.
-     *
-     * @param player player to translate coding blocks.
-     */
-    public void translateCodingBlocks(@NotNull Player player) {
-        if (!isLoaded()) return;
-        translateSigns(player, 50);
     }
 
     public Set<Material> getAllCodingBlocksForPlacing() {
@@ -509,7 +500,7 @@ public class DevPlanet {
         return false;
     }
 
-    public String getWorldName() {
+    public @NotNull String getWorldName() {
         return planet.getWorldName() + "dev";
     }
 
@@ -519,7 +510,7 @@ public class DevPlanet {
      *
      * @return list of developer platforms.
      */
-    public List<DevPlatform> getPlatforms() {
+    public @NotNull List<DevPlatform> getPlatforms() {
         return getDevPlatformer().getPlatforms(this);
     }
 
@@ -529,7 +520,7 @@ public class DevPlanet {
      * @param location location to get platform.
      * @return coding platform - if location contains coding platform, otherwise - null.
      */
-    public DevPlatform getPlatformInLocation(Location location) {
+    public @Nullable DevPlatform getPlatformInLocation(@NotNull Location location) {
         return getDevPlatformer().getPlatformInLocation(this, location);
     }
 
@@ -556,12 +547,12 @@ public class DevPlanet {
         return platformer;
     }
 
-    public Map<Player, Location> getLastLocations() {
+    public Map<UUID, Location> getLastLocations() {
         return lastLocations;
     }
 
     public @NotNull Set<Location> getMarkedExecutors(@NotNull Player player) {
-        return selectedExecutors.getOrDefault(player, new LinkedHashSet<>());
+        return selectedExecutors.getOrDefault(player.getUniqueId(), new LinkedHashSet<>());
     }
 
     /**
@@ -572,9 +563,9 @@ public class DevPlanet {
      * @param location location of executor block.
      */
     public void markExecutorAsSelected(@NotNull Player player, @NotNull Location location) {
-        Set<Location> locations = selectedExecutors.getOrDefault(player, new LinkedHashSet<>());
+        Set<Location> locations = selectedExecutors.getOrDefault(player.getUniqueId(), new LinkedHashSet<>());
         locations.add(location);
-        selectedExecutors.put(player, locations);
+        selectedExecutors.put(player.getUniqueId(), locations);
     }
 
     /**
@@ -585,12 +576,12 @@ public class DevPlanet {
      * @param location location of executor block.
      */
     public void unselectMarkedExecutor(@NotNull Player player, @NotNull Location location) {
-        Set<Location> locations = selectedExecutors.getOrDefault(player, new LinkedHashSet<>());
+        Set<Location> locations = selectedExecutors.getOrDefault(player.getUniqueId(), new LinkedHashSet<>());
         locations.remove(location);
         if (locations.isEmpty()) {
-            selectedExecutors.remove(player);
+            selectedExecutors.remove(player.getUniqueId());
         } else {
-            selectedExecutors.put(player, locations);
+            selectedExecutors.put(player.getUniqueId(), locations);
         }
     }
 
@@ -601,11 +592,11 @@ public class DevPlanet {
      * @param location location of executor block.
      */
     public void clearMarkedExecutors(@NotNull Location location) {
-        for (Player player : new HashSet<>(selectedExecutors.keySet())) {
-            Set<Location> locations = selectedExecutors.get(player);
+        for (UUID uuid : new HashSet<>(selectedExecutors.keySet())) {
+            Set<Location> locations = selectedExecutors.get(uuid);
             if (locations == null || locations.isEmpty()) continue;
             locations.remove(location);
-            selectedExecutors.put(player, locations);
+            selectedExecutors.put(uuid, locations);
         }
     }
 
@@ -616,7 +607,7 @@ public class DevPlanet {
      * @return true - code was changed, false - not changed.
      */
     public boolean isCodeChanged() {
-        return isCodeChanged;
+        return !changedColumns.isEmpty();
     }
 
     /**
@@ -640,20 +631,56 @@ public class DevPlanet {
     }
 
     /**
-     * Sets whether code was changed after last
-     * parsing and saving code.
-     * <p>
-     * If true, code will be saved and parsed
-     * when world owner or developer types /play command.
+     * Returns executor location by location.
      *
-     * @param codeChanged true - changed, false - not.
+     * @param location location to get platform.
+     * @return executor location - if location is related to actions or its executor location itself.
      */
-    public void setCodeChanged(boolean codeChanged) {
-        isCodeChanged = codeChanged;
+    public @Nullable Location getCodingLineBeginLocation(@NotNull Location location) {
+        return getDevPlatformer().getColumnBeginLocation(this, location);
+    }
+
+    /**
+     * Adds coding line, that will be parsed on
+     * partially code parsing (/play) by getting
+     * begin location.
+     *
+     * @param location location on coding line.
+     */
+    public void addInsideCodeColumnChange(@NotNull Location location) {
+        Location executorLocation = getCodingLineBeginLocation(location);
+        if (executorLocation == null) return;
+        changedColumns.add(executorLocation);
+    }
+
+    /**
+     * Adds coding line, that will be parsed on
+     * partially code parsing (/play).
+     *
+     * @param executorLocation location of executor on coding line.
+     */
+    public void addChangedColumn(@NotNull Location executorLocation) {
+        changedColumns.add(executorLocation);
+    }
+
+    /**
+     * Returns immutable set of executor locations for changed coding lines.
+     *
+     * @return immutable set of locations with executors.
+     */
+    public @NotNull Set<Location> getChangedColumns() {
+        return new HashSet<>(changedColumns);
+    }
+
+    /**
+     * Clears set of changed coding lines, so they will be not parsed.
+     */
+    public void clearColumnsChanges() {
+        changedColumns.clear();
     }
 
     public void clearMarkedExecutors(@NotNull Player player) {
-        selectedExecutors.remove(player);
+        selectedExecutors.remove(player.getUniqueId());
     }
 
     public World getWorld() {

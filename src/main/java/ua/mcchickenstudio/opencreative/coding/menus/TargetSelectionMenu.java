@@ -19,6 +19,7 @@
 package ua.mcchickenstudio.opencreative.coding.menus;
 
 import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -73,7 +74,9 @@ public final class TargetSelectionMenu extends AbstractMenu {
                     setSignLine(signLocation, 4, "");
                 }
                 DevPlanet devPlanet = OpenCreative.getPlanetsManager().getDevPlanet(signLocation.getWorld());
-                if (devPlanet != null) devPlanet.setCodeChanged(true);
+                if (devPlanet != null) {
+                    devPlanet.addInsideCodeColumnChange(signLocation.getBlock().getRelative(BlockFace.NORTH).getLocation());
+                }
                 translateBlockSign(signLocation.getBlock());
                 player.closeInventory();
                 Sounds.DEV_SET_TARGET.play(player);

@@ -19,12 +19,10 @@
 package ua.mcchickenstudio.opencreative.coding.blocks.executors.entity.state;
 
 import org.bukkit.Material;
-import org.bukkit.event.entity.CreeperPowerEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.WorldEvent;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.entity.state.CreeperPoweredEvent;
-import ua.mcchickenstudio.opencreative.coding.blocks.events.entity.state.PigZombieAngeredEvent;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.entity.EntityExecutor;
 import ua.mcchickenstudio.opencreative.coding.menus.MenusCategory;
 

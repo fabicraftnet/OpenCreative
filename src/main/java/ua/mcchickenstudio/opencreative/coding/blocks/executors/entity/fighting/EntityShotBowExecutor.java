@@ -22,7 +22,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.WorldEvent;
-import ua.mcchickenstudio.opencreative.coding.blocks.events.entity.fighting.EntityDiedEvent;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.entity.fighting.EntityShotBowEvent;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.entity.EntityExecutor;
 import ua.mcchickenstudio.opencreative.coding.menus.MenusCategory;

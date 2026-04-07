@@ -22,7 +22,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.WorldEvent;
-import ua.mcchickenstudio.opencreative.coding.blocks.events.player.movement.EnteredVehicleEvent;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.player.movement.PlayerVehicleExitEvent;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.player.PlayerExecutor;
 import ua.mcchickenstudio.opencreative.coding.menus.MenusCategory;

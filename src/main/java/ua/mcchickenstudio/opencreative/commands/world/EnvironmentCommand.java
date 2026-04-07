@@ -28,7 +28,6 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -737,18 +736,20 @@ public class EnvironmentCommand extends CommandHandler {
                                                 () -> {
                                                     CodingBlockPlacer placer = new CodingBlockPlacer(devPlanet);
                                                     CodingBlockPlacer.CodePlacementResult result = placer.placeCodingLines(devPlanet, finalSection);
-                                                    if (result == CodingBlockPlacer.CodePlacementResult.NOT_ENOUGH_CODING_LINES) {
+                                                    if (result.getType() == CodingBlockPlacer.CodePlacementResult.Type.NOT_ENOUGH_SPACE) {
                                                         player.sendMessage(getLocaleMessage("environment.prompter.few-space"));
                                                         Sounds.PLAYER_FAIL.play(player);
                                                         broadcastPrompter(planet, player, request, "failed");
-                                                    } else if (result.isSuccess()) {
+                                                    } else if (result.getType().isSuccess()) {
                                                         long responseTime = System.currentTimeMillis() - time;
                                                         player.sendMessage(getLocaleMessage("environment.prompter.success")
                                                                 .replace("%time%", String.valueOf(responseTime / 1000))
                                                                 .replace("%idea%", request));
                                                         Sounds.DEV_PROMPTER_DONE.play(player);
                                                         broadcastPrompter(planet, player, request, "success");
-                                                        planet.getDevPlanet().setCodeChanged(true);
+                                                        for (Location placedExecutor : result.getPlacedColumns()) {
+                                                            devPlanet.addChangedColumn(placedExecutor);
+                                                        }
                                                     } else {
                                                         broadcastPrompter(planet, player, request, "failed");
                                                     }

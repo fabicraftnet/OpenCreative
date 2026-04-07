@@ -22,7 +22,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.WorldEvent;
-import ua.mcchickenstudio.opencreative.coding.blocks.events.entity.entities.EntitySpawnEvent;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.entity.interaction.EntityBornEvent;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.entity.EntityExecutor;
 import ua.mcchickenstudio.opencreative.coding.menus.MenusCategory;

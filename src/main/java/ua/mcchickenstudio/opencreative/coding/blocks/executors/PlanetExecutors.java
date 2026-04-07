@@ -33,6 +33,7 @@ import ua.mcchickenstudio.opencreative.coding.blocks.executors.other.Function;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.other.Method;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.other.NameableExecutor;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.player.movement.PlayerWalkExecutor;
+import ua.mcchickenstudio.opencreative.coding.blocks.executors.world.blocks.WorldBlockFluidChangedExecutor;
 import ua.mcchickenstudio.opencreative.coding.variables.ValueType;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 
@@ -94,7 +95,7 @@ public class PlanetExecutors {
     }
 
     public static boolean canRunExecutor(@NotNull Planet planet, @NotNull Executor executor) {
-        if (executor instanceof PlayerWalkExecutor) {
+        if (executor instanceof PlayerWalkExecutor || executor instanceof WorldBlockFluidChangedExecutor) {
             if (executor.getLastCalls() >= planet.getLimits().getCodeOperationsLimit()) {
                 planet.getTerritory().getScript().getExecutors().stopCode("operations limit");
                 sendPlanetCodeCriticalErrorMessage(planet, executor, getLocaleMessage("coding-error.operations-limit", false)

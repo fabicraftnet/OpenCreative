@@ -31,7 +31,6 @@ import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.commands.CommandHandler;
 import ua.mcchickenstudio.opencreative.events.planet.PlanetSharingChangeEvent;
-import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
 import ua.mcchickenstudio.opencreative.managers.downloader.TooBigWorldException;
 import ua.mcchickenstudio.opencreative.menus.world.settings.EntitiesBrowserMenu;
 import ua.mcchickenstudio.opencreative.menus.world.settings.WorldSettingsMenu;

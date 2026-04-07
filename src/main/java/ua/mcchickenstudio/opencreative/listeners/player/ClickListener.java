@@ -34,6 +34,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.player.inventory.*;
+import ua.mcchickenstudio.opencreative.coding.menus.layouts.Layout;
 import ua.mcchickenstudio.opencreative.coding.modules.BlocksManipulatorMenu;
 import ua.mcchickenstudio.opencreative.menus.EnderChestMenu;
 import ua.mcchickenstudio.opencreative.planets.DevPlanet;
@@ -68,6 +69,7 @@ public final class ClickListener implements Listener {
          */
         if (event.isCancelled()) return;
         if (event.getInventory().getLocation() == null) return;
+        if (event.getInventory().getHolder() instanceof Layout) return;
         for (ItemStack insideItem : event.getInventory().getContents()) {
             if (insideItem == null) continue;
             ItemUtils.fixItem(insideItem);
@@ -261,6 +263,7 @@ public final class ClickListener implements Listener {
 
     @EventHandler
     public void onInventorySlotChange(PlayerInventorySlotChangeEvent event) {
+        if (event.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof Layout) return;
         ItemUtils.fixItem(event.getNewItemStack());
         ItemUtils.fixItem(event.getOldItemStack());
     }

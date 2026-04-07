@@ -18,6 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.listeners.player;
 
+import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -32,8 +33,8 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -56,7 +57,6 @@ import ua.mcchickenstudio.opencreative.utils.world.WorldUtils;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static ua.mcchickenstudio.opencreative.utils.ColorUtils.parseRGB;
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.getCooldown;
@@ -175,7 +175,7 @@ public final class ChatListener implements Listener {
                     .replace("%player%", player.getName())
                     .replace("%message%", MiniMessage.miniMessage().escapeTags(message)));
             if (formatted.clickEvent() == null) formatted = formatted.clickEvent(ClickEvent.suggestCommand(message));
-
+            
             Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
             WorldChatEvent creativeEvent = new WorldChatEvent(player, message, formatted, player.getWorld(), planet);
 

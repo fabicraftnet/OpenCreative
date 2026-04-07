@@ -19,7 +19,6 @@
 package ua.mcchickenstudio.opencreative.commands.world.modes;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -44,7 +43,6 @@ import java.util.concurrent.CompletableFuture;
 
 import static ua.mcchickenstudio.opencreative.listeners.player.ChangedWorld.removePlayerWithLocation;
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
-import static ua.mcchickenstudio.opencreative.utils.ItemUtils.createItem;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getPlayerLocaleMessage;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.*;
@@ -86,7 +84,7 @@ public class PlayCommand extends CommandHandler {
 
         DevPlanet playerDevPlanet = OpenCreative.getPlanetsManager().getDevPlanet(player);
         if (playerDevPlanet != null) {
-            playerDevPlanet.getLastLocations().put(player, player.getLocation());
+            playerDevPlanet.getLastLocations().put(player.getUniqueId(), player.getLocation());
         }
 
         removePlayerWithLocation(player);
@@ -127,7 +125,20 @@ public class PlayCommand extends CommandHandler {
                         if (planet.getDevPlanet().isCodeChanged() && planet.getDevPlanet().isCurrentlySavingCode()) {
                             player.sendMessage(getLocaleMessage("world.dev-mode.already-saving-code"));
                         } else {
-                            CompletableFuture<Boolean> parserResult = new CodingBlockParser(planet.getDevPlanet()).parseCode(planet.getDevPlanet());
+                            CompletableFuture<Boolean> parserResult;
+                            if (Arrays.asList(args).contains("recompile")) {
+                                if (sender.hasPermission("opencreative.world.recompile")) {
+                                    parserResult = new CodingBlockParser(planet.getDevPlanet())
+                                            .recompileCode(planet.getDevPlanet());
+                                } else {
+                                    parserResult = new CodingBlockParser(planet.getDevPlanet())
+                                            .parseCode(planet.getDevPlanet());
+                                    player.sendMessage(getLocaleMessage("no-perms"));
+                                }
+                            } else {
+                                parserResult = new CodingBlockParser(planet.getDevPlanet())
+                                        .parseCode(planet.getDevPlanet());
+                            }
                             parserResult.thenAccept(success -> {
                                 if (success) {
                                     afterCompilation(player, playerDevPlanet, true);
