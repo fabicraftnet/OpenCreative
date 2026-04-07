@@ -66,7 +66,6 @@ public abstract class Layout extends AbstractMenu {
     protected final List<ParameterButton> parameterButtons = new ArrayList<>();
     protected final ArgumentSlot[] requiredSlots;
 
-    private final BlockState loadedContainer;
     private final InventoryHolder containerHolder;
 
     private int currentSlot = 0;
@@ -83,8 +82,7 @@ public abstract class Layout extends AbstractMenu {
         this.actionType = actionType;
         this.containerBlock = containerBlock;
         this.requiredSlots = actionType.getArgumentsSlots();
-        this.loadedContainer = containerBlock.getState();
-        if (loadedContainer instanceof InventoryHolder holder) {
+        if (containerBlock.getState() instanceof InventoryHolder holder) {
             containerHolder = holder;
         } else {
             containerHolder = null;
