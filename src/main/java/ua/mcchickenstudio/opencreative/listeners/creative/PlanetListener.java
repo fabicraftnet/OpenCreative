@@ -23,11 +23,22 @@ import org.bukkit.event.Listener;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.commands.experiments.Experiments;
 import ua.mcchickenstudio.opencreative.events.planet.PlanetDisconnectPlayerEvent;
+import ua.mcchickenstudio.opencreative.wanders.Wander;
 
 public final class PlanetListener implements Listener {
 
     @EventHandler
     public void onDisconnect(PlanetDisconnectPlayerEvent event) {
+        if (!event.getPlanet().isOwner(event.getPlayer())) {
+            Wander wander = OpenCreative.getWander(event.getPlayer());
+            if (wander.getGriefStats().isSuspicious()) {
+                OpenCreative.getPlugin().getLogger().info("[GRIEF: "
+                        + event.getPlanet().getId()
+                        + "] Suspicious changes by "
+                        + event.getPlayer().getName() + ": " + wander.getGriefStats().getAsString());
+                wander.getGriefStats().clear();
+            }
+        }
         if (Experiments.isEnabled("wanders")) {
             OpenCreative.getWander(event.getPlayer()).setLastPlayedWorldId(event.getPlanet().getId());
         }

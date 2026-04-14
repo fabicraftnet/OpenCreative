@@ -57,15 +57,18 @@ public final class IsWorldPlayerInWorldCondition extends WorldCondition {
                 } else if (allElements) {
                     return false;
                 }
-            } else {
+            } else if (getWorld().equals(getPlanet().getDevPlanet().getWorld())) {
                 // If player in dev world
                 if (consider.equals("all") || consider.equals("dev")) {
                     inWorld = true;
                 } else if (allElements) {
                     return false;
                 }
+            } else {
+                if (allElements) {
+                    return false;
+                }
             }
-
         }
         return inWorld;
     }

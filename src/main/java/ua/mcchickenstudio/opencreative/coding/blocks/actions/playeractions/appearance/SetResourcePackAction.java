@@ -32,6 +32,7 @@ import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.playeractions.PlayerAction;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
+import ua.mcchickenstudio.opencreative.coding.exceptions.NotTrustedLinkException;
 import ua.mcchickenstudio.opencreative.coding.exceptions.TooLongTextException;
 
 import java.net.URI;
@@ -109,7 +110,7 @@ public final class SetResourcePackAction extends PlayerAction {
                 return true;
             }
         }
-        throw new RuntimeException("The requested url " + url + " is not trusted by server.");
+        throw new NotTrustedLinkException(url);
     }
 
     @Override

@@ -220,6 +220,8 @@ public enum ActionType implements CodingBlockType {
     PLAYER_HIDE_SCOREBOARD(ActionCategory.PLAYER_ACTION, MenusCategory.APPEARANCE, HideScoreboardAction.class, Material.ITEM_FRAME),
     PLAYER_SHOW_BOSS_BAR(ActionCategory.PLAYER_ACTION, MenusCategory.APPEARANCE, ShowBossBarAction.class, Material.DRAGON_BREATH, new ArgumentSlot("bossbar", ValueType.TEXT)),
     PLAYER_HIDE_BOSS_BAR(ActionCategory.PLAYER_ACTION, MenusCategory.APPEARANCE, HideBossBarAction.class, Material.DRAGON_HEAD, new ArgumentSlot("bossbar", ValueType.TEXT)),
+    PLAYER_SHOW_PARTICLE(ActionCategory.PLAYER_ACTION, MenusCategory.APPEARANCE, ShowParticleAction.class, Material.NETHER_STAR, new ArgumentSlot("locations", ValueType.LOCATION, (byte) 18), new ArgumentSlot("particle", ValueType.PARTICLE), new ArgumentSlot("count", ValueType.NUMBER), new ArgumentSlot("offset-x", ValueType.NUMBER), new ArgumentSlot("offset-y", ValueType.NUMBER), new ArgumentSlot("offset-z", ValueType.NUMBER)),
+
     PLAYER_SET_ARROWS_IN_BODY(ActionCategory.PLAYER_ACTION, MenusCategory.APPEARANCE, SetArrowsInBodyAction.class, Material.ARROW, new ArgumentSlot("count", ValueType.NUMBER), new ParameterSlot("add")),
     PLAYER_SET_BEE_STINGERS_IN_BODY(ActionCategory.PLAYER_ACTION, MenusCategory.APPEARANCE, SetBeeStingersInBodyAction.class, Material.BEE_SPAWN_EGG, new ArgumentSlot("count", ValueType.NUMBER), new ParameterSlot("add")),
     PLAYER_SET_VIEW_DISTANCE(ActionCategory.PLAYER_ACTION, MenusCategory.APPEARANCE, SetViewDistanceAction.class, Material.SPYGLASS, new ArgumentSlot("distance", ValueType.NUMBER), new ParameterSlot("add")),

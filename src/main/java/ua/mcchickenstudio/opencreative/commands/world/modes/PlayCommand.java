@@ -90,7 +90,7 @@ public class PlayCommand extends CommandHandler {
         removePlayerWithLocation(player);
         if (planet.getMode() != Planet.Mode.PLAYING) {
             // Build mode
-            if (planet.getWorldPlayers().canDevelop(player)) {
+            if (planet.getWorldPlayers().canDevelop(player) || player.hasPermission("opencreative.world.play.switch")) {
                 PlanetModeChangeEvent event = new PlanetModeChangeEvent(planet, planet.getMode(), Planet.Mode.PLAYING, player);
                 event.callEvent();
                 if (event.isCancelled()) {

@@ -32,10 +32,7 @@ import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.util.eventbus.Subscribe;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.biome.BiomeType;
-import com.sk89q.worldedit.world.block.BaseBlock;
-import com.sk89q.worldedit.world.block.BlockState;
-import com.sk89q.worldedit.world.block.BlockStateHolder;
-import com.sk89q.worldedit.world.block.BlockTypes;
+import com.sk89q.worldedit.world.block.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -46,6 +43,7 @@ import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.utils.SystemUtils;
 import ua.mcchickenstudio.opencreative.utils.hooks.HookUtils;
+import ua.mcchickenstudio.opencreative.wanders.Wander;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -110,7 +108,7 @@ public final class WorldEditManager implements BlocksManager {
                 CommandSender sender = BukkitAdapter.adapt(event.getActor());
                 if (sender instanceof Player player) {
                     if (planet.getWorldPlayers().canBuild(player)) {
-                        event.setExtent(new PlanetExtent(planet, event.getExtent()));
+                        event.setExtent(new PlanetExtent(planet, event.getExtent(), player));
                     } else {
                         event.setExtent(new DisallowedExtent(event.getExtent()));
                     }
@@ -137,21 +135,43 @@ public final class WorldEditManager implements BlocksManager {
         private static final BlockState AIRSTATE = BlockTypes.AIR.getDefaultState();
         private static final BaseBlock AIRBASE = BlockTypes.AIR.getDefaultState().toBaseBlock();
         private final Planet planet;
+        private final Player player;
 
         public PlanetExtent(Planet planet, Extent extent) {
             super(extent);
             this.planet = planet;
+            this.player = null;
+        }
+
+        public PlanetExtent(Planet planet, Extent extent, Player player) {
+            super(extent);
+            this.planet = planet;
+            this.player = player;
         }
 
         @SuppressWarnings("unchecked")
         @Override
         public boolean setBlock(BlockVector3 location, BlockStateHolder block) {
-            return planet.getWorld().getWorldBorder().isInside(
+            boolean result = planet.getWorld().getWorldBorder().isInside(
                     new Location(planet.getWorld(),
                             location.x(),
                             location.y(),
                             location.z())
             ) && super.setBlock(location, block);
+            if (result && player != null) {
+                BlockType type = block.getBlockType();
+                if (type.equals(BlockTypes.LAVA) || type.equals(BlockTypes.TNT) || type.equals(BlockTypes.AIR)) {
+                    Wander wander = OpenCreative.getWander(player);
+                    if (type.equals(BlockTypes.LAVA)) {
+                        wander.getGriefStats().addLavaPlacementsAmount(1);
+                    } else if (type.equals(BlockTypes.TNT)) {
+                        wander.getGriefStats().addTntPlacementsAmount(1);
+                    } else if (type.equals(BlockTypes.AIR)) {
+                        wander.getGriefStats().addDestroyedBlocksAmount(1);
+                    }
+                }
+            }
+            return result;
         }
 
         @Override
@@ -208,6 +228,7 @@ public final class WorldEditManager implements BlocksManager {
 
         public static final BlockState AIRSTATE = BlockTypes.AIR.getDefaultState();
         public static final BaseBlock AIRBASE = BlockTypes.AIR.getDefaultState().toBaseBlock();
+
         public DisallowedExtent(Extent extent) {
             super(extent);
         }

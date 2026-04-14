@@ -155,6 +155,9 @@ public final class DestroyBlockListener implements Listener {
             new DestroyBlockEvent(event.getPlayer(), event).callEvent();
             if (!event.isCancelled()) {
                 Menus.onBlockDestroy(event.getBlock().getLocation());
+                if (!planet.isOwner(event.getPlayer())) {
+                    OpenCreative.getWander(event.getPlayer()).getGriefStats().addDestroyedBlocksAmount(1);
+                }
             }
         } else if (isEntityInLobby(player) && OpenCreative.getSettings().getLobbySettings().isDestroyingBlocksDisallowed()
                 && !player.hasPermission("opencreative.lobby.destroying-blocks.bypass")) {

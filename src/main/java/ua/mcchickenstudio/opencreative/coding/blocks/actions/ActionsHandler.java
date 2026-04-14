@@ -248,6 +248,8 @@ public class ActionsHandler {
         switch (error) {
             case PlayerException exception ->
                     localizedMessage = localizedMessage.replace("%player%", exception.getPlayerName());
+            case NotTrustedLinkException exception ->
+                    localizedMessage = localizedMessage.replace("%link%", exception.getLink());
             case UnknownMethodException exception ->
                     localizedMessage = localizedMessage.replace("%name%", exception.getName());
             case UnknownCycleException exception ->
