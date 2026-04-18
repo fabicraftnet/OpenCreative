@@ -182,7 +182,7 @@ public class Argument {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return path + " - " + type.name() + ": " + substring(value.toString(), 30);
     }
 }

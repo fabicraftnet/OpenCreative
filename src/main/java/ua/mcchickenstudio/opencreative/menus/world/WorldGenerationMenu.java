@@ -46,6 +46,7 @@ public final class WorldGenerationMenu extends AbstractMenu {
     private final ParameterButton environmentButton;
     private final ParameterButton generateStructures;
     private ParameterButton biomePicker;
+    private boolean ignoreLimit;
     private final ItemStack createButton = createItem(Material.PUFFERFISH_BUCKET, 1, "menus.world-creation.items.create");
 
     public WorldGenerationMenu(Player player, String generator, String environment, boolean generateStructures) {
@@ -61,6 +62,10 @@ public final class WorldGenerationMenu extends AbstractMenu {
 
     public WorldGenerationMenu(Player player) {
         this(player, "flat", "normal", true);
+    }
+
+    public void setIgnoreLimit(boolean ignoreLimit) {
+        this.ignoreLimit = ignoreLimit;
     }
 
     @Override
@@ -128,7 +133,7 @@ public final class WorldGenerationMenu extends AbstractMenu {
                     return;
                 }
                 boolean notReachedWorldsLimit = OpenCreative.getPlanetsManager().getPlanetsByOwner(player).size() < OpenCreative.getSettings().getGroups().getGroup(player).getWorldsLimit();
-                if (notReachedWorldsLimit) {
+                if (notReachedWorldsLimit || ignoreLimit) {
                     Sounds.WORLD_GENERATION.play(player);
                     player.closeInventory();
                     WorldGenerator generator = WorldGenerators.getInstance().getById(generatorButton.getCurrentValue().toString());

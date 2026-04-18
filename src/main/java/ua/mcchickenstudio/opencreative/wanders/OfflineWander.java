@@ -16,7 +16,25 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ua.mcchickenstudio.opencreative.indev;
+/*
+ * OpenCreative+, Minecraft plugin.
+ * (C) 2022-2026, McChicken Studio, mcchickenstudio@gmail.com
+ *
+ * OpenCreative+ is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * OpenCreative+ is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package ua.mcchickenstudio.opencreative.wanders;
 
 import com.google.gson.*;
 import com.google.gson.annotations.Since;
@@ -25,8 +43,7 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import ua.mcchickenstudio.opencreative.indev.Links;
 
 import java.io.*;
 import java.util.*;
@@ -44,7 +61,6 @@ import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessag
  */
 public class OfflineWander {
 
-    private static final Logger log = LoggerFactory.getLogger(OfflineWander.class);
     @Since(5.6)
     protected final @NotNull UUID uuid;
     @Since(5.6)
@@ -68,103 +84,224 @@ public class OfflineWander {
     @Since(5.8)
     protected Location lastLocation;
 
+    /**
+     * Constructor of offline wander by player's unique ID.
+     *
+     * @param uuid unique ID of player.
+     */
     public OfflineWander(@NotNull UUID uuid) {
         this.uuid = uuid;
         loadInfo();
     }
 
+    /**
+     * Constructor of offline wander by offline player.
+     *
+     * @param offlinePlayer offline player.
+     */
     public OfflineWander(@NotNull OfflinePlayer offlinePlayer) {
         this.uuid = offlinePlayer.getUniqueId();
         loadInfo();
     }
 
+    /**
+     * Returns offline player associated with wander.
+     *
+     * @return offline player.
+     */
     public @NotNull OfflinePlayer getOfflinePlayer() {
         return Bukkit.getOfflinePlayer(uuid);
     }
 
+    /**
+     * Checks whether wander is playing on server.
+     *
+     * @return true - player is online, false - offline.
+     */
     public boolean isOnline() {
         return Bukkit.getPlayer(uuid) != null;
     }
 
+    /**
+     * Returns unique ID of wander.
+     *
+     * @return unique ID of player.
+     */
     public @NotNull UUID getUniqueId() {
         return uuid;
     }
 
+    /**
+     * Returns custom name of wander, or null - if not set.
+     *
+     * @return name of wander, or null.
+     */
     public @Nullable String getName() {
         return name;
     }
 
+    /**
+     * Returns profile's description, or null - if not set.
+     *
+     * @return description, or null.
+     */
     public @Nullable String getDescription() {
         return description;
     }
 
+    /**
+     * Returns profile's gender, or null - if not set.
+     *
+     * @return gender, or null.
+     */
     public @Nullable Gender getGender() {
         return gender;
     }
 
+    /**
+     * Returns last location of wander (where player was playing
+     * before leaving the server), or null - if not saved.
+     *
+     * @return last location, or null.
+     */
     public @Nullable Location getLastLocation() {
         return lastLocation;
     }
 
-    public @Nullable String getLink(@NotNull String type) {
+    /**
+     * Returns link of social media by ID,
+     * or null - if not set.
+     *
+     * @param id type of social media.
+     * @return link, or null.
+     */
+    public @Nullable String getLink(@NotNull String id) {
         if (links == null) return null;
-        return links.getLink(type);
+        return links.getLink(id);
     }
 
-    public void setLink(@NotNull String type, @NotNull String link) {
+    /**
+     * Sets link of social media by ID.
+     *
+     * @param id type of social media.
+     * @param link link to set.
+     */
+    public void setLink(@NotNull String id, @NotNull String link) {
         if (links == null) {
             this.links = new Links();
         }
-        links.setLink(type, link);
+        links.setLink(id, link);
         saveData();
     }
 
-    public void removeLink(@NotNull String type) {
+    /**
+     * Removes social media link by ID.
+     *
+     * @param id type of social media.
+     */
+    public void removeLink(@NotNull String id) {
         if (links == null) return;
-        links.setLink(type, null);
+        links.setLink(id, null);
         saveData();
     }
 
+    /**
+     * Returns ID of last visited planet by player,
+     * or -1 - if not saved.
+     *
+     * @return last visited planet's ID, or -1.
+     */
     public int getLastPlayedWorldId() {
         return lastPlayedWorldId;
     }
 
+    /**
+     * Returns amount of all visited worlds
+     * by player.
+     *
+     * @return amount of visited worlds.
+     */
     public int getVisits() {
         return visits;
     }
 
+    /**
+     * Checks whether hints should
+     * be hidden from player.
+     *
+     * @return true - should be hidden, false - show them.
+     */
     public boolean shouldHideHints() {
         return hideHints;
     }
 
+    /**
+     * Returns set of favorite worlds IDs,
+     * marked by player.
+     *
+     * @return set of favorite worlds IDs.
+     */
     public @NotNull Set<Integer> getFavoriteWorlds() {
         return favoriteWorlds != null ? favoriteWorlds : Set.of();
     }
 
+    /**
+     * Returns set of friends UUIDs,
+     * picked by player.
+     *
+     * @return list of friends UUIDs.
+     */
     public @NotNull List<UUID> getFriends() {
         return friends != null ? friends : List.of();
     }
 
+    /**
+     * Sets last visited world ID.
+     *
+     * @param lastPlayedWorldId id of visited planet.
+     */
     public void setLastPlayedWorldId(int lastPlayedWorldId) {
         this.lastPlayedWorldId = lastPlayedWorldId;
         saveData();
     }
 
+    /**
+     * Sets amount of visits.
+     *
+     * @param visits new amount to set.
+     */
     public void setVisits(int visits) {
         this.visits = visits;
         saveData();
     }
 
+    /**
+     * Sets profile's custom name.
+     *
+     * @param name new name to set.
+     */
     public void setName(@NotNull String name) {
         this.name = name;
         saveData();
     }
 
+    /**
+     * Sets profile's description.
+     *
+     * @param description new description to set.
+     */
     public void setDescription(@NotNull String description) {
         this.description = description;
         saveData();
     }
 
+    /**
+     * Adds specified UUID to friends list.
+     *
+     * @param friendUUID unique ID of friend.
+     * @return true - was added, false - already added,
+     * or friend's UUID is same with wander.
+     */
     public boolean addFriend(@NotNull UUID friendUUID) {
         if (uuid.equals(friendUUID)) {
             return false;
@@ -178,6 +315,13 @@ public class OfflineWander {
         return true;
     }
 
+    /**
+     * Removes specified UUID from friends list.
+     *
+     * @param friendUUID unique ID of friend.
+     * @return true - was removed, false - not removed,
+     * or friend's UUID is same with wander.
+     */
     public boolean removeFriend(@NotNull UUID friendUUID) {
         if (uuid.equals(friendUUID)) {
             return false;
@@ -190,6 +334,12 @@ public class OfflineWander {
         return true;
     }
 
+    /**
+     * Adds specified planet's ID to favorite worlds.
+     *
+     * @param worldId id of planet.
+     * @return true - was added, false - already added.
+     */
     public boolean addFavoriteWorld(int worldId) {
         if (getFavoriteWorlds().contains(worldId)) {
             return false;
@@ -200,6 +350,12 @@ public class OfflineWander {
         return true;
     }
 
+    /**
+     * Removes specified planet's ID from favorite worlds.
+     *
+     * @param worldId id of planet.
+     * @return true - was removed, false - not added yet.
+     */
     public boolean removeFavoriteWorld(int worldId) {
         if (favoriteWorlds == null || !getFavoriteWorlds().contains(worldId)) {
             return false;
@@ -209,6 +365,12 @@ public class OfflineWander {
         return true;
     }
 
+    /**
+     * Sets profile's gender.
+     *
+     * @param gender new gender to set.
+     * @return true - was changed, false - its already current gender.
+     */
     public boolean setGender(@NotNull Gender gender) {
         if (this.gender == gender) {
             return false;
@@ -218,8 +380,13 @@ public class OfflineWander {
         return true;
     }
 
+    /**
+     * Clears all data and removes json file.
+     *
+     * @return true - was removed, false - failde to remove.
+     */
     public boolean clearData() {
-        File jsonFile = getWanderJsonFile(this,false);
+        File jsonFile = getWanderJsonFile(this, false);
         if (jsonFile == null || !jsonFile.exists()) {
             return false;
         }
@@ -237,8 +404,11 @@ public class OfflineWander {
         }
     }
 
+    /**
+     * Loads information about wander from disk.
+     */
     public void loadInfo() {
-        File jsonFile = getWanderJsonFile(this,false);
+        File jsonFile = getWanderJsonFile(this, false);
         if (jsonFile == null || !jsonFile.exists()) {
             return;
         }
@@ -273,7 +443,8 @@ public class OfflineWander {
                     try {
                         UUID friend = UUID.fromString(el.getAsString());
                         this.friends.add(friend);
-                    } catch (Exception ignored) {}
+                    } catch (Exception ignored) {
+                    }
                 }
             }
 
@@ -310,12 +481,15 @@ public class OfflineWander {
         }
     }
 
+    /**
+     * Saves wander's information to disk.
+     */
     public void saveData() {
         try {
             if (!shouldSaveData()) {
                 return;
             }
-            File jsonFile = getWanderJsonFile(this,true);
+            File jsonFile = getWanderJsonFile(this, true);
             if (jsonFile == null) {
                 return;
             }
@@ -329,10 +503,20 @@ public class OfflineWander {
         }
     }
 
+    /**
+     * Checks whether data should be saved.
+     *
+     * @return true - should be saved, false - can be not saved.
+     */
     private boolean shouldSaveData() {
         return favoriteWorlds != null || description != null || gender != null || lastPlayedWorldId != -1;
     }
 
+    /**
+     * Returns Json object for saving.
+     *
+     * @return json object to save.
+     */
     private JsonObject getJsonObject() {
         JsonObject json = new JsonObject();
         json.addProperty("uuid", uuid.toString());

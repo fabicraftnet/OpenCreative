@@ -325,6 +325,9 @@ messages:
   # Sends "Not found message ..." messages in console.
   not-found: false
 
+  # Sends "[GRIEF: ID] Suspicious changes by Player: ..." messages in console.
+  grief-stats: true
+
   #
   # List of message paths, that will be not changed
   # even after /oc resetlocale. Recommended, if you

@@ -39,6 +39,7 @@ public class PlanetLimits {
     private final Planet planet;
 
     private final LinkedList<Long> lastRecipeOperations = new LinkedList<>();
+    private final LinkedList<Long> lastExplosionSpawns = new LinkedList<>();
     private final LinkedList<Long> lastWebRequests = new LinkedList<>();
     private final LinkedList<Long> lastMobSpawnsBySpawner = new LinkedList<>();
     private final LinkedList<Long> lastLightningsStrikes = new LinkedList<>();
@@ -419,6 +420,30 @@ public class PlanetLimits {
     }
 
     /**
+     * Checks if world has a lot of explosions in a short time.
+     * Useful to prevent "too many explosions" crash.
+     *
+     * @return true - if it's disallowed to create an explosion, false - it's allowed.
+     */
+    public boolean isTooManyExplosionsAtOnce() {
+
+        long now = System.currentTimeMillis();
+
+        // Removes time from list, if it's more than 1 second.
+        while (!lastExplosionSpawns.isEmpty() && (now - lastExplosionSpawns.peek()) > 1000) {
+            lastExplosionSpawns.poll();
+        }
+
+        if (lastExplosionSpawns.size() >= 3) {
+            return true;
+        } else {
+            lastExplosionSpawns.add(now);
+            return false;
+        }
+
+    }
+
+    /**
      * Checks if world has a lot of spawned mobs by spawner block.
      * Useful to prevent "too many spawns" crash.
      *
@@ -638,6 +663,7 @@ public class PlanetLimits {
         lastActionsCalls.clear();
         lastRecipeOperations.clear();
         lastMobSpawnsBySpawner.clear();
+        lastExplosionSpawns.clear();
     }
 
 }

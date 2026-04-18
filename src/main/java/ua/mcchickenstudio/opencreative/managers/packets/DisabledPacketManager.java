@@ -34,10 +34,6 @@ import org.jetbrains.annotations.NotNull;
 public final class DisabledPacketManager implements PacketManager {
 
     @Override
-    public void showAdvancement(@NotNull Player player, @NotNull ItemStack item, @NotNull Component title, @NotNull Component message) {
-    }
-
-    @Override
     public void displayGlowingBlock(@NotNull Player player, @NotNull Location location) {
     }
 

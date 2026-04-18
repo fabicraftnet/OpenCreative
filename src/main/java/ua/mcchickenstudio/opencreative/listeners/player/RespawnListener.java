@@ -18,6 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.listeners.player;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -49,6 +50,9 @@ public final class RespawnListener implements Listener {
                     ItemsGroup.PLAY_OWNER.setItemsIfAbsent(player);
                 }
             }
+            Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
+                planet.getTerritory().showBorders(player);
+            }, 1L);
             new ua.mcchickenstudio.opencreative.coding.blocks.events.player.fighting.PlayerRespawnEvent(player).callEvent();
         }
     }

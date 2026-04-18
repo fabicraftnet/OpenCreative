@@ -62,7 +62,10 @@ public final class FlatGenerator extends WorldGenerator implements EnvironmentCa
                 customFlatTerrainBlock = Material.SANDSTONE;
                 customFlatSurfaceBlock = Material.SAND;
             }
-            case SNOWY_TAIGA -> customFlatTerrainBlock = Material.SNOW_BLOCK;
+            case SNOWY_TAIGA -> {
+                customFlatTerrainBlock = Material.SNOW_BLOCK;
+                customFlatSurfaceBlock = Material.SNOW_BLOCK;
+            }
             case BASALT_DELTAS -> customFlatTerrainBlock = Material.BASALT;
             case WARPED_FOREST -> {
                 customFlatTerrainBlock = Material.NETHERRACK;

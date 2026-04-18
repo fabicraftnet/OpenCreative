@@ -23,6 +23,7 @@ import org.bukkit.GameMode;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.player.world.QuitEvent;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
@@ -80,7 +81,7 @@ public class PlanetPlayers {
         planet.getTerritory().getRecipes().clearForPlayer(player);
     }
 
-    public PlanetPlayer getPlanetPlayer(Player player) {
+    public @Nullable PlanetPlayer getPlanetPlayer(@NotNull Player player) {
         for (PlanetPlayer planetPlayer : planetPlayers) {
             if (planetPlayer.getPlayer().equals(player)) {
                 return planetPlayer;

@@ -345,7 +345,14 @@ public final class EntityStateListener implements Listener {
     @EventHandler
     public void onHangingBreak(HangingBreakByEntityEvent event) {
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(event.getEntity().getWorld());
-        if (planet != null) new HangingBreakEvent(event).callEvent();
+        if (planet != null) {
+            new HangingBreakEvent(event).callEvent();
+            if (!event.isCancelled() && event.getEntity() instanceof Player player) {
+                if (!planet.isOwner(player)) {
+                    OpenCreative.getWander(player).getGriefStats().addDestroyedHangingsAmount(1);
+                }
+            }
+        }
     }
 
     @EventHandler
