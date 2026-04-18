@@ -36,7 +36,8 @@ public final class LibsDisguises implements DisguiseManager {
                     .newInstance(nickname, skin);
             disguise.setEntity(entity);
             disguise.startDisguise();
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 
     @Override
@@ -61,7 +62,8 @@ public final class LibsDisguises implements DisguiseManager {
     }
 
     @Override
-    public void init() {}
+    public void init() {
+    }
 
     @Override
     public boolean isEnabled() {

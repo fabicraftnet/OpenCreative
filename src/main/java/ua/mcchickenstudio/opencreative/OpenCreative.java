@@ -37,8 +37,8 @@ import ua.mcchickenstudio.opencreative.commands.minecraft.*;
 import ua.mcchickenstudio.opencreative.commands.world.*;
 import ua.mcchickenstudio.opencreative.commands.world.modes.*;
 import ua.mcchickenstudio.opencreative.commands.world.reputation.*;
-import ua.mcchickenstudio.opencreative.indev.OfflineWander;
-import ua.mcchickenstudio.opencreative.indev.Wander;
+import ua.mcchickenstudio.opencreative.wanders.OfflineWander;
+import ua.mcchickenstudio.opencreative.wanders.Wander;
 import ua.mcchickenstudio.opencreative.coding.prompters.*;
 import ua.mcchickenstudio.opencreative.listeners.CreativeListener;
 import ua.mcchickenstudio.opencreative.listeners.creative.PlanetListener;
@@ -86,7 +86,7 @@ import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.teleportToLobby;
 public final class OpenCreative extends JavaPlugin {
 
     private static OpenCreative plugin;
-    private final Set<Wander> wanders = new HashSet<>();
+    private final Map<UUID, Wander> wanders = new HashMap<>();
 
     private Settings settings;
     private Economy economy;
@@ -707,14 +707,14 @@ public final class OpenCreative extends JavaPlugin {
         }
     }
 
-    public Wander registerWander(@NotNull Player player) {
+    public @NotNull Wander registerWander(@NotNull Player player) {
         Wander wander = new Wander(player);
-        wanders.add(wander);
+        wanders.put(player.getUniqueId(), wander);
         return wander;
     }
 
     public void unregisterWander(@NotNull Player player) {
-        wanders.removeIf(wander -> player.getUniqueId().equals(wander.getUniqueId()));
+        wanders.remove(player.getUniqueId());
     }
 
     /**
@@ -723,12 +723,7 @@ public final class OpenCreative extends JavaPlugin {
      * @return wander - if online, otherwise - null
      */
     public static @Nullable Wander getWander(@NotNull UUID uuid) {
-        for (Wander wander : new ArrayList<>(getPlugin().wanders)) {
-            if (wander.getUniqueId().equals(uuid)) {
-                return wander;
-            }
-        }
-        return null;
+        return getPlugin().wanders.get(uuid);
     }
 
     /**
@@ -737,12 +732,11 @@ public final class OpenCreative extends JavaPlugin {
      * @return wander of player.
      */
     public static @NotNull Wander getWander(@NotNull Player player) {
-        for (Wander wander : new ArrayList<>(getPlugin().wanders)) {
-            if (wander.getUniqueId().equals(player.getUniqueId())) {
-                return wander;
-            }
+        Wander wander = getWander(player.getUniqueId());
+        if (wander == null) {
+            wander = getPlugin().registerWander(player);
         }
-        return getPlugin().registerWander(player);
+        return wander;
     }
 
     /**

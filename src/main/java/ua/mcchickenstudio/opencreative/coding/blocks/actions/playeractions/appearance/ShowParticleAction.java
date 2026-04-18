@@ -16,35 +16,44 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ua.mcchickenstudio.opencreative.coding.blocks.actions.playeractions.inventory;
+package ua.mcchickenstudio.opencreative.coding.blocks.actions.playeractions.appearance;
 
+import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.playeractions.PlayerAction;
+import ua.mcchickenstudio.opencreative.coding.blocks.actions.worldactions.WorldAction;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
-import ua.mcchickenstudio.opencreative.coding.variables.VariableLink;
 
-public final class GetItemAction extends PlayerAction {
-    public GetItemAction(Executor executor, Target target, int x, Arguments args) {
+import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCodingDebugLog;
+
+public final class ShowParticleAction extends PlayerAction {
+    public ShowParticleAction(Executor executor, Target target, int x, Arguments args) {
         super(executor, target, x, args);
     }
 
     @Override
     public void executePlayer(@NotNull Player player) {
-        VariableLink link = getArguments().getVariableLink("variable", this);
-        int index = getArguments().getInt("slot", 1, this);
-        ItemStack item = player.getInventory().getItem(index-1);
-        if (item != null) {
-            setVarValue(link, item);
+        if (getWorld().getEntities().size() >= getPlanet().getLimits().getEntitiesLimit()) {
+            sendCodingDebugLog(getPlanet(), "Too many entities: show particles action is cancelled.");
+            return;
+        }
+        Particle particle = getArguments().getParticle("particle", Particle.HEART, this);
+        int count = Math.min(30, getArguments().getInt("count", 1, this));
+        double offsetX = getArguments().getDouble("offset-x", 0.0d, this);
+        double offsetY = getArguments().getDouble("offset-y", 0.0d, this);
+        double offsetZ = getArguments().getDouble("offset-z", 0.0d, this);
+        for (Location location : getArguments().getLocationList("locations", this)) {
+            player.spawnParticle(particle, location, count, offsetX, offsetY, offsetZ);
         }
     }
 
     @Override
     public @NotNull ActionType getActionType() {
-        return ActionType.PLAYER_GET_ITEM_BY_SLOT;
+        return ActionType.PLAYER_SHOW_PARTICLE;
     }
 }

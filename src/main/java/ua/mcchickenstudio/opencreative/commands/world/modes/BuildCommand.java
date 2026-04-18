@@ -80,9 +80,10 @@ public class BuildCommand extends CommandHandler {
         if (args.length == 0) {
             removePlayerWithLocation(player);
             if (planet.getMode() != Planet.Mode.BUILD) {
-                if (planet.getWorldPlayers().canBuild(player)) {
+                boolean canBuild = planet.getWorldPlayers().canBuild(player);
+                if (canBuild || player.hasPermission("opencreative.world.build.switch")) {
                     Player planetOwner = Bukkit.getPlayer(planet.getOwner());
-                    if (!planet.getWorldPlayers().isTrustedBuilder(player)) {
+                    if (!planet.getWorldPlayers().isTrustedBuilder(player) && !player.hasPermission("opencreative.world.build.switch")) {
                         if (planetOwner == null) {
                             sender.sendMessage(getLocaleMessage("world.build-mode.cant-build-when-offline"));
                             return;
@@ -105,9 +106,9 @@ public class BuildCommand extends CommandHandler {
                         if (planet.isOwner(sender.getName())) {
                             player.getInventory().setItem(8, createItem(Material.COMPASS, 1, "items.developer.world-settings"));
                         }
-                        planet.getTerritory().showBorders(player);
-                        player.setGameMode(GameMode.CREATIVE);
+                        if (canBuild) player.setGameMode(GameMode.CREATIVE);
                     }
+                    planet.getTerritory().showBorders(player);
                 } else {
                     sender.sendMessage(getLocaleMessage("not-owner"));
                 }

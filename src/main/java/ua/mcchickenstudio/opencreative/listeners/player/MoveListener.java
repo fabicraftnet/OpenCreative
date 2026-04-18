@@ -34,7 +34,6 @@ import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.player.movement.*;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.player.world.ChunkLoadEvent;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.player.world.ChunkUnloadEvent;
-import ua.mcchickenstudio.opencreative.indev.Wander;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.isOutOfBorders;

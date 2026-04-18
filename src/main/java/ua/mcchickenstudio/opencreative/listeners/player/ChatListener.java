@@ -18,7 +18,6 @@
 
 package ua.mcchickenstudio.opencreative.listeners.player;
 
-import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -34,7 +33,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -45,7 +43,7 @@ import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.player.world.ChatEvent;
 import ua.mcchickenstudio.opencreative.coding.modules.Module;
 import ua.mcchickenstudio.opencreative.events.player.WorldChatEvent;
-import ua.mcchickenstudio.opencreative.indev.Wander;
+import ua.mcchickenstudio.opencreative.wanders.Wander;
 import ua.mcchickenstudio.opencreative.menus.world.browsers.WorldsBrowserMenu;
 import ua.mcchickenstudio.opencreative.planets.DevPlanet;
 import ua.mcchickenstudio.opencreative.planets.Planet;
@@ -516,6 +514,7 @@ public final class ChatListener implements Listener {
                 Sounds.WORLD_SETTINGS_DESCRIPTION_SET.play(player);
             }
             case FIND_PLANETS_BY_NAME -> {
+                input = ChatColor.translateAlternateColorCodes('&', input);
                 OpenCreative.getPlugin().getLogger().info("[WORLD-CHAT: " + WorldUtils.getPlanetIdFromName(player.getWorld()) + "] " + player.getName() + " tries to find worlds by name: " + input);
                 Set<Planet> foundPlanetsByName = OpenCreative.getPlanetsManager().getPlanetsContainingName(input);
                 if (!foundPlanetsByName.isEmpty()) {

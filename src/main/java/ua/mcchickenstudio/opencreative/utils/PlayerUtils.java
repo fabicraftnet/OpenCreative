@@ -243,10 +243,26 @@ public final class PlayerUtils {
             }
         }
 
-        if (!player.teleport(location)) {
+        if (OpenCreative.getPlugin().isEnabled()) {
+            player.teleportAsync(location).thenAccept(success -> {
+                if (success) {
+                    handleLobbyTeleport(player, location);
+                    Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
+                        PlayerLobbyEvent event = new PlayerLobbyEvent(player);
+                        event.callEvent();
+                    });
+                }
+            });
+            return;
+        } else if (!player.teleport(location)) {
             return;
         }
+        handleLobbyTeleport(player, location);
+        PlayerLobbyEvent event = new PlayerLobbyEvent(player);
+        event.callEvent();
+    }
 
+    private static void handleLobbyTeleport(@NotNull Player player, @NotNull Location location) {
         clearPlayer(player, true, OpenCreative.getSettings().getLobbySettings().shouldResetGameMode(location.getWorld()));
         player.showTitle(Title.title(
                 toComponent(getLocaleMessage("lobby.title")), toComponent(getLocaleMessage("lobby.subtitle")),
@@ -260,8 +276,6 @@ public final class PlayerUtils {
         player.getInventory().setHeldItemSlot(4);
 
         giveLobbyPermissions(player);
-        PlayerLobbyEvent event = new PlayerLobbyEvent(player);
-        event.callEvent();
     }
 
     /**

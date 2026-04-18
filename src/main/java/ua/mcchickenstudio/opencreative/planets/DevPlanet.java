@@ -37,6 +37,7 @@ import ua.mcchickenstudio.opencreative.utils.world.platforms.DevPlatformers;
 import ua.mcchickenstudio.opencreative.utils.world.platforms.HasVisibleBorder;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.*;
 
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.getSignLine;
@@ -206,12 +207,20 @@ public class DevPlanet {
         if (world != null) {
             if (asyncSave) {
                 for (Chunk chunk : world.getLoadedChunks()) {
-                    chunk.unload(true);
+                    world.unloadChunk(chunk.getX(), chunk.getZ(), true);
                 }
-                getWorld().save();
-                Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> Bukkit.unloadWorld(getWorldName(), false), 40);
+                try {
+                    // 1.21+ Content:
+                    Method saveMethod = world.getClass().getMethod("save", boolean.class);
+                    saveMethod.invoke(world, false);
+                } catch (Exception ignored) {
+                    world.save();
+                }
+                Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
+                    Bukkit.unloadWorld(planet.getWorldName(), false);
+                }, 40);
             } else {
-                Bukkit.unloadWorld(getWorldName(), true);
+                Bukkit.unloadWorld(planet.getWorldName(), true);
             }
         }
 

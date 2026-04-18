@@ -37,17 +37,6 @@ import ua.mcchickenstudio.opencreative.managers.Manager;
 public interface PacketManager extends Manager {
 
     /**
-     * Shows advancement toast to player.
-     *
-     * @param player player to show advancement.
-     * @param item item of icon.
-     * @param title title of advancement.
-     * @param message message of advancement.
-     */
-    void showAdvancement(@NotNull Player player, @NotNull ItemStack item,
-                         @NotNull Component title, @NotNull Component message);
-
-    /**
      * Spawns a visual glowing block only for player
      * in specified location. Glowing block needs to
      * be invisible and not physical. As block entity

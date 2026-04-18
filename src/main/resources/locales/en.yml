@@ -357,8 +357,8 @@ blacklisted-in-planet: "%prefix%You cannot visit this world because you are &6bl
 no-player-found: "%prefix%&cThis player was not found."
 same-player: "%prefix%&cYou cannot specify yourself."
 same-world: "%prefix%&cYou are already playing in this world."
-player-error: "&6 Worlds &8| &fA player error occurred. Please report this to the developer: &6%error%"
-planet-error: "&6 Worlds &8| &fAn error occurred in the world: &6%error%"
+player-error: "%prefix%&fA player error occurred. Please report this to the developer: &6%error%"
+planet-error: "%prefix%&fAn error occurred in the world: &6%error%"
 chat-no-near-players: "&c Seems like there's no players in world.. Maybe you can try to use global chat?\n &cAdd ! in the begin of message, or use /cc command."
 coding-error:
   message: "\n &c &m                   &c ☹ ERROR &m                   \n&f\n &fOops, it seems there was a problem executing &f%event% &7-> &f%action% &7(%x%,%y%,%z%)\n \n&f Information: &6%error%\n \n &c &m                                                    \n&f"
@@ -374,6 +374,7 @@ coding-error:
   collectionwithcollectionexception: "Tried to store a list as element of list. Use Merge Lists action instead."
   toomanyopenedmenusexception: "Opened too many menus for %player%. Please add cooldown between opening menus."
   toomanyrepeatsexception: "Too many repeats at once! Please add control action Wait to the end of repeat before closing piston."
+  nottrustedlinkexception: "Site %link% is not trusted by server. Please contact server admins."
   illegalargumentexception: "An incorrect value was found in the chest. You might have specified a negative number, or a variable returned an incorrect value, or something couldn't be retrieved from the value. Check the chest's contents!"
   nullpointerexception: "Some value is null, such as a variable or event value. Perhaps you didn't set a variable, or the event value is not supported by this event."
   bad-piston: "An extra piston was detected, which needs to be removed. If it’s not extra, select the condition type."
@@ -5870,6 +5871,21 @@ items:
           - "&3 Parameter &7- Enable or disable"
           - " "
           - "&eClick to set the action."
+        arguments:
+          boolean:
+            name: "&3Sleeping state"
+            lore:
+              - "&7If set to yes, the fox"
+              - "&7will sleep on the ground."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              true: "Let it sleep"
+              false: "Wake it up"
       entity-set-fox-leaping:
         name: "&eFox Leaping State"
         lore:
@@ -5880,6 +5896,21 @@ items:
           - "&3 Parameter &7- Enable or disable"
           - " "
           - "&eClick to set the action."
+        arguments:
+          boolean:
+            name: "&2Sitting state"
+            lore:
+              - "&7If set to yes, the fox"
+              - "&7will sit on the ground."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              true: "Let it sit"
+              false: "Make it stand up"
       entity-set-snowman-pumpkin:
         name: "&6Snowman Pumpkin"
         lore:
@@ -5890,6 +5921,21 @@ items:
           - "&3 Param &7- Yes or No"
           - " "
           - "&eClick to set action."
+        arguments:
+          boolean:
+            name: "&6Has pumpkin"
+            lore:
+              - "&7If set to yes, snow golem"
+              - "&7will have a pumpkin."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              true: "Keep it"
+              false: "Remove it"
       entity-set-bee-nectar:
         name: "&eBee Nectar"
         lore:
@@ -5900,6 +5946,21 @@ items:
           - "&3 Param &7- Yes or No"
           - " "
           - "&eClick to set action."
+        arguments:
+          boolean:
+            name: "&eHas nectar"
+            lore:
+              - "&7If set to yes, the"
+              - "&7bee will have nectar."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              true: "Keep it"
+              false: "Remove nectar"
       entity-set-bee-stung:
         name: "&6Bee Stinger"
         lore:
@@ -5910,6 +5971,21 @@ items:
           - "&3 Param &7- Yes or No"
           - " "
           - "&eClick to set action."
+        arguments:
+          boolean:
+            name: "&3Has stinger"
+            lore:
+              - "&7If set to yes, the"
+              - "&7bee will have a stinger."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              true: "Keep it"
+              false: "Remove stinger"
       entity-set-cat-lying-down:
         name: "&9Cat Lying"
         lore:
@@ -5920,6 +5996,21 @@ items:
           - "&3 Param &7- Yes or No"
           - " "
           - "&eClick to set action."
+        arguments:
+          boolean:
+            name: "&aCat lying"
+            lore:
+              - "&7If set to yes, the"
+              - "&7cat will lie on the ground."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              true: "Let it lie"
+              false: "Make it stand up"
       entity-set-carrying-chest:
         name: "&6Carry Chest"
         lore:
@@ -5930,6 +6021,22 @@ items:
           - "&3 Param &7- Yes or No"
           - " "
           - "&eClick to set action."
+        arguments:
+          boolean:
+            name: "&6Has chest"
+            lore:
+              - "&7If set to yes, the"
+              - "&7horse or donkey will have"
+              - "&7a chest."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              true: "Keep it"
+              false: "Remove chest"
       entity-set-despawning:
         name: "&cDespawning"
         lore:
@@ -5940,6 +6047,22 @@ items:
           - "&3 Param &7- Yes or No"
           - " "
           - "&eClick to set action."
+        arguments:
+          boolean:
+            name: "&cRemove on unload"
+            lore:
+              - "&7If set to yes, the mob"
+              - "&7will be removed when it is"
+              - "&7too far from spawn."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              true: "Allow removal"
+              false: "No, keep it in the world"
       entity-set-aggressive:
         name: "&4Aggression"
         lore:
@@ -5951,6 +6074,22 @@ items:
           - "&3 Param &7- Yes or No"
           - " "
           - "&eClick to set action."
+        arguments:
+          boolean:
+            name: "&cAggression mode"
+            lore:
+              - "&7If set to yes, the mob"
+              - "&7will become aggressive and"
+              - "&7attack its targets."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              true: "Make it aggressive"
+              false: "Calm the mob"
       entity-set-aware:
         name: "&eMob Awareness"
         lore:
@@ -5961,6 +6100,21 @@ items:
           - "&3 Param &7- Yes or No"
           - " "
           - "&eClick to set action."
+        arguments:
+          boolean:
+            name: "&eMob awareness"
+            lore:
+              - "&7If set to yes, the mob"
+              - "&7will move on its own."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              true: "Enable"
+              false: "No, keep it still"
       entity-set-camel-dashing:
         name: "&eCamel Dashing"
         lore:
@@ -6836,6 +6990,21 @@ items:
               - ""
               - "&7Default: &a6"
               - "&cNumber from 0 to 24"
+      player-show-particle:
+        name: "&5Show Particle"
+        lore:
+          - "&7This will create a particle and"
+          - "&7show it to player."
+          - ""
+          - "&fIn the chest:"
+          - "&f Location &7- Where to create"
+          - "&5 Particle &7- Particle type"
+          - "&a Number &7- Amount of particles"
+          - "&a Number &7- X offset"
+          - "&a Number &7- Y offset"
+          - "&a Number &7- Z offset"
+          - ""
+          - "&eClick to set the action."
       world-spawn-particle:
         name: "&5Show Particle to All"
         lore:
@@ -19019,6 +19188,8 @@ blocks:
   player_set_remaining_air: "Remaining Air"
   player_release_shoulders: "Release Shoulders"
   player_set_visual_fire: "Visual Fire"
+  player_show_particle: "Spawn particle"
+
 
   entity_remove: "&cRemove"
   entity_set_team: "Set team"

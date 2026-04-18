@@ -18,7 +18,9 @@
 
 package ua.mcchickenstudio.opencreative.managers.stability;
 
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -30,9 +32,12 @@ import java.io.IOException;
 import java.nio.file.FileStore;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendWarningErrorMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
+import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isDevPlanet;
 
 public final class Watchdog implements StabilityManager {
 
@@ -65,6 +70,14 @@ public final class Watchdog implements StabilityManager {
                     return;
                 }
 
+                long heapSize = Runtime.getRuntime().totalMemory();
+                long heapMaxSize = Runtime.getRuntime().maxMemory();
+                if (heapSize > heapMaxSize) {
+                    OpenCreative.getPlugin().getLogger().warning("[WATCHDOG] A lot of memory was used :(");
+                    storageState = StabilityState.NOT_OKAY;
+                    dumpPlanets();
+                }
+                
                 long availableSpace = getAvailableSpace();
                 if (availableSpace >= 200) { // 200 MB
                     storageState = StabilityState.FINE;
@@ -91,7 +104,7 @@ public final class Watchdog implements StabilityManager {
                     memoryState = StabilityState.NIGHTMARE;
                 }
 
-                if (getTPS() >= 18) {
+                if (getTPS() >= 17) {
                     ticksState = StabilityState.FINE;
                 } else if (getTPS() >= 13) {
                     ticksState = StabilityState.NOT_OKAY;
@@ -108,13 +121,14 @@ public final class Watchdog implements StabilityManager {
 
                 if (getState() == StabilityState.NIGHTMARE) {
                     if (memoryState == StabilityState.NIGHTMARE) {
-                        sendWarningErrorMessage("[Watchdog] Too low available memory: " + freeMemory + " MB");
+                        sendWarningErrorMessage("[WATCHDOG] Too low available memory: " + freeMemory + " MB");
                     } else {
                         OpenCreative.getPlugin().getLogger().warning("OpenCreative+ cannot continue work due to stability issues.");
-                        OpenCreative.getPlugin().getLogger().warning(" TPS: " + ticksState.getLocalized() + " (" + getTPS() + "/20)");
-                        OpenCreative.getPlugin().getLogger().warning(" Memory: " + memoryState.getLocalized() + " (" + freeMemory + " MB free)");
-                        OpenCreative.getPlugin().getLogger().warning(" Storage: " + storageState.getLocalized() + " (" + availableSpace + " MB available)");
-                        OpenCreative.getPlugin().getLogger().warning(" Database: " + databaseState.getLocalized());
+                        OpenCreative.getPlugin().getLogger().warning(" TPS: " + ticksState.name() + " (" + Math.floor(getTPS()) + "/20)");
+                        OpenCreative.getPlugin().getLogger().warning(" Memory: " + memoryState.name() + " (" + freeMemory + " MB free)");
+                        OpenCreative.getPlugin().getLogger().warning(" Storage: " + storageState.name() + " (" + availableSpace + " MB available)");
+                        OpenCreative.getPlugin().getLogger().warning(" Database: " + databaseState.name());
+                        dumpPlanets();
                         for (Player player : Bukkit.getOnlinePlayers()) {
                             player.sendActionBar(getLocaleMessage("creative.stability.actionbar")
                                     .replace("%memory%", memoryState.getLocalized())
@@ -140,16 +154,39 @@ public final class Watchdog implements StabilityManager {
                     return;
                 }
 
-                if (memoryState == StabilityState.NIGHTMARE) return;
                 if (databaseState != StabilityState.FINE)
-                    sendWarningErrorMessage("[Watchdog] Database connection is not stable.");
+                    sendWarningErrorMessage("[WATCHDOG] Database connection is not stable.");
                 if (ticksState != StabilityState.FINE)
-                    sendWarningErrorMessage("[Watchdog] Server ticks aren't stable.");
+                    sendWarningErrorMessage("[WATCHDOG] Server ticks aren't stable.");
                 if (storageState != StabilityState.FINE)
-                    sendWarningErrorMessage("[Watchdog] Storage cannot be accessed.");
+                    sendWarningErrorMessage("[WATCHDOG] Storage cannot be accessed.");
             }
         };
         runnable.runTaskTimerAsynchronously(OpenCreative.getPlugin(), 20L, 200L);
+    }
+
+    private void dumpPlanets() {
+        long now = System.currentTimeMillis();
+        Set<Planet> loadedPlanets = new HashSet<>();
+        for (World world : Bukkit.getWorlds()) {
+            if (isDevPlanet(world)) continue;
+            Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(world);
+            if (planet == null) continue;
+            if (!isDevPlanet(world)) {
+                loadedPlanets.add(planet);
+            }
+        }
+        if (loadedPlanets.isEmpty()) {
+            OpenCreative.getPlugin().getLogger().info("[WATCHDOG] No loaded planets detected.");
+            return;
+        }
+        OpenCreative.getPlugin().getLogger().warning("[WATCHDOG] Dump of loaded planets (" + loadedPlanets.size() + "): ");
+        for (Planet planet : loadedPlanets) {
+            OpenCreative.getPlugin().getLogger().warning("[WATCHDOG] " + planet.getId() +
+                    " - Players (" + planet.getInformation().getAsyncOnline() + ") - " +
+                    (planet.getMode() == Planet.Mode.PLAYING ? "Play" : "Build") +
+                    " - Loaded: " + getElapsedTime(now, planet.getLastActivityTime()));
+        }
     }
 
     @Override

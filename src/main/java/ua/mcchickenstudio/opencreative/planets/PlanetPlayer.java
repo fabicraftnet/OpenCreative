@@ -22,6 +22,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -46,6 +47,8 @@ public class PlanetPlayer {
     private final Planet currentPlanet;
     private final Player player;
 
+    private Double worldSize;
+
     private final Set<String> purchases = new HashSet<>();
     private final ItemStack[] savedInventory = new ItemStack[41];
     private final ItemStack[] savedEnderChest = new ItemStack[54];
@@ -53,6 +56,14 @@ public class PlanetPlayer {
     public PlanetPlayer(@NotNull Planet currentPlanet, @NotNull Player player) {
         this.currentPlanet = currentPlanet;
         this.player = player;
+    }
+
+    public void setWorldSize(@Nullable Double worldSize) {
+        this.worldSize = worldSize;
+    }
+
+    public @Nullable Double getWorldSize() {
+        return worldSize;
     }
 
     /**
@@ -70,7 +81,7 @@ public class PlanetPlayer {
      *
      * @return World player as Bukkit's player.
      */
-    public Player getPlayer() {
+    public @NotNull Player getPlayer() {
         return player;
     }
 
@@ -199,7 +210,7 @@ public class PlanetPlayer {
     }
 
     @SuppressWarnings("unchecked")
-    private JSONArray serializeItems(ItemStack[] items) {
+    private @NotNull JSONArray serializeItems(ItemStack[] items) {
         JSONArray json = new JSONArray();
         if (items == null) {
             return json;
@@ -215,7 +226,7 @@ public class PlanetPlayer {
      *
      * @return set of saved purchases IDs.
      */
-    public Set<String> getPurchases() {
+    public @NotNull Set<String> getPurchases() {
         return purchases;
     }
 

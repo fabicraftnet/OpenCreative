@@ -470,17 +470,21 @@ public class PlanetTerritory {
         if (isEntityInDevPlanet(player)) return;
         WorldBorder border = Bukkit.createWorldBorder();
         border.setSize(player.getWorld().getWorldBorder().getSize());
-        switch (planet.getFlagValue(PlanetFlags.PlanetFlag.WORLD_BORDERS)) {
-            case 1 -> border.setSize(border.getSize());
-            case 2 -> {
-                border.setSize(border.getSize() + 0.001, 3600);
+        if (planet.getMode() == Planet.Mode.PLAYING) {
+            PlanetPlayer planetPlayer = planet.getWorldPlayers().getPlanetPlayer(player);
+            if (planetPlayer != null && planetPlayer.getWorldSize() != null) {
+                border.setSize(planetPlayer.getWorldSize());
             }
+        }
+        switch (planet.getFlagValue(PlanetFlags.PlanetFlag.WORLD_BORDERS)) {
+            case 1 -> border.setSize(border.getSize()); // Default
+            case 2 -> border.setSize(border.getSize() + 0.001, 3600); // Green
             case 3 -> {
                 border.setSize(border.getSize() + 0.1);
                 player.setWorldBorder(border);
-                border.setSize(border.getSize() - 0.1, 3600);
+                border.setSize(border.getSize() - 0.1, 3600); // Red
             }
-            case 4 -> border.setSize(border.getMaxSize());
+            case 4 -> border.setSize(border.getMaxSize()); // Not visible
         }
         player.setWorldBorder(border);
     }

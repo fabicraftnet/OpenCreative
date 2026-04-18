@@ -34,6 +34,7 @@ import ua.mcchickenstudio.opencreative.menus.world.browsers.WorldsBrowserMenu;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
 import ua.mcchickenstudio.opencreative.utils.MessageUtils;
+import ua.mcchickenstudio.opencreative.wanders.OfflineWander;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
