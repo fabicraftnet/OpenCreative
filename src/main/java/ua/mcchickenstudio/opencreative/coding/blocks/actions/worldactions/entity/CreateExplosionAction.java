@@ -43,7 +43,10 @@ public final class CreateExplosionAction extends WorldAction {
         boolean setFire = getArguments().getBoolean("fire", false, this);
         boolean breakBlocks = getArguments().getBoolean("damage", false, this);
         for (Location location : getArguments().getLocationList("locations", this)) {
-            getPlanet().getTerritory().getWorld().createExplosion(location, power, setFire, breakBlocks);
+            if (getPlanet().getLimits().isTooManyExplosionsAtOnce()) {
+                throw new RuntimeException("Too many explosions in a short time.");
+            }
+            getWorld().createExplosion(location, power, setFire, breakBlocks);
         }
     }
 

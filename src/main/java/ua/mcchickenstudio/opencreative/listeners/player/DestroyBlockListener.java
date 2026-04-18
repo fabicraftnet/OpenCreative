@@ -105,8 +105,14 @@ public final class DestroyBlockListener implements Listener {
                         if (!destroyBracketChain(platform, devPlanet, block)) {
                             platform.destroyCodingBlock(block.getLocation(), devPlanet.isDropItems());
                         }
+                        if (!devPlanet.getPlanet().isOwner(player)) {
+                            OpenCreative.getWander(player).getGriefStats().addDestroyedCodingBlocksAmount(1);
+                        }
                     } else {
-                        platform.destroyCodingBlock(block.getLocation(), devPlanet.isDropItems());
+                        boolean destroyedBlock = platform.destroyCodingBlock(block.getLocation(), devPlanet.isDropItems());
+                        if (!devPlanet.getPlanet().isOwner(player) && destroyedBlock) {
+                            OpenCreative.getWander(player).getGriefStats().addDestroyedCodingBlocksAmount(1);
+                        }
                     }
                     if (usedShiftChainOnMulti && OpenCreative.getSettings().getCodingSettings().isShiftBreakChainCompactFull()) {
                         compactCodingLineLeftByVanillaMove(devPlanet, platform, block);
@@ -117,11 +123,17 @@ public final class DestroyBlockListener implements Listener {
                     if (ExecutorCategory.getByMaterial(block.getType()) != null
                             && chainBreak) {
                         devPlanet.addChangedColumn(block.getLocation());
-                        platform.destroyCodingLine(block.getLocation(), devPlanet.isDropItems());
+                        int destroyedBlocks = platform.destroyCodingLine(block.getLocation(), devPlanet.isDropItems());
+                        if (!devPlanet.getPlanet().isOwner(player)) {
+                            OpenCreative.getWander(player).getGriefStats().addDestroyedCodingBlocksAmount(destroyedBlocks);
+                        }
                     } else {
                         devPlanet.addChangedColumn(block.getLocation());
-                        platform.destroyCodingBlock(block.getLocation(), devPlanet.isDropItems());
+                        boolean destroyedBlock = platform.destroyCodingBlock(block.getLocation(), devPlanet.isDropItems());
                         devPlanet.clearMarkedExecutors(block.getLocation());
+                        if (!devPlanet.getPlanet().isOwner(player) && destroyedBlock) {
+                            OpenCreative.getWander(player).getGriefStats().addDestroyedCodingBlocksAmount(1);
+                        }
                     }
 
                 }

@@ -31,7 +31,7 @@ public final class PlanetListener implements Listener {
     public void onDisconnect(PlanetDisconnectPlayerEvent event) {
         if (!event.getPlanet().isOwner(event.getPlayer())) {
             Wander wander = OpenCreative.getWander(event.getPlayer());
-            if (wander.getGriefStats().isSuspicious()) {
+            if (wander.getGriefStats().isSuspicious() && OpenCreative.getSettings().shouldLogGriefStats()) {
                 OpenCreative.getPlugin().getLogger().info("[GRIEF: "
                         + event.getPlanet().getId()
                         + "] Suspicious changes by "

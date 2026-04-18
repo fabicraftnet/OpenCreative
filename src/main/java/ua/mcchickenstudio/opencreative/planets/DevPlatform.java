@@ -261,9 +261,11 @@ public class DevPlatform {
      *
      * @param location  location of executor block.
      * @param dropItems drop items from upper containers or not.
+     * @return amount of destroyed coding main blocks.
      */
-    public void destroyCodingLine(@NotNull Location location,
+    public int destroyCodingLine(@NotNull Location location,
                                   boolean dropItems) {
+        int destroyedBlocks = 0;
         int endX = platformer.getPlatformEndLocation(this).getBlockX() - 1;
         int y = location.getBlockY();
         int z = location.getBlockZ();
@@ -273,10 +275,15 @@ public class DevPlatform {
         }
         for (int x = location.getBlockX(); x < endX; x = x + 2) {
             Block actionBlock = world.getBlockAt(x, y, z);
-            destroyCodingBlock(actionBlock.getLocation(), dropItems);
+            if (destroyCodingBlock(actionBlock.getLocation(), dropItems)) {
+                destroyedBlocks += 1;
+            }
         }
-        destroyCodingBlock(location, dropItems);
+        if (destroyCodingBlock(location, dropItems)) {
+            destroyedBlocks += 1;
+        }
         location.getBlock().setType(Material.AIR);
+        return destroyedBlocks;
     }
 
     /**
@@ -286,14 +293,20 @@ public class DevPlatform {
      *
      * @param location  location of coding block.
      * @param dropItems drop items from upper container or not.
+     * @return true - main part of coding block was destroyed, false - not.
      */
-    public void destroyCodingBlock(@NotNull Location location,
+    public boolean destroyCodingBlock(@NotNull Location location,
                                    boolean dropItems) {
+        boolean destroyed = false;
         Block block = location.getBlock();
         Block containerBlock = block.getRelative(BlockFace.UP);
         Block additionalBlock = block.getRelative(BlockFace.EAST);
         Block signBlock = block.getRelative(BlockFace.SOUTH);
         Block torchBlock = location.getBlock().getRelative(BlockFace.WEST);
+        if (!block.getType().isEmpty()) {
+            destroyed = true;
+        }
+
         if (torchBlock.getType() == Material.REDSTONE_WALL_TORCH) {
             torchBlock.setType(Material.AIR);
         }
@@ -322,6 +335,7 @@ public class DevPlatform {
         }
         containerBlock.setType(Material.AIR);
         block.setType(Material.AIR);
+        return destroyed;
     }
 
     public int getBeginCoordinate() {

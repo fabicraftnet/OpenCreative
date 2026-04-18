@@ -31,6 +31,7 @@ public final class GriefStats {
     private int lavaPlacementsAmount;
     private int tntPlacementsAmount;
     private int destroyedHangingsAmount;
+    private int destroyedCodingBlocksAmount;
 
     /**
      * Adds amount of destroyed blocks.
@@ -39,6 +40,15 @@ public final class GriefStats {
      */
     public void addDestroyedBlocksAmount(int amount) {
         this.destroyedBlocksAmount += amount;
+    }
+
+    /**
+     * Adds amount of destroyed coding blocks.
+     *
+     * @param amount amount of destroyed coding blocks.
+     */
+    public void addDestroyedCodingBlocksAmount(int amount) {
+        this.destroyedCodingBlocksAmount += amount;
     }
 
     /**
@@ -80,6 +90,9 @@ public final class GriefStats {
         return tntPlacementsAmount;
     }
 
+    public int getDestroyedCodingBlocksAmount() {
+        return destroyedCodingBlocksAmount;
+    }
 
     public int getDestroyedHangingsAmount() {
         return destroyedHangingsAmount;
@@ -87,7 +100,7 @@ public final class GriefStats {
 
     public boolean isSuspicious() {
         return lavaPlacementsAmount >= 10 || destroyedHangingsAmount >= 10 || tntPlacementsAmount >= 3
-                || destroyedBlocksAmount >= 20;
+                || destroyedBlocksAmount >= 20 || destroyedCodingBlocksAmount >= 2;
     }
 
     public @NotNull String getAsString() {
@@ -95,6 +108,7 @@ public final class GriefStats {
         if (lavaPlacementsAmount >= 1) builder.append("placed lava x").append(lavaPlacementsAmount).append(", ");
         if (tntPlacementsAmount >= 1) builder.append("placed tnt x").append(tntPlacementsAmount).append(", ");
         if (destroyedBlocksAmount >= 1) builder.append("destroyed blocks x").append(destroyedBlocksAmount).append(", ");
+        if (destroyedCodingBlocksAmount >= 1) builder.append("destroyed coding blocks x").append(destroyedCodingBlocksAmount).append(", ");
         if (destroyedHangingsAmount >= 1)
             builder.append("removed hangings x").append(destroyedHangingsAmount).append(", ");
         if (!builder.isEmpty()) {
