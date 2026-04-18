@@ -163,7 +163,9 @@ public class PlayCommand extends CommandHandler {
             Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
             if (planet == null) return;
             DevPlanet current = OpenCreative.getPlanetsManager().getDevPlanet(player);
-            if (devPlanet != null && !devPlanet.equals(current)) return;
+            if (devPlanet != null && !devPlanet.equals(current)) {
+                return;
+            }
             if (devPlanet == null) {
                 givePlayPermissions(player);
                 new QuitEvent(player).callEvent();

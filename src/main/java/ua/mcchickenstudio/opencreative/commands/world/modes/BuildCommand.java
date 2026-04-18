@@ -106,9 +106,9 @@ public class BuildCommand extends CommandHandler {
                         if (planet.isOwner(sender.getName())) {
                             player.getInventory().setItem(8, createItem(Material.COMPASS, 1, "items.developer.world-settings"));
                         }
-                        planet.getTerritory().showBorders(player);
                         if (canBuild) player.setGameMode(GameMode.CREATIVE);
                     }
+                    planet.getTerritory().showBorders(player);
                 } else {
                     sender.sendMessage(getLocaleMessage("not-owner"));
                 }

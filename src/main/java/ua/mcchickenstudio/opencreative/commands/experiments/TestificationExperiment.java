@@ -20,28 +20,42 @@ package ua.mcchickenstudio.opencreative.commands.experiments;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.MapMeta;
+import org.bukkit.map.MapCanvas;
+import org.bukkit.map.MapRenderer;
+import org.bukkit.map.MapView;
+import org.bukkit.map.MinecraftFont;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executors;
 import ua.mcchickenstudio.opencreative.coding.values.EventValue;
 import ua.mcchickenstudio.opencreative.coding.values.EventValues;
+import ua.mcchickenstudio.opencreative.settings.Sounds;
 import ua.mcchickenstudio.opencreative.utils.ItemUtils;
 import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendPlayerErrorMessage;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
 
 public final class TestificationExperiment extends Experiment {
+
+    private final Map<UUID, Integer> testerSounds = new HashMap<>();
+    private TestificationListener listener;
+    private BukkitRunnable actionBarTask;
 
     @Override
     public @NotNull String getId() {
@@ -64,7 +78,61 @@ public final class TestificationExperiment extends Experiment {
             sender.sendMessage(getLocaleMessage("too-few-args"));
             return;
         }
-        if (args[0].equalsIgnoreCase("translation")) {
+        if (args[0].equalsIgnoreCase("sounds")) {
+            if (sender instanceof Player player) {
+                if (testerSounds.containsKey(player.getUniqueId())) {
+                    testerSounds.remove(player.getUniqueId());
+                    player.sendActionBar(Component.text("Stopped playing"));
+                    if (listener != null) {
+                        PlayerSwapHandItemsEvent.getHandlerList().unregister(listener);
+                        listener = null;
+                    }
+                    if (actionBarTask != null) {
+                        actionBarTask.cancel();
+                        actionBarTask = null;
+                    }
+                } else {
+                    testerSounds.put(player.getUniqueId(), -1);
+                    listener = new TestificationListener();
+                    actionBarTask = new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            for (UUID uuid : testerSounds.keySet()) {
+                                Player player = Bukkit.getPlayer(uuid);
+                                if (player == null) {
+                                    testerSounds.remove(uuid);
+                                    continue;
+                                }
+                                int index = testerSounds.get(uuid);
+                                if (index >= 0) {
+                                    Sounds[] soundsList = Sounds.values();
+                                    Sounds sound = soundsList[index];
+                                    if (sound == Sounds.LOBBY_MUSIC) {
+                                        sound = soundsList[index+1];
+                                    }
+                                    player.sendActionBar(Component.text(sound.name().toLowerCase()));
+                                } else {
+                                    player.sendActionBar(Component.text("Press F to start playing " + Sounds.values().length + " sounds"));
+                                }
+                            }
+                        }
+                    };
+                    actionBarTask.runTaskTimer(OpenCreative.getPlugin(), 0L, 20L);
+                    Bukkit.getPluginManager().registerEvents(listener, OpenCreative.getPlugin());
+                }
+            }
+        } else if (args[0].equalsIgnoreCase("map")) {
+            if (sender instanceof Player player) {
+                MapView mapView = Bukkit.createMap(player.getWorld());
+                mapView.getRenderers().clear();
+                mapView.addRenderer(new TestificationMapRender());
+                ItemStack mapItem = new ItemStack(Material.FILLED_MAP);
+                MapMeta meta = (MapMeta) mapItem.getItemMeta();
+                meta.setMapView(mapView);
+                mapItem.setItemMeta(meta);
+                player.getInventory().addItem(mapItem);
+            }
+        } else if (args[0].equalsIgnoreCase("translation")) {
             List<String> untranslatedBlocks = new ArrayList<>();
             for (Executor executor : Executors.getInstance().getExecutors()) {
                 String path = "items.developer.events." + executor.getID().replace("_", "-") + ".name";
@@ -149,6 +217,49 @@ public final class TestificationExperiment extends Experiment {
             return List.of("1", "2", "3", "4");
         }
         return null;
+    }
+
+    @Override
+    public void onDisable() {
+        if (listener != null) {
+            PlayerSwapHandItemsEvent.getHandlerList().unregister(listener);
+            listener = null;
+        }
+        if (actionBarTask != null) {
+            actionBarTask.cancel();
+            actionBarTask = null;
+        }
+    }
+
+    public class TestificationListener implements Listener {
+
+        @EventHandler
+        public void onClick(PlayerSwapHandItemsEvent event) {
+            if (testerSounds.containsKey(event.getPlayer().getUniqueId())) {
+                int index = testerSounds.get(event.getPlayer().getUniqueId()) + 1;
+                Sounds[] soundsList = Sounds.values();
+                if (index >= soundsList.length) {
+                    testerSounds.remove(event.getPlayer().getUniqueId());
+                    return;
+                }
+                Sounds sound = soundsList[index];
+                if (sound == Sounds.LOBBY_MUSIC) {
+                    index++;
+                    sound = soundsList[index];
+                }
+                testerSounds.put(event.getPlayer().getUniqueId(), index);
+                event.getPlayer().sendActionBar(Component.text(sound.name().toLowerCase()));
+                sound.play(event.getPlayer());
+            }
+        }
+
+    }
+
+    public static class TestificationMapRender extends MapRenderer {
+        @Override
+        public void render(@NotNull MapView map, MapCanvas canvas, @NotNull Player player) {
+            canvas.drawText(0, 0, MinecraftFont.Font, "67 67 67 67 67 67 67 67\n67 67 67 67 67 67 67 67\n67 67 67 67 67 67 67 67\n67 67 67 67 67 67 67 67\n67 67 67 67 67 67 67 67\n67 67 67 67 67 67 67 67\n67 67 67 67 67 67 67 67\n67 67 67 67 67 67 67 67\n");
+        }
     }
 
 }

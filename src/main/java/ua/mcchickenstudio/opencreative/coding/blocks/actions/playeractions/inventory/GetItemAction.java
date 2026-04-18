@@ -19,6 +19,7 @@
 package ua.mcchickenstudio.opencreative.coding.blocks.actions.playeractions.inventory;
 
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
@@ -36,7 +37,10 @@ public final class GetItemAction extends PlayerAction {
     public void executePlayer(@NotNull Player player) {
         VariableLink link = getArguments().getVariableLink("variable", this);
         int index = getArguments().getInt("slot", 1, this);
-        setVarValue(link, player.getInventory().getItem(index - 1));
+        ItemStack item = player.getInventory().getItem(index-1);
+        if (item != null) {
+            setVarValue(link, item);
+        }
     }
 
     @Override

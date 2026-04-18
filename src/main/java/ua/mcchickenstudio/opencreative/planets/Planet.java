@@ -555,12 +555,14 @@ public class Planet {
                     CompletableFuture<Boolean> parseFuture = new CodingBlockParser(devPlanet).parseCode(devPlanet);
                     parseFuture.thenAccept(success -> {
                         if (success && !ignoreEvents) {
-                            new GamePlayEvent(this).callEvent();
-                            for (Player player : getPlayers()) {
-                                if (OpenCreative.getPlanetsManager().getDevPlanet(player) == null) {
-                                    new JoinEvent(player).callEvent();
+                            Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
+                                new GamePlayEvent(this).callEvent();
+                                for (Player player : getPlayers()) {
+                                    if (OpenCreative.getPlanetsManager().getDevPlanet(player) == null) {
+                                        new JoinEvent(player).callEvent();
+                                    }
                                 }
-                            }
+                            });
                         }
                     });
                 } else {
@@ -809,10 +811,10 @@ public class Planet {
                         new JoinEvent(player).callEvent();
                     });
                 });
-            }
-            if (!hidePlayer) {
+            } else if (!hidePlayer) {
                 new JoinEvent(player).callEvent();
-            } else {
+            }
+            if (hidePlayer) {
                 player.setGameMode(GameMode.SPECTATOR);
                 ChangedWorld.addPlayerWithLocation(player);
                 for (Player onlinePlayer : getPlayers()) {

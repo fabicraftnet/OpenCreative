@@ -28,6 +28,7 @@ import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.playeractions.PlayerAction;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
+import ua.mcchickenstudio.opencreative.planets.PlanetPlayer;
 
 public final class PlayerSetWorldBorderAction extends PlayerAction {
     public PlayerSetWorldBorderAction(Executor executor, Target target, int x, Arguments args) {
@@ -49,6 +50,10 @@ public final class PlayerSetWorldBorderAction extends PlayerAction {
         Location center = getArguments().getLocation("center", player.getLocation(), this);
         border.setCenter(center);
         player.setWorldBorder(border);
+        PlanetPlayer planetPlayer = getPlanet().getWorldPlayers().getPlanetPlayer(player);
+        if (planetPlayer != null) {
+            planetPlayer.setWorldSize(getArguments().pathExists("radius") ? radius : null);
+        }
     }
 
 
