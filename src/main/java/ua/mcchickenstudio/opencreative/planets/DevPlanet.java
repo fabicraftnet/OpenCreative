@@ -217,10 +217,10 @@ public class DevPlanet {
                     world.save();
                 }
                 Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
-                    Bukkit.unloadWorld(planet.getWorldName(), false);
+                    Bukkit.unloadWorld(getWorldName(), false);
                 }, 40);
             } else {
-                Bukkit.unloadWorld(planet.getWorldName(), true);
+                Bukkit.unloadWorld(getWorldName(), true);
             }
         }
 
