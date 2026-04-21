@@ -30,7 +30,7 @@ import java.util.*;
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendPlanetLimitWarningMessage;
 
 /**
- * <h1>PlanetLimits</h1>
+ * <strong>PlanetLimits</strong>
  * This class represents all limits of the planet.
  * Use it to check if the limit is reached or not.
  */

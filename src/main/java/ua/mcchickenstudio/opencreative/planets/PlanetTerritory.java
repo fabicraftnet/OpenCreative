@@ -72,6 +72,7 @@ public class PlanetTerritory {
     private String biome;
     private boolean autoSave = true;
     private boolean busy = false;
+    private boolean ignoreUnloading = false;
 
     public PlanetTerritory(@NotNull Planet planet) {
         this.planet = planet;
@@ -195,6 +196,7 @@ public class PlanetTerritory {
      * Saves planet's data and unloads planet's build and dev world.
      */
     public synchronized void unload() {
+        if (ignoreUnloading) return;
         if (OpenCreative.getPlugin().isEnabled()) {
             Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
                 handleUnloadProcess(true);
@@ -556,6 +558,25 @@ public class PlanetTerritory {
      */
     public boolean isBusy() {
         return busy;
+    }
+
+    /**
+     * Sets whether world should ignore unloading.
+     *
+     * @param ignoreUnloading ignore unloading.
+     */
+    public void setIgnoreUnloading(boolean ignoreUnloading) {
+        this.ignoreUnloading = ignoreUnloading;
+    }
+
+    /**
+     * Checks whether world will be not unloaded
+     * by unload request.
+     *
+     * @return true - world cannot be unloaded, false - can be.
+     */
+    public boolean isIgnoringUnload() {
+        return ignoreUnloading;
     }
 
     /**
