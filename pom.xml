@@ -34,6 +34,18 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.6.3</version>
+                <configuration>
+                    <overview>${project.basedir}/src/main/javadoc/overview.html</overview>
+                    <doctitle>Welcome to OpenCreative+ Javadocs :)</doctitle>
+                    <bottom><![CDATA[
+                      Made by McChicken Studio 2017-2026.
+                    ]]></bottom>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
