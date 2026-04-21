@@ -177,6 +177,7 @@ public final class Space implements PlanetsManager {
     public boolean deletePlanet(@NotNull Planet planet) {
         new PlanetDeletionEvent(planet).callEvent();
         try {
+            planet.getTerritory().setIgnoreUnloading(true);
             for (Player p : planet.getPlayers()) {
                 PlayerUtils.teleportToLobby(p);
                 if (p.getOpenInventory().getTopInventory().getHolder() instanceof WorldMenu) {
@@ -200,6 +201,7 @@ public final class Space implements PlanetsManager {
             FileUtils.deleteWorldFoldersInPlugins(planet.getId());
             return true;
         } catch (Exception error) {
+            planet.getTerritory().setIgnoreUnloading(false);
             ErrorUtils.sendCriticalErrorMessage("Error while deleting world " + planet.getId(), error);
             return false;
         }
