@@ -1215,7 +1215,7 @@ public class CreativeCommand extends CommandHandler {
                             Bukkit.shutdown();
                         }
                     };
-                    restartRunnable.runTaskLater(OpenCreative.getPlugin(), 60L);
+                    restartRunnable.runTaskLater(OpenCreative.getPlugin(), 100L);
                     return;
                 }
             }
@@ -1229,7 +1229,7 @@ public class CreativeCommand extends CommandHandler {
                     Bukkit.shutdown();
                 }
             };
-            restartRunnable.runTaskLater(OpenCreative.getPlugin(), 60L);
+            restartRunnable.runTaskLater(OpenCreative.getPlugin(), 100L);
         }
     }
 
