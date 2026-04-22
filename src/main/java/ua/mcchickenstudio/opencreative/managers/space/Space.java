@@ -190,15 +190,19 @@ public final class Space implements PlanetsManager {
                 planet.setSharing(Planet.Sharing.CLOSED);
             }
             unregisterPlanet(planet);
-            if (planet.isLoaded()) {
-                Bukkit.unloadWorld(planet.getWorldName(), false);
+            Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
+                if (planet.isLoaded()) {
+                    Bukkit.unloadWorld(planet.getWorldName(), false);
+                }
                 if (planet.getDevPlanet().isLoaded()) {
                     Bukkit.unloadWorld(planet.getDevPlanet().getWorldName(), false);
                 }
-            }
-            FileUtils.deleteFolder(FileUtils.getPlanetFolder(planet));
-            FileUtils.deleteFolder(FileUtils.getDevPlanetFolder(planet.getDevPlanet()));
-            FileUtils.deleteWorldFoldersInPlugins(planet.getId());
+                Bukkit.getScheduler().runTaskLaterAsynchronously(OpenCreative.getPlugin(), () -> {
+                    FileUtils.deleteFolder(FileUtils.getPlanetFolder(planet));
+                    FileUtils.deleteFolder(FileUtils.getDevPlanetFolder(planet.getDevPlanet()));
+                    FileUtils.deleteWorldFoldersInPlugins(planet.getId());
+                }, 5L);
+            }, 5L);
             return true;
         } catch (Exception error) {
             planet.getTerritory().setIgnoreUnloading(false);
