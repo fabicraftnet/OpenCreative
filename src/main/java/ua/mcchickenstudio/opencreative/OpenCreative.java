@@ -22,8 +22,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.PluginCommand;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -343,7 +342,7 @@ public final class OpenCreative extends JavaPlugin {
         commands.put("jointo", JoinToCommand.class);
         commands.put("ownworlds", OwnMenuCommand.class);
         for (String commandName : commands.keySet()) {
-            PluginCommand command = getCommand(commandName);
+            PluginCommand command =  getCommand(commandName);
             if (command != null) {
                 try {
                     command.setExecutor(commands.get(commandName).getDeclaredConstructor().newInstance());

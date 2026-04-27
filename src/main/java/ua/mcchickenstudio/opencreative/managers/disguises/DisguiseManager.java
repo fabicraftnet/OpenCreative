@@ -57,6 +57,16 @@ public interface DisguiseManager extends Manager {
     void disguiseAsBlock(@NotNull Entity entity, @NotNull Material material);
 
     /**
+     * Sets new display name for current disguise
+     * of entity. If entity doesn't have disguise,
+     * it should be ignored.
+     *
+     * @param entity entity to change name.
+     * @param displayName display name to set.
+     */
+    void setDisguiseDisplayName(@NotNull Entity entity, @NotNull String displayName);
+
+    /**
      * Removes all disguises from entity.
      *
      * @param entity entity to remove disguises.

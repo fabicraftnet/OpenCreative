@@ -29,6 +29,9 @@ public final class DisabledDisguises implements DisguiseManager {
     public void disguiseAsPlayer(@NotNull Entity entity, @NotNull String skin, @NotNull String nickname) {}
 
     @Override
+    public void setDisguiseDisplayName(@NotNull Entity entity, @NotNull String displayName) {}
+
+    @Override
     public void disguiseAsEntity(@NotNull Entity entity, @NotNull EntityType type) {}
 
     @Override

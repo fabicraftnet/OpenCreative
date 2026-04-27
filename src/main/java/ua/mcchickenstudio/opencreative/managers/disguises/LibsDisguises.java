@@ -19,6 +19,7 @@
 package ua.mcchickenstudio.opencreative.managers.disguises;
 
 import me.libraryaddict.disguise.DisguiseAPI;
+import me.libraryaddict.disguise.DisguiseConfig;
 import me.libraryaddict.disguise.disguisetypes.*;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -35,8 +36,17 @@ public final class LibsDisguises implements DisguiseManager {
                     .getDeclaredConstructor(String.class, String.class)
                     .newInstance(nickname, skin);
             disguise.setEntity(entity);
+            disguise.setNotifyBar(DisguiseConfig.NotifyBar.NONE);
             disguise.startDisguise();
-        } catch (Exception ignored) {
+        } catch (Exception ignored) {}
+    }
+
+    @Override
+    public void setDisguiseDisplayName(@NotNull Entity entity, @NotNull String displayName) {
+        Disguise disguise = DisguiseAPI.getDisguise(entity);
+        if (disguise == null) return;
+        if (disguise instanceof PlayerDisguise mobDisguise) {
+            mobDisguise.setName(displayName);
         }
     }
 
@@ -44,6 +54,7 @@ public final class LibsDisguises implements DisguiseManager {
     public void disguiseAsEntity(@NotNull Entity entity, @NotNull EntityType type) {
         MobDisguise mobDisguise = new MobDisguise(DisguiseType.getType(type));
         mobDisguise.setEntity(entity);
+        mobDisguise.setNotifyBar(DisguiseConfig.NotifyBar.NONE);
         mobDisguise.startDisguise();
     }
 
@@ -51,6 +62,7 @@ public final class LibsDisguises implements DisguiseManager {
     public void disguiseAsBlock(@NotNull Entity entity, @NotNull Material material) {
         MiscDisguise disguise = new MiscDisguise(DisguiseType.FALLING_BLOCK, material);
         disguise.setEntity(entity);
+        disguise.setNotifyBar(DisguiseConfig.NotifyBar.NONE);
         disguise.startDisguise();
     }
 

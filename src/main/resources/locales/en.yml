@@ -3340,6 +3340,16 @@ items:
           - "&f Location &7- To where"
           - " "
           - "&eClick to set action."
+      entity-set-disguise-name:
+        name: "&6Set Disguise Name"
+        lore:
+          - "&7This will change displayed name"
+          - "&7of mob if it has a disguise."
+          - " "
+          - "&fIn the chest:"
+          - "&6 Text &7- Name to display"
+          - " "
+          - "&eClick to set action."
       entity-disguise-as-player:
         name: "&6Disguise as player"
         lore:
@@ -19194,6 +19204,7 @@ blocks:
   entity_remove: "&cRemove"
   entity_set_team: "Set team"
   entity_unset_team: "Unset team"
+  entity_set_disguise_name: "Disguise name"
   entity_disguise_as_player: "Player disguise"
   entity_disguise_as_entity: "Mob disguise"
   entity_disguise_as_block: "Block disguise"

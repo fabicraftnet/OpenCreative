@@ -3320,6 +3320,16 @@ items:
           - "&f Местоположение &7- Куда пойдёт"
           - " "
           - "&eНажми, чтобы установить действие."
+      entity-set-disguise-name:
+        name: "&6Установить имя в маскировке"
+        lore:
+          - "&7Это изменит отображаемое имя"
+          - "&7моба, если он имеет маскировку."
+          - " "
+          - "&fВ сундуке:"
+          - "&6 Текст &7- Имя для отображения"
+          - " "
+          - "&eНажми, чтобы установить действие."
       entity-disguise-as-player:
         name: "&6Маскировать под игрока"
         lore:
@@ -19450,6 +19460,7 @@ blocks:
   entity_set_physics: "Физика моба"
   entity_set_collidable: "Коллизия моба"
   entity_unset_team: "Убр. команду"
+  entity_set_disguise_name: "Имя маски"
   entity_disguise_as_player: "Маска игрока"
   entity_disguise_as_entity: "Маска моба"
   entity_disguise_as_block: "Маска блока"
