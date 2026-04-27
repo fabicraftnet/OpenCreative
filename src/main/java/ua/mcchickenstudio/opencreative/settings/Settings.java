@@ -90,6 +90,7 @@ public final class Settings {
     private boolean consoleNotFoundMessage = false;
     private boolean consoleWarnings = true;
     private boolean consoleGriefStats = true;
+    private boolean consoleSignEdits = true;
     private boolean notifyNoPlayersAround = true;
     private boolean cancelChatOnConfirmation = false;
     private boolean handleWorldChat = true;
@@ -167,6 +168,7 @@ public final class Settings {
         consoleNotFoundMessage = config.getBoolean("messages.not-found", false);
         consoleWarnings = config.getBoolean("messages.warnings", true);
         consoleGriefStats = config.getBoolean("messages.grief-stats", true);
+        consoleSignEdits = config.getBoolean("messages.sign-edits", true);
         cancelChatOnConfirmation = config.getBoolean("messages.cancel-chat-on-confirmation", false);
         handleWorldChat = config.getBoolean("messages.handle-world-chat", true);
 
@@ -812,6 +814,15 @@ public final class Settings {
      */
     public boolean shouldLogGriefStats() {
         return consoleGriefStats;
+    }
+
+    /**
+     * Checks whether sign edits will be shown in console.
+     *
+     * @return true - will be shown, false - hidden.
+     */
+    public boolean shouldLogSignEdits() {
+        return consoleSignEdits;
     }
 
     /**

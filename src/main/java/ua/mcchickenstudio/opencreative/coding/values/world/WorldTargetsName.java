@@ -21,7 +21,7 @@ public final class WorldTargetsName extends ListEventValue {
     @Override
     public List<@NotNull Object> getList(@NotNull ActionsHandler handler, @NotNull Action action, @Nullable Entity entity) {
         List<Object> list = new ArrayList<>();
-        handler.getSelectedTargets().forEach(ent -> list.add(ent.name()));
+        handler.getSelectedTargets().forEach(ent -> list.add(ent.getName()));
         return list;
     }
 

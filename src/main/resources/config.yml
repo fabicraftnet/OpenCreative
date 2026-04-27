@@ -328,6 +328,9 @@ messages:
   # Sends "[GRIEF: ID] Suspicious changes by Player: ..." messages in console.
   grief-stats: true
 
+  # Sends "[SIGN: ID] Sign edited by Player: ... (x, y, z)" messages in console.
+  sign-edits: true
+
   #
   # List of message paths, that will be not changed
   # even after /oc resetlocale. Recommended, if you

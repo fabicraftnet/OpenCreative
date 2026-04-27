@@ -37,6 +37,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
@@ -866,6 +867,28 @@ public final class InteractListener implements Listener {
                 player.setCooldown(currentItem.getType(), 60);
                 new WorldSettingsMenu(planet, player).open(player);
             }
+        }
+    }
+
+    @EventHandler
+    public void onSignEdit(SignChangeEvent event) {
+        Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(event.getPlayer());
+        if (planet != null) {
+            if (OpenCreative.getSettings().shouldLogSignEdits()) {
+                PlainTextComponentSerializer plainSerializer = PlainTextComponentSerializer.plainText();
+                StringBuilder content = new StringBuilder();
+                for (Component line : event.lines()) {
+                    content.append(plainSerializer.serialize(line));
+                }
+                if (content.isEmpty()) {
+                    new ChangedSignEvent(event.getPlayer(), event).callEvent();
+                    return;
+                }
+                OpenCreative.getPlugin().getLogger().info("[SIGN: " + planet.getId() + (isEntityInDevPlanet(event.getPlayer()) ? "dev" : "")
+                        + "] Sign edited by " + event.getPlayer().getName() + ": " + content
+                        + " (" + event.getBlock().getX() + ", " + event.getBlock().getY() + ", " + event.getBlock().getZ() + ")");
+            }
+            new ChangedSignEvent(event.getPlayer(), event).callEvent();
         }
     }
 
