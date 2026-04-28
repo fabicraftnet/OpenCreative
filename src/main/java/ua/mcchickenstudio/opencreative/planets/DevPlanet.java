@@ -199,12 +199,13 @@ public class DevPlanet {
 
         long startTime = System.currentTimeMillis();
 
-        for (Player player : getWorld().getPlayers()) {
-            teleportToLobby(player);
-        }
-
         World world = getWorld();
         if (world != null) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (player.getWorld().equals(world)) {
+                    teleportToLobby(player);
+                }
+            }
             if (asyncSave) {
                 for (Chunk chunk : world.getLoadedChunks()) {
                     world.unloadChunk(chunk.getX(), chunk.getZ(), true);

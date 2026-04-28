@@ -19569,6 +19569,7 @@ blocks:
   var_clone_list: "Клон. список"
   var_merge_lists: "Объед. списки"
   var_set_item_skull_textures: "Уст. текстуру"
+  var_set_item_skull_owner: "Влад. головы"
   var_convert_to_json: "Сохран. JSON"
   var_parse_json: "Парсить JSON"
   var_format_unix_time: "Форм. время"

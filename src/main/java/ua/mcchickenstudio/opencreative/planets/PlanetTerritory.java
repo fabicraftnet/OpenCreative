@@ -236,10 +236,12 @@ public class PlanetTerritory {
         } else {
             this.saveData();
         }
-        for (Player player : planet.getPlayers()) {
-            teleportToLobby(player);
-        }
         if (world != null) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (player.getWorld().equals(world)) {
+                    teleportToLobby(player);
+                }
+            }
             if (asyncSaveData) {
                 for (Chunk chunk : world.getLoadedChunks()) {
                     world.unloadChunk(chunk.getX(), chunk.getZ(), autoSave);
