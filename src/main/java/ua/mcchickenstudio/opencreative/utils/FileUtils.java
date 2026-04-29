@@ -52,6 +52,8 @@ import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.*;
  */
 public final class FileUtils {
 
+    private static Boolean usingNewWorldsContainer;
+
     /**
      * Creates planet's settings.yml file.
      *
@@ -226,7 +228,7 @@ public final class FileUtils {
             boolean shouldLogEveryWorld = OpenCreative.getSettings().isDebug() || foundWorlds < 100;
             long currentTime = System.currentTimeMillis();
             for (File planetFolder : planetsFolders) {
-                String worldName = planetFolder.getPath().replace(Bukkit.getServer().getWorldContainer() + File.separator, "").replace("planets" + File.separator, "");
+                String worldName = planetFolder.getName();
                 if (!worldName.endsWith("dev")) {
                     int id = -1;
                     try {
@@ -410,7 +412,7 @@ public final class FileUtils {
     /**
      * Returns player's data json from planet folder.
      **/
-    public static File getPlayerDataJson(Planet planet, Player player) {
+    public static @Nullable File getPlayerDataJson(@NotNull Planet planet, @NotNull Player player) {
         File planetFolder = getPlanetFolder(planet);
         File folder = new File(planetFolder.getPath() + File.separator + "playersData");
         try {
@@ -501,6 +503,19 @@ public final class FileUtils {
                 }
             }
         }
+        if (usingNewWorldsContainer()) {
+            File oldPlanetsFolder = new File(Bukkit.getWorldContainer().getPath() + File.separator + "planets" + File.separator);
+            if (oldPlanetsFolder.exists() && oldPlanetsFolder.isDirectory()) {
+                File[] oldFolders = oldPlanetsFolder.listFiles();
+                if (oldFolders != null) {
+                    for (File file : oldFolders) {
+                        if (isOpenCreativeWorldFolder(file) && convertOldPlanetFolder(file)) {
+                            count++;
+                        }
+                    }
+                }
+            }
+        }
         if (count > 0) {
             OpenCreative.getPlugin().getLogger().info("Converted " + count + " old worlds!");
         }
@@ -539,8 +554,15 @@ public final class FileUtils {
                 converted = true;
             }
             if (folder.getPath().contains("planet") && !folder.getPath().contains("planets")) {
-                OpenCreative.getPlugin().getLogger().info("Moving " + folder.getName() + " to planets folder...");
                 File newFolder = new File(getPlanetsStorageFolder().getPath() + File.separator + folder.getName());
+                OpenCreative.getPlugin().getLogger().info("Moving " + folder.getName() + " to planets folder...");
+                copyFilesToDirectory(folder, newFolder);
+                deleteFolder(folder);
+                folder = newFolder;
+                converted = true;
+            } else if (usingNewWorldsContainer() && folder.getPath().contains("planet") && !folder.getPath().contains("dimensions")) {
+                File newFolder = new File(getPlanetsStorageFolder().getPath() + File.separator + folder.getName());
+                OpenCreative.getPlugin().getLogger().info("Moving " + folder.getName() + " to world/dimensions/minecraft/planets folder...");
                 copyFilesToDirectory(folder, newFolder);
                 deleteFolder(folder);
                 folder = newFolder;
@@ -925,6 +947,11 @@ public final class FileUtils {
      * @return planets folder.
      */
     public static File getPlanetsStorageFolder() {
+        if (usingNewWorldsContainer()) {
+            return new File(Bukkit.getWorldContainer().getPath()
+                    + File.separator + "world" + File.separator + "dimensions"
+                    + File.separator + "minecraft" + File.separator + "planets" + File.separator);
+        }
         return new File(Bukkit.getWorldContainer().getPath() + File.separator + "planets" + File.separator);
     }
 
@@ -937,10 +964,31 @@ public final class FileUtils {
         return new File(Bukkit.getWorldContainer().getPath() + File.separator + "wanders" + File.separator);
     }
 
-    public static String getPlanetIdFromName(String name) {
+    /**
+     * Returns planet's ID without other symbols.
+     *
+     * @param name name of planet's folder.
+     * @return planet's ID.
+     */
+    public static @NotNull String getPlanetIdFromName(@NotNull String name) {
         return name
                 .replace(Bukkit.getServer().getWorldContainer().getPath().replace("\\", "/") + "/", "")
                 .replace("planets/planet", "");
+    }
+
+    /**
+     * Checks whether plugin should store all worlds
+     * in {@code /world/dimensions/minecraft/planets} folder
+     * (from 26.1+) instead of {@code /planets/} folder (1.21.x).
+     *
+     * @return true - planets will be saved in {@code /world/dimensions/minecraft/planets/},
+     * false - planets will be saved in {@code /planets/}.
+     */
+    public static boolean usingNewWorldsContainer() {
+        if (usingNewWorldsContainer == null) {
+            usingNewWorldsContainer = !Bukkit.getMinecraftVersion().startsWith("1.");
+        }
+        return usingNewWorldsContainer;
     }
 
 }

@@ -49,6 +49,7 @@ public abstract class KeyPlaceholder extends Placeholder {
 
     @Override
     public boolean matches(String text) {
+        if (!text.contains("%")) return false;
         Matcher matcher = PATTERN_PLACEHOLDER.matcher(text);
         while (matcher.find()) {
             String placeholder = matcher.group();
