@@ -1615,7 +1615,7 @@ public class CreativeCommand extends CommandHandler {
                     sender.sendMessage(getLocaleMessage("too-few-args"));
                     return;
                 }
-                sender.sendMessage(getLocaleMessage("creative.corrupted-worlds.set-owner").replace("%replace%", args[3]));
+                sender.sendMessage(getLocaleMessage("creative.corrupted-worlds.set-owner").replace("%player%", args[3]));
                 if (foundPlanet.getCreationTime() == 0)
                     setPlanetConfigParameter(foundPlanet, "creation-time", System.currentTimeMillis());
                 if (foundPlanet.getLastActivityTime() == 0)
@@ -1642,28 +1642,32 @@ public class CreativeCommand extends CommandHandler {
         }
         if (months < 1) months = 1;
         long currentTime = System.currentTimeMillis();
-        List<Planet> deprecatedWorlds = new ArrayList<>();
-        for (Planet planet : OpenCreative.getPlanetsManager().getPlanets()) {
-            long monthsInMillis = 2592000000L * months;
-            if (currentTime - planet.getCreationTime() > monthsInMillis && !OpenCreative.getPlanetsManager().getRecommendedPlanets().contains(planet)) {
-                OfflinePlayer planetOwner = Bukkit.getOfflinePlayer(planet.getOwner());
-                if (planetOwner.getLastSeen() == 0 || currentTime - planetOwner.getLastLogin() > monthsInMillis) {
-                    deprecatedWorlds.add(planet);
+        int finalMonths = months;
+        Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
+            List<Planet> deprecatedWorlds = new ArrayList<>();
+            for (Planet planet : OpenCreative.getPlanetsManager().getPlanets()) {
+                long monthsInMillis = 2592000000L * finalMonths;
+                if (currentTime - planet.getCreationTime() > monthsInMillis && !OpenCreative.getPlanetsManager().getRecommendedPlanets().contains(planet)) {
+                    OfflinePlayer planetOwner = Bukkit.getOfflinePlayer(planet.getOwner());
+                    if (planetOwner.getLastSeen() == 0 || currentTime - planetOwner.getLastLogin() > monthsInMillis) {
+                        deprecatedWorlds.add(planet);
+                    }
                 }
             }
-        }
-        String worldMessage = getLocaleMessage("creative.deprecated-worlds.world");
-        for (Planet planet : deprecatedWorlds) {
-            sender.sendMessage(Component.text(worldMessage
-                    .replace("%id%", String.valueOf(planet.getId()))
-                    .replace("%owner%", planet.getOwner())
-                    .replace("%created%", getElapsedTime(currentTime, planet.getCreationTime()))
-                    .replace("%seen%", getElapsedTime(currentTime, Bukkit.getOfflinePlayer(planet.getOwner()).getLastSeen())
-                    )).clickEvent(ClickEvent.runCommand("/oc delete " + planet.getId()))
-            );
-        }
-        sender.sendMessage(getLocaleMessage("creative.deprecated-worlds.list")
-                .replace("%amount%", String.valueOf(deprecatedWorlds.size())));
+            String worldMessage = getLocaleMessage("creative.deprecated-worlds.world");
+            for (Planet planet : deprecatedWorlds) {
+                sender.sendMessage(Component.text(worldMessage
+                        .replace("%id%", String.valueOf(planet.getId()))
+                        .replace("%owner%", planet.getOwner())
+                        .replace("%created%", getElapsedTime(currentTime, planet.getCreationTime()))
+                        .replace("%seen%", getElapsedTime(currentTime, Bukkit.getOfflinePlayer(planet.getOwner()).getLastSeen())
+                        )).clickEvent(ClickEvent.runCommand("/oc delete " + planet.getId()))
+                );
+            }
+            sender.sendMessage(getLocaleMessage("creative.deprecated-worlds.list")
+                    .replace("%amount%", String.valueOf(deprecatedWorlds.size())));
+        });
+
     }
 
     @Override

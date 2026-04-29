@@ -19313,6 +19313,8 @@ blocks:
   var_clone_list: "Clone List"
   var_merge_lists: "Merge Lists"
   var_set_item_skull_textures: "Set Texture"
+  var_set_item_skull_owner: "Head Owner"
+
   var_remove_item_lore_line: "&cRemove line"
   var_convert_to_json: "Save as JSON"
   var_parse_json: "Parse JSON"

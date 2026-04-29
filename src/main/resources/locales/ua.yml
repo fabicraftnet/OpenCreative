@@ -19365,6 +19365,7 @@ blocks:
   var_clone_list: "Клон. список"
   var_merge_lists: "Об'єднати списки"
   var_set_item_skull_textures: "Вст. текстуру"
+  var_set_item_skull_owner: "Власн. голови"
   controller_catch_error: "Спіймати помилку"
   controller_measure_time: "Вимір. час"
   control_cancel_event: "&cСкасування події"

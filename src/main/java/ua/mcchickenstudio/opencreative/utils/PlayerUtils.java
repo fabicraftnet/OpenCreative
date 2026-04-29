@@ -420,6 +420,7 @@ public final class PlayerUtils {
      */
     public static void giveDevPermissions(@NotNull Player player) {
         PermissionAttachment permissionAttachment = permissionAttachmentMap.get(player.getUniqueId());
+        if (permissionAttachment == null) return;
         Set<String> perms = OpenCreative.getSettings().getGroups().getGroup(player).getDevPermissions();
         for (String permission : perms) {
             boolean negated = permission.startsWith("!");
@@ -435,6 +436,7 @@ public final class PlayerUtils {
      */
     public static void givePlayPermissions(@NotNull Player player) {
         PermissionAttachment permissionAttachment = permissionAttachmentMap.get(player.getUniqueId());
+        if (permissionAttachment == null) return;
         Set<String> perms = OpenCreative.getSettings().getGroups().getGroup(player).getPlayPermissions();
         for (String permission : perms) {
             boolean negated = permission.startsWith("!");
@@ -459,6 +461,7 @@ public final class PlayerUtils {
      */
     public static void giveBuildPermissions(@NotNull Player player) {
         PermissionAttachment permissionAttachment = permissionAttachmentMap.get(player.getUniqueId());
+        if (permissionAttachment == null) return;
         Set<String> perms = OpenCreative.getSettings().getGroups().getGroup(player).getBuildPermissions();
         World world = player.getWorld();
         if (isPlanet(world) && containsWorldEditPermission(perms)) {
@@ -479,6 +482,7 @@ public final class PlayerUtils {
      */
     public static void giveVisitorPermissions(@NotNull Player player) {
         PermissionAttachment permissionAttachment = permissionAttachmentMap.get(player.getUniqueId());
+        if (permissionAttachment == null) return;
         Set<String> perms = OpenCreative.getSettings().getGroups().getGroup(player).getVisitorPermissions();
         for (String permission : perms) {
             boolean negated = permission.startsWith("!");
@@ -494,6 +498,7 @@ public final class PlayerUtils {
      */
     public static void giveLobbyPermissions(@NotNull Player player) {
         PermissionAttachment permissionAttachment = permissionAttachmentMap.get(player.getUniqueId());
+        if (permissionAttachment == null) return;
         Set<String> perms = OpenCreative.getSettings().getGroups().getGroup(player).getLobbyPermissions();
         for (String permission : perms) {
             boolean negated = permission.startsWith("!");

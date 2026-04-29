@@ -28,6 +28,7 @@ import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.*;
 import ua.mcchickenstudio.opencreative.coding.blocks.conditions.Condition;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.WorldEvent;
+import ua.mcchickenstudio.opencreative.coding.blocks.executors.entity.interaction.EntitySpawnedExecutor;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.entity.state.EntityAirChangedExecutor;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.other.Cycle;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.other.Function;
@@ -100,7 +101,7 @@ public class PlanetExecutors {
     public static boolean canRunExecutor(@NotNull Planet planet, @NotNull Executor executor) {
         if (executor instanceof PlayerWalkExecutor || executor instanceof EntityAirChangedExecutor
                 || executor instanceof WorldBlockFluidChangedExecutor || executor instanceof PlayerDestroyBlockExecutor
-                || executor instanceof PlayerPlaceBlockExecutor) {
+                || executor instanceof PlayerPlaceBlockExecutor || executor instanceof EntitySpawnedExecutor) {
             if (executor.getLastCalls() >= planet.getLimits().getCodeOperationsLimit()) {
                 planet.getTerritory().getScript().getExecutors().stopCode("operations limit");
                 sendPlanetCodeCriticalErrorMessage(planet, executor, getLocaleMessage("coding-error.operations-limit", false)
