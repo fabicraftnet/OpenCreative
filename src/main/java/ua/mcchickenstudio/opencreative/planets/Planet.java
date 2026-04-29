@@ -760,7 +760,8 @@ public class Planet {
             clearPlayer(player, false, OpenCreative.getSettings().getLobbySettings().shouldResetGameMode(player.getWorld()));
             Sounds.WORLD_CONNECTED.play(player);
             mode.onPlayerConnect(player, this);
-            getWorldPlayers().getPlanetPlayer(player).load();
+            PlanetPlayer planetPlayer = getWorldPlayers().getPlanetPlayer(player);
+            if (planetPlayer != null) planetPlayer.load();
             player.clearTitle();
             territory.showBorders(player);
             if (!getPlayersFromPlanetList(this, PlayersType.UNIQUE).contains(player.getName())) {

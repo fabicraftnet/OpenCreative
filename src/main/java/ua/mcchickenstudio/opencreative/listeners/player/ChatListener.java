@@ -157,7 +157,7 @@ public final class ChatListener implements Listener {
                 return;
             }
             checkDevItems(player, message, event);
-            checkConfirmation(player, message, event);
+            boolean hadConfirmation = checkConfirmation(player, message, event);
             if (event.isCancelled()) {
                 return;
             }
@@ -211,7 +211,7 @@ public final class ChatListener implements Listener {
                         if (chatEvent.isCancelled()) {
                             return;
                         }
-                        if (planet.getPlayers().size() == 1 && !chatEvent.isHandledByCode() && OpenCreative.getSettings().shouldNotifyAboutNoPlayersAround()) {
+                        if (!hadConfirmation && planet.getPlayers().size() == 1 && !chatEvent.isHandledByCode() && OpenCreative.getSettings().shouldNotifyAboutNoPlayersAround()) {
                             player.sendMessage(getPlayerLocaleComponent("chat-no-near-players", player)
                                     .clickEvent(ClickEvent.suggestCommand("!" + message)));
                         }
@@ -222,7 +222,7 @@ public final class ChatListener implements Listener {
                         OpenCreative.getPlugin().getLogger().info("[WORLD-CHAT: " + planet.getId() + "] " + player.getName() + ": " + message);
                     }
                 } else {
-                    if (player.getWorld().getPlayers().size() == 1 && OpenCreative.getSettings().shouldNotifyAboutNoPlayersAround()) {
+                    if (!hadConfirmation && player.getWorld().getPlayers().size() == 1 && OpenCreative.getSettings().shouldNotifyAboutNoPlayersAround()) {
                         player.sendMessage(getPlayerLocaleComponent("chat-no-near-players", player)
                                 .clickEvent(ClickEvent.suggestCommand("!" + message)));
                     }
@@ -443,20 +443,30 @@ public final class ChatListener implements Listener {
         }
     }
 
-    private void checkConfirmation(Player player, String input, AsyncChatEvent event) {
-        if (!PlayerConfirmation.hasConfirmation(player)) return;
+    /**
+     * Checks whether player had confirmation.
+     *
+     * @param player player to check
+     * @param input input text.
+     * @param event chat event.
+     * @return true - player had confirmation, false - no confirmation.
+     */
+    private boolean checkConfirmation(@NotNull Player player,
+                                      @NotNull String input,
+                                      @NotNull AsyncChatEvent event) {
+        if (!PlayerConfirmation.hasConfirmation(player)) return false;
         PlayerConfirmation confirm = PlayerConfirmation.getConfirmation(player);
         Object data = PlayerConfirmation.getConfirmationData(player);
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
         player.clearTitle();
         PlayerConfirmation.clearConfirmations(player);
-        if (confirm == null) return;
+        if (confirm == null) return false;
         if (OpenCreative.getSettings().shouldCancelChatOnConfirmation()) {
             event.setCancelled(true);
         }
         switch (confirm) {
             case WORLD_NAME_CHANGE -> {
-                if (planet == null || !planet.isOwner(player)) return;
+                if (planet == null || !planet.isOwner(player)) return false;
                 String newName = "§f" + ChatColor.translateAlternateColorCodes('&', input);
                 String uncoloredName = ChatColor.stripColor(newName);
                 if (uncoloredName.length() > OpenCreative.getSettings().getRequirements().getWorldNameMaxLength() || uncoloredName.length()
@@ -464,7 +474,7 @@ public final class ChatListener implements Listener {
                     player.sendMessage(getLocaleMessage("settings.world-name.error")
                             .replace("%min%", String.valueOf(OpenCreative.getSettings().getRequirements().getWorldNameMinLength()))
                             .replace("%max%", String.valueOf(OpenCreative.getSettings().getRequirements().getWorldNameMaxLength())));
-                    return;
+                    return true;
                 }
                 planet.getInformation().setDisplayName(newName);
                 player.sendMessage(getLocaleMessage("settings.world-name.changed").replace("%name%", newName));
@@ -473,7 +483,7 @@ public final class ChatListener implements Listener {
                 Sounds.WORLD_SETTINGS_NAME_CHANGE.play(player);
             }
             case WORLD_CUSTOM_ID_CHANGE -> {
-                if (planet == null || !planet.isOwner(player)) return;
+                if (planet == null || !planet.isOwner(player)) return false;
                 String pattern = OpenCreative.getSettings().getRequirements().getCustomIdPattern();
                 if (input.length() > OpenCreative.getSettings().getRequirements().getCustomIdMaxLength()
                         || input.length() < OpenCreative.getSettings().getRequirements().getCustomIdMinLength()
@@ -481,12 +491,12 @@ public final class ChatListener implements Listener {
                     player.sendMessage(getLocaleMessage("settings.world-id.error")
                             .replace("%min%", String.valueOf(OpenCreative.getSettings().getRequirements().getCustomIdMinLength()))
                             .replace("%max%", String.valueOf(OpenCreative.getSettings().getRequirements().getCustomIdMaxLength())));
-                    return;
+                    return true;
                 }
                 for (Planet searchablePlanet : OpenCreative.getPlanetsManager().getPlanets()) {
                     if (searchablePlanet.getInformation().getCustomID().equalsIgnoreCase(input)) {
                         player.sendMessage(getLocaleMessage("settings.world-id.taken"));
-                        return;
+                        return true;
                     }
                 }
                 planet.getInformation().setCustomID(input);
@@ -496,7 +506,7 @@ public final class ChatListener implements Listener {
                 Sounds.WORLD_SETTINGS_CUSTOM_ID_SET.play(player);
             }
             case WORLD_DESCRIPTION_CHANGE -> {
-                if (planet == null || !planet.isOwner(player)) return;
+                if (planet == null || !planet.isOwner(player)) return false;
                 String newDescription = "§f" + ChatColor.translateAlternateColorCodes('&', input);
                 String uncoloredDescription = ChatColor.stripColor(newDescription);
                 if (uncoloredDescription.length() > OpenCreative.getSettings().getRequirements().getWorldDescriptionMaxLength() ||
@@ -504,7 +514,7 @@ public final class ChatListener implements Listener {
                     player.sendMessage(getLocaleMessage("settings.world-description.error")
                             .replace("%min%", String.valueOf(OpenCreative.getSettings().getRequirements().getWorldDescriptionMinLength()))
                             .replace("%max%", String.valueOf(OpenCreative.getSettings().getRequirements().getWorldDescriptionMaxLength())));
-                    return;
+                    return true;
                 }
                 newDescription = String.join("\\n", splitDescription(newDescription, 39));
                 planet.getInformation().setDescription(newDescription);
@@ -522,6 +532,7 @@ public final class ChatListener implements Listener {
                 } else {
                     player.sendMessage(getLocaleMessage("menus.all-worlds.items.search.not-found"));
                 }
+                return true;
             }
             case FIND_PLANETS_BY_ID -> {
                 OpenCreative.getPlugin().getLogger().info("[WORLD-CHAT: " + WorldUtils.getPlanetIdFromName(player.getWorld()) + "] " + player.getName() + " tries to find worlds by ID: " + input);
@@ -531,6 +542,7 @@ public final class ChatListener implements Listener {
                 } else {
                     player.sendMessage(getLocaleMessage("menus.all-worlds.items.search.not-found"));
                 }
+                return true;
             }
             case FIND_PLANETS_BY_OWNER -> {
                 OpenCreative.getPlugin().getLogger().info("[WORLD-CHAT: " + WorldUtils.getPlanetIdFromName(player.getWorld()) + "] " + player.getName() + " tries to find worlds by owner: " + input);
@@ -540,6 +552,7 @@ public final class ChatListener implements Listener {
                 } else {
                     player.sendMessage(getLocaleMessage("menus.all-worlds.items.search.not-found"));
                 }
+                return true;
             }
             case TRANSFER_OWNERSHIP -> {
                 String newOwner = (String) data;
@@ -548,15 +561,15 @@ public final class ChatListener implements Listener {
                         Player newOwnerPlayer = Bukkit.getPlayerExact(newOwner);
                         if (newOwnerPlayer == null) {
                             player.sendMessage(getLocaleMessage("world.players.transfer-ownership.offline").replace("%player%", newOwner));
-                            return;
+                            return true;
                         }
                         if (!planet.getPlayers().contains(newOwnerPlayer)) {
                             player.sendMessage(getLocaleMessage("world.players.transfer-ownership.offline").replace("%player%", newOwner));
-                            return;
+                            return true;
                         }
                         if (OpenCreative.getPlanetsManager().getPlanetsByOwner(newOwnerPlayer).size() >= OpenCreative.getSettings().getGroups().getGroup(newOwnerPlayer).getWorldsLimit()) {
                             player.sendMessage(getLocaleMessage("world.players.transfer-ownership.limit").replace("%player%", newOwner));
-                            return;
+                            return true;
                         }
                         OpenCreative.getPlugin().getLogger().info("[WORLD-CHAT: " + planet.getId() + "] " + player.getName() + " wants to transfer world's ownership to: " + input);
                         planet.setChangingOwner(true);
@@ -568,6 +581,7 @@ public final class ChatListener implements Listener {
                         player.sendMessage(getLocaleMessage("world.players.transfer-ownership.wrong-id"));
                     }
                 }
+                return true;
             }
             case GET_OWNERSHIP -> {
                 if (planet != null) {
@@ -575,15 +589,15 @@ public final class ChatListener implements Listener {
                     if (input.equals(String.valueOf(planet.getId()))) {
                         if (oldOwner == null) {
                             player.sendMessage(getLocaleMessage("world.players.transfer-ownership.offline").replace("%player%", player.getName()));
-                            return;
+                            return true;
                         }
                         if (!planet.getPlayers().contains(oldOwner)) {
                             player.sendMessage(getLocaleMessage("world.players.transfer-ownership.offline").replace("%player%", player.getName()));
-                            return;
+                            return true;
                         }
                         if (OpenCreative.getPlanetsManager().getPlanetsByOwner(player).size() >= OpenCreative.getSettings().getGroups().getGroup(player).getWorldsLimit()) {
                             player.sendMessage(getLocaleMessage("world.players.transfer-ownership.limit").replace("%player%", player.getName()));
-                            return;
+                            return true;
                         }
                         OpenCreative.getPlugin().getLogger().info("[WORLD-CHAT: " + planet.getId() + "] " + oldOwner.getName() + " transferred world's ownership to: " + player.getName());
                         oldOwner.sendMessage(getLocaleMessage("world.players.transfer-ownership.transferred-old").replace("%player%", player.getName()));
@@ -612,10 +626,11 @@ public final class ChatListener implements Listener {
                         planet.setChangingOwner(false);
                     }
                 }
+                return true;
             }
             case MODULE_NAME_CHANGE -> {
                 Module module = OpenCreative.getModuleManager().getModuleById(String.valueOf(data));
-                if (module == null || !module.isOwner(player)) return;
+                if (module == null || !module.isOwner(player)) return false;
                 String newName = "§f" + ChatColor.translateAlternateColorCodes('&', input);
                 String uncoloredName = ChatColor.stripColor(newName);
                 if (uncoloredName.length() > OpenCreative.getSettings().getRequirements().getModuleNameMaxLength()
@@ -623,7 +638,7 @@ public final class ChatListener implements Listener {
                     player.sendMessage(getLocaleMessage("settings.module-name.error")
                             .replace("%min%", String.valueOf(OpenCreative.getSettings().getRequirements().getModuleNameMinLength()))
                             .replace("%max%", String.valueOf(OpenCreative.getSettings().getRequirements().getModuleNameMaxLength())));
-                    return;
+                    return true;
                 }
                 OpenCreative.getPlugin().getLogger().info("[WORLD-CHAT: " + WorldUtils.getPlanetIdFromName(player.getWorld()) + "] " + player.getName() + " renamed module " + module.getId() + " to: " + input);
                 module.getInformation().setDisplayName(newName);
@@ -632,7 +647,7 @@ public final class ChatListener implements Listener {
             }
             case MODULE_DESCRIPTION_CHANGE -> {
                 Module module = OpenCreative.getModuleManager().getModuleById(String.valueOf(data));
-                if (module == null || !module.isOwner(player)) return;
+                if (module == null || !module.isOwner(player)) return false;
                 String newDescription = "§f" + ChatColor.translateAlternateColorCodes('&', input);
                 String uncoloredDescription = ChatColor.stripColor(newDescription);
                 if (uncoloredDescription.length() > OpenCreative.getSettings().getRequirements().getModuleDescriptionMaxLength() ||
@@ -640,7 +655,7 @@ public final class ChatListener implements Listener {
                     player.sendMessage(getLocaleMessage("settings.module-description.error")
                             .replace("%min%", String.valueOf(OpenCreative.getSettings().getRequirements().getModuleDescriptionMinLength()))
                             .replace("%max%", String.valueOf(OpenCreative.getSettings().getRequirements().getModuleDescriptionMaxLength())));
-                    return;
+                    return true;
                 }
                 newDescription = String.join("\\n", splitDescription(newDescription, 39));
                 OpenCreative.getPlugin().getLogger().info("[WORLD-CHAT: " + WorldUtils.getPlanetIdFromName(player.getWorld()) + "] " + player.getName() + " changed module's (" + module.getId() + ") description to: " + input);
@@ -657,13 +672,14 @@ public final class ChatListener implements Listener {
                     player.sendMessage(getLocaleMessage("settings.profile-description.error")
                             .replace("%min%", String.valueOf(OpenCreative.getSettings().getRequirements().getModuleDescriptionMinLength()))
                             .replace("%max%", String.valueOf(OpenCreative.getSettings().getRequirements().getModuleDescriptionMaxLength())));
-                    return;
+                    return true;
                 }
                 newDescription = String.join("\\n", splitDescription(newDescription, 20));
                 OpenCreative.getPlugin().getLogger().info("[WORLD-CHAT: " + WorldUtils.getPlanetIdFromName(player.getWorld()) + "] " + player.getName() + " changed profile's description to: " + input);
                 wander.setDescription(newDescription);
                 player.sendMessage(getLocaleMessage("settings.profile-description.changed").replace("%description%", newDescription));
                 Sounds.PROFILE_SETTINGS_DESCRIPTION_SET.play(player);
+                return true;
             }
             case PROFILE_SOCIAL_CHANGE -> {
                 Wander wander = OpenCreative.getWander(player);
@@ -678,7 +694,7 @@ public final class ChatListener implements Listener {
                                     .replace("%min%", String.valueOf(2))
                                     .replace("%max%", String.valueOf(32)));
                             Sounds.PLAYER_FAIL.play(player);
-                            return;
+                            return true;
                         }
                     }
                     case "twitter" -> {
@@ -690,7 +706,7 @@ public final class ChatListener implements Listener {
                                     .replace("%min%", String.valueOf(4))
                                     .replace("%max%", String.valueOf(15)));
                             Sounds.PLAYER_FAIL.play(player);
-                            return;
+                            return true;
                         }
                     }
                     case "youtube" -> {
@@ -703,7 +719,7 @@ public final class ChatListener implements Listener {
                                     .replace("%min%", String.valueOf(3))
                                     .replace("%max%", String.valueOf(24)));
                             Sounds.PLAYER_FAIL.play(player);
-                            return;
+                            return true;
                         }
                     }
                     case "telegram" -> {
@@ -714,19 +730,21 @@ public final class ChatListener implements Listener {
                                     .replace("%min%", String.valueOf(5))
                                     .replace("%max%", String.valueOf(32)));
                             Sounds.PLAYER_FAIL.play(player);
-                            return;
+                            return true;
                         }
                     }
                     default -> {
-                        return;
+                        return true;
                     }
                 }
                 player.sendMessage(getLocaleMessage("settings.profile-social-" + social + ".changed")
                         .replace("%social%", input));
                 wander.setLink(social, input);
                 Sounds.PROFILE_SETTINGS_SOCIAL_SET.play(player);
+                return true;
             }
         }
+        return false;
     }
 
 }

@@ -110,7 +110,7 @@ public final class EntitySpawnListener implements Listener {
             }
             if (count > limit) {
                 event.setCancelled(true);
-                if (planet.getOnline() < 1) return;
+                if (planet.getInformation().getAsyncOnline() < 1) return;
                 sendMessageOnce(planet, "world.entity-limit",
                         new PlaceholderReplacer("count", limit),
                         "/world deletemobs", null, 3);
@@ -144,7 +144,7 @@ public final class EntitySpawnListener implements Listener {
             int limit = planet.getLimits().getEntitiesLimit();
             if (world.getEntityCount() > limit) {
                 event.setCancelled(true);
-                if (planet.getOnline() < 1) return;
+                if (planet.getInformation().getAsyncOnline() < 1) return;
                 sendMessageOnce(planet, "world.entity-limit",
                         new PlaceholderReplacer("count", limit),
                         "/world deletemobs", null, 3);
