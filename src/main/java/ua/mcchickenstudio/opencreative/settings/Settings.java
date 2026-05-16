@@ -40,6 +40,9 @@ import ua.mcchickenstudio.opencreative.events.status.MaintenanceStartEvent;
 import ua.mcchickenstudio.opencreative.managers.stability.DisabledWatchdog;
 import ua.mcchickenstudio.opencreative.managers.stability.Watchdog;
 import ua.mcchickenstudio.opencreative.planets.Planet;
+import ua.mcchickenstudio.opencreative.settings.filters.Filter;
+import ua.mcchickenstudio.opencreative.settings.filters.FilterRule;
+import ua.mcchickenstudio.opencreative.settings.filters.FilterTextAction;
 import ua.mcchickenstudio.opencreative.settings.groups.Groups;
 import ua.mcchickenstudio.opencreative.settings.items.*;
 import ua.mcchickenstudio.opencreative.utils.ErrorUtils;
@@ -55,6 +58,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCriticalErrorMessage;
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendWarningErrorMessage;
@@ -188,6 +192,7 @@ public final class Settings {
         String soundsTheme = config.getString("sounds.theme", "default");
         loadSounds(config, soundsTheme);
         loadWorldGenerators(config);
+        // TODO: loadFilterSettings(config);
 
         if (maintenance) {
             OpenCreative.getPlugin().getLogger().warning("Maintenance mode is still enabled in config.yml, to disable: /maintenance end");
@@ -209,6 +214,96 @@ public final class Settings {
         checkDebugAnnouncer();
 
         loadItems(config);
+    }
+
+    private void loadFilterSettings(@NotNull FileConfiguration config2) {
+        Filter.getInstance().clearRules();
+        File filterFile = new File(OpenCreative.getPlugin().getDataFolder(), "filter.yml");
+        FileConfiguration filterConfig = new YamlConfiguration();
+        if (!filterFile.exists()) {
+            OpenCreative.getPlugin().saveResource("filter.yml", true);
+        }
+        try {
+            filterConfig.load(filterFile);
+        } catch (Exception error) {
+            String corruptedName = "filter-corrupted-" + new SimpleDateFormat("hh-mm--dd-MM-yyyy")
+                    .format(new Date()) + ".yml";
+            OpenCreative.getPlugin().getLogger().severe(
+                    "Oops! Failed to load filter.yml" + ErrorUtils.parseException(error, false) +
+                            String.join("\n", "", "",
+                                    " ^ ^ ^ ^ ^",
+                                    "Seems like filter.yml was corrupted, so we renamed it and replaced with default filter config.",
+                                    "For old filter config, see /plugins/OpenCreative/" + corruptedName,
+                                    "Maybe you forgot space, tab, or brackets {} []? See above for details."
+                            ));
+            try {
+                File movedConfig = new File(OpenCreative.getPlugin().getDataFolder(), corruptedName);
+                if (!filterFile.renameTo(movedConfig)) {
+                    OpenCreative.getPlugin().getLogger().severe("Failed to rename old filter.yml to " + movedConfig.getName());
+                }
+            } catch (Exception ignored) {}
+            OpenCreative.getPlugin().saveResource("filter.yml", true);
+        }
+        Set<String> rules = filterConfig.getKeys(false);
+        if (rules.isEmpty()) {
+            OpenCreative.getPlugin().getLogger().info("No filter rules found.");
+            return;
+        }
+        Set<String> registeredRules = new HashSet<>();
+        for (String rule : rules) {
+            List<String> patternsStrings = filterConfig.getStringList(rule);
+            if (patternsStrings.isEmpty()) continue;
+            List<Pattern> patterns = new ArrayList<>();
+            for (String regex : patternsStrings) {
+                try {
+                    patterns.add(Pattern.compile(regex));
+                } catch (Exception error) {
+                    OpenCreative.getPlugin().getLogger().severe("Failed to register regex pattern " + regex + " for rule " + rule + ": " + error.getMessage());
+                }
+            }
+            if (rule.equals("whitelist")) {
+                for (Pattern pattern : patterns) {
+                    Filter.getInstance().addWhitelist(pattern);
+                }
+                continue;
+            }
+            ConfigurationSection section = config2.getConfigurationSection("filter.rules." + rule);
+            if (section == null) {
+                OpenCreative.getPlugin().getLogger().warning("Filter " + rule + " is specified in filter.yml, but not specified in config.yml (filter.rule." + rule + ")");
+                continue;
+            }
+            boolean checkChat = section.getBoolean("check-chat", true);
+            boolean checkSigns = section.getBoolean("check-signs", true);
+            boolean checkAnvils = section.getBoolean("check-anvils", true);
+            boolean checkBooks = section.getBoolean("check-books", true);
+            boolean warnPlayer = section.getBoolean("warn-player", true);
+            boolean notifyStaff = section.getBoolean("notify-staff", true);
+            String replacement = section.getString("replacement", "#");
+            FilterTextAction filterTextAction = FilterTextAction.FULL;
+            try {
+                filterTextAction = FilterTextAction.valueOf(section.getString("edit-message", "full")
+                        .toUpperCase().replace("-", "_"));
+            } catch (Exception ignored) {}
+            List<Command> filterCommands = new ArrayList<>();
+            ConfigurationSection commandsSection = section.getConfigurationSection("commands");
+            if (commandsSection != null) {
+                for (String commandName : commandsSection.getKeys(false)) {
+                    String command = commandsSection.getString(commandName + ".command");
+                    if (command == null || command.isEmpty()) continue;
+                    boolean console = commandsSection.getBoolean(commandName + ".console", true);
+                    long delay = commandsSection.getLong(commandName + ".delay", 0);
+                    filterCommands.add(new Command(command, console, delay));
+                }
+            }
+            registeredRules.add(rule);
+            Filter.getInstance().addRule(new FilterRule(rule, warnPlayer, notifyStaff,
+                    checkChat, checkAnvils, checkBooks, checkSigns,
+                    filterTextAction, replacement, patterns, filterCommands));
+        }
+        if (!registeredRules.isEmpty()) {
+            OpenCreative.getPlugin().getLogger().info("Registered "
+                    + registeredRules.size() + " filter rules (" + String.join(", ", registeredRules) + ")");
+        }
     }
 
     /**
@@ -263,6 +358,7 @@ public final class Settings {
         if (key.startsWith("groups.premium") && config.contains("groups", true)) return true;
         if (key.startsWith("sounds.christmas") && config.contains("sounds", true)) return true;
         if (key.startsWith("commands.onLobby") && config.contains("commands", true)) return true;
+        if (key.startsWith("filter.rules.swearing") && config.contains("filter.rules", true)) return true;
         if (key.startsWith("items.") && config.contains("items")) {
             String[] parts = key.split("\\.");
             // If config has item group section "items.lobby" - ignore.

@@ -21,6 +21,8 @@ package ua.mcchickenstudio.opencreative.settings;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 
 import java.util.Map;
@@ -29,7 +31,7 @@ import static ua.mcchickenstudio.opencreative.utils.MessageUtils.parsePAPI;
 
 public record Command(String commandLine, boolean console, long delay) {
 
-    public void execute(Player player, Map<String, Object> placeholders) {
+    public void execute(@Nullable Player player, @NotNull Map<String, Object> placeholders) {
         if (delay > 0) {
             new BukkitRunnable() {
                 @Override
@@ -42,7 +44,7 @@ public record Command(String commandLine, boolean console, long delay) {
         }
     }
 
-    private void dispatch(Player player, Map<String, Object> placeholders) {
+    private void dispatch(@Nullable Player player, @NotNull Map<String, Object> placeholders) {
         String dispatchedCommand = commandLine;
         for (String placeholder : placeholders.keySet()) {
             dispatchedCommand = dispatchedCommand.replace(placeholder, placeholders.get(placeholder).toString());

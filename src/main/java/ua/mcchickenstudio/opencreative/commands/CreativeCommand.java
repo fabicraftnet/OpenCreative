@@ -37,6 +37,8 @@ import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.modules.Module;
 import ua.mcchickenstudio.opencreative.commands.experiments.Experiment;
 import ua.mcchickenstudio.opencreative.commands.experiments.Experiments;
+import ua.mcchickenstudio.opencreative.settings.filters.Filter;
+import ua.mcchickenstudio.opencreative.settings.filters.FilterResult;
 import ua.mcchickenstudio.opencreative.wanders.Wander;
 import ua.mcchickenstudio.opencreative.menus.CreativeMenu;
 import ua.mcchickenstudio.opencreative.menus.world.WorldModerationMenu;
@@ -1053,6 +1055,25 @@ public class CreativeCommand extends CommandHandler {
                     return;
                 }
                 printMessage(sender, args[1]);
+            }
+            case "checkfilters" -> {
+                if (!sender.hasPermission("opencreative.filters.check")) {
+                    sender.sendMessage(getLocaleMessage("no-perms"));
+                    return;
+                }
+                if (args.length < 2) {
+                    sender.sendMessage(getLocaleMessage("too-few-args"));
+                    return;
+                }
+                String text = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+                for (Filter.Context context : Filter.Context.values()) {
+                    FilterResult result = Filter.getInstance().checkContent(text, context);
+                    if (result.rule() == null) {
+                        sender.sendMessage(context.name().toLowerCase() + ": no violation");
+                        continue;
+                    }
+                    sender.sendMessage(context.name().toLowerCase() + ": " + result.rule().getId() + " -> " + result.filteredMessage());
+                }
             }
             case "minimsg" -> {
                 if (!sender.hasPermission("opencreative.print.minimessage")) {
