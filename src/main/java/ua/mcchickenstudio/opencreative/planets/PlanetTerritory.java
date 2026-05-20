@@ -304,31 +304,47 @@ public class PlanetTerritory {
 
     public void scheduleRunnable(@NotNull PlanetRunnable runnable, long delay) {
         runningBukkitRunnables.add(runnable);
+        System.out.println("scheduled: " +  runningBukkitRunnables.size());
         runnable.runTaskLater(OpenCreative.getPlugin(), delay);
     }
 
     public void scheduleAsyncRunnable(@NotNull PlanetRunnable runnable, long delay) {
         runningBukkitRunnables.add(runnable);
+        System.out.println("scheduled async: " +  runningBukkitRunnables.size());
         runnable.runTaskLaterAsynchronously(OpenCreative.getPlugin(), delay);
     }
 
     public void removeBukkitRunnable(BukkitRunnable runnable) {
         runningBukkitRunnables.remove(runnable);
+        System.out.println("removed: " +  runningBukkitRunnables.size());
+
     }
 
     /**
      * Stops all running bukkit runnables and tasks in world.
      */
     public void stopBukkitRunnables() {
-        for (BukkitRunnable runnable : new HashSet<>(runningBukkitRunnables)) {
-            try {
-                if (runnable != null && !runnable.isCancelled()) {
-                    runnable.cancel();
+        if (OpenCreative.getPlugin().isEnabled()) {
+            Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
+                for (BukkitRunnable runnable : new HashSet<>(runningBukkitRunnables)) {
+                    try {
+                        if (runnable != null && !runnable.isCancelled()) {
+                            runnable.cancel();
+                        }
+                    } catch (IllegalStateException ignored) {}
                 }
-            } catch (IllegalStateException ignored) {
+                runningBukkitRunnables.clear();
+            });
+        } else {
+            for (BukkitRunnable runnable : new HashSet<>(runningBukkitRunnables)) {
+                try {
+                    if (runnable != null && !runnable.isCancelled()) {
+                        runnable.cancel();
+                    }
+                } catch (IllegalStateException ignored) {}
             }
+            runningBukkitRunnables.clear();
         }
-        runningBukkitRunnables.clear();
     }
 
     /**

@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
+import ua.mcchickenstudio.opencreative.planets.Planet;
 
 import java.util.List;
 
@@ -74,6 +75,7 @@ public abstract class MultiAction extends Action {
                     .replace("%limit%", String.valueOf(getPlanet().getLimits().getCodingActionsCallsLimit())));
             return;
         }
+        if (getPlanet().getMode() != Planet.Mode.PLAYING) return;
         for (Entity entity : targets) {
             if (entity == null) continue;
             if (entity.getWorld().equals(getPlanet().getWorld()) || !OpenCreative.getSettings().getCodingSettings().isIgnoreActionsIfEntityNotInWorld()) {

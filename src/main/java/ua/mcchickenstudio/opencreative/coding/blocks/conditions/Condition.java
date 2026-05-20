@@ -30,6 +30,7 @@ import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
 import ua.mcchickenstudio.opencreative.coding.values.EventValue;
 import ua.mcchickenstudio.opencreative.coding.values.EventValues;
+import ua.mcchickenstudio.opencreative.planets.Planet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,6 +84,7 @@ public abstract class Condition extends Action {
         if (getExecutor().isDebug()) {
             sendCodingDebugLog(getPlanet(), getLocaleMessage("coding-debug.condition.returned-" + check, false).replace("%type%", getActionType().getLocaleName()));
         }
+        if (getPlanet().getMode() != Planet.Mode.PLAYING) return;
         if (check ^ isOpposed) {
             new ActionsHandler(this).executeActions(actions);
         } else {
