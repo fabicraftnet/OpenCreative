@@ -20,6 +20,7 @@ package ua.mcchickenstudio.opencreative.coding;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -33,6 +34,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionCategory;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
@@ -51,6 +53,7 @@ import ua.mcchickenstudio.opencreative.planets.DevPlanet;
 import ua.mcchickenstudio.opencreative.planets.DevPlatform;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 import static ua.mcchickenstudio.opencreative.listeners.player.PlaceBlockListener.placeDebugTorch;
@@ -281,8 +284,10 @@ public class CodingBlockPlacer {
      * @param data     configuration section of action.
      * @param type     type of action.
      */
-    private void buildContainerBlock(@NotNull Location location, @NotNull ConfigurationSection data,
+    private void buildContainerBlock(@NotNull Location location,
+                                     @NotNull ConfigurationSection data,
                                      @Nullable ActionType type) {
+
         if (type == null) return;
         ConfigurationSection arguments = data.getConfigurationSection("arguments");
         ConfigurationSection conditionInfo = data.getConfigurationSection("condition");
@@ -290,40 +295,63 @@ public class CodingBlockPlacer {
             ActionType conditionType = ActionType.getType(conditionInfo.getString("type", ""));
             if (conditionType != null) type = conditionType;
         }
+        if (arguments == null || !type.isChestRequired()) return;
 
-        if (arguments != null && type.isChestRequired()) {
-            Block containerBlock = location.getBlock().getRelative(BlockFace.UP);
-            containerBlock.setType(container);
-            BlockData blockData = containerBlock.getBlockData();
-            ((Directional) blockData).setFacing(BlockFace.SOUTH);
-            containerBlock.setBlockData(blockData);
-            if (containerBlock.getState() instanceof InventoryHolder holder) {
-                int slot = -1;
-                for (ArgumentSlot argSlot : type.getArgumentsSlots()) {
-                    ConfigurationSection argSection = arguments.getConfigurationSection(argSlot.getPath());
-                    if (argSection == null) {
-                        continue;
-                    }
-                    if (argSlot.isList()) {
-                        for (int i = 1; i <= argSlot.getListSize(); i++) {
-                            slot++;
-                            Object valueObject = argSection.get("value." + i + ".value");
-                            String valueTypeString = argSection.getString("value." + i + ".type");
-                            if (valueObject == null || valueTypeString == null) continue;
-                            ValueType valueType = ValueType.parseString(valueTypeString);
-                            holder.getInventory().setItem(slot, getItem(valueType, valueObject, false));
-                        }
-                    } else {
+        @Nullable ActionType finalType = type;
+        Location finalLocation = location.clone();
+        Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
+            List<ItemStack> preparedItems = prepareItems(arguments, finalType);
+            Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
+                Block containerBlock = finalLocation.getBlock().getRelative(BlockFace.UP);
+                if (containerBlock.getRelative(BlockFace.DOWN).isEmpty()) return;
+                containerBlock.setType(container);
+                BlockData blockData = containerBlock.getBlockData();
+                ((Directional) blockData).setFacing(BlockFace.SOUTH);
+                containerBlock.setBlockData(blockData);
+                int slot = 0;
+                if (containerBlock.getState() instanceof InventoryHolder holder) {
+                    for (ItemStack preparedItem : preparedItems) {
+                        if (slot >= holder.getInventory().getSize()) return;
+                        holder.getInventory().setItem(slot, preparedItem);
                         slot++;
-                        Object valueObject = argSection.get("value");
-                        String valueTypeString = argSection.getString("type");
-                        if (valueObject == null || valueTypeString == null) continue;
-                        ValueType valueType = ValueType.parseString(valueTypeString);
-                        holder.getInventory().setItem(slot, getItem(valueType, valueObject, argSlot.isParameter()));
                     }
                 }
+            });
+        });
+    }
+
+    private @NotNull List<ItemStack> prepareItems(@NotNull ConfigurationSection arguments,
+                                                            @NotNull ActionType type) {
+        List<ItemStack> items = new ArrayList<>();
+        long time = System.currentTimeMillis();
+        for (ArgumentSlot argSlot : type.getArgumentsSlots()) {
+            ConfigurationSection argSection = arguments.getConfigurationSection(argSlot.getPath());
+            if (argSection == null) {
+                continue;
+            }
+            if (argSlot.isList()) {
+                for (int i = 1; i <= argSlot.getListSize(); i++) {
+                    Object valueObject = argSection.get("value." + i + ".value");
+                    String valueTypeString = argSection.getString("value." + i + ".type");
+                    if (valueObject == null || valueTypeString == null) {
+                        items.add(new ItemStack(Material.AIR));
+                        continue;
+                    }
+                    ValueType valueType = ValueType.parseString(valueTypeString);
+                    items.add(getItem(valueType, valueObject, false));
+                }
+            } else {
+                Object valueObject = argSection.get("value");
+                String valueTypeString = argSection.getString("type");
+                if (valueObject == null || valueTypeString == null) {
+                    items.add(new ItemStack(Material.AIR));
+                    continue;
+                }
+                ValueType valueType = ValueType.parseString(valueTypeString);
+                items.add(getItem(valueType, valueObject, argSlot.isParameter()));
             }
         }
+        return items;
     }
 
     /**
@@ -474,8 +502,8 @@ public class CodingBlockPlacer {
                     x = (double) data.getOrDefault("x", 0);
                     y = (double) data.getOrDefault("y", 0);
                     z = (double) data.getOrDefault("z", 0);
-                    yaw = ((Double) data.getOrDefault("yaw", 0)).floatValue();
-                    pitch = ((Double) data.getOrDefault("pitch", 0)).floatValue();
+                    yaw = (float) data.getOrDefault("yaw", 0);
+                    pitch = (float) data.getOrDefault("pitch", 0);
                     Location location = new Location(null, x, y, z, yaw, pitch);
                     setDisplayName(item, InteractListener.formatLocation(location));
                     setPersistentData(item, getCodingValueKey(), "LOCATION");

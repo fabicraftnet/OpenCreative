@@ -274,6 +274,16 @@ public class PlanetTerritory {
 
     private void saveData() {
         planet.setLastActivityTime(System.currentTimeMillis());
+        Set<Location> changes = planet.getDevPlanet().getChangedColumns();
+        if (!changes.isEmpty()) {
+            List<String> changesString = new ArrayList<>();
+            for (Location location : changes) {
+                changesString.add(location.getBlockX() + " " + location.getBlockY() + " " + location.getBlockZ());
+            }
+            FileUtils.setPlanetConfigParameter(planet, "changed-code-columns", changesString);
+        } else {
+            FileUtils.removePlanetConfigParameter(planet, "changed-code-columns");
+        }
         FileUtils.setPlanetConfigParameter(planet, "environment", planet.getTerritory().getEnvironment().name());
         planet.getVariables().save();
         clearData();
