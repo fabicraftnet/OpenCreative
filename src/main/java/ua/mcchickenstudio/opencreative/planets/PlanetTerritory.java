@@ -304,20 +304,16 @@ public class PlanetTerritory {
 
     public void scheduleRunnable(@NotNull PlanetRunnable runnable, long delay) {
         runningBukkitRunnables.add(runnable);
-        System.out.println("scheduled: " +  runningBukkitRunnables.size());
         runnable.runTaskLater(OpenCreative.getPlugin(), delay);
     }
 
     public void scheduleAsyncRunnable(@NotNull PlanetRunnable runnable, long delay) {
         runningBukkitRunnables.add(runnable);
-        System.out.println("scheduled async: " +  runningBukkitRunnables.size());
         runnable.runTaskLaterAsynchronously(OpenCreative.getPlugin(), delay);
     }
 
     public void removeBukkitRunnable(BukkitRunnable runnable) {
         runningBukkitRunnables.remove(runnable);
-        System.out.println("removed: " +  runningBukkitRunnables.size());
-
     }
 
     /**
