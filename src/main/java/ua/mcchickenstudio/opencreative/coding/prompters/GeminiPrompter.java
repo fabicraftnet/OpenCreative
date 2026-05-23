@@ -154,16 +154,18 @@ public final class GeminiPrompter implements CodingPrompter, PrompterModelCapabl
     }
 
     @Override
-    public void init() {
-    }
+    public void start() {}
 
     @Override
-    public boolean isEnabled() {
+    public void shutdown() {}
+
+    @Override
+    public boolean isWorking() {
         return token != null && token.length > 10;
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Gemini Coding Prompter";
     }
 

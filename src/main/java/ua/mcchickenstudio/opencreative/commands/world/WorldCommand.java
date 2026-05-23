@@ -373,7 +373,7 @@ public class WorldCommand extends CommandHandler {
                     sender.sendMessage(getLocaleMessage("no-perms"));
                     return;
                 }
-                if (!OpenCreative.getDownloadManager().isEnabled()) {
+                if (!OpenCreative.getDownloadManager().isWorking()) {
                     sender.sendMessage(getLocaleMessage("world.downloader.unavailable"));
                     return;
                 }
@@ -434,7 +434,7 @@ public class WorldCommand extends CommandHandler {
         if (args.length == 1) {
             tabCompleter.addAll(List.of((planet.getSharing() == Planet.Sharing.PUBLIC ? "close" : "open"),
                     "kick", "ban", "unban", "spawn", "setspawn", "whitelist", "unwhitelist"));
-            if (OpenCreative.getDownloadManager().isEnabled()) {
+            if (OpenCreative.getDownloadManager().isWorking()) {
                 tabCompleter.add("download");
             }
         } else if (args.length == 2) {

@@ -38,22 +38,22 @@ public final class DisabledCodingPrompter implements CodingPrompter {
         return future;
     }
 
+    @Override
+    public void setToken(@NotNull String token) {}
 
     @Override
-    public void setToken(@NotNull String token) {
-    }
+    public void start() {}
 
     @Override
-    public void init() {
-    }
+    public void shutdown() {}
 
     @Override
-    public boolean isEnabled() {
+    public boolean isWorking() {
         return false;
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Disabled Coding Prompter";
     }
 

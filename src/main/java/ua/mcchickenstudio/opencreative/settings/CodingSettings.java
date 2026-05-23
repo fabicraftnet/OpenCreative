@@ -148,22 +148,22 @@ public final class CodingSettings {
 
         String type = config.getString("prompt-handler.type", "none");
         if (type.equalsIgnoreCase("none")) {
-            OpenCreative.setCodingPrompter(new DisabledCodingPrompter());
+            OpenCreative.getManagers().register(CodingPrompter.class, new DisabledCodingPrompter());
             return;
         }
 
         String token = config.getString("prompt-handler.token", "");
         if (token.length() <= 10) {
             sendWarningErrorMessage("[CODING PROMPT] The token is not valid, disabling prompt handler.");
-            OpenCreative.setCodingPrompter(new DisabledCodingPrompter());
+            OpenCreative.getManagers().register(CodingPrompter.class, new DisabledCodingPrompter());
         } else {
             switch (type.toLowerCase()) {
-                case "chatgpt", "openai" -> OpenCreative.setCodingPrompter(new OpenAIPrompter());
-                case "openrouter", "openrouterai" -> OpenCreative.setCodingPrompter(new OpenRouterPrompter());
-                case "gemini", "google" -> OpenCreative.setCodingPrompter(new GeminiPrompter());
+                case "chatgpt", "openai" -> OpenCreative.getManagers().register(CodingPrompter.class, new OpenAIPrompter());
+                case "openrouter", "openrouterai" -> OpenCreative.getManagers().register(CodingPrompter.class, new OpenRouterPrompter());
+                case "gemini", "google" -> OpenCreative.getManagers().register(CodingPrompter.class, new GeminiPrompter());
                 default -> {
                     sendWarningErrorMessage("[CODING PROMPT] Unknown prompter: " + type + ", using disabled prompt handler.");
-                    OpenCreative.setCodingPrompter(new DisabledCodingPrompter());
+                    OpenCreative.getManagers().register(CodingPrompter.class, new DisabledCodingPrompter());
                     return;
                 }
             }
@@ -176,7 +176,7 @@ public final class CodingSettings {
         }
 
         CodingPrompter prompter = OpenCreative.getCodingPrompter();
-        if (OpenCreative.getCodingPrompter().isEnabled()) {
+        if (OpenCreative.getCodingPrompter().isWorking()) {
             sendDebug("[CODING PROMPT] Using prompter (" + prompter.getName() + ")" +
                     (prompter instanceof PrompterModelCapable model ? " with model: " + model.getModel() : "")
                     + " for /env make");

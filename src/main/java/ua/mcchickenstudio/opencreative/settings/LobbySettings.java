@@ -39,6 +39,7 @@ public final class LobbySettings {
 
     private WorldApply clearInventory = WorldApply.ALL;
     private WorldApply resetGameMode = WorldApply.ALL;
+    private WorldApply cancelOutOfBordersTeleport = WorldApply.ALL;
 
     private boolean disallowPlacingBlocks = true;
     private boolean disallowDestroyingBlocks = true;
@@ -64,6 +65,7 @@ public final class LobbySettings {
 
         clearInventory = WorldApply.getWorldApply(section.getString("clear-inventory", "all"));
         resetGameMode = WorldApply.getWorldApply(section.getString("reset-gamemode", "all"));
+        cancelOutOfBordersTeleport = WorldApply.getWorldApply(section.getString("cancel-out-of-borders-teleport", "planets"));
 
         disableExplosions = section.getBoolean("disable-explosions", true);
         disallowWorldEdit = section.getBoolean("disallow-world-edit", true);
@@ -99,6 +101,17 @@ public final class LobbySettings {
      */
     public boolean shouldResetGameMode(@NotNull World world) {
         return resetGameMode.isCompatibleWorld(world);
+    }
+
+    /**
+     * Checks whether teleport event should be canceled,
+     * because it's out of borders.
+     *
+     * @param world, where player currently is in.
+     * @return true - will be canceled, false - not.
+     */
+    public boolean shouldCancelOutOfBordersTeleport(@NotNull World world) {
+        return cancelOutOfBordersTeleport.isCompatibleWorld(world);
     }
 
     /**

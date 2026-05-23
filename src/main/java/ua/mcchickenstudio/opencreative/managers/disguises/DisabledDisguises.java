@@ -41,15 +41,18 @@ public final class DisabledDisguises implements DisguiseManager {
     public void clearDisguises(@NotNull Entity entity) {}
 
     @Override
-    public void init() {}
+    public void start() {}
 
     @Override
-    public boolean isEnabled() {
+    public void shutdown() {}
+
+    @Override
+    public boolean isWorking() {
         return false;
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Disabled Disguises";
     }
 }

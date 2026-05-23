@@ -39,7 +39,7 @@ public final class DisguiseAsPlayerAction extends EntityAction {
         String name = getArguments().getText("name", "", this);
         String skin = getArguments().getText("skin", "mhf_steve", this);
         if (name.isEmpty()) return;
-        if (!OpenCreative.getDisguiseManager().isEnabled()) {
+        if (!OpenCreative.getDisguiseManager().isWorking()) {
             sendCodingDebugLog(getPlanet(), "Disguise Manager is not available.");
             return;
         }

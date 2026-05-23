@@ -46,18 +46,7 @@ public class VelocityMessenger implements Messenger, PluginMessageListener {
     }
 
     @Override
-    public void init() {
-        //Bukkit.getMessenger().registerOutgoingPluginChannel(OpenCreative.getPlugin(), "OpenCreative");
-        //Bukkit.getMessenger().registerIncomingPluginChannel(OpenCreative.getPlugin(), "OpenCreative", this);
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "";
     }
 

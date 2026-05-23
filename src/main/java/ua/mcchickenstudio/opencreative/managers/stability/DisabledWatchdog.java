@@ -23,14 +23,7 @@ import org.jetbrains.annotations.NotNull;
 public final class DisabledWatchdog implements StabilityManager {
 
     @Override
-    public void init() {
-
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+    public void start() {}
 
     @Override
     public @NotNull StabilityState getDatabaseState() {
@@ -53,10 +46,9 @@ public final class DisabledWatchdog implements StabilityManager {
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Disabled Watchdog";
     }
-
 
     @Override
     public @NotNull StabilityState getState() {

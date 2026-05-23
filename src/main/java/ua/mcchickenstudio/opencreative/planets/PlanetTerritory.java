@@ -43,7 +43,7 @@ import ua.mcchickenstudio.opencreative.utils.world.generators.WorldGenerators;
 import java.lang.reflect.Method;
 import java.util.*;
 
-import static ua.mcchickenstudio.opencreative.utils.FileUtils.getPlanetConfig;
+import static ua.mcchickenstudio.opencreative.utils.FileUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.clearOnceMessages;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.isEntityInDevPlanet;
@@ -106,7 +106,6 @@ public class PlanetTerritory {
      * @param save whether ignore size from owner's group on next world load and use specified.
      */
     public void setWorldSize(int size, boolean save) {
-        if (this.worldSize == size) return;
         if (size < 0) return;
         this.worldSize = size;
         if (getWorld() != null) {
@@ -274,6 +273,16 @@ public class PlanetTerritory {
 
     private void saveData() {
         planet.setLastActivityTime(System.currentTimeMillis());
+        Set<Location> changes = planet.getDevPlanet().getChangedColumns();
+        if (!changes.isEmpty()) {
+            List<String> changesString = new ArrayList<>();
+            for (Location location : changes) {
+                changesString.add(location.getBlockX() + " " + location.getBlockY() + " " + location.getBlockZ());
+            }
+            FileUtils.setPlanetConfigParameter(planet, "changed-code-columns", changesString);
+        } else {
+            FileUtils.removePlanetConfigParameter(planet, "changed-code-columns");
+        }
         FileUtils.setPlanetConfigParameter(planet, "environment", planet.getTerritory().getEnvironment().name());
         planet.getVariables().save();
         clearData();
@@ -320,15 +329,27 @@ public class PlanetTerritory {
      * Stops all running bukkit runnables and tasks in world.
      */
     public void stopBukkitRunnables() {
-        for (BukkitRunnable runnable : new HashSet<>(runningBukkitRunnables)) {
-            try {
-                if (runnable != null && !runnable.isCancelled()) {
-                    runnable.cancel();
+        if (OpenCreative.getPlugin().isEnabled()) {
+            Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
+                for (BukkitRunnable runnable : new HashSet<>(runningBukkitRunnables)) {
+                    try {
+                        if (runnable != null && !runnable.isCancelled()) {
+                            runnable.cancel();
+                        }
+                    } catch (IllegalStateException ignored) {}
                 }
-            } catch (IllegalStateException ignored) {
+                runningBukkitRunnables.clear();
+            });
+        } else {
+            for (BukkitRunnable runnable : new HashSet<>(runningBukkitRunnables)) {
+                try {
+                    if (runnable != null && !runnable.isCancelled()) {
+                        runnable.cancel();
+                    }
+                } catch (IllegalStateException ignored) {}
             }
+            runningBukkitRunnables.clear();
         }
-        runningBukkitRunnables.clear();
     }
 
     /**
@@ -579,6 +600,21 @@ public class PlanetTerritory {
      */
     public boolean isIgnoringUnload() {
         return ignoreUnloading;
+    }
+
+    /**
+     * Sets world generator to specified one.
+     *
+     * @param generator new world generator.
+     */
+    public void setGenerator(@Nullable WorldGenerator generator) {
+        if (generator == null) {
+            this.generator = "";
+            removePlanetConfigParameter(planet, "generator");
+            return;
+        }
+        this.generator = generator.getID();
+        setPlanetConfigParameter(planet, "generator", generator.getID());
     }
 
     /**

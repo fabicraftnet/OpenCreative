@@ -36,6 +36,7 @@ import ua.mcchickenstudio.opencreative.commands.minecraft.*;
 import ua.mcchickenstudio.opencreative.commands.world.*;
 import ua.mcchickenstudio.opencreative.commands.world.modes.*;
 import ua.mcchickenstudio.opencreative.commands.world.reputation.*;
+import ua.mcchickenstudio.opencreative.managers.Managers;
 import ua.mcchickenstudio.opencreative.wanders.OfflineWander;
 import ua.mcchickenstudio.opencreative.wanders.Wander;
 import ua.mcchickenstudio.opencreative.coding.prompters.*;
@@ -64,7 +65,7 @@ import ua.mcchickenstudio.opencreative.utils.PlayerUtils;
 import ua.mcchickenstudio.opencreative.utils.hooks.HookUtils;
 import ua.mcchickenstudio.opencreative.utils.hooks.Metrics;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.WorldListener;
-import ua.mcchickenstudio.opencreative.coding.blocks.actions.worldactions.world.phys.data.PhysService;
+import ua.mcchickenstudio.opencreative.coding.blocks.actions.worldactions.world.phys.data.PhysicsManager;
 
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -86,20 +87,10 @@ public final class OpenCreative extends JavaPlugin {
 
     private static OpenCreative plugin;
     private final Map<UUID, Wander> wanders = new HashMap<>();
+    private final Managers managers = new Managers();
 
     private Settings settings;
-    private Economy economy;
-    private Updater updater;
-    private PacketManager packet;
-    private PlanetsManager space;
-    private ModuleManager moduler;
-    private StabilityManager watchdog;
-    private DisguiseManager disguiser;
-    private BlocksManager blocks;
-    private HintManager hints;
-    private DownloadManager downloader;
     private DevPlatformer devPlatformer;
-    private CodingPrompter prompter;
 
     private static final String version = "6.0.0 Preview";
     private static final String codename = "Well, it's possible";
@@ -163,8 +154,7 @@ public final class OpenCreative extends JavaPlugin {
                     teleportToLobby(player);
                 }
             }
-            FileUtils.unloadPlanets();
-            downloader.shutdown();
+            unloadManagers();
         } catch (Exception error) {
             OpenCreative.getPlugin().getLogger().severe("Failed to unload OpenCreative+ :(" + parseException(error, false));
         }
@@ -223,33 +213,35 @@ public final class OpenCreative extends JavaPlugin {
     /**
      * Loads and assigns OpenCreative+ managers.
      */
+    @SuppressWarnings("ConstantConditions")
     private void loadManagers() {
-        space = new Space();
-        space.init();
-        moduler = new Moduler();
-        moduler.init();
+        managers.register(PlanetsManager.class, new Space());
+        managers.register(ModuleManager.class, new Moduler());
+        managers.start(PlanetsManager.class, ModuleManager.class);
         if (devPlatformer == null) devPlatformer = new HorizontalPlatformer();
-        if (prompter == null) prompter = new DisabledCodingPrompter();
-        if (watchdog == null) watchdog = new DisabledWatchdog();
-        if (downloader == null) downloader = new DisabledDownloader();
-        if (economy == null) economy = new DisabledEconomy();
+        managers.registerIfAbsent(CodingPrompter.class, new DisabledCodingPrompter());
+        managers.registerIfAbsent(StabilityManager.class, new DisabledWatchdog());
+        managers.registerIfAbsent(DownloadManager.class, new DisabledDownloader());
+        managers.registerIfAbsent(Economy.class, new DisabledEconomy());
+        managers.register(PhysicsManager.class, new PhysicsManager());
+        managers.register(Updater.class, new HangarUpdater());
+        managers.register(HintManager.class, new Hints());
+        managers.register(PacketManager.class, HookUtils.getPacketManager());
+        managers.register(BlocksManager.class, HookUtils.getBlocks());
+        managers.register(DisguiseManager.class, HookUtils.getDisguises());
+        managers.start(CodingPrompter.class, StabilityManager.class, DownloadManager.class,
+                Economy.class, Updater.class, BlocksManager.class, HintManager.class,
+                DisguiseManager.class, PacketManager.class, PhysicsManager.class);
+    }
 
-        FileUtils.loadPlanets();
-        PhysService.run();
-        FileUtils.loadModules();
-        watchdog.init();
-        downloader.init();
-
-        updater = new HangarUpdater();
-        updater.init();
-        packet = HookUtils.getPacketManager();
-        packet.init();
-        blocks = HookUtils.getBlocks();
-        blocks.init();
-        disguiser = HookUtils.getDisguises();
-        disguiser.init();
-        hints = new Hints();
-        hints.init();
+    /**
+     * Shutdowns all managers of OpenCreative+.
+     */
+    private void unloadManagers() {
+        managers.shutdown(PlanetsManager.class, ModuleManager.class,
+                DownloadManager.class, Economy.class, StabilityManager.class,
+                BlocksManager.class, PacketManager.class, DisguiseManager.class,
+                CodingPrompter.class, Updater.class, HintManager.class);
     }
 
     /**
@@ -403,16 +395,12 @@ public final class OpenCreative extends JavaPlugin {
     }
 
     /**
-     * Sets custom economy manager.
+     * Returns managers registry.
      *
-     * @param economy economy manager.
+     * @return registry of managers.
      */
-    @SuppressWarnings("unused")
-    public static void setEconomy(@NotNull Economy economy) {
-        if (!(economy instanceof VaultEconomy || economy instanceof DisabledEconomy)) {
-            getPlugin().getLogger().info("Now using economy manager: " + economy.getName());
-        }
-        getPlugin().economy = economy;
+    public static @NotNull Managers getManagers() {
+        return getPlugin().managers;
     }
 
     /**
@@ -421,18 +409,7 @@ public final class OpenCreative extends JavaPlugin {
      * @return economy manager.
      */
     public static Economy getEconomy() {
-        return getPlugin().economy;
-    }
-
-    /**
-     * Sets custom packet manager.
-     *
-     * @param packetManager packet manager.
-     */
-    @SuppressWarnings("unused")
-    public static void setPacketManager(@NotNull PacketManager packetManager) {
-        getPlugin().getLogger().info("Now using packet manager: " + packetManager.getName());
-        getPlugin().packet = packetManager;
+        return getPlugin().managers.get(Economy.class);
     }
 
     /**
@@ -441,18 +418,7 @@ public final class OpenCreative extends JavaPlugin {
      * @return packet manager.
      */
     public static PacketManager getPacketManager() {
-        return getPlugin().packet;
-    }
-
-    /**
-     * Sets custom hint manager.
-     *
-     * @param hintManager hint manager.
-     */
-    @SuppressWarnings("unused")
-    public static void setHintManager(@NotNull HintManager hintManager) {
-        getPlugin().getLogger().info("Now using hint manager: " + hintManager.getName());
-        getPlugin().hints = hintManager;
+        return getPlugin().managers.get(PacketManager.class);
     }
 
     /**
@@ -462,18 +428,17 @@ public final class OpenCreative extends JavaPlugin {
      */
     @SuppressWarnings("unused")
     public static HintManager getHintManager() {
-        return getPlugin().hints;
+        return getPlugin().managers.get(HintManager.class);
     }
 
     /**
-     * Sets custom blocks manager.
+     * Gets physics manager, that handles physical objects..
      *
-     * @param blocksManager blocks manager.
+     * @return physics manager.
      */
     @SuppressWarnings("unused")
-    public static void setBlocksManager(@NotNull BlocksManager blocksManager) {
-        getPlugin().getLogger().info("Now using blocks manager: " + blocksManager.getName());
-        getPlugin().blocks = blocksManager;
+    public static PhysicsManager getPhysicsManager() {
+        return getPlugin().managers.get(PhysicsManager.class);
     }
 
     /**
@@ -484,18 +449,7 @@ public final class OpenCreative extends JavaPlugin {
      */
     @SuppressWarnings("unused")
     public static BlocksManager getBlocksManager() {
-        return getPlugin().blocks;
-    }
-
-    /**
-     * Sets custom module manager.
-     *
-     * @param moduleManager module manager.
-     */
-    @SuppressWarnings("unused")
-    public static void setBlocksManager(@NotNull ModuleManager moduleManager) {
-        getPlugin().getLogger().info("Now using module manager: " + moduleManager.getName());
-        getPlugin().moduler = moduleManager;
+        return getPlugin().managers.get(BlocksManager.class);
     }
 
     /**
@@ -506,18 +460,7 @@ public final class OpenCreative extends JavaPlugin {
      */
     @SuppressWarnings("unused")
     public static DisguiseManager getDisguiseManager() {
-        return getPlugin().disguiser;
-    }
-
-    /**
-     * Sets custom disguise manager.
-     *
-     * @param disguiseManager disguise manager.
-     */
-    @SuppressWarnings("unused")
-    public static void setDisguiseManager(@NotNull DisguiseManager disguiseManager) {
-        getPlugin().getLogger().info("Now using disguise manager: " + disguiseManager.getName());
-        getPlugin().disguiser = disguiseManager;
+        return getPlugin().managers.get(DisguiseManager.class);
     }
 
     /**
@@ -527,7 +470,7 @@ public final class OpenCreative extends JavaPlugin {
      * @return modules manager.
      */
     public static ModuleManager getModuleManager() {
-        return getPlugin().moduler;
+        return getPlugin().managers.get(ModuleManager.class);
     }
 
     /**
@@ -556,19 +499,6 @@ public final class OpenCreative extends JavaPlugin {
     }
 
     /**
-     * Sets custom download manager.
-     *
-     * @param downloadManager download manager.
-     */
-    @SuppressWarnings("unused")
-    public static void setDownloadManager(@NotNull DownloadManager downloadManager) {
-        if (!(downloadManager instanceof DisabledDownloader || downloadManager instanceof Downloader)) {
-            getPlugin().getLogger().info("Now using download manager: " + downloadManager.getName());
-        }
-        getPlugin().downloader = downloadManager;
-    }
-
-    /**
      * Gets download manager, that
      * uploads world acrhive and allows
      * players to download it.
@@ -577,22 +507,7 @@ public final class OpenCreative extends JavaPlugin {
      */
     @SuppressWarnings("unused")
     public static DownloadManager getDownloadManager() {
-        return getPlugin().downloader;
-    }
-
-    /**
-     * Sets custom coding prompt manager.
-     *
-     * @param codingPrompter coding prompter.
-     */
-    @SuppressWarnings("unused")
-    public static void setCodingPrompter(@NotNull CodingPrompter codingPrompter) {
-        if (!(codingPrompter instanceof DisabledCodingPrompter
-                || codingPrompter instanceof OpenAIPrompter || codingPrompter instanceof GeminiPrompter
-                || codingPrompter instanceof OpenRouterPrompter)) {
-            getPlugin().getLogger().info("Now using coding prompter: " + codingPrompter.getName());
-        }
-        getPlugin().prompter = codingPrompter;
+        return getPlugin().managers.get(DownloadManager.class);
     }
 
     /**
@@ -603,18 +518,7 @@ public final class OpenCreative extends JavaPlugin {
      */
     @SuppressWarnings("unused")
     public static CodingPrompter getCodingPrompter() {
-        return getPlugin().prompter;
-    }
-
-    /**
-     * Sets custom planets manager.
-     *
-     * @param planetsManager planets manager.
-     */
-    @SuppressWarnings("unused")
-    public static void setPlanetsManager(@NotNull PlanetsManager planetsManager) {
-        getPlugin().getLogger().info("Now using planets manager: " + planetsManager.getName());
-        getPlugin().space = planetsManager;
+        return getPlugin().managers.get(CodingPrompter.class);
     }
 
     /**
@@ -624,20 +528,7 @@ public final class OpenCreative extends JavaPlugin {
      * @return planets manager.
      */
     public static PlanetsManager getPlanetsManager() {
-        return getPlugin().space;
-    }
-
-    /**
-     * Sets custom stability manager.
-     *
-     * @param stabilityManager stability manager.
-     */
-    @SuppressWarnings("unused")
-    public static void setStability(@NotNull StabilityManager stabilityManager) {
-        if (!(stabilityManager instanceof DisabledWatchdog || stabilityManager instanceof Watchdog)) {
-            getPlugin().getLogger().info("Now using stability manager: " + stabilityManager.getName());
-        }
-        getPlugin().watchdog = stabilityManager;
+        return getPlugin().managers.get(PlanetsManager.class);
     }
 
     /**
@@ -647,7 +538,7 @@ public final class OpenCreative extends JavaPlugin {
      * @return stability manager.
      */
     public static StabilityManager getStability() {
-        return getPlugin().watchdog;
+        return getPlugin().managers.get(StabilityManager.class);
     }
 
     /**
@@ -664,7 +555,7 @@ public final class OpenCreative extends JavaPlugin {
      * check available updates for plugin.
      */
     public static Updater getUpdater() {
-        return getPlugin().updater;
+        return getPlugin().managers.get(Updater.class);
     }
 
     /**

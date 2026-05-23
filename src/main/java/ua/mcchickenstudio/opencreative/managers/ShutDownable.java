@@ -18,21 +18,15 @@
 
 package ua.mcchickenstudio.opencreative.managers;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
- * This interface represents a manager, that controls
- * something and can be replaced with your realization.
+ * <h1>ShutDownable</h1>
+ * This interface is used for managers, that require operations on their shutdown.
  */
-public interface Manager {
-
+public interface ShutDownable {
 
     /**
-     * Returns name of manager, that will be
-     * displayed by request in the logs.
-     *
-     * @return name of manager.
+     * Does tasks on shutdown.
      */
-    @NotNull String getName();
+    void shutdown();
 
 }

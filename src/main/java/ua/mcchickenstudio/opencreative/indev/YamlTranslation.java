@@ -90,8 +90,7 @@ public class YamlTranslation implements TranslationManager {
         return hasLocaleComponent(id,playerLanguage) ? getLocaleComponent(id,playerLanguage) : def;
     }
 
-    @Override
-    public void init() {
+    public void start() {
         /*
          * Loads translations from file
          */
@@ -132,12 +131,7 @@ public class YamlTranslation implements TranslationManager {
     }
 
     @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Translation Manager";
     }
 }

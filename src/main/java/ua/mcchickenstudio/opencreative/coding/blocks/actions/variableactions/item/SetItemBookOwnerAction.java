@@ -16,35 +16,39 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ua.mcchickenstudio.opencreative.coding.blocks.actions.entityactions.other;
+package ua.mcchickenstudio.opencreative.coding.blocks.actions.variableactions.item;
 
-import org.bukkit.entity.Entity;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 import org.jetbrains.annotations.NotNull;
-import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
-import ua.mcchickenstudio.opencreative.coding.blocks.actions.entityactions.EntityAction;
+import ua.mcchickenstudio.opencreative.coding.blocks.actions.variableactions.VariableAction;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
+import ua.mcchickenstudio.opencreative.coding.variables.VariableLink;
 
-import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCodingDebugLog;
-
-public final class ClearDisguiseAction extends EntityAction {
-    public ClearDisguiseAction(Executor executor, Target target, int x, Arguments args) {
+public final class SetItemBookOwnerAction extends VariableAction {
+    public SetItemBookOwnerAction(Executor executor, Target target, int x, Arguments args) {
         super(executor, target, x, args);
     }
 
     @Override
-    public void executeEntity(@NotNull Entity entity) {
-        if (!OpenCreative.getDisguiseManager().isWorking()) {
-            sendCodingDebugLog(getPlanet(), "Disguise Manager is not available.");
-            return;
-        }
-        OpenCreative.getDisguiseManager().clearDisguises(entity);
+    protected void execute() {
+        VariableLink link = getArguments().getVariableLink("variable", this);
+        String owner = getArguments().getText("owner", "example", this);
+        ItemStack item = getArguments().getItem("item", getArguments().getItem("variable", new ItemStack(Material.WRITTEN_BOOK), this), this);
+        item.editMeta((meta) -> {
+            if (meta instanceof BookMeta bookMeta) {
+                bookMeta.setAuthor(owner);
+            }
+        });
+        setVarValue(link, item);
     }
 
     @Override
     public @NotNull ActionType getActionType() {
-        return ActionType.ENTITY_CLEAR_DISGUISE;
+        return ActionType.VAR_SET_ITEM_BOOK_OWNER;
     }
 }

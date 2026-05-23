@@ -97,7 +97,7 @@ public class DevPlanet {
      *
      * @return default action block material.
      */
-    public static Material getDefaultActionMaterial() {
+    public static @NotNull Material getDefaultActionMaterial() {
         return DEFAULT_ACTION_MATERIAL;
     }
 
@@ -110,7 +110,7 @@ public class DevPlanet {
      *
      * @return default event block material.
      */
-    public static Material getDefaultEventMaterial() {
+    public static @NotNull Material getDefaultEventMaterial() {
         return DEFAULT_EVENT_MATERIAL;
     }
 
@@ -123,7 +123,7 @@ public class DevPlanet {
      *
      * @return default floor block material.
      */
-    public static Material getDefaultFloorMaterial() {
+    public static @NotNull Material getDefaultFloorMaterial() {
         return DEFAULT_FLOOR_MATERIAL;
     }
 
@@ -164,6 +164,19 @@ public class DevPlanet {
         if (world == null) {
             sendCriticalErrorMessage("Failed to load Dev planet world " + planet.getId());
             return;
+        }
+        List<String> savedChanges = getPlanetConfig(planet).getStringList("changed-code-columns");
+        if (!savedChanges.isEmpty()) {
+            for (String saved : savedChanges) {
+                String[] coords = saved.split(" ");
+                if (coords.length != 3) continue;
+                try {
+                    int x = Integer.parseInt(coords[0]);
+                    int y = Integer.parseInt(coords[1]);
+                    int z = Integer.parseInt(coords[2]);
+                    changedColumns.add(new Location(world, x, y, z));
+                } catch (Exception ignored) {}
+            }
         }
         if (existed) {
             if (world.getBlockAt(4, 0, 4).isEmpty()) {

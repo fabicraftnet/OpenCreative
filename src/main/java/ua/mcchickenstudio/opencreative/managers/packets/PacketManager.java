@@ -26,6 +26,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.managers.Manager;
+import ua.mcchickenstudio.opencreative.managers.Toggleable;
 
 /**
  * <h1>PacketManager</h1>
@@ -34,7 +35,7 @@ import ua.mcchickenstudio.opencreative.managers.Manager;
  * It contains special methods that cannot be done
  * using default Paper API.
  */
-public interface PacketManager extends Manager {
+public interface PacketManager extends Manager, Toggleable {
 
     /**
      * Spawns a visual glowing block only for player

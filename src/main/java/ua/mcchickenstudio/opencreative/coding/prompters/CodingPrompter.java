@@ -20,6 +20,7 @@ package ua.mcchickenstudio.opencreative.coding.prompters;
 
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.managers.Manager;
+import ua.mcchickenstudio.opencreative.managers.Toggleable;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -29,7 +30,7 @@ import java.util.concurrent.CompletableFuture;
  * This interface represents a coding prompter, that
  * will generate a code by players prompts.
  */
-public interface CodingPrompter extends Manager {
+public interface CodingPrompter extends Manager, Toggleable {
 
     /**
      * Generates a code by player's prompt. Returns

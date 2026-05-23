@@ -21,6 +21,7 @@ package ua.mcchickenstudio.opencreative.managers.updater;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.OpenCreative;
+import ua.mcchickenstudio.opencreative.managers.Startable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,14 +35,14 @@ import java.util.concurrent.TimeUnit;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendDebugError;
 
-public final class HangarUpdater implements Updater {
+public final class HangarUpdater implements Updater, Startable {
 
     private final String downloadUrl = "https://hangar.papermc.io/mcchickenstudio/OpenCreative";
     private final String apiUrl = "https://hangar.papermc.io/api/v1/projects/OpenCreative/latestrelease";
     private boolean updatesAvailable;
 
     @Override
-    public CompletableFuture<String> checkUpdates() {
+    public @NotNull CompletableFuture<String> checkUpdates() {
         CompletableFuture<String> future = new CompletableFuture<>();
         Bukkit.getAsyncScheduler().runDelayed(OpenCreative.getPlugin(), (task) -> {
             try {
@@ -131,17 +132,12 @@ public final class HangarUpdater implements Updater {
     }
 
     @Override
-    public void init() {
+    public void start() {
         Bukkit.getAsyncScheduler().runDelayed(OpenCreative.getPlugin(), (task) -> checkUpdates(), 3, TimeUnit.SECONDS);
     }
 
     @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Hangar Updater";
     }
 }

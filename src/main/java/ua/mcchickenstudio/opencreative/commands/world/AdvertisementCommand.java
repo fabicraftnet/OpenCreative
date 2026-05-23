@@ -75,7 +75,7 @@ public class AdvertisementCommand extends CommandHandler {
 
         if (event.isCancelled()) return;
 
-        if (OpenCreative.getEconomy().isEnabled()) {
+        if (OpenCreative.getEconomy().isWorking()) {
             double playerBalance = OpenCreative.getEconomy().getBalance(player).doubleValue();
             double advertisementPrice = OpenCreative.getSettings().getGroups().getGroup(player).getAdvertisementPrice();
 

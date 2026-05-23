@@ -18,21 +18,19 @@
 
 package ua.mcchickenstudio.opencreative.managers;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
- * This interface represents a manager, that controls
- * something and can be replaced with your realization.
+ * <h1>Toggleable</h1>
+ * Represents a manager, that can be started and shut downed,
+ * so it has a working state.
  */
-public interface Manager {
-
+public interface Toggleable extends Startable, ShutDownable {
 
     /**
-     * Returns name of manager, that will be
-     * displayed by request in the logs.
+     * Checks whether manager was started successfully
+     * and it currently works.
      *
-     * @return name of manager.
+     * @return true - started up, false - shut downed.
      */
-    @NotNull String getName();
+    boolean isWorking();
 
 }

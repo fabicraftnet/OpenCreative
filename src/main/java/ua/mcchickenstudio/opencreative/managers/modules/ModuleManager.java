@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.coding.modules.Module;
 import ua.mcchickenstudio.opencreative.managers.Manager;
+import ua.mcchickenstudio.opencreative.managers.Toggleable;
 import ua.mcchickenstudio.opencreative.planets.DevPlanet;
 
 import java.util.Set;
@@ -34,7 +35,7 @@ import java.util.UUID;
  * This interface represents a module manager,
  * that registers, creates and deletes modules.
  */
-public interface ModuleManager extends Manager {
+public interface ModuleManager extends Manager, Toggleable {
 
     /**
      * Register a module to base, so it will be visible

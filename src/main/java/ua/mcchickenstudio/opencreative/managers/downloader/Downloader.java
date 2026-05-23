@@ -152,7 +152,7 @@ public final class Downloader implements DownloadManager {
     }
 
     @Override
-    public void init() {
+    public void start() {
         int port = OpenCreative.getSettings().getWebSettings().getPort();
         try {
             server = HttpServer.create(new InetSocketAddress(port), 0);
@@ -326,16 +326,19 @@ public final class Downloader implements DownloadManager {
 
     @Override
     public void shutdown() {
-        if (server != null) server.stop(0);
+        if (server != null) {
+            server.stop(0);
+            server = null;
+        }
     }
 
     @Override
-    public boolean isEnabled() {
+    public boolean isWorking() {
         return server != null;
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "World Downloader";
     }
 }

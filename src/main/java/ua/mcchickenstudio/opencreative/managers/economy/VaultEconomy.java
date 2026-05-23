@@ -21,6 +21,8 @@ package ua.mcchickenstudio.opencreative.managers.economy;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.jetbrains.annotations.NotNull;
+import ua.mcchickenstudio.opencreative.managers.Toggleable;
 
 /**
  * Implementation of Vault economy,
@@ -31,22 +33,22 @@ public final class VaultEconomy implements Economy {
     private net.milkbowl.vault.economy.Economy vaultEconomy;
 
     @Override
-    public boolean depositMoney(OfflinePlayer offlinePlayer, Number money) {
+    public boolean depositMoney(@NotNull OfflinePlayer offlinePlayer, @NotNull Number money) {
         return vaultEconomy.depositPlayer(offlinePlayer, money.doubleValue()).transactionSuccess();
     }
 
     @Override
-    public boolean withdrawMoney(OfflinePlayer offlinePlayer, Number money) {
+    public boolean withdrawMoney(@NotNull OfflinePlayer offlinePlayer, @NotNull Number money) {
         return vaultEconomy.withdrawPlayer(offlinePlayer, money.doubleValue()).transactionSuccess();
     }
 
     @Override
-    public Number getBalance(OfflinePlayer offlinePlayer) {
+    public @NotNull Number getBalance(OfflinePlayer offlinePlayer) {
         return vaultEconomy.getBalance(offlinePlayer);
     }
 
     @Override
-    public void init() {
+    public void start() {
         RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> rsp = Bukkit.getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
         if (rsp != null) {
             vaultEconomy = rsp.getProvider();
@@ -54,12 +56,17 @@ public final class VaultEconomy implements Economy {
     }
 
     @Override
-    public boolean isEnabled() {
+    public boolean isWorking() {
         return vaultEconomy != null && vaultEconomy.isEnabled();
     }
 
     @Override
-    public String getName() {
+    public void shutdown() {
+        vaultEconomy = null;
+    }
+
+    @Override
+    public @NotNull String getName() {
         return "Vault Economy";
     }
 }

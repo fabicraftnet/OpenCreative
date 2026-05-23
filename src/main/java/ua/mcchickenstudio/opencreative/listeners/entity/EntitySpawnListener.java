@@ -40,6 +40,7 @@ import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.planets.PlanetFlags;
 import ua.mcchickenstudio.opencreative.utils.ItemUtils;
+import ua.mcchickenstudio.opencreative.wanders.Wander;
 
 import java.util.List;
 
@@ -149,6 +150,12 @@ public final class EntitySpawnListener implements Listener {
                         new PlaceholderReplacer("count", limit),
                         "/world deletemobs", null, 3);
                 new LimitReachedEntitiesEvent(planet).callEvent();
+            } else {
+               Player player = event.getPlayer();
+               if (player != null && event.getEntity().getType() == EntityType.TNT_MINECART) {
+                   Wander wander = OpenCreative.getWander(player);
+                   wander.getGriefStats().addTntPlacementsAmount(1);
+               }
             }
         } else if (isDevPlanet(world)) {
             event.setCancelled(true);

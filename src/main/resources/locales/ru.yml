@@ -99,6 +99,24 @@ commands:
     help: "%prefix%Чтобы найти мир, в котором играет игрок, напишите в чат: &6/locate Никнейм"
     found: "%prefix%&fИгрок &6%player%&f сейчас играет в мире: \n&f %planetName%\n &f\n&a &a &n[Нажми, чтобы присоединиться]&f\n &f"
     offline: "%prefix%&cИгрок сейчас не играет в мирах."
+filters:
+  hover-text: "&fПравило: &7%rule%\n&fТекст: &6%match%"
+  check:
+    info: "%prefix%&fСодержимое: &6%input%"
+    rule-detected: "%prefix%&6 %context% &f- &7%rule%&f: &c%result%"
+    rule-ignored: "%prefix%&7 %context%: не обнаружено нарушений"
+  sign-violation:
+    player: "%prefix%&cПредупреждение: Ваш текст на табличке нарушил одно из правил сервера и он был изменён."
+    staff: "%prefix%&7Отфильтрован текст таблички от %player%. &3[?]"
+  chat-violation:
+    player: "%prefix%&cПредупреждение: Ваше сообщение в чате нарушило одно из правил сервера и оно было изменено."
+    staff: "%prefix%&7Отфильтровано сообщение в чате от %player% &3[?]"
+  book-violation:
+    player: "%prefix%&cПредупреждение: Ваш текст в книге нарушил одно из правил сервера и он был изменён."
+    staff: "%prefix%&7Отфильтрован текст книжки от %player%. &3[?]"
+  anvil-violation:
+    player: "%prefix%&cПредупреждение: Новое название предмета нарушило одно из правил сервера и оно было изменено."
+    staff: "%prefix%&7Отфильтровано новое название предмета от %player%. &3[?]"
 modules:
   help: "%prefix%Модули это готовые строки блоков кодинга от игроков, которые добавляют различные функции в мир. Их устанавливают в мире для разработчиков. Для просмотра используйте &6/module&f.\n&6 /module load ID &f- Загрузить модуль по ID"
   not-found: "%prefix%&cМодуль с ID %id% не найдено.. O_o"
@@ -7411,6 +7429,18 @@ items:
           - "&e Переменная &7- Сохранить голову"
           - "&c Предмет &7- Голова"
           - "&6 Текст &7- Текстура (base64)"
+          - " "
+          - "&eНажми, чтобы установить действие."
+      var-set-item-book-owner:
+        name: "&6Установить автора книги"
+        lore:
+          - "&7Это установит в переменную"
+          - "&7книгу с новым автором."
+          - " "
+          - "&fВ сундуке:"
+          - "&e Переменная &7- Для сохранения"
+          - "&c Предмет &7- Книга"
+          - "&6 Текст &7- Автор"
           - " "
           - "&eНажми, чтобы установить действие."
       var-set-item-skull-owner:
@@ -14806,6 +14836,8 @@ menus:
           - "&7 &bсоздавать &7свои миры."
           - ""
           - "&c McChicken Studio 2017-2026"
+          - "&3 Контрибьюторы: &7onn512, pawsashatoy, LWJENNI,"
+          - "&7  HACKERPRO17, liventmst, logiklop."
           - "&3 Переводчики: &7initzero, Nagibator6000LoL,"
           - "&7  DrakesWeb, kogtyv, Senmpai333."
           - ""
@@ -19570,6 +19602,7 @@ blocks:
   var_merge_lists: "Объед. списки"
   var_set_item_skull_textures: "Уст. текстуру"
   var_set_item_skull_owner: "Влад. головы"
+  var_set_item_book_owner: "Автор книги"
   var_convert_to_json: "Сохран. JSON"
   var_parse_json: "Парсить JSON"
   var_format_unix_time: "Форм. время"

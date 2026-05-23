@@ -22,6 +22,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import ua.mcchickenstudio.opencreative.managers.Toggleable;
 import ua.mcchickenstudio.opencreative.wanders.OfflineWander;
 import ua.mcchickenstudio.opencreative.managers.Manager;
 import ua.mcchickenstudio.opencreative.planets.DevPlanet;
@@ -39,7 +40,7 @@ import java.util.Set;
  * to get current planet by player, world and info.
  * It creates, registers and deletes planets.
  */
-public interface PlanetsManager extends Manager {
+public interface PlanetsManager extends Manager, Toggleable {
 
     /**
      * Returns a set of all stable planets in base.

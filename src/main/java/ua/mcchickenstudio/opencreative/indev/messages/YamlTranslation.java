@@ -78,11 +78,6 @@ public class YamlTranslation implements TranslationManager {
     }
 
     @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    @Override
     public @NotNull Component getMessage(@NotNull String path) {
         String defaultLanguage = "en";
         return textToComponent(getContent(path, defaultLanguage))

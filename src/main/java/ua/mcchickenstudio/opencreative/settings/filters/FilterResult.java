@@ -16,23 +16,9 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ua.mcchickenstudio.opencreative.managers;
+package ua.mcchickenstudio.opencreative.settings.filters;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-/**
- * This interface represents a manager, that controls
- * something and can be replaced with your realization.
- */
-public interface Manager {
-
-
-    /**
-     * Returns name of manager, that will be
-     * displayed by request in the logs.
-     *
-     * @return name of manager.
-     */
-    @NotNull String getName();
-
-}
+public record FilterResult(@NotNull String filteredMessage, @Nullable FilterRule rule) {}

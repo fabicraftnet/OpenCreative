@@ -22,6 +22,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.managers.economy.DisabledEconomy;
+import ua.mcchickenstudio.opencreative.managers.economy.Economy;
 import ua.mcchickenstudio.opencreative.managers.economy.VaultEconomy;
 import ua.mcchickenstudio.opencreative.utils.hooks.HookUtils;
 
@@ -43,7 +44,7 @@ public final class EconomySettings {
             economyType = section.getString("type", "auto");
         }
 
-        OpenCreative.setEconomy(new DisabledEconomy());
+        OpenCreative.getManagers().register(Economy.class, new DisabledEconomy());
         if (economyType.equalsIgnoreCase("vault")) {
             setupVault();
         } else {
@@ -58,8 +59,8 @@ public final class EconomySettings {
     private void setupVault() {
         if (HookUtils.isVaultEnabled) {
             OpenCreative.getPlugin().getLogger().info("Successfully integrated to Vault: Economy actions are working.");
-            OpenCreative.setEconomy(new VaultEconomy());
-            OpenCreative.getEconomy().init();
+            OpenCreative.getManagers().register(Economy.class, new VaultEconomy());
+            OpenCreative.getEconomy().start();
         } else {
             OpenCreative.getPlugin().getLogger().info("Didn't detect Vault, action Request Purchase and like rewards will be not available.");
         }
