@@ -21,6 +21,7 @@ package ua.mcchickenstudio.opencreative.managers.downloader;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.managers.Manager;
+import ua.mcchickenstudio.opencreative.managers.Toggleable;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 
 import java.io.File;
@@ -31,7 +32,7 @@ import java.util.concurrent.CompletableFuture;
  * This interface represents a manager, that controls web server
  * for downloading players worlds with /world download.
  */
-public interface DownloadManager extends Manager {
+public interface DownloadManager extends Manager, Toggleable {
 
     /**
      * Compresses planet folders to archive in temporary folder,

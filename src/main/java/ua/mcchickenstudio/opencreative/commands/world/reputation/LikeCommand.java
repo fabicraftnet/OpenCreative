@@ -86,7 +86,7 @@ public class LikeCommand extends CommandHandler {
                             p.sendMessage(getLocaleMessage("world.liked").replace("%player%", sender.getName()));
                         }
                     }
-                    if (OpenCreative.getEconomy().isEnabled() && !planet.isOwner(player)) {
+                    if (OpenCreative.getEconomy().isWorking() && !planet.isOwner(player)) {
                         OpenCreative.getEconomy().depositMoney(Bukkit.getOfflinePlayer(planet.getOwner()), planet.getGroup().getLikeReward());
                     }
                 }

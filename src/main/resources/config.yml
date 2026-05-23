@@ -210,6 +210,15 @@ lobby:
   # none - disable resetting game mode (not safe!)
   reset-gamemode: "all"
 
+  # Cancels teleport events from other plugins, when location is out of world's borders.
+  #
+  # all - all worlds
+  # creative - only planets and lobby world
+  # planets - only planets
+  # lobby - only lobby
+  # none - do not cancel teleport
+  cancel-out-of-borders-teleport: "planets"
+
   # Resets player's view and simulation distance when they move between worlds.
   #
   # If chunks in worlds are not visible, set to: false

@@ -33,11 +33,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
+import ua.mcchickenstudio.opencreative.coding.prompters.CodingPrompter;
+import ua.mcchickenstudio.opencreative.coding.prompters.OpenAIPrompter;
 import ua.mcchickenstudio.opencreative.commands.experiments.Experiment;
 import ua.mcchickenstudio.opencreative.commands.experiments.Experiments;
 import ua.mcchickenstudio.opencreative.events.status.MaintenanceEndEvent;
 import ua.mcchickenstudio.opencreative.events.status.MaintenanceStartEvent;
 import ua.mcchickenstudio.opencreative.managers.stability.DisabledWatchdog;
+import ua.mcchickenstudio.opencreative.managers.stability.StabilityManager;
 import ua.mcchickenstudio.opencreative.managers.stability.Watchdog;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.settings.filters.Filter;
@@ -208,7 +211,7 @@ public final class Settings {
         }
         OpenCreative.setDevPlatformer(platformer);
 
-        OpenCreative.setStability(enabledWatchdog ? new Watchdog() : new DisabledWatchdog());
+        OpenCreative.getManagers().register(StabilityManager.class, enabledWatchdog ? new Watchdog() : new DisabledWatchdog());
         codingSettings.load();
         loadExperiments(config);
         checkDebugAnnouncer();
@@ -765,7 +768,7 @@ public final class Settings {
         if (debug) {
             announcer = new BukkitRunnable() {
                 private final Component actionbar = MiniMessage.miniMessage()
-                        .deserialize("<white>Open<gradient:#dbdbdb:#A3E2FF>Creative</gradient><color:#74D3FF>+ <white>" + OpenCreative.getVersion() + "<gray> Debug Mode. <white>Let's make it possible...");
+                        .deserialize("<white>Open<gradient:#dbdbdb:#A3E2FF>Creative</gradient><color:#74D3FF>+ <white>" + OpenCreative.getVersion() + "<gray> Debug Mode. <white>Running the Show...");
 
                 @Override
                 public void run() {

@@ -33,12 +33,13 @@ import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionCategory;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.ExecutorCategory;
 import ua.mcchickenstudio.opencreative.coding.variables.ValueType;
 import ua.mcchickenstudio.opencreative.listeners.player.ChangedWorld;
+import ua.mcchickenstudio.opencreative.managers.Startable;
 import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.isEntityInDevPlanet;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.isEntityInLobby;
 
-public final class Hints implements HintManager {
+public final class Hints implements HintManager, Startable {
 
     @Override
     public void checkForHints(@NotNull Player player) {
@@ -122,7 +123,7 @@ public final class Hints implements HintManager {
     }
 
     @Override
-    public void init() {
+    public void start() {
         BukkitRunnable runnable = new BukkitRunnable() {
             @Override
             public void run() {
@@ -138,12 +139,7 @@ public final class Hints implements HintManager {
     }
 
     @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Default Hints";
     }
 }

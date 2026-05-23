@@ -32,8 +32,11 @@ import ua.mcchickenstudio.opencreative.coding.modules.ModuleSettingsMenu;
 import ua.mcchickenstudio.opencreative.events.module.ModuleCreationEvent;
 import ua.mcchickenstudio.opencreative.events.module.ModuleDeletionEvent;
 import ua.mcchickenstudio.opencreative.events.module.ModuleRegisterEvent;
+import ua.mcchickenstudio.opencreative.managers.Startable;
+import ua.mcchickenstudio.opencreative.managers.Toggleable;
 import ua.mcchickenstudio.opencreative.planets.DevPlanet;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
+import ua.mcchickenstudio.opencreative.utils.FileUtils;
 import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.io.File;
@@ -48,6 +51,21 @@ import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessag
 public final class Moduler implements ModuleManager {
 
     private final Map<Integer, Module> modules = new HashMap<>();
+
+    @Override
+    public void start() {
+        FileUtils.loadModules();
+    }
+
+    @Override
+    public void shutdown() {
+        modules.clear();
+    }
+
+    @Override
+    public boolean isWorking() {
+        return true;
+    }
 
     public static int generateModuleId() {
         int newModuleId = OpenCreative.getPlugin().getConfig().getInt("last-module-id", 1);
@@ -139,16 +157,7 @@ public final class Moduler implements ModuleManager {
     }
 
     @Override
-    public void init() {
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Module Manager";
     }
 }

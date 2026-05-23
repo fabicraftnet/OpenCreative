@@ -20,8 +20,9 @@ package ua.mcchickenstudio.opencreative.managers.stability;
 
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.managers.Manager;
+import ua.mcchickenstudio.opencreative.managers.Startable;
 
-public interface StabilityManager extends Manager {
+public interface StabilityManager extends Manager, Startable {
 
     /**
      * Returns stability state of storage.

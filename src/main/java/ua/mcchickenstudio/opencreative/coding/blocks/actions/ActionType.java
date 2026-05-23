@@ -1161,7 +1161,7 @@ public enum ActionType implements CodingBlockType {
             }
         }
         if (this.name().contains("DISGUISE")) {
-            if (!OpenCreative.getDisguiseManager().isEnabled()) {
+            if (!OpenCreative.getDisguiseManager().isWorking()) {
                 return true;
             }
         }

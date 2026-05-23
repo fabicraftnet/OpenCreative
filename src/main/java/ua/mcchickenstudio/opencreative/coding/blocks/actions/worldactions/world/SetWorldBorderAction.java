@@ -19,6 +19,7 @@
 package ua.mcchickenstudio.opencreative.coding.blocks.actions.worldactions.world;
 
 import org.bukkit.WorldBorder;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
@@ -45,6 +46,9 @@ public final class SetWorldBorderAction extends WorldAction {
         border.setWarningDistance(warningDistance);
         border.setDamageAmount(damage);
         border.setDamageBuffer(safeDistance);
+        for (Player player : getPlanet().getWorld().getPlayers()) {
+            getPlanet().getTerritory().showBorders(player);
+        }
     }
 
     @Override

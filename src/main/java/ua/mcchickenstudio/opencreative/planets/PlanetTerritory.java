@@ -43,7 +43,7 @@ import ua.mcchickenstudio.opencreative.utils.world.generators.WorldGenerators;
 import java.lang.reflect.Method;
 import java.util.*;
 
-import static ua.mcchickenstudio.opencreative.utils.FileUtils.getPlanetConfig;
+import static ua.mcchickenstudio.opencreative.utils.FileUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.clearOnceMessages;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.isEntityInDevPlanet;
@@ -106,7 +106,6 @@ public class PlanetTerritory {
      * @param save whether ignore size from owner's group on next world load and use specified.
      */
     public void setWorldSize(int size, boolean save) {
-        if (this.worldSize == size) return;
         if (size < 0) return;
         this.worldSize = size;
         if (getWorld() != null) {
@@ -601,6 +600,21 @@ public class PlanetTerritory {
      */
     public boolean isIgnoringUnload() {
         return ignoreUnloading;
+    }
+
+    /**
+     * Sets world generator to specified one.
+     *
+     * @param generator new world generator.
+     */
+    public void setGenerator(@Nullable WorldGenerator generator) {
+        if (generator == null) {
+            this.generator = "";
+            removePlanetConfigParameter(planet, "generator");
+            return;
+        }
+        this.generator = generator.getID();
+        setPlanetConfigParameter(planet, "generator", generator.getID());
     }
 
     /**

@@ -18,18 +18,16 @@
 
 package ua.mcchickenstudio.opencreative.managers.packets;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * This class represents a disabled packet manager is used,
  * when other plugins implementation is not detected. It will
- * not do anything on methods usage.
+ * not do anything on methods' usage.
  */
 public final class DisabledPacketManager implements PacketManager {
 
@@ -58,16 +56,18 @@ public final class DisabledPacketManager implements PacketManager {
     }
 
     @Override
-    public void init() {
-    }
+    public void start() {}
 
     @Override
-    public boolean isEnabled() {
+    public void shutdown() {}
+
+    @Override
+    public boolean isWorking() {
         return false;
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Disabled Packet Manager";
     }
 }

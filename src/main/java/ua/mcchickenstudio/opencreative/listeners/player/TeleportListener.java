@@ -32,6 +32,7 @@ import ua.mcchickenstudio.opencreative.coding.blocks.events.player.movement.Tele
 import ua.mcchickenstudio.opencreative.planets.Planet;
 
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.isOutOfBorders;
+import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isDevPlanet;
 import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isPlanet;
 
 public final class TeleportListener implements Listener {
@@ -46,9 +47,6 @@ public final class TeleportListener implements Listener {
                 event.setCancelled(true);
             }
         }
-        if (isOutOfBorders(event.getTo())) {
-            event.setCancelled(true);
-        }
         if (!event.getFrom().getWorld().equals(event.getTo().getWorld())) {
             switch (event.getCause()) {
                 case UNKNOWN, PLUGIN, COMMAND -> {}
@@ -60,8 +58,21 @@ public final class TeleportListener implements Listener {
         }
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(event.getFrom().getWorld());
         if (planet != null) {
-            if (event.getTo().getWorld().equals(event.getFrom().getWorld())) {
+            if (!isDevPlanet(event.getTo().getWorld())) {
+                if (isOutOfBorders(event.getTo(), planet.getTerritory().getWorldSize()) && OpenCreative.getSettings().getLobbySettings().shouldCancelOutOfBordersTeleport(event.getTo().getWorld())) {
+                    event.setCancelled(true);
+                }
+            } else {
+                if (isOutOfBorders(event.getTo()) && OpenCreative.getSettings().getLobbySettings().shouldCancelOutOfBordersTeleport(event.getTo().getWorld())) {
+                    event.setCancelled(true);
+                }
+            }
+            if (!event.isCancelled() && event.getTo().getWorld().equals(event.getFrom().getWorld())) {
                 new TeleportEvent(event.getPlayer()).callEvent();
+            }
+        } else {
+            if (isOutOfBorders(event.getTo()) && OpenCreative.getSettings().getLobbySettings().shouldCancelOutOfBordersTeleport(event.getTo().getWorld())) {
+                event.setCancelled(true);
             }
         }
     }

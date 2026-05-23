@@ -22,7 +22,11 @@ package ua.mcchickenstudio.opencreative.coding.blocks.actions.worldactions.world
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.OpenCreative;
+import ua.mcchickenstudio.opencreative.managers.Manager;
+import ua.mcchickenstudio.opencreative.managers.Toggleable;
 import ua.mcchickenstudio.opencreative.utils.async.AsyncScheduler;
 import ua.mcchickenstudio.opencreative.utils.millennium.types.EvictingList;
 
@@ -32,33 +36,57 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 // Made by pawsashatoy :)
-public class PhysService {
+public class PhysicsManager implements Manager, Toggleable {
 
-    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(40,
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(40,
             new ThreadFactoryBuilder().setNameFormat("opencreative-phys-thread-%d").build());
-    private static final Map<Integer, List<PhysObject>> objects = new ConcurrentHashMap<>();
+    private final Map<Integer, List<PhysObject>> objects = new ConcurrentHashMap<>();
+    private BukkitRunnable runnable;
 
-    private PhysService() {
-    }
-
-    public static void add(final PhysObject object, final int limit) {
+    public void add(@NotNull PhysObject object, int limit) {
         final World world = object.getWorld();
         final int hash = Objects.hashCode(world.getName());
         if (!objects.containsKey(hash)) objects.put(hash, new EvictingList<>(limit));
         objects.get(hash).add(object);
     }
 
-    public static void run() {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(OpenCreative.getPlugin(), () -> AsyncScheduler.run(() -> {
-            for (final List<PhysObject> objects : objects.values()) {
-                if (objects.isEmpty()) continue;
-                final Set<PhysObject> toDelete = new HashSet<>();
-                for (final PhysObject object : objects) {
-                    object.tick();
-                    if (!object.isLiving()) toDelete.add(object);
-                }
-                objects.removeAll(toDelete);
+    @Override
+    public void start() {
+        runnable = new BukkitRunnable() {
+            @Override
+            public void run() {
+                AsyncScheduler.run(() -> {
+                    for (final List<PhysObject> objects : objects.values()) {
+                        if (objects.isEmpty()) continue;
+                        final Set<PhysObject> toDelete = new HashSet<>();
+                        for (final PhysObject object : objects) {
+                            object.tick();
+                            if (!object.isLiving()) toDelete.add(object);
+                        }
+                        objects.removeAll(toDelete);
+                    }
+                }, scheduler);
             }
-        }, scheduler), 1L, 1L);
+        };
+        runnable.runTaskTimerAsynchronously(OpenCreative.getPlugin(), 1L, 1L);
+    }
+
+    @Override
+    public void shutdown() {
+        if (runnable != null) {
+            runnable.cancel();
+            runnable = null;
+            objects.clear();
+        }
+    }
+
+    @Override
+    public boolean isWorking() {
+        return runnable != null;
+    }
+
+    @Override
+    public @NotNull String getName() {
+        return "Physics Manager";
     }
 }

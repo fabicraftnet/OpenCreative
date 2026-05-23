@@ -18,13 +18,13 @@
 
 package ua.mcchickenstudio.opencreative.managers.stability;
 
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.OpenCreative;
+import ua.mcchickenstudio.opencreative.managers.Toggleable;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
 
@@ -39,7 +39,7 @@ import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendWarningErrorM
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isDevPlanet;
 
-public final class Watchdog implements StabilityManager {
+public final class Watchdog implements StabilityManager, Toggleable {
 
     private FileStore STORAGE_VOLUME;
     private BukkitRunnable runnable;
@@ -51,7 +51,7 @@ public final class Watchdog implements StabilityManager {
     private StabilityState ticksState = StabilityState.FINE;
 
     @Override
-    public void init() {
+    public void start() {
         try {
             STORAGE_VOLUME = Files.getFileStore(Paths.get("."));
         } catch (IOException ignored) {
@@ -89,7 +89,7 @@ public final class Watchdog implements StabilityManager {
 
                 if (OpenCreative.getPlanetsManager().isStableConnection()) {
                     databaseState = StabilityState.FINE;
-                } else if (OpenCreative.getPlanetsManager().isEnabled()) {
+                } else if (OpenCreative.getPlanetsManager().isWorking()) {
                     databaseState = StabilityState.NOT_OKAY;
                 } else {
                     databaseState = StabilityState.NIGHTMARE;
@@ -190,8 +190,15 @@ public final class Watchdog implements StabilityManager {
     }
 
     @Override
-    public boolean isEnabled() {
+    public boolean isWorking() {
         return true;
+    }
+
+    @Override
+    public void shutdown() {
+        if (runnable != null) {
+            runnable.cancel();
+        }
     }
 
     @Override
@@ -215,7 +222,7 @@ public final class Watchdog implements StabilityManager {
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Stability Watchdog";
     }
 

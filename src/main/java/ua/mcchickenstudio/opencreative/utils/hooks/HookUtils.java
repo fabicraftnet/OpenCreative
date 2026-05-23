@@ -31,6 +31,7 @@ import ua.mcchickenstudio.opencreative.managers.disguises.DisabledDisguises;
 import ua.mcchickenstudio.opencreative.managers.disguises.DisguiseManager;
 import ua.mcchickenstudio.opencreative.managers.disguises.LibsDisguises;
 import ua.mcchickenstudio.opencreative.managers.packets.DisabledPacketManager;
+import ua.mcchickenstudio.opencreative.managers.packets.PacketEventsManager;
 import ua.mcchickenstudio.opencreative.managers.packets.PacketManager;
 import ua.mcchickenstudio.opencreative.managers.packets.ProtocolLibManager;
 
@@ -39,6 +40,7 @@ import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCriticalError
 public final class HookUtils {
 
     public static boolean isPlaceholderAPIEnabled = false;
+    public static boolean isPacketEventsEnabled = false;
     public static boolean isProtocolLibEnabled = false;
     public static boolean isVaultEnabled = false;
     public static boolean isLibsDisguisesEnabled = false;
@@ -50,11 +52,11 @@ public final class HookUtils {
     public static void loadHooks() {
         isPlaceholderAPIEnabled = isPluginEnabled("PlaceholderAPI");
         isProtocolLibEnabled = isPluginEnabled("ProtocolLib");
+        isPacketEventsEnabled = isPluginEnabled("PacketEvents");
         isVaultEnabled = isPluginEnabled("Vault");
         isWorldEditEnabled = isPluginEnabled("WorldEdit");
         isLibsDisguisesEnabled = isPluginEnabled("LibsDisguises");
         OpenCreative.getPlugin().getLogger().info((isPlaceholderAPIEnabled ? "Successfully integrated to PlaceholderAPI: Added placeholders." : "Didn't detect PlaceholderAPI."));
-        OpenCreative.getPlugin().getLogger().info((isProtocolLibEnabled ? "Successfully integrated to ProtocolLib: Added blocks effects and animations." : "Didn't detect ProtocolLib, some block effects will be not available."));
         OpenCreative.getPlugin().getLogger().info((isLibsDisguisesEnabled ? "Successfully integrated to LibsDisguises: Added morph actions." : "Didn't detect LibsDisguises, disguise actions will be not available."));
         OpenCreative.getPlugin().getLogger().info((isWorldEditEnabled ? "Successfully integrated to WorldEdit: Added out-of-borders limit." : "Didn't detect WorldEdit."));
         if (isPlaceholderAPIEnabled) {
@@ -69,7 +71,7 @@ public final class HookUtils {
 
     public static void clearEntitiesHook(World world) {
         try {
-            if (OpenCreative.getDisguiseManager().isEnabled()) {
+            if (OpenCreative.getDisguiseManager().isWorking()) {
                 for (Entity entity : world.getEntities()) {
                     OpenCreative.getDisguiseManager().clearDisguises(entity);
                 }
@@ -81,7 +83,7 @@ public final class HookUtils {
 
     public static void clearPlayerHook(Player player) {
         try {
-            if (OpenCreative.getDisguiseManager().isEnabled()) {
+            if (OpenCreative.getDisguiseManager().isWorking()) {
                 OpenCreative.getDisguiseManager().clearDisguises(player);
             }
         } catch (Exception error) {
@@ -90,9 +92,14 @@ public final class HookUtils {
     }
 
     public static PacketManager getPacketManager() {
-        if (isProtocolLibEnabled) {
+        if (isPacketEventsEnabled) {
+            OpenCreative.getPlugin().getLogger().info("Successfully integrated to PacketEvents: Added blocks effects and spectator mode in tab support.");
+            return new PacketEventsManager();
+        } else if (isProtocolLibEnabled) {
+            OpenCreative.getPlugin().getLogger().info("Successfully integrated to ProtocolLib: Added blocks effects and spectator mode in tab.");
             return new ProtocolLibManager();
         } else {
+            OpenCreative.getPlugin().getLogger().info( "Didn't detect PacketEvents or ProtocolLib, some block effects and spectator mode in tab will be not available.");
             return new DisabledPacketManager();
         }
     }

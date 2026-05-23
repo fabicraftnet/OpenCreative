@@ -31,6 +31,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.OpenCreative;
+import ua.mcchickenstudio.opencreative.managers.Startable;
 import ua.mcchickenstudio.opencreative.utils.world.cache.ChunkPacketListener;
 
 import java.util.*;
@@ -45,11 +46,13 @@ import static com.comphenix.protocol.wrappers.EnumWrappers.PlayerInfoAction.UPDA
 public final class ProtocolLibManager implements PacketManager {
 
     private ProtocolManager manager;
+    private ChunkPacketListener chunkListener;
 
     @Override
-    public void init() {
+    public void start() {
         manager = ProtocolLibrary.getProtocolManager();
-        manager.addPacketListener(new ChunkPacketListener(OpenCreative.getPlugin()));
+        chunkListener = new ChunkPacketListener(OpenCreative.getPlugin());
+        manager.addPacketListener(chunkListener);
     }
 
     @Override
@@ -136,12 +139,7 @@ public final class ProtocolLibManager implements PacketManager {
     }
 
     @Override
-    public boolean isEnabled() {
-        return manager != null;
-    }
-
-    @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "ProtocolLib Packet Manager";
     }
 
@@ -210,5 +208,17 @@ public final class ProtocolLibManager implements PacketManager {
                 .write(2, location.getZ());
         //spawnEntityPacket.getModifier().write(12,1);
         return spawnEntityPacket;
+    }
+
+    @Override
+    public void shutdown() {
+        if (manager != null && chunkListener != null) {
+            manager.removePacketListener(chunkListener);
+        }
+    }
+
+    @Override
+    public boolean isWorking() {
+        return manager != null;
     }
 }

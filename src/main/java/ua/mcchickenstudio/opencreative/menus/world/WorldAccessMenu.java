@@ -160,7 +160,7 @@ public final class WorldAccessMenu extends AbstractMenu implements WorldMenu {
                     Sounds.PLAYER_FAIL.play(player);
                     return;
                 }
-                if (OpenCreative.getEconomy().isEnabled()) {
+                if (OpenCreative.getEconomy().isWorking()) {
                     double playerBalance = OpenCreative.getEconomy().getBalance(player).doubleValue();
                     double advertisementPrice = OpenCreative.getSettings().getGroups().getGroup(player).getAdvertisementPrice();
                     if (playerBalance < advertisementPrice) {

@@ -36,7 +36,7 @@ public final class ClearDisguiseAction extends EntityAction {
 
     @Override
     public void executeEntity(@NotNull Entity entity) {
-        if (!OpenCreative.getDisguiseManager().isEnabled()) {
+        if (!OpenCreative.getDisguiseManager().isWorking()) {
             sendCodingDebugLog(getPlanet(), "Disguise Manager is not available.");
             return;
         }

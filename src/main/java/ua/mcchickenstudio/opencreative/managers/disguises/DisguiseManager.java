@@ -23,13 +23,14 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.managers.Manager;
+import ua.mcchickenstudio.opencreative.managers.Toggleable;
 
 /**
  * <h1>DisguiseManager</h1>
  * This interface represents a disguise manager, that adds
  * disguises for entities and clears them.
  */
-public interface DisguiseManager extends Manager {
+public interface DisguiseManager extends Manager, Toggleable {
 
     /**
      * Disguises entity as player.

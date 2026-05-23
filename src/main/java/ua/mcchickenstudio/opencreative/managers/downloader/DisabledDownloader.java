@@ -26,6 +26,7 @@ import java.io.File;
 import java.util.concurrent.CompletableFuture;
 
 public final class DisabledDownloader implements DownloadManager {
+
     @Override
     public @NotNull CompletableFuture<String> uploadPlanet(@NotNull Planet planet, @NotNull Player player) {
         return new CompletableFuture<>();
@@ -43,10 +44,10 @@ public final class DisabledDownloader implements DownloadManager {
     public void clearAllArchives() {}
 
     @Override
-    public void init() {}
+    public void start() {}
 
     @Override
-    public boolean isEnabled() {
+    public boolean isWorking() {
         return false;
     }
 
@@ -54,7 +55,7 @@ public final class DisabledDownloader implements DownloadManager {
     public void shutdown() {}
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Disabled Download Manager";
     }
 }
