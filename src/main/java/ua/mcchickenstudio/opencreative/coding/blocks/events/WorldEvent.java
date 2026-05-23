@@ -21,22 +21,27 @@ package ua.mcchickenstudio.opencreative.coding.blocks.events;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.OpenCreative;
+import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executors;
+import ua.mcchickenstudio.opencreative.coding.blocks.executors.PlanetExecutors;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isDevPlanet;
+import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isPlanet;
+
 /**
  * <h1>WorldEvent</h1>
  * This class represents event in Creative's planet.
  */
-public abstract class WorldEvent extends Event {
+public abstract class WorldEvent {
 
-    private static final HandlerList HANDLER_LIST = new HandlerList();
     protected final World world;
     protected List<Entity> selection = new ArrayList<>();
 
@@ -64,10 +69,6 @@ public abstract class WorldEvent extends Event {
         selection.add(entity);
     }
 
-    public static HandlerList getHandlerList() {
-        return HANDLER_LIST;
-    }
-
     public List<Entity> getSelection() {
         return selection;
     }
@@ -81,9 +82,43 @@ public abstract class WorldEvent extends Event {
         return OpenCreative.getPlanetsManager().getPlanetByWorld(getWorld());
     }
 
-    @NotNull
-    @Override
-    public HandlerList getHandlers() {
-        return HANDLER_LIST;
+    public boolean callEvent() {
+        if (canActivate()) {
+            PlanetExecutors.activate(this);
+        }
+        if (this instanceof Cancellable cancellable) {
+            return !cancellable.isCancelled();
+        }
+        return true;
+    }
+
+    /**
+     * Checks if world event can activate executors or not.
+     * World event must:
+     * <p>
+     * <ul>
+     * <li>Be in planet's build world
+     * <li>Have entities selection in planet's build world
+     * <li>Happen while planet is in play mode
+     * <li>Happen while planet is loaded
+     * </ul>
+     *
+     * @return true - if possible, false - disallowed.
+     */
+    public boolean canActivate() {
+        if (getPlanet() == null) return false;
+        if (getWorld() == null) return false;
+        if (!isPlanet(getWorld())) return false;
+        if (isDevPlanet(getWorld())) return false;
+        if (!getPlanet().isLoaded()) return false;
+        if (getPlanet().getMode() != Planet.Mode.PLAYING) return false;
+        if (!getSelection().isEmpty()) {
+            for (Entity entity : getSelection()) {
+                if (!entity.getWorld().equals(getPlanet().getWorld())) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

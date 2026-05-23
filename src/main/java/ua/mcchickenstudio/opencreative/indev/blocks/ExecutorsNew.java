@@ -45,7 +45,7 @@ public class ExecutorsNew implements EventExecutor, Listener {
     private final static Set<ExecutorBlock> executors = new LinkedHashSet<>();
 
     public void registerExecutor(ExecutorBlock executor) {
-        try {
+       /* try {
             Bukkit.getPluginManager().registerEvent(
                     executor.getEventClass(),
                     this, EventPriority.NORMAL, this,
@@ -54,7 +54,7 @@ public class ExecutorsNew implements EventExecutor, Listener {
             OpenCreative.getPlugin().getLogger().info("[EXECUTORS] Registered " + executor);
         } catch (Exception error) {
             sendCriticalErrorMessage("Cannot register executor: " + executor.toString(), error);
-        }
+        }*/
     }
 
     public static @Nullable ExecutorBlock getExecutorById(@NotNull String id) {
@@ -104,8 +104,8 @@ public class ExecutorsNew implements EventExecutor, Listener {
 
     @Override
     public void execute(@NotNull Listener listener, @NotNull Event event) throws EventException {
-        if (event instanceof WorldEvent worldEvent) {
+        /*if (event instanceof WorldEvent worldEvent) {
             handleEvent(worldEvent);
-        }
+        }*/
     }
 }
