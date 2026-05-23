@@ -587,6 +587,7 @@ public enum ActionType implements CodingBlockType {
     VAR_SET_ITEM_PAGES(ActionCategory.VARIABLE_ACTION, MenusCategory.ITEM_OPERATIONS, SetItemPagesAction.class, Material.CRAFTING_TABLE, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("item", ValueType.ITEM), new ArgumentSlot("list", ValueType.VARIABLE)),
     VAR_SET_ITEM_SKULL_TEXTURES(ActionCategory.VARIABLE_ACTION, MenusCategory.ITEM_OPERATIONS, SetSkullTexturesAction.class, Material.PLAYER_HEAD, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("item", ValueType.ITEM), new ArgumentSlot("textures", ValueType.TEXT)),
     VAR_SET_ITEM_SKULL_OWNER(ActionCategory.VARIABLE_ACTION, MenusCategory.ITEM_OPERATIONS, SetSkullOwnerAction.class, Material.ZOMBIE_HEAD, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("item", ValueType.ITEM), new ArgumentSlot("owner", ValueType.TEXT)),
+    VAR_SET_ITEM_BOOK_OWNER(ActionCategory.VARIABLE_ACTION, MenusCategory.ITEM_OPERATIONS, SetItemBookOwnerAction.class, Material.WRITABLE_BOOK, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("item", ValueType.ITEM), new ArgumentSlot("owner", ValueType.TEXT)),
     VAR_SET_CUSTOM_DATA_TO_ITEM(
             ActionCategory.VARIABLE_ACTION,
             MenusCategory.ITEM_OPERATIONS,

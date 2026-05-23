@@ -7431,6 +7431,18 @@ items:
           - "&6 Текст &7- Текстура (base64)"
           - " "
           - "&eНажми, чтобы установить действие."
+      var-set-item-book-owner:
+        name: "&6Установить автора книги"
+        lore:
+          - "&7Это установит в переменную"
+          - "&7книгу с новым автором."
+          - " "
+          - "&fВ сундуке:"
+          - "&e Переменная &7- Для сохранения"
+          - "&c Предмет &7- Книга"
+          - "&6 Текст &7- Автор"
+          - " "
+          - "&eНажми, чтобы установить действие."
       var-set-item-skull-owner:
         name: "&6Установить владельца головы"
         lore:
@@ -19588,6 +19600,7 @@ blocks:
   var_merge_lists: "Объед. списки"
   var_set_item_skull_textures: "Уст. текстуру"
   var_set_item_skull_owner: "Влад. головы"
+  var_set_item_book_owner: "Автор книги"
   var_convert_to_json: "Сохран. JSON"
   var_parse_json: "Парсить JSON"
   var_format_unix_time: "Форм. время"
