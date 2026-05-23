@@ -601,7 +601,7 @@ public final class PlayerUtils {
     }
 
     public static void spawnGlowingBlock(Player player, Location location) {
-        if (OpenCreative.getPacketManager().isEnabled()) {
+        if (OpenCreative.getPacketManager().isWorking()) {
             try {
                 OpenCreative.getPacketManager().displayGlowingBlock(player, location);
             } catch (Exception error) {
@@ -611,7 +611,7 @@ public final class PlayerUtils {
     }
 
     public static void sendOpenedChestAnimation(Player player, Block block) {
-        if (OpenCreative.getPacketManager().isEnabled()) {
+        if (OpenCreative.getPacketManager().isWorking()) {
             try {
                 OpenCreative.getPacketManager().sendChestOpenAnimation(player, block);
             } catch (Exception error) {
@@ -621,7 +621,7 @@ public final class PlayerUtils {
     }
 
     public static void sendClosedChestAnimation(Player player, Block block) {
-        if (OpenCreative.getPacketManager().isEnabled()) {
+        if (OpenCreative.getPacketManager().isWorking()) {
             try {
                 OpenCreative.getPacketManager().sendChestCloseAnimation(player, block);
             } catch (Exception error) {
@@ -634,7 +634,7 @@ public final class PlayerUtils {
         if (spectator == receiver) return;
         Settings.PlayerListChanger changer = OpenCreative.getSettings().getListChanger();
         if (changer == Settings.PlayerListChanger.SPECTATOR) {
-            if (OpenCreative.getPacketManager().isEnabled()) {
+            if (OpenCreative.getPacketManager().isWorking()) {
                 try {
                     OpenCreative.getPacketManager().displayAsSpectatorName(spectator, receiver);
                 } catch (Exception error) {
@@ -650,7 +650,7 @@ public final class PlayerUtils {
 
     public static void showPlayerFromTab(Player spectator, Player receiver) {
         if (spectator == receiver) return;
-        if (OpenCreative.getPacketManager().isEnabled() && OpenCreative.getSettings().getListChanger() == Settings.PlayerListChanger.SPECTATOR) {
+        if (OpenCreative.getPacketManager().isWorking() && OpenCreative.getSettings().getListChanger() == Settings.PlayerListChanger.SPECTATOR) {
             try {
                 OpenCreative.getPacketManager().removeSpectatorName(spectator, receiver);
             } catch (Exception error) {

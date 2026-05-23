@@ -7471,6 +7471,18 @@ items:
               - "&7з текстом для встановлення формату."
               - ""
               - "&7За замовчуванням: &6dd/MM/yyyy HH:mm:ss"
+      var-set-item-book-owner:
+        name: "&6Встановити автора книги"
+        lore:
+          - "&7Це встановить у змінну"
+          - "&7книгу з новим автором."
+          - " "
+          - "&fУ скрині:"
+          - "&e Змінна &7- Для збереження"
+          - "&c Предмет &7- Книга"
+          - "&6 Текст &7- Автор"
+          - " "
+          - "&eНатисни, щоб встановити дію."
       var-set-item-skull-textures:
         name: "&6Встановити текстуру голови"
         lore:
@@ -14640,6 +14652,8 @@ menus:
           - "&7 &bстворювати &7свої світи."
           - ""
           - "&c McChicken Studio 2017-2026"
+          - "&3 Програмісти: &7onn512, pawsashatoy, LWJENNI,"
+          - "&7  HACKERPRO17, liventmst, logiklop."
           - "&3 Перекладачі: &7initzero, Nagibator6000LoL,"
           - "&7  DrakesWeb, kogtyv, Senmpai333."
           - ""
@@ -19366,6 +19380,7 @@ blocks:
   var_merge_lists: "Об'єднати списки"
   var_set_item_skull_textures: "Вст. текстуру"
   var_set_item_skull_owner: "Власн. голови"
+  var_set_item_book_owner: "Автор книги"
   controller_catch_error: "Спіймати помилку"
   controller_measure_time: "Вимір. час"
   control_cancel_event: "&cСкасування події"

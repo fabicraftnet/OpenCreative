@@ -69,7 +69,7 @@ public final class RequestPurchaseAction extends PlayerAction {
                     @Override
                     public void run() {
                         Planet currentPlanet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
-                        if (!planet.equals(currentPlanet) || !OpenCreative.getEconomy().isEnabled()) {
+                        if (!planet.equals(currentPlanet) || !OpenCreative.getEconomy().isWorking()) {
                             cancel();
                             return;
                         }

@@ -22,7 +22,10 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.managers.downloader.DisabledDownloader;
+import ua.mcchickenstudio.opencreative.managers.downloader.DownloadManager;
 import ua.mcchickenstudio.opencreative.managers.downloader.Downloader;
+import ua.mcchickenstudio.opencreative.managers.economy.DisabledEconomy;
+import ua.mcchickenstudio.opencreative.managers.economy.Economy;
 
 /**
  * <h1>DownloaderSettings</h1>
@@ -45,9 +48,9 @@ public final class DownloaderSettings {
         maxArchiveSize = section.getInt("max-size", 30);
         maxStoringTime = section.getInt("storing-time", 60);
         if (section.getBoolean("enabled", false)) {
-            OpenCreative.setDownloadManager(new Downloader());
+            OpenCreative.getManagers().register(DownloadManager.class, new Downloader());
         } else {
-            OpenCreative.setDownloadManager(new DisabledDownloader());
+            OpenCreative.getManagers().register(DownloadManager.class, new DisabledDownloader());
         }
     }
 

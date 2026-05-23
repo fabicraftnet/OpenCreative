@@ -40,6 +40,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.OpenCreative;
+import ua.mcchickenstudio.opencreative.managers.Toggleable;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.utils.SystemUtils;
 import ua.mcchickenstudio.opencreative.utils.hooks.HookUtils;
@@ -54,7 +55,9 @@ import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isLobbyWorl
  * This class represents a manager, that controls changing
  * many blocks, using WorldEdit.
  */
-public final class WorldEditManager implements BlocksManager {
+public final class WorldEditManager implements BlocksManager, Toggleable {
+
+    private Object onSessionEvent;
 
     @Override
     public @NotNull CompletableFuture<Integer> setBlocksType(@NotNull Location first, @NotNull Location second, @NotNull Material material, int limit) {
@@ -86,12 +89,12 @@ public final class WorldEditManager implements BlocksManager {
     }
 
     @Override
-    public void init() {
+    public void start() {
         if (SystemUtils.getSystemProperty("worldedit.registered") != null) {
             return;
         }
         SystemUtils.setSystemProperty("worldedit.registered", "true");
-        Object onSessionEvent = new Object() {
+        onSessionEvent = new Object() {
             @Subscribe
             public void onEditSessionEvent(EditSessionEvent event) {
                 if (event.getStage() != EditSession.Stage.BEFORE_HISTORY) return;
@@ -121,12 +124,19 @@ public final class WorldEditManager implements BlocksManager {
     }
 
     @Override
-    public boolean isEnabled() {
+    public boolean isWorking() {
         return WorldEdit.getInstance() != null;
     }
 
     @Override
-    public String getName() {
+    public void shutdown() {
+        if (onSessionEvent != null) {
+            WorldEdit.getInstance().getEventBus().unregister(onSessionEvent);
+        }
+    }
+
+    @Override
+    public @NotNull String getName() {
         return "WorldEdit Blocks Manager";
     }
 

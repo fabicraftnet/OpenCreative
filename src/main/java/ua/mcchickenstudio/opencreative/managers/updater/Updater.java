@@ -18,7 +18,9 @@
 
 package ua.mcchickenstudio.opencreative.managers.updater;
 
+import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.managers.Manager;
+import ua.mcchickenstudio.opencreative.managers.Startable;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -27,14 +29,14 @@ import java.util.concurrent.CompletableFuture;
  * This interface represents a update manager,
  * that tells server to update or not.
  */
-public interface Updater extends Manager {
+public interface Updater extends Manager, Startable {
 
     /**
      * Sends web request and checks if new updates
      * of OpenCreative+ are available. It's called once
      * on plugin enable and on command usage.
      */
-    CompletableFuture<String> checkUpdates();
+    @NotNull CompletableFuture<String> checkUpdates();
 
     /**
      * Returns updates availability for OpenCreative+.

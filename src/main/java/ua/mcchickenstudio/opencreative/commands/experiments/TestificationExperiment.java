@@ -18,11 +18,18 @@
 
 package ua.mcchickenstudio.opencreative.commands.experiments;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -42,11 +49,18 @@ import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executors;
 import ua.mcchickenstudio.opencreative.coding.values.EventValue;
 import ua.mcchickenstudio.opencreative.coding.values.EventValues;
+import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
+import ua.mcchickenstudio.opencreative.utils.FileUtils;
 import ua.mcchickenstudio.opencreative.utils.ItemUtils;
 import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
+import java.io.File;
+import java.io.FileReader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
+import java.util.function.Consumer;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendPlayerErrorMessage;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
@@ -108,7 +122,7 @@ public final class TestificationExperiment extends Experiment {
                                     Sounds[] soundsList = Sounds.values();
                                     Sounds sound = soundsList[index];
                                     if (sound == Sounds.LOBBY_MUSIC) {
-                                        sound = soundsList[index+1];
+                                        sound = soundsList[index + 1];
                                     }
                                     player.sendActionBar(Component.text(sound.name().toLowerCase()));
                                 } else {
@@ -131,6 +145,40 @@ public final class TestificationExperiment extends Experiment {
                 meta.setMapView(mapView);
                 mapItem.setItemMeta(meta);
                 player.getInventory().addItem(mapItem);
+            }
+        } else if (args[0].equalsIgnoreCase("script")) {
+            if (sender instanceof Player player) {
+                Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
+                if (planet == null) {
+                    player.sendMessage("Only in planets");
+                    return;
+                }
+                File scriptFile = FileUtils.getPlanetScriptFile(planet);
+                if (!scriptFile.exists()) {
+                    showDialog(player, planet.getId(), "codeScript.yml", "Empty content");
+                    return;
+                }
+                showDialog(player, planet.getId(), "codeScript.yml", YamlConfiguration.loadConfiguration(scriptFile).saveToString());
+            }
+        } else if (args[0].equalsIgnoreCase("variables")) {
+            if (sender instanceof Player player) {
+                Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
+                if (planet == null) {
+                    player.sendMessage("Only in planets");
+                    return;
+                }
+                File variablesFile = FileUtils.getPlanetVariablesJson(planet);
+                if (!variablesFile.exists()) {
+                    showDialog(player, planet.getId(), "variables.json", "No variables");
+                    return;
+                }
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                try {
+                    JsonElement json = JsonParser.parseReader(new FileReader(variablesFile));
+                    showDialog(player, planet.getId(), "variables.json", gson.toJson(json));
+                } catch (Exception error) {
+                    sendPlayerErrorMessage(player, "Failed to read variables and show dialog", error);
+                }
             }
         } else if (args[0].equalsIgnoreCase("translation")) {
             List<String> untranslatedBlocks = new ArrayList<>();
@@ -211,7 +259,7 @@ public final class TestificationExperiment extends Experiment {
     @Override
     public @Nullable List<String> tabCommand(@NotNull CommandSender sender, @NotNull String[] args) {
         if (args.length == 0) {
-            return List.of("translation", "item");
+            return List.of("translation", "item", "map", "variables", "script");
         }
         if (args.length == 1) {
             return List.of("1", "2", "3", "4");
@@ -228,6 +276,82 @@ public final class TestificationExperiment extends Experiment {
         if (actionBarTask != null) {
             actionBarTask.cancel();
             actionBarTask = null;
+        }
+    }
+
+    public static void showDialog(Player player, int id, String fileName, String content) {
+        try {
+
+            Class<?> dialogClass = Class.forName("io.papermc.paper.dialog.Dialog");
+            Class<?> registryBuilderFactory = Class.forName("io.papermc.paper.registry.RegistryBuilderFactory");
+            Class<?> dialogEntryBuilder = Class.forName("io.papermc.paper.registry.data.dialog.DialogRegistryEntry$Builder");
+            Class<?> dialogBaseClass = Class.forName("io.papermc.paper.registry.data.dialog.DialogBase");
+            Class<?> dialogBaseBuilderClass = Class.forName("io.papermc.paper.registry.data.dialog.DialogBase$Builder");
+            Class<?> dialogTypeClass = Class.forName("io.papermc.paper.registry.data.dialog.type.DialogType");
+            Class<?> dialogInputClass = Class.forName("io.papermc.paper.registry.data.dialog.input.DialogInput");
+            Class<?> multilineOptionsClass = Class.forName("io.papermc.paper.registry.data.dialog.input.TextDialogInput$MultilineOptions");
+
+            Object multilineOptions = multilineOptionsClass
+                    .getMethod("create", Integer.class, Integer.class)
+                    .invoke(999999, null, 160);
+
+            Object textInput = dialogInputClass.getMethod(
+                    "text",
+                    String.class,
+                    int.class,
+                    Component.class,
+                    boolean.class,
+                    String.class,
+                    int.class,
+                    multilineOptionsClass
+            ).invoke(null,
+                    "hello_world_input",
+                    400,
+                    Component.text(fileName, NamedTextColor.GREEN)
+                            .append(Component.text(" (read-only)", NamedTextColor.GRAY)),
+                    true,
+                    content,
+                    999999999,
+                    multilineOptions
+            );
+
+            Object dialogBaseBuilder = dialogBaseClass
+                    .getMethod("builder", Component.class)
+                    .invoke(null, Component.text("Viewing Planet " + id));
+
+            dialogBaseBuilderClass
+                    .getMethod("inputs", java.util.List.class)
+                    .invoke(dialogBaseBuilder, java.util.List.of(textInput));
+
+            Object dialogBase = dialogBaseBuilderClass
+                    .getMethod("build")
+                    .invoke(dialogBaseBuilder);
+
+            Object dialogType = dialogTypeClass.getMethod("notice").invoke(null);
+
+            Method emptyMethod = registryBuilderFactory.getMethod("empty");
+            Method baseMethod = dialogEntryBuilder.getMethod("base", dialogBaseClass);
+            Method typeMethod = dialogEntryBuilder.getMethod("type", dialogTypeClass);
+
+            Consumer<Object> consumer = factory -> {
+                try {
+                    Object builder = emptyMethod.invoke(factory);
+                    baseMethod.invoke(builder, dialogBase);
+                    typeMethod.invoke(builder, dialogType);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            };
+
+            Object dialog = dialogClass
+                    .getMethod("create", Consumer.class)
+                    .invoke(null, consumer);
+
+            Class<?> dialogLikeClass = Class.forName("net.kyori.adventure.dialog.DialogLike");
+            Class<?> audienceClass = Audience.class;
+            audienceClass.getMethod("showDialog", dialogLikeClass).invoke(player, dialog);
+        } catch (Exception error) {
+            sendPlayerErrorMessage(player, "Failed to show a dialog", error);
         }
     }
 

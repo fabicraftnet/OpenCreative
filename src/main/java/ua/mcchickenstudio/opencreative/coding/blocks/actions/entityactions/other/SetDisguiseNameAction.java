@@ -38,7 +38,7 @@ public final class SetDisguiseNameAction extends EntityAction {
     @Override
     public void executeEntity(@NotNull Entity entity) {
         String name = getArguments().getText("name", entity.getName(), this);
-        if (!OpenCreative.getDisguiseManager().isEnabled()) {
+        if (!OpenCreative.getDisguiseManager().isWorking()) {
             sendCodingDebugLog(getPlanet(), "Disguise Manager is not available.");
             return;
         }

@@ -40,7 +40,7 @@ public abstract class Placeholder implements ExtensionContent {
      * @param text text to check.
      * @return true - placeholders detected, false - not detected.
      */
-    public abstract boolean matches(String text);
+    public abstract boolean matches(@NotNull String text);
 
     /**
      * Returns text with parsed placeholders from this class.

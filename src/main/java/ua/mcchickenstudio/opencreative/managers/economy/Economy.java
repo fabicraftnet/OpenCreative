@@ -19,7 +19,9 @@
 package ua.mcchickenstudio.opencreative.managers.economy;
 
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.managers.Manager;
+import ua.mcchickenstudio.opencreative.managers.Toggleable;
 
 /**
  * <h1>Economy</h1>
@@ -27,7 +29,7 @@ import ua.mcchickenstudio.opencreative.managers.Manager;
  * that has operations with server's economy,
  * like taking, giving and getting player's money.
  */
-public interface Economy extends Manager {
+public interface Economy extends Manager, Toggleable {
 
     /**
      * Deposits money to player for some reason, examples:
@@ -37,7 +39,7 @@ public interface Economy extends Manager {
      * @param money         Amount of money to give.
      * @return true - if successfully taken, false - failed.
      */
-    boolean depositMoney(OfflinePlayer offlinePlayer, Number money);
+    boolean depositMoney(@NotNull OfflinePlayer offlinePlayer, @NotNull Number money);
 
     /**
      * Takes money from player balance, examples:
@@ -47,7 +49,7 @@ public interface Economy extends Manager {
      * @param money         Amount of money to take.
      * @return true - if successfully taken, false - failed.
      */
-    boolean withdrawMoney(OfflinePlayer offlinePlayer, Number money);
+    boolean withdrawMoney(@NotNull OfflinePlayer offlinePlayer, @NotNull Number money);
 
     /**
      * Returns an amount of money that player has currently on his balance.
@@ -55,5 +57,5 @@ public interface Economy extends Manager {
      * @param offlinePlayer Player to check balance.
      * @return Amount of money on player's balance.
      */
-    Number getBalance(OfflinePlayer offlinePlayer);
+    @NotNull Number getBalance(OfflinePlayer offlinePlayer);
 }

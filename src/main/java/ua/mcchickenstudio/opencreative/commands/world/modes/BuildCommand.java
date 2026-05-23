@@ -76,7 +76,6 @@ public class BuildCommand extends CommandHandler {
             return;
         }
 
-
         if (args.length == 0) {
             removePlayerWithLocation(player);
             if (planet.getMode() != Planet.Mode.BUILD) {

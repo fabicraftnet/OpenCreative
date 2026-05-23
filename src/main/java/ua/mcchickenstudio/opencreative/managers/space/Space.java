@@ -29,6 +29,7 @@ import ua.mcchickenstudio.opencreative.events.planet.PlanetDeletionEvent;
 import ua.mcchickenstudio.opencreative.events.planet.PlanetRegisterEvent;
 import ua.mcchickenstudio.opencreative.events.planet.PlanetSharingChangeEvent;
 import ua.mcchickenstudio.opencreative.events.planet.PlanetCreationEvent;
+import ua.mcchickenstudio.opencreative.managers.Startable;
 import ua.mcchickenstudio.opencreative.wanders.OfflineWander;
 import ua.mcchickenstudio.opencreative.wanders.Wander;
 import ua.mcchickenstudio.opencreative.menus.world.WorldMenu;
@@ -51,10 +52,40 @@ import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isDevPlanet;
 import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isPlanet;
 
-public final class Space implements PlanetsManager {
+public final class Space implements PlanetsManager, Startable {
 
     private final Map<Integer, Planet> planets = new HashMap<>();
     private final Set<Planet> corruptedPlanets = new HashSet<>();
+
+    @Override
+    public void start() {
+        FileUtils.loadPlanets();
+    }
+
+    @Override
+    public void shutdown() {
+        OpenCreative.getPlugin().getLogger().info("Unloading worlds, please wait...");
+        try {
+            for (Planet planet : OpenCreative.getPlanetsManager().getPlanets()) {
+                if (planet.isLoaded()) {
+                    OpenCreative.getPlugin().getLogger().info("Unloading planet " + planet.getId() + "...");
+                    planet.getTerritory().unload();
+                } else if (planet.getDevPlanet().isLoaded()) {
+                    OpenCreative.getPlugin().getLogger().info("Unloading planet dev " + planet.getId() + "...");
+                    planet.getDevPlanet().unload(false);
+                }
+            }
+            OpenCreative.getPlanetsManager().getPlanets().clear();
+        } catch (Exception error) {
+            sendCriticalErrorMessage("Error while unloading worlds.", error);
+        }
+        planets.clear();
+    }
+
+    @Override
+    public boolean isWorking() {
+        return true;
+    }
 
     @Override
     public @NotNull Set<Planet> getPlanets() {
@@ -343,22 +374,13 @@ public final class Space implements PlanetsManager {
     }
 
     @Override
-    public void init() {
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    @Override
     public boolean isStableConnection() {
         // True, because it depends only on file system
         return true;
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Planet Manager";
     }
 }

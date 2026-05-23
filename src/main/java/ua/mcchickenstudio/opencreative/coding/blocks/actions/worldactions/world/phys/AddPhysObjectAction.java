@@ -19,12 +19,13 @@
 package ua.mcchickenstudio.opencreative.coding.blocks.actions.worldactions.world.phys;
 
 import org.jetbrains.annotations.NotNull;
+import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.worldactions.WorldAction;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.worldactions.world.phys.data.PhysObject;
-import ua.mcchickenstudio.opencreative.coding.blocks.actions.worldactions.world.phys.data.PhysService;
+import ua.mcchickenstudio.opencreative.coding.blocks.actions.worldactions.world.phys.data.PhysicsManager;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
 
 import java.util.List;
@@ -44,7 +45,7 @@ public final class AddPhysObjectAction extends WorldAction {
                 motion = a.getList("motion", this),
                 settings = a.getList("settings", this);
         final PhysObject physObject = new PhysObject(getPlanet().getWorld(), visual, motion, settings);
-        PhysService.add(physObject, getPlanet().getLimits().getPhysicalObjectsLimit());
+        OpenCreative.getPhysicsManager().add(physObject, getPlanet().getLimits().getPhysicalObjectsLimit());
     }
 
     @Override

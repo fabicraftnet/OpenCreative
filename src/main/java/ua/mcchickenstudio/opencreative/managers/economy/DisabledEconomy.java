@@ -19,6 +19,7 @@
 package ua.mcchickenstudio.opencreative.managers.economy;
 
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This class represents a disabled economy manager, that will be
@@ -28,31 +29,33 @@ import org.bukkit.OfflinePlayer;
 public final class DisabledEconomy implements Economy {
 
     @Override
-    public boolean depositMoney(OfflinePlayer offlinePlayer, Number money) {
+    public boolean depositMoney(@NotNull OfflinePlayer offlinePlayer, @NotNull Number money) {
         return false;
     }
 
     @Override
-    public boolean withdrawMoney(OfflinePlayer offlinePlayer, Number money) {
+    public boolean withdrawMoney(@NotNull OfflinePlayer offlinePlayer, @NotNull Number money) {
         return false;
     }
 
     @Override
-    public Number getBalance(OfflinePlayer offlinePlayer) {
+    public @NotNull Number getBalance(OfflinePlayer offlinePlayer) {
         return 0;
     }
 
     @Override
-    public void init() {
-    }
+    public void start() {}
 
     @Override
-    public boolean isEnabled() {
+    public void shutdown() {}
+
+    @Override
+    public boolean isWorking() {
         return false;
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Disabled Economy";
     }
 }

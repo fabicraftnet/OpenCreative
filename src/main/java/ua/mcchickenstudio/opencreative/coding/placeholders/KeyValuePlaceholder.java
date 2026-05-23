@@ -48,7 +48,7 @@ public abstract class KeyValuePlaceholder extends Placeholder {
     public abstract @Nullable String parseKeyValue(String key, String value, ActionsHandler handler, Action action);
 
     @Override
-    public boolean matches(String text) {
+    public boolean matches(@NotNull String text) {
         if (!text.contains("%") && !text.contains("(") && !text.contains(")")) return false;
         Matcher matcher = PATTERN.matcher(text);
         while (matcher.find()) {

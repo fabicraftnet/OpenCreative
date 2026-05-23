@@ -31,6 +31,7 @@ import org.bukkit.block.sign.Side;
 import org.bukkit.block.sign.SignSide;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionCategory;
 import ua.mcchickenstudio.opencreative.planets.DevPlatform;
@@ -129,11 +130,11 @@ public final class BlockUtils {
         return -1;
     }
 
-    public static boolean isOutOfBorders(Location location) {
+    public static boolean isOutOfBorders(@NotNull Location location, double size) {
         WorldBorder border = location.getWorld().getWorldBorder();
         Location borderCenter = border.getCenter();
 
-        double radius = border.getSize() / 2 + 1;
+        double radius = size / 2 + 1;
         double borderCenterX1 = borderCenter.getX() + radius;
         double borderCenterX2 = borderCenter.getX() - radius;
         double borderCenterZ1 = borderCenter.getZ() + radius;
@@ -145,6 +146,10 @@ public final class BlockUtils {
         if (!(borderCenterX1 > playerX && playerX > borderCenterX2)) {
             return true;
         } else return !(borderCenterZ1 > playerZ && playerZ > borderCenterZ2);
+    }
+
+    public static boolean isOutOfBorders(@NotNull Location location) {
+        return isOutOfBorders(location, location.getWorld().getWorldBorder().getSize());
     }
 
     public static void copySignData(Sign oldSign, Sign sign) {

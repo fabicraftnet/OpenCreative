@@ -670,7 +670,7 @@ public class EnvironmentCommand extends CommandHandler {
                         player.sendMessage(getLocaleMessage("no-perms"));
                         return;
                     }
-                    if (!OpenCreative.getCodingPrompter().isEnabled()) {
+                    if (!OpenCreative.getCodingPrompter().isWorking()) {
                         sender.sendMessage(getLocaleMessage("environment.prompter.disabled"));
                         return;
                     }
@@ -793,7 +793,7 @@ public class EnvironmentCommand extends CommandHandler {
         List<String> tabCompleter = new ArrayList<>();
         if (args.length == 1) {
             Collections.addAll(tabCompleter, "platform", "variables", "debug", "execute", "barrel", "floor", "action", "theme", "event", "sign", "save-location", "night-vision", "drops", "clearitems");
-            if (OpenCreative.getCodingPrompter().isEnabled()) tabCompleter.add("make");
+            if (OpenCreative.getCodingPrompter().isWorking()) tabCompleter.add("make");
             return tabCompleter;
         }
         if (args.length == 2) {

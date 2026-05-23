@@ -49,16 +49,7 @@ public final class VanillaBlocksManager implements BlocksManager {
     }
 
     @Override
-    public void init() {
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Vanilla Blocks Manager";
     }
 }

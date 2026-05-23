@@ -508,6 +508,7 @@ public class Planet {
                         clearPlayer(player);
                         player.teleport(territory.getSpawnLocation());
                         Sounds.WORLD_MODE_BUILD.play(player);
+                        territory.setWorldSize(territory.getWorldSize(), false);
                         territory.showBorders(player);
                         if (isOwner(player)) {
                             ItemsGroup.BUILD_OWNER.setItems(player);

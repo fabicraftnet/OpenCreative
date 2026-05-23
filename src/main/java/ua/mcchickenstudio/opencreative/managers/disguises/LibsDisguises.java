@@ -74,16 +74,18 @@ public final class LibsDisguises implements DisguiseManager {
     }
 
     @Override
-    public void init() {
-    }
+    public void start() {}
 
     @Override
-    public boolean isEnabled() {
+    public void shutdown() {}
+
+    @Override
+    public boolean isWorking() {
         return HookUtils.isLibsDisguisesEnabled;
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "LibsDisguises";
     }
 }

@@ -876,11 +876,11 @@ public final class InteractListener implements Listener {
         if (planet != null) {
             if (OpenCreative.getSettings().shouldLogSignEdits()) {
                 PlainTextComponentSerializer plainSerializer = PlainTextComponentSerializer.plainText();
-                StringBuilder content = new StringBuilder();
+                StringJoiner content = new StringJoiner(" ");
                 for (Component line : event.lines()) {
-                    content.append(plainSerializer.serialize(line));
+                    content.add(plainSerializer.serialize(line));
                 }
-                if (content.isEmpty()) {
+                if (content.length() <= 1) {
                     new ChangedSignEvent(event.getPlayer(), event).callEvent();
                     return;
                 }

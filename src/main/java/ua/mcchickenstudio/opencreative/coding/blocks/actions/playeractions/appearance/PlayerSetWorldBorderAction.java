@@ -54,6 +54,7 @@ public final class PlayerSetWorldBorderAction extends PlayerAction {
         if (planetPlayer != null) {
             planetPlayer.setWorldSize(getArguments().pathExists("radius") ? radius : null);
         }
+        getPlanet().getTerritory().showBorders(player);
     }
 
 

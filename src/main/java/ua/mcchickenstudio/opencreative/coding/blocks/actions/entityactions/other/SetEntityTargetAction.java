@@ -40,12 +40,15 @@ public final class SetEntityTargetAction extends EntityAction {
             throw new UnsupportedEntityException(Mob.class, entity);
         }
         String text = getArguments().getText("entity", "", this);
+        if (text.isEmpty()) {
+            mob.setTarget(null);
+            return;
+        }
         for (Entity foundEntity : getEntitiesByNameOrUUID(text)) {
             if (foundEntity instanceof LivingEntity livingEntity) {
                 mob.setTarget(livingEntity);
             }
         }
-
     }
 
     @Override

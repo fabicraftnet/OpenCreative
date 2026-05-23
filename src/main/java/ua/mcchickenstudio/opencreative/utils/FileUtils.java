@@ -586,27 +586,6 @@ public final class FileUtils {
     }
 
     /**
-     * Unloads all loaded planets worlds.
-     */
-    public static void unloadPlanets() {
-        OpenCreative.getPlugin().getLogger().info("Unloading worlds, please wait...");
-        try {
-            for (Planet planet : OpenCreative.getPlanetsManager().getPlanets()) {
-                if (planet.isLoaded()) {
-                    OpenCreative.getPlugin().getLogger().info("Unloading planet " + planet.getId() + "...");
-                    planet.getTerritory().unload();
-                } else if (planet.getDevPlanet().isLoaded()) {
-                    OpenCreative.getPlugin().getLogger().info("Unloading planet dev " + planet.getId() + "...");
-                    planet.getDevPlanet().unload(false);
-                }
-            }
-            OpenCreative.getPlanetsManager().getPlanets().clear();
-        } catch (Exception error) {
-            sendCriticalErrorMessage("Error while unloading worlds.", error);
-        }
-    }
-
-    /**
      * Copies input files into output directory.
      **/
     public static boolean copyFilesToDirectory(File input, File output) {

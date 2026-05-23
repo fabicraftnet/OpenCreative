@@ -22,6 +22,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
@@ -61,6 +62,11 @@ public final class SpawnEntityAction extends WorldAction {
         }
 
         for (Location location : getArguments().getLocationList("locations", this)) {
+            if (location.getNearbyLivingEntities(1).stream()
+                    .filter(e -> !(e instanceof Player)).count() > 10) {
+                sendCodingDebugLog(getPlanet(), "Too many entities at same location.");
+                continue;
+            }
             Entity spawnedEntity = getPlanet().getTerritory().getWorld().spawnEntity(location, type);
 
             spawnedEntity.setGravity(gravity);
