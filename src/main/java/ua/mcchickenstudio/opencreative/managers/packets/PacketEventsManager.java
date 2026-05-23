@@ -131,20 +131,32 @@ public final class PacketEventsManager implements PacketManager, Toggleable {
 
     @Override
     public void displayAsSpectatorName(@NotNull Player player, @NotNull Player receiver) {
-        List<WrapperPlayServerPlayerInfo.PlayerData> playerDataList = new ArrayList<>();
-        playerDataList.add(new WrapperPlayServerPlayerInfo.PlayerData(player.name(), new UserProfile(player.getUniqueId(), player.getName()), com.github.retrooper.packetevents.protocol.player.GameMode.SPECTATOR, null, player.getPing()));
-        WrapperPlayServerPlayerInfo packet = new WrapperPlayServerPlayerInfo(WrapperPlayServerPlayerInfo.Action.UPDATE_GAME_MODE,
-                playerDataList);
+        WrapperPlayServerPlayerInfoUpdate packet = new WrapperPlayServerPlayerInfoUpdate(
+            EnumSet.of(WrapperPlayServerPlayerInfoUpdate.Action.UPDATE_GAME_MODE),
+            Collections.singletonList(
+                new WrapperPlayServerPlayerInfoUpdate.PlayerInfo(
+                        new UserProfile(player.getUniqueId(), player.getName()),
+                        true,
+                        player.getPing(),
+                        com.github.retrooper.packetevents.protocol.player.GameMode.SPECTATOR,
+                        Component.text(player.getName()),
+                        null)));
         PacketEvents.getAPI().getPlayerManager().sendPacket(receiver, packet);
     }
 
     @Override
     public void removeSpectatorName(@NotNull Player player, @NotNull Player receiver) {
         if (player.getGameMode() == GameMode.SPECTATOR) return;
-        List<WrapperPlayServerPlayerInfo.PlayerData> playerDataList = new ArrayList<>();
-        playerDataList.add(new WrapperPlayServerPlayerInfo.PlayerData(player.name(), new UserProfile(player.getUniqueId(), player.getName()), SpigotConversionUtil.fromBukkitGameMode(player.getGameMode()), null, player.getPing()));
-        WrapperPlayServerPlayerInfo packet = new WrapperPlayServerPlayerInfo(WrapperPlayServerPlayerInfo.Action.UPDATE_GAME_MODE,
-                playerDataList);
+        WrapperPlayServerPlayerInfoUpdate packet = new WrapperPlayServerPlayerInfoUpdate(
+                EnumSet.of(WrapperPlayServerPlayerInfoUpdate.Action.UPDATE_GAME_MODE),
+                Collections.singletonList(
+                        new WrapperPlayServerPlayerInfoUpdate.PlayerInfo(
+                                new UserProfile(player.getUniqueId(), player.getName()),
+                                true,
+                                player.getPing(),
+                                SpigotConversionUtil.fromBukkitGameMode(player.getGameMode()),
+                                Component.text(player.getName()),
+                                null)));
         PacketEvents.getAPI().getPlayerManager().sendPacket(receiver, packet);
     }
 
