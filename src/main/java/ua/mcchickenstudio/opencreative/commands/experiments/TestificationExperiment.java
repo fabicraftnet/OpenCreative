@@ -26,6 +26,7 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -47,6 +48,7 @@ import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executors;
+import ua.mcchickenstudio.opencreative.coding.placeholders.Placeholders;
 import ua.mcchickenstudio.opencreative.coding.values.EventValue;
 import ua.mcchickenstudio.opencreative.coding.values.EventValues;
 import ua.mcchickenstudio.opencreative.planets.Planet;
@@ -57,7 +59,6 @@ import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.io.File;
 import java.io.FileReader;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Consumer;
@@ -155,10 +156,10 @@ public final class TestificationExperiment extends Experiment {
                 }
                 File scriptFile = FileUtils.getPlanetScriptFile(planet);
                 if (!scriptFile.exists()) {
-                    showDialog(player, planet.getId(), "codeScript.yml", "Empty content");
+                    showPlanetDialog(player, planet.getId(), "codeScript.yml", "Empty content");
                     return;
                 }
-                showDialog(player, planet.getId(), "codeScript.yml", YamlConfiguration.loadConfiguration(scriptFile).saveToString());
+                showPlanetDialog(player, planet.getId(), "codeScript.yml", YamlConfiguration.loadConfiguration(scriptFile).saveToString());
             }
         } else if (args[0].equalsIgnoreCase("variables")) {
             if (sender instanceof Player player) {
@@ -169,16 +170,33 @@ public final class TestificationExperiment extends Experiment {
                 }
                 File variablesFile = FileUtils.getPlanetVariablesJson(planet);
                 if (!variablesFile.exists()) {
-                    showDialog(player, planet.getId(), "variables.json", "No variables");
+                    showPlanetDialog(player, planet.getId(), "variables.json", "No variables");
                     return;
                 }
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 try {
                     JsonElement json = JsonParser.parseReader(new FileReader(variablesFile));
-                    showDialog(player, planet.getId(), "variables.json", gson.toJson(json));
+                    showPlanetDialog(player, planet.getId(), "variables.json", gson.toJson(json));
                 } catch (Exception error) {
                     sendPlayerErrorMessage(player, "Failed to read variables and show dialog", error);
                 }
+            }
+        } else if (args[0].equalsIgnoreCase("debug")) {
+            if (sender instanceof Player player) {
+                showDialog(player,
+                        Component.text("McChicken Studio 2017-2026", NamedTextColor.RED),
+                        MiniMessage.miniMessage().deserialize("Open<gradient:#dbdbdb:#A3E2FF>Creative</gradient><color:#74D3FF>+ <gray>" + OpenCreative.getVersion() + ": " + OpenCreative.getCodename()),
+                        String.join("\n", "",
+                                "OpenCreative+ " + OpenCreative.getVersion(),
+                                "  Running on " + Bukkit.getName() + " " + Bukkit.getMinecraftVersion() + " server",
+                                "  with " + Bukkit.getOnlinePlayers().size() + " online players. ",
+                                "",
+                                "Executors: " + Executors.getInstance().getExecutors().size(),
+                                "Actions & Conditions: " + ActionType.values().length,
+                                "Game Values: " + EventValues.getInstance().getEventValues().size(),
+                                "Placeholders: " + Placeholders.getInstance().getPlaceholders().size(),
+                                "")
+                        );
             }
         } else if (args[0].equalsIgnoreCase("translation")) {
             List<String> untranslatedBlocks = new ArrayList<>();
@@ -259,7 +277,7 @@ public final class TestificationExperiment extends Experiment {
     @Override
     public @Nullable List<String> tabCommand(@NotNull CommandSender sender, @NotNull String[] args) {
         if (args.length == 0) {
-            return List.of("translation", "item", "map", "variables", "script");
+            return List.of("debug", "translation", "item", "map", "variables", "script");
         }
         if (args.length == 1) {
             return List.of("1", "2", "3", "4");
@@ -279,7 +297,8 @@ public final class TestificationExperiment extends Experiment {
         }
     }
 
-    public static void showDialog(Player player, int id, String fileName, String content) {
+    public static void showDialog(@NotNull Player player, @NotNull Component title,
+                                  @NotNull Component field, @NotNull String content) {
         try {
 
             Class<?> dialogClass = Class.forName("io.papermc.paper.dialog.Dialog");
@@ -307,8 +326,7 @@ public final class TestificationExperiment extends Experiment {
             ).invoke(null,
                     "hello_world_input",
                     400,
-                    Component.text(fileName, NamedTextColor.GREEN)
-                            .append(Component.text(" (read-only)", NamedTextColor.GRAY)),
+                    field,
                     true,
                     content,
                     999999999,
@@ -317,7 +335,7 @@ public final class TestificationExperiment extends Experiment {
 
             Object dialogBaseBuilder = dialogBaseClass
                     .getMethod("builder", Component.class)
-                    .invoke(null, Component.text("Viewing Planet " + id));
+                    .invoke(null, title);
 
             dialogBaseBuilderClass
                     .getMethod("inputs", java.util.List.class)
@@ -353,6 +371,12 @@ public final class TestificationExperiment extends Experiment {
         } catch (Exception error) {
             sendPlayerErrorMessage(player, "Failed to show a dialog", error);
         }
+    }
+
+    public static void showPlanetDialog(@NotNull Player player, int id,
+                                        @NotNull String fileName, @NotNull String content) {
+        showDialog(player, Component.text("Viewing Planet " + id), Component.text(fileName, NamedTextColor.GREEN)
+                .append(Component.text(" (read-only)", NamedTextColor.GRAY)), content);
     }
 
     public class TestificationListener implements Listener {

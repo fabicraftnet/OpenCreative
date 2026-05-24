@@ -2717,10 +2717,10 @@ items:
           - "&7becomes angry at the nearest mob."
           - " "
           - "&eClick to set the event."
-      entity-air-changed:
+      player-air-changed:
         name: "&bOxygen Level Changed"
         lore:
-          - "&7This occurs when a mob"
+          - "&7This occurs when a player"
           - "&7starts losing oxygen underwater"
           - "&7or regains it when surfacing."
           - " "
@@ -19078,7 +19078,7 @@ blocks:
   entity_resurrected: "Resurrected"
   entity_potion_effected: "Potion Effect Applied"
   entity_warden_anger_changed: "Warden got angry"
-  entity_air_changed: "Air level changed"
+  player_air_changed: "Air level changed"
   entity_entered_vehicle: "Entered Vehicle"
   entity_vehicle_exit: "Vehicle Exit"
   entity_projectile_hit: "Projectile hit block"

@@ -22,13 +22,13 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.WorldEvent;
-import ua.mcchickenstudio.opencreative.coding.blocks.events.entity.state.EntityAirChangedEvent;
-import ua.mcchickenstudio.opencreative.coding.blocks.executors.entity.EntityExecutor;
+import ua.mcchickenstudio.opencreative.coding.blocks.events.entity.state.PlayerAirChangedEvent;
+import ua.mcchickenstudio.opencreative.coding.blocks.executors.player.PlayerExecutor;
 import ua.mcchickenstudio.opencreative.coding.menus.MenusCategory;
 
-public final class EntityAirChangedExecutor extends EntityExecutor {
+public final class PlayerAirChangedExecutor extends PlayerExecutor {
 
-    public EntityAirChangedExecutor() {
+    public PlayerAirChangedExecutor() {
         super("air_changed");
     }
 
@@ -39,22 +39,22 @@ public final class EntityAirChangedExecutor extends EntityExecutor {
 
     @Override
     public @NotNull MenusCategory getCategory() {
-        return MenusCategory.ENTITY_STATE;
+        return MenusCategory.PARAMS;
     }
 
     @Override
     public @NotNull Class<? extends WorldEvent> getEventClass() {
-        return EntityAirChangedEvent.class;
+        return PlayerAirChangedEvent.class;
     }
 
     @Override
     public @NotNull String getName() {
-        return "Entity Air Change Event";
+        return "Player Air Change Event";
     }
 
     @Override
     public @NotNull String getDescription() {
-        return "When entity is swimming underwater and it's air changes";
+        return "When player is swimming underwater and it's air changes";
     }
 
     @Override

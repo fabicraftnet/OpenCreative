@@ -2968,10 +2968,10 @@ items:
           - "&7злиться на ближайшего моба."
           - " "
           - "&eНажми, чтобы установить событие."
-      entity-air-changed:
+      player-air-changed:
         name: "&bСмена уровня кислорода"
         lore:
-          - "&7Это когда моб в воде"
+          - "&7Это когда игрок в воде"
           - "&7начинает терять кислород"
           - "&7или получать его, когда"
           - "&7вылазит из воды."
@@ -19356,7 +19356,7 @@ blocks:
   entity_resurrected: "Моб воскрес"
   entity_potion_effected: "Влияние зелья"
   entity_warden_anger_changed: "Злой сторож"
-  entity_air_changed: "Смена кислорода"
+  player_air_changed: "Смена кислорода"
   entity_entered_vehicle: "В транспорте"
   entity_vehicle_exit: "Встал"
 

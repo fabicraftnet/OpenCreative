@@ -2938,10 +2938,10 @@ items:
           - "&7злитися на найближчого моба."
           - " "
           - "&eНатисни, щоб встановити подію."
-      entity-air-changed:
+      player-air-changed:
         name: "&bЗміна рівня кисню"
         lore:
-          - "&7Це коли моб у воді"
+          - "&7Це коли гравець у воді"
           - "&7починає втрачати кисень"
           - "&7або отримує його, коли"
           - "&7вилазить з води."
@@ -19132,7 +19132,7 @@ blocks:
   entity_resurrected: "Моб воскрес"
   entity_potion_effected: "Вплив зілля"
   entity_warden_anger_changed: "Злий сторож"
-  entity_air_changed: "Зміна кисню"
+  player_air_changed: "Зміна кисню"
   entity_piglin_bartered: "Торгівля пігліна"
   entity_interacted_block: "Взаєм. з блоком"
   entity_turtle_lays_egg: "Яйця черепахи"

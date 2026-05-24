@@ -52,18 +52,22 @@ public final class HasItemInHandCondition extends PlayerCondition {
         boolean ignoreDamage = getArguments().getBoolean("ignore-damage", false, this);
 
         ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
-        itemInMainHand = ItemUtils.getItemWithIgnoreData(itemInMainHand, ignoreAmount, ignoreName, ignoreLore, ignoreFlags, ignoreEnchantments, ignoreMaterial, ignoreDamage);
         ItemStack itemInOffHand = player.getInventory().getItemInOffHand();
-        itemInOffHand = ItemUtils.getItemWithIgnoreData(itemInOffHand, ignoreAmount, ignoreName, ignoreLore, ignoreFlags, ignoreEnchantments, ignoreMaterial, ignoreDamage);
         for (ItemStack checkItem : items) {
-            checkItem = ItemUtils.getItemWithIgnoreData(checkItem, ignoreAmount, ignoreName, ignoreLore, ignoreFlags, ignoreEnchantments, ignoreMaterial, ignoreDamage);
-            if (hand.equals("main-hand")) {
-                return itemInMainHand.equals(checkItem);
-            } else if (hand.equals("off-hand")) {
-                return itemInOffHand.equals(checkItem);
-            } else {
-                return (hand.equals("main-or-off-hands") ? itemInMainHand.equals(checkItem) || itemInOffHand.equals(checkItem) : itemInMainHand.equals(checkItem) && itemInOffHand.equals(checkItem));
-            }
+            return switch (hand) {
+                case "main-hand" -> ItemUtils.checkItemsIgnoreData(itemInMainHand, checkItem, ignoreAmount,
+                        ignoreName, ignoreLore, ignoreFlags, ignoreEnchantments, ignoreMaterial, ignoreDamage);
+                case "off-hand" -> ItemUtils.checkItemsIgnoreData(itemInOffHand, checkItem, ignoreAmount,
+                        ignoreName, ignoreLore, ignoreFlags, ignoreEnchantments, ignoreMaterial, ignoreDamage);
+                case "main-or-off-hands" -> ItemUtils.checkItemsIgnoreData(itemInMainHand, checkItem, ignoreAmount,
+                        ignoreName, ignoreLore, ignoreFlags, ignoreEnchantments, ignoreMaterial, ignoreDamage) ||
+                        ItemUtils.checkItemsIgnoreData(itemInOffHand, checkItem, ignoreAmount,
+                                ignoreName, ignoreLore, ignoreFlags, ignoreEnchantments, ignoreMaterial, ignoreDamage);
+                default -> ItemUtils.checkItemsIgnoreData(itemInMainHand, checkItem, ignoreAmount,
+                        ignoreName, ignoreLore, ignoreFlags, ignoreEnchantments, ignoreMaterial, ignoreDamage) &&
+                        ItemUtils.checkItemsIgnoreData(itemInOffHand, checkItem, ignoreAmount,
+                                ignoreName, ignoreLore, ignoreFlags, ignoreEnchantments, ignoreMaterial, ignoreDamage);
+            };
         }
 
         return false;

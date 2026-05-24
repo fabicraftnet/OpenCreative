@@ -29,7 +29,7 @@ import ua.mcchickenstudio.opencreative.coding.blocks.actions.*;
 import ua.mcchickenstudio.opencreative.coding.blocks.conditions.Condition;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.WorldEvent;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.entity.interaction.EntitySpawnedExecutor;
-import ua.mcchickenstudio.opencreative.coding.blocks.executors.entity.state.EntityAirChangedExecutor;
+import ua.mcchickenstudio.opencreative.coding.blocks.executors.entity.state.PlayerAirChangedExecutor;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.other.Cycle;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.other.Function;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.other.Method;
@@ -99,7 +99,7 @@ public class PlanetExecutors {
     }
 
     public static boolean canRunExecutor(@NotNull Planet planet, @NotNull Executor executor) {
-        if (executor instanceof PlayerWalkExecutor || executor instanceof EntityAirChangedExecutor
+        if (executor instanceof PlayerWalkExecutor || executor instanceof PlayerAirChangedExecutor
                 || executor instanceof WorldBlockFluidChangedExecutor || executor instanceof PlayerDestroyBlockExecutor
                 || executor instanceof PlayerPlaceBlockExecutor || executor instanceof EntitySpawnedExecutor) {
             if (executor.getLastCalls() >= planet.getLimits().getCodeOperationsLimit()) {
