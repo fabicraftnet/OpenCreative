@@ -762,7 +762,6 @@ public class Planet {
             Sounds.WORLD_CONNECTED.play(player);
             mode.onPlayerConnect(player, this);
             PlanetPlayer planetPlayer = getWorldPlayers().getPlanetPlayer(player);
-            if (planetPlayer != null) planetPlayer.load();
             player.clearTitle();
             territory.showBorders(player);
             if (!getPlayersFromPlanetList(this, PlayersType.UNIQUE).contains(player.getName())) {
@@ -805,17 +804,6 @@ public class Planet {
             if (!territory.isAutoSave() && worldPlayers.canBuild(player)) {
                 player.sendMessage(getLocaleMessage("settings.autosave.warning"));
             }
-            if (!wasLoaded) {
-                variables.load();
-                territory.getScript().loadCode().thenAccept((result) -> {
-                    Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
-                        new GamePlayEvent(this).callEvent();
-                        new JoinEvent(player).callEvent();
-                    });
-                });
-            } else if (!hidePlayer) {
-                new JoinEvent(player).callEvent();
-            }
             if (hidePlayer) {
                 player.setGameMode(GameMode.SPECTATOR);
                 ChangedWorld.addPlayerWithLocation(player);
@@ -823,6 +811,22 @@ public class Planet {
                     onlinePlayer.hidePlayer(OpenCreative.getPlugin(), player);
                 }
             }
+            CompletableFuture<?> future = (planetPlayer != null) ? planetPlayer.load() : CompletableFuture.completedFuture(null);
+            future.thenAccept(ignored -> {
+                Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
+                    if (!wasLoaded) {
+                        variables.load();
+                        territory.getScript().loadCode().thenAccept(result -> {
+                            Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
+                                new GamePlayEvent(this).callEvent();
+                                new JoinEvent(player).callEvent();
+                            });
+                        });
+                    } else if (!hidePlayer) {
+                        new JoinEvent(player).callEvent();
+                    }
+                });
+            });
             new PlanetConnectPlayerEvent(this, player).callEvent();
             info.updateIconAsync();
         } else {
