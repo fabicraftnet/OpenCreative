@@ -140,16 +140,16 @@ public class PlanetPlayer {
      * @return true - if successfully loaded, false - if failed to load.
      */
     @SuppressWarnings("unchecked")
-    public @NotNull CompletableFuture<Boolean> load() {
-        CompletableFuture<Boolean> future = new CompletableFuture<>();
+    public @NotNull CompletableFuture<Void> load() {
+        CompletableFuture<Void> future = new CompletableFuture<>();
         Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
             File playerDataJson = getPlayerDataJson(currentPlanet, player);
             if (playerDataJson == null) {
-                future.complete(true);
+                future.complete(null);
                 return;
             }
             if (playerDataJson.length() == 0) {
-                future.complete(true);
+                future.complete(null);
                 return;
             }
             JSONParser parser = new JSONParser();
@@ -175,11 +175,11 @@ public class PlanetPlayer {
                     }
                     saveEnderChest(items.toArray(new ItemStack[]{}));
                 }
-                future.complete(true);
+                future.complete(null);
             } catch (Exception error) {
                 sendCriticalErrorMessage("Couldn't read player data " + player.getName()
                         + " " + currentPlanet.getWorldName(), error);
-                future.complete(false);
+                future.completeExceptionally(error);
             }
         });
         return future;

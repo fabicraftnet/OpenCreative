@@ -716,7 +716,7 @@ public class Planet {
         new QuitEvent(player).callEvent();
         wander.setConnectingToPlanet(true);
         player.showTitle(Title.title(
-                toComponent(getLocaleMessage("world.connecting.title")), toComponent(getLocaleMessage("world.connecting.subtitle")),
+                getLocaleComponent("world.connecting.title"), getLocaleComponent("world.connecting.subtitle"),
                 Title.Times.times(Duration.ofMillis(710), Duration.ofSeconds(30), Duration.ofMillis(130))
         ));
         Sounds.WORLD_CONNECTION.play(player);
@@ -812,20 +812,22 @@ public class Planet {
                 }
             }
             CompletableFuture<?> future = (planetPlayer != null) ? planetPlayer.load() : CompletableFuture.completedFuture(null);
-            future.thenAccept(ignored -> {
-                Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
-                    if (!wasLoaded) {
-                        variables.load();
+            future.whenComplete((ignored, error) -> {
+                if (!wasLoaded) {
+                    variables.load().whenComplete((ignoredVariables, errorVariables) -> {
                         territory.getScript().loadCode().thenAccept(result -> {
                             Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
                                 new GamePlayEvent(this).callEvent();
                                 new JoinEvent(player).callEvent();
                             });
                         });
-                    } else if (!hidePlayer) {
+                    });
+
+                } else if (!hidePlayer) {
+                    Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
                         new JoinEvent(player).callEvent();
-                    }
-                });
+                    });
+                }
             });
             new PlanetConnectPlayerEvent(this, player).callEvent();
             info.updateIconAsync();

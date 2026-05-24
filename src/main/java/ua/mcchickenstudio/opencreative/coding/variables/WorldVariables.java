@@ -18,10 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.coding.variables;
 
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -42,6 +39,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 import static ua.mcchickenstudio.opencreative.coding.arguments.Argument.parseEntity;
@@ -250,35 +248,42 @@ public final class WorldVariables {
     /**
      * Loads variables from /planet/variables.json file.
      */
-    public void load() {
-        long startTime = System.currentTimeMillis();
-        OpenCreative.getPlugin().getLogger().info("Loading variables for planet " + planet.getId());
+    public @NotNull CompletableFuture<Void> load() {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
+            long startTime = System.currentTimeMillis();
+            OpenCreative.getPlugin().getLogger().info("Loading variables for planet " + planet.getId());
 
-        clearVariables();
-        File variablesJson = FileUtils.getPlanetVariablesJson(planet);
-        if (variablesJson == null || variablesJson.length() <= 2) {
-            return;
-        }
-        try {
-            JSONParser jsonParser = new JSONParser();
-            JSONArray a = (JSONArray) jsonParser.parse(new FileReader(variablesJson));
-            for (Object object : a) {
-                JSONObject jsonObject = (JSONObject) object;
-                String name = (String) jsonObject.get("name");
-                ValueType type = ValueType.valueOf((String) jsonObject.get("type"));
-                Object value = jsonObject.get("value");
-                value = deserializeObject(value, type);
-                if (getTotalVariablesAmount() < planet.getLimits().getVariablesAmountLimit()) {
-                    WorldVariable newVariable = new WorldVariable(name, VariableLink.VariableType.SAVED, type, value, null);
-                    addVariable(newVariable, VariableLink.VariableType.SAVED);
-                }
+            clearVariables();
+            File variablesJson = FileUtils.getPlanetVariablesJson(planet);
+            if (variablesJson == null || variablesJson.length() <= 2) {
+                future.complete(null);
+                return;
             }
-        } catch (Exception e) {
-            sendCriticalErrorMessage("Failed to parse JSON file " + variablesJson.getPath(), e);
-        }
+            try {
+                JSONParser jsonParser = new JSONParser();
+                JSONArray a = (JSONArray) jsonParser.parse(new FileReader(variablesJson));
+                for (Object object : a) {
+                    JSONObject jsonObject = (JSONObject) object;
+                    String name = (String) jsonObject.get("name");
+                    ValueType type = ValueType.valueOf((String) jsonObject.get("type"));
+                    Object value = jsonObject.get("value");
+                    value = deserializeObject(value, type);
+                    if (getTotalVariablesAmount() < planet.getLimits().getVariablesAmountLimit()) {
+                        WorldVariable newVariable = new WorldVariable(name, VariableLink.VariableType.SAVED, type, value, null);
+                        addVariable(newVariable, VariableLink.VariableType.SAVED);
+                    }
+                }
+                future.complete(null);
+            } catch (Exception error) {
+                sendCriticalErrorMessage("Failed to parse JSON file " + variablesJson.getPath(), error);
+                future.completeExceptionally(error);
+            }
 
-        long endTime = System.currentTimeMillis();
-        OpenCreative.getPlugin().getLogger().info("Loaded " + getTotalVariablesAmount() + " variables for planet " + planet.getId() + " in " + (endTime - startTime) + " ms");
+            long endTime = System.currentTimeMillis();
+            OpenCreative.getPlugin().getLogger().info("Loaded " + getTotalVariablesAmount() + " variables for planet " + planet.getId() + " in " + (endTime - startTime) + " ms");
+        });
+        return future;
     }
 
     /**
