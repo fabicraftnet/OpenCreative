@@ -41,6 +41,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.events.player.PlayerLobbyEvent;
+import ua.mcchickenstudio.opencreative.managers.packets.SignTranslator;
 import ua.mcchickenstudio.opencreative.settings.Settings;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
 import ua.mcchickenstudio.opencreative.settings.items.ItemsGroup;
@@ -530,6 +531,9 @@ public final class PlayerUtils {
      */
     public static void translateBlockSign(Block block) {
         if (!block.getType().toString().contains("SIGN")) return;
+        if (OpenCreative.getPacketManager() instanceof SignTranslator translator && translator.canTranslateSigns()) {
+            return;
+        }
         Sign sign = (Sign) block.getState();
         AsyncScheduler.run(() -> {
             List<Component> newLines = new ArrayList<>();
@@ -559,6 +563,9 @@ public final class PlayerUtils {
      */
     public static void translateBlockSign(Block block, Player player) {
         if (block == null) return;
+        if (OpenCreative.getPacketManager() instanceof SignTranslator translator && translator.canTranslateSigns()) {
+            return;
+        }
         if (!block.getType().toString().contains("SIGN")) return;
         List<Component> newLines = new ArrayList<>();
         Sign sign = (Sign) block.getState();

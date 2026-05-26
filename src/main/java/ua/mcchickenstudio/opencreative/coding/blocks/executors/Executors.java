@@ -173,7 +173,7 @@ public final class Executors {
                 new EntityShulkerDuplicatedExecutor(), new EntityWitchReadyPotionExecutor(), new EntitySheepRegrownWoolExecutor(),
                 new EntityPufferfishStateChangedExecutor(), new EntityCreeperIgnitedExecutor(), new EntityCreeperPoweredExecutor(),
                 new EntityEnteredLoveModeExecutor(), new EntityTurtleGoesHomeExecutor(), new EntityResurrectedExecutor(),
-                new EntityPotionEffectedExecutor(), new EntityWardenAngerChangedExecutor(), new EntityAirChangedExecutor());
+                new EntityPotionEffectedExecutor(), new EntityWardenAngerChangedExecutor(), new PlayerAirChangedExecutor());
         registerExecutor(new EntityProjectileHitExecutor(), new EntityEnteredBlockExecutor(), new EntityMountedExecutor(),
                 new EntityDismountedExecutor(), new EntityEnteredVehicleExecutor(), new EntityVehicleExitExecutor(),
                 new EntityJumpedExecutor(), new EntityHorseJumpedExecutor(), new EntityEndermanEscapedExecutor());

@@ -716,7 +716,7 @@ public class Planet {
         new QuitEvent(player).callEvent();
         wander.setConnectingToPlanet(true);
         player.showTitle(Title.title(
-                toComponent(getLocaleMessage("world.connecting.title")), toComponent(getLocaleMessage("world.connecting.subtitle")),
+                getLocaleComponent("world.connecting.title"), getLocaleComponent("world.connecting.subtitle"),
                 Title.Times.times(Duration.ofMillis(710), Duration.ofSeconds(30), Duration.ofMillis(130))
         ));
         Sounds.WORLD_CONNECTION.play(player);
@@ -762,7 +762,6 @@ public class Planet {
             Sounds.WORLD_CONNECTED.play(player);
             mode.onPlayerConnect(player, this);
             PlanetPlayer planetPlayer = getWorldPlayers().getPlanetPlayer(player);
-            if (planetPlayer != null) planetPlayer.load();
             player.clearTitle();
             territory.showBorders(player);
             if (!getPlayersFromPlanetList(this, PlayersType.UNIQUE).contains(player.getName())) {
@@ -805,17 +804,6 @@ public class Planet {
             if (!territory.isAutoSave() && worldPlayers.canBuild(player)) {
                 player.sendMessage(getLocaleMessage("settings.autosave.warning"));
             }
-            if (!wasLoaded) {
-                variables.load();
-                territory.getScript().loadCode().thenAccept((result) -> {
-                    Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
-                        new GamePlayEvent(this).callEvent();
-                        new JoinEvent(player).callEvent();
-                    });
-                });
-            } else if (!hidePlayer) {
-                new JoinEvent(player).callEvent();
-            }
             if (hidePlayer) {
                 player.setGameMode(GameMode.SPECTATOR);
                 ChangedWorld.addPlayerWithLocation(player);
@@ -823,6 +811,24 @@ public class Planet {
                     onlinePlayer.hidePlayer(OpenCreative.getPlugin(), player);
                 }
             }
+            CompletableFuture<?> future = (planetPlayer != null) ? planetPlayer.load() : CompletableFuture.completedFuture(null);
+            future.whenComplete((ignored, error) -> {
+                if (!wasLoaded) {
+                    variables.load().whenComplete((ignoredVariables, errorVariables) -> {
+                        territory.getScript().loadCode().thenAccept(result -> {
+                            Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
+                                new GamePlayEvent(this).callEvent();
+                                new JoinEvent(player).callEvent();
+                            });
+                        });
+                    });
+
+                } else if (!hidePlayer) {
+                    Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
+                        new JoinEvent(player).callEvent();
+                    });
+                }
+            });
             new PlanetConnectPlayerEvent(this, player).callEvent();
             info.updateIconAsync();
         } else {

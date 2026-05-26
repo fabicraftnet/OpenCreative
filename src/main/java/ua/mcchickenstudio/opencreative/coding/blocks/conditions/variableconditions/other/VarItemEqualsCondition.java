@@ -52,10 +52,9 @@ public final class VarItemEqualsCondition extends VariableCondition {
         if (items.isEmpty()) return false;
 
         ItemStack comparedItem = getArguments().getItem("item", new ItemStack(Material.AIR, 1), this);
-        comparedItem = ItemUtils.getItemWithIgnoreData(comparedItem, ignoreAmount, ignoreName, ignoreLore, ignoreFlags, ignoreEnchantments, ignoreMaterial, ignoreDamage);
         for (ItemStack checkItem : items) {
-            checkItem = ItemUtils.getItemWithIgnoreData(checkItem, ignoreAmount, ignoreName, ignoreLore, ignoreFlags, ignoreEnchantments, ignoreMaterial, ignoreDamage);
-            if (comparedItem.equals(checkItem)) {
+            if (ItemUtils.checkItemsIgnoreData(comparedItem, checkItem, ignoreAmount,
+                    ignoreName, ignoreLore, ignoreFlags, ignoreEnchantments, ignoreMaterial, ignoreDamage)) {
                 check = true;
             }
         }

@@ -58,10 +58,9 @@ public final class IsItemEqualsCondition extends PlayerCondition {
         List<ItemStack> items = getArguments().getItemList("items", this);
         if (items.isEmpty()) return false;
 
-        eventItem = ItemUtils.getItemWithIgnoreData(eventItem, ignoreAmount, ignoreName, ignoreLore, ignoreFlags, ignoreEnchantments, ignoreMaterial, ignoreDamage);
         for (ItemStack checkItem : items) {
-            checkItem = ItemUtils.getItemWithIgnoreData(checkItem, ignoreAmount, ignoreName, ignoreLore, ignoreFlags, ignoreEnchantments, ignoreMaterial, ignoreDamage);
-            if (eventItem.equals(checkItem)) {
+            if (ItemUtils.checkItemsIgnoreData(eventItem, checkItem, ignoreAmount,
+                    ignoreName, ignoreLore, ignoreFlags, ignoreEnchantments, ignoreMaterial, ignoreDamage)) {
                 check = true;
             }
         }

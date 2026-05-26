@@ -42,6 +42,7 @@ import ua.mcchickenstudio.opencreative.utils.world.generators.WorldGenerators;
 
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static ua.mcchickenstudio.opencreative.utils.FileUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.clearOnceMessages;
@@ -62,7 +63,7 @@ public class PlanetTerritory {
     private final PlanetRecipes recipes;
 
     private final Map<String, BossBar> bossBars = new HashMap<>();
-    private final Set<BukkitRunnable> runningBukkitRunnables = Collections.newSetFromMap(new IdentityHashMap<>());
+    private final Set<BukkitRunnable> runningBukkitRunnables = ConcurrentHashMap.newKeySet();
 
     private final CodeScript script;
     private Location spawnLocation = null;

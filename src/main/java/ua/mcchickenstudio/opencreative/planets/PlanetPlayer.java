@@ -18,6 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.planets;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -26,12 +27,14 @@ import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.utils.ItemUtils;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCriticalErrorMessage;
 import static ua.mcchickenstudio.opencreative.utils.FileUtils.getPlayerDataJson;
@@ -134,61 +137,76 @@ public class PlanetPlayer {
      * Loads saved player data from JSON file, that
      * stored in planet's folder as /playerData/UUID.json.
      *
-     * @return True - if successfully loaded, false - if failed to load.
+     * @return true - if successfully loaded, false - if failed to load.
      */
     @SuppressWarnings("unchecked")
-    public boolean load() {
-        File playerDataJson = getPlayerDataJson(currentPlanet, player);
-        if (playerDataJson == null) {
-            return false;
-        }
-        if (playerDataJson.length() == 0) {
-            return true;
-        }
-        JSONParser parser = new JSONParser();
-        try (FileReader fileReader = new FileReader(playerDataJson)) {
-            JSONObject playerObject = (JSONObject) parser.parse(fileReader);
-            Object purchases = playerObject.getOrDefault("purchases", new JSONArray());
-            if (purchases instanceof JSONArray array) {
-                this.purchases.addAll(array);
+    public @NotNull CompletableFuture<Void> load() {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
+            File playerDataJson = getPlayerDataJson(currentPlanet, player);
+            if (playerDataJson == null) {
+                future.complete(null);
+                return;
             }
-            Object savedInventory = playerObject.getOrDefault("saved-inventory", new JSONArray());
-            if (savedInventory instanceof JSONArray array) {
-                List<ItemStack> items = new ArrayList<>();
-                for (Object object : array) {
-                    items.add(ItemUtils.loadItemFromByteArray((String) object));
+            if (playerDataJson.length() == 0) {
+                future.complete(null);
+                return;
+            }
+            JSONParser parser = new JSONParser();
+            try (FileReader fileReader = new FileReader(playerDataJson)) {
+                JSONObject playerObject = (JSONObject) parser.parse(fileReader);
+                Object purchases = playerObject.getOrDefault("purchases", new JSONArray());
+                if (purchases instanceof JSONArray array) {
+                    this.purchases.addAll(array);
                 }
-                saveInventory(items.toArray(new ItemStack[]{}));
-            }
-            Object savedEnderChest = playerObject.getOrDefault("saved-ender-chest", new JSONArray());
-            if (savedEnderChest instanceof JSONArray array) {
-                List<ItemStack> items = new ArrayList<>();
-                for (Object object : array) {
-                    items.add(ItemUtils.loadItemFromByteArray((String) object));
+                Object savedInventory = playerObject.getOrDefault("saved-inventory", new JSONArray());
+                if (savedInventory instanceof JSONArray array) {
+                    List<ItemStack> items = new ArrayList<>();
+                    for (Object object : array) {
+                        items.add(ItemUtils.loadItemFromByteArray((String) object));
+                    }
+                    saveInventory(items.toArray(new ItemStack[]{}));
                 }
-                saveEnderChest(items.toArray(new ItemStack[]{}));
+                Object savedEnderChest = playerObject.getOrDefault("saved-ender-chest", new JSONArray());
+                if (savedEnderChest instanceof JSONArray array) {
+                    List<ItemStack> items = new ArrayList<>();
+                    for (Object object : array) {
+                        items.add(ItemUtils.loadItemFromByteArray((String) object));
+                    }
+                    saveEnderChest(items.toArray(new ItemStack[]{}));
+                }
+                future.complete(null);
+            } catch (Exception error) {
+                sendCriticalErrorMessage("Couldn't read player data " + player.getName()
+                        + " " + currentPlanet.getWorldName(), error);
+                future.completeExceptionally(error);
             }
-            return true;
-        } catch (Exception e) {
-            sendCriticalErrorMessage("Couldn't read player data " + player.getName() + " " + currentPlanet.getWorldName());
-            return false;
-        }
+        });
+        return future;
     }
 
     /**
      * Saves some required player data into JSON file
      * in planet's folder as /playerData/UUID.json.
-     *
-     * @return True - if successfully saved, false - if failed to save.
+     */
+    public void save() {
+        if (OpenCreative.getPlugin().isEnabled()) {
+            Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), this::saveToJson);
+        } else {
+            saveToJson();
+        }
+    }
+
+    /**
+     * Saves player data to JSON.
      */
     @SuppressWarnings("unchecked")
-    public boolean save() {
+    private void saveToJson() {
         File playerDataJson = getPlayerDataJson(currentPlanet, player);
         if (playerDataJson == null) {
-            return false;
+            return;
         }
         try (FileWriter writer = new FileWriter(playerDataJson)) {
-
             JSONObject playerObject = new JSONObject();
 
             JSONArray purchasesJson = new JSONArray();
@@ -201,11 +219,9 @@ public class PlanetPlayer {
             playerObject.put("saved-ender-chest", enderChestJson);
 
             writer.write(playerObject.toString());
-            writer.close();
-            return true;
         } catch (Exception e) {
-            sendCriticalErrorMessage("Couldn't save player data " + player.getName() + " " + currentPlanet.getWorldName(), e);
-            return false;
+            sendCriticalErrorMessage("Couldn't save player data "
+                    + player.getName() + " " + currentPlanet.getWorldName(), e);
         }
     }
 
