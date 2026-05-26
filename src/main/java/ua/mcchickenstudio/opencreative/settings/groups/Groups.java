@@ -25,7 +25,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCriticalErrorMessage;
@@ -38,7 +40,7 @@ import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCriticalError
  */
 public final class Groups {
 
-    private final Set<Group> groups = new LinkedHashSet<>();
+    private final Map<String, Group> groups = new LinkedHashMap<>();
 
     public void load() {
         groups.clear();
@@ -54,32 +56,21 @@ public final class Groups {
     }
 
     public @NotNull Group getDefaultGroup() {
-        for (Group group : groups) {
-            if (group.getPermission().equalsIgnoreCase("default")) {
-                return group;
-            }
-        }
-        return new Group("default", OpenCreative.getPlugin().getConfig());
+        return groups.getOrDefault("default", new Group("default", OpenCreative.getPlugin().getConfig()));
     }
 
     public @NotNull Group getGroup(String name) {
-        Group group = getGroupOrNull(name);
-        if (group != null) return group;
-        return getDefaultGroup();
+        Group group = groups.get(name.toLowerCase());
+        return group != null ? group : getDefaultGroup();
     }
 
     public @Nullable Group getGroupOrNull(String name) {
-        for (Group group : groups) {
-            if (group.getName().equalsIgnoreCase(name)) {
-                return group;
-            }
-        }
-        return null;
+        return groups.get(name.toLowerCase());
     }
 
     public @NotNull Group getGroup(Player player) {
         Group currentGroup = getDefaultGroup();
-        for (Group group : groups) {
+        for (Group group : groups.values()) {
             if (player.hasPermission(group.getPermission())) {
                 currentGroup = group;
             }
@@ -89,15 +80,11 @@ public final class Groups {
 
     public void registerGroup(Group group) {
         OpenCreative.getPlugin().getLogger().info("Registered player group " + group.getName());
-        groups.add(group);
+        groups.put(group.getName().toLowerCase(), group);
     }
 
     public @NotNull Set<String> getNames() {
-        Set<String> names = new LinkedHashSet<>();
-        for (Group group : groups) {
-            names.add(group.getName());
-        }
-        return names;
+        return new LinkedHashSet<>(groups.keySet());
     }
 
     public boolean deleteGroup(@NotNull String groupName) {
@@ -111,24 +98,22 @@ public final class Groups {
     }
 
     public boolean setLimit(@NotNull String groupName, @NotNull LimitType type, int value) {
-        Group found = getGroupOrNull(groupName);
-        if (found == null) return false;
+        String key = groupName.toLowerCase();
+        if (!groups.containsKey(key)) return false;
         OpenCreative.getPlugin().getLogger().info("Changed limit " + type.getPath() + " in player group " + groupName + " to: " + value);
-        groups.remove(found);
         OpenCreative.getPlugin().getConfig().set("groups." + groupName + ".world.limits." + type.getPath(), value);
         OpenCreative.getPlugin().saveConfig();
-        groups.add(new Group(found.getName(), OpenCreative.getPlugin().getConfig()));
+        groups.put(key, new Group(groupName, OpenCreative.getPlugin().getConfig()));
         return true;
     }
 
     public boolean setLimitModifier(@NotNull String groupName, @NotNull LimitType type, int value) {
-        Group found = getGroupOrNull(groupName);
-        if (found == null) return false;
-        OpenCreative.getPlugin().getLogger().info("Changed limit " + type.getPath() + " in player group " + groupName + " to: " + value);
-        groups.remove(found);
+        String key = groupName.toLowerCase();
+        if (!groups.containsKey(key)) return false;
+        OpenCreative.getPlugin().getLogger().info("Changed limit modifier " + type.getPath() + " in player group " + groupName + " to: " + value);
         OpenCreative.getPlugin().getConfig().set("groups." + groupName + ".world.per-player-limit-modifiers." + type.getPath(), value);
         OpenCreative.getPlugin().saveConfig();
-        groups.add(new Group(found.getName(), OpenCreative.getPlugin().getConfig()));
+        groups.put(key, new Group(groupName, OpenCreative.getPlugin().getConfig()));
         return true;
     }
 

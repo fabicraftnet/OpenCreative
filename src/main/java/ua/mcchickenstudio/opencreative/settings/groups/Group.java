@@ -316,12 +316,7 @@ public class Group {
      * @return instance of limit.
      */
     public @NotNull LimitModifier getLimit(LimitType type) {
-        for (LimitType limitType : limits.keySet()) {
-            if (limitType == type) {
-                return limits.get(type);
-            }
-        }
-        return new LimitModifier(type.getDefaultLimit(), type.getDefaultModifier());
+        return limits.getOrDefault(type, new LimitModifier(type.getDefaultLimit(), type.getDefaultModifier()));
     }
 
     /**
