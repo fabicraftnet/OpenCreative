@@ -242,7 +242,7 @@ public class Main {
                 To install plugin please download PaperMC server, then load it and accept EULA.
                 After that put this .jar file into server's /plugins/ folder and launch a server.
                 """;
-        return "<html>" + message.replaceAll("\n", "<br>") + "</html>";
+        return "<html>" + message.replace("\n", "<br>") + "</html>";
     }
 
     /**

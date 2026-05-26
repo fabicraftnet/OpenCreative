@@ -51,6 +51,7 @@ import ua.mcchickenstudio.opencreative.managers.Toggleable;
 import ua.mcchickenstudio.opencreative.utils.world.cache.ChunkCache;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendDebugError;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
@@ -60,10 +61,11 @@ import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isDevPlanet
  * This class represents an implementation of PacketEvents
  * for packets actions.
  */
-public final class PacketEventsManager implements PacketManager, Toggleable {
+public final class PacketEventsManager implements PacketManager, Toggleable, SignTranslator {
 
-    //private PacketEventsManager.SignTextListener signListener;
+    private PacketEventsManager.SignTextListener signListener;
     private PacketEventsManager.ChunkPacketListener chunkListener;
+    private final static Pattern localizationPathPattern = Pattern.compile("^[a-zA-Z_]+$");
 
     @Override
     public void start() {
@@ -71,21 +73,22 @@ public final class PacketEventsManager implements PacketManager, Toggleable {
         PacketEvents.getAPI().load();
         PacketEvents.getAPI().init();
         chunkListener = new PacketEventsManager.ChunkPacketListener();
-        //signListener = new PacketEventsManager.SignTextListener();
-        PacketEvents.getAPI().getEventManager().registerListeners(chunkListener);
+        signListener = new PacketEventsManager.SignTextListener();
+        PacketEvents.getAPI().getEventManager().registerListeners(chunkListener, signListener);
     }
 
     @Override
     public void shutdown() {
         if (chunkListener != null) {
-            PacketEvents.getAPI().getEventManager().unregisterListeners(chunkListener);
+            PacketEvents.getAPI().getEventManager().unregisterListeners(chunkListener, signListener);
             chunkListener = null;
-            //signListener = null;
+            signListener = null;
         }
     }
 
+    @Override
     public boolean canTranslateSigns() {
-        return false; //signListener != null;
+        return signListener != null;
     }
 
     @Override
@@ -218,6 +221,10 @@ public final class PacketEventsManager implements PacketManager, Toggleable {
                 if (!isDevPlanet(player.getWorld())) return;
                 WrapperPlayServerBlockEntityData packet = new WrapperPlayServerBlockEntityData(event);
                 if (packet.getBlockEntityType() != BlockEntityTypes.SIGN) return;
+                Vector3i position = packet.getPosition();
+                if (isNotWallSign(position.getX(), position.getY(), position.getZ())) {
+                    return;
+                }
                 NBTCompound nbt = changeSign(packet.getNBT());
                 if (nbt == null) return;
                 packet.setNBT(nbt);
@@ -232,7 +239,9 @@ public final class PacketEventsManager implements PacketManager, Toggleable {
 
             boolean changed = false;
             for (TileEntity tileEntity : column.getTileEntities()) {
-
+                if (isNotWallSign(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ())) {
+                    continue;
+                }
                 NBTCompound original = tileEntity.getNBT();
                 NBTCompound modified = changeSign(original);
                 if (modified != null) {
@@ -264,6 +273,10 @@ public final class PacketEventsManager implements PacketManager, Toggleable {
             for (String line : lines) {
                 if (line.isEmpty()) {
                     newLines.addTag(new NBTString(""));
+                    continue;
+                }
+                if (!localizationPathPattern.matcher(line).matches()) {
+                    newLines.addTag(new NBTString(line));
                     continue;
                 }
                 String text = getLocaleMessage("blocks." + line, false);
@@ -300,5 +313,26 @@ public final class PacketEventsManager implements PacketManager, Toggleable {
                 sendDebugError("Cannot preload chunks.", error);
             }
         }
+    }
+
+    private static boolean isNotWallSign(int x, int y, int z) {
+        int step = OpenCreative.getSettings().getCodingSettings().getHorizontalPlatformStep();
+
+        int relX = x % step;
+        int relZ = z % step;
+
+        int beginX = x - relX;
+        int beginZ = z - relZ;
+        int executorX = beginX + 4;
+
+        int signZ = z - 1;
+        int signRelZ = signZ - beginZ;
+
+        if (signRelZ % 4 != 0) return true;
+        if (signRelZ == 0) return true;
+        if (signZ == beginZ + 100) return true;
+
+        if (x == executorX) return false;
+        return x <= executorX || (x - executorX) % 2 != 0 || x >= beginX + 100 - 2;
     }
 }

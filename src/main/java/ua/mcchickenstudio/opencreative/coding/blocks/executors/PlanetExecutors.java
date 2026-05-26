@@ -34,8 +34,8 @@ import ua.mcchickenstudio.opencreative.coding.blocks.executors.other.Cycle;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.other.Function;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.other.Method;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.other.NameableExecutor;
-import ua.mcchickenstudio.opencreative.coding.blocks.executors.player.interaction.PlayerDestroyBlockExecutor;
-import ua.mcchickenstudio.opencreative.coding.blocks.executors.player.interaction.PlayerPlaceBlockExecutor;
+import ua.mcchickenstudio.opencreative.coding.blocks.executors.player.interaction.*;
+import ua.mcchickenstudio.opencreative.coding.blocks.executors.player.movement.PlayerJumpExecutor;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.player.movement.PlayerWalkExecutor;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.world.blocks.WorldBlockFluidChangedExecutor;
 import ua.mcchickenstudio.opencreative.coding.variables.ValueType;
@@ -103,7 +103,9 @@ public class PlanetExecutors {
     public static boolean canRunExecutor(@NotNull Planet planet, @NotNull Executor executor) {
         if (executor instanceof PlayerWalkExecutor || executor instanceof PlayerAirChangedExecutor
                 || executor instanceof WorldBlockFluidChangedExecutor || executor instanceof PlayerDestroyBlockExecutor
-                || executor instanceof PlayerPlaceBlockExecutor || executor instanceof EntitySpawnedExecutor) {
+                || executor instanceof PlayerPlaceBlockExecutor || executor instanceof EntitySpawnedExecutor
+                || executor instanceof PlayerInteractExecutor || executor instanceof PlayerLeftClickExecutor
+                || executor instanceof PlayerRightClickExecutor || executor instanceof PlayerJumpExecutor) {
             if (executor.getLastCalls() >= planet.getLimits().getCodeOperationsLimit()) {
                 planet.getTerritory().getScript().getExecutors().stopCode("operations limit");
                 sendPlanetCodeCriticalErrorMessage(planet, executor, getLocaleMessage("coding-error.operations-limit", false)

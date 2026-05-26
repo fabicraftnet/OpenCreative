@@ -211,7 +211,7 @@ public final class Space implements PlanetsManager, Startable {
             planet.getTerritory().setIgnoreUnloading(true);
             for (Player p : planet.getPlayers()) {
                 PlayerUtils.teleportToLobby(p);
-                if (p.getOpenInventory().getTopInventory().getHolder() instanceof WorldMenu) {
+                if (p.getOpenInventory().getTopInventory().getHolder(false) instanceof WorldMenu) {
                     p.closeInventory();
                 }
             }
@@ -331,19 +331,17 @@ public final class Space implements PlanetsManager, Startable {
     @Override
     public Planet getPlanetByWorld(@NotNull World world) {
         if (!isPlanet(world) && !isDevPlanet(world)) return null;
-        String worldID = world.getName()
-                .replace("./planets/planet", "")
-                .replace("dev", "");
-        return getPlanetById(worldID);
+        int id = getNumberFromWorldName(world.getName());
+        if (id == -1) return null;
+        return planets.get(id);
     }
 
     @Override
     public Planet getPlanetByWorldName(@NotNull String worldName) {
         if (!isPlanet(worldName) && !isDevPlanet(worldName)) return null;
-        String worldID = worldName
-                .replace("./planets/planet", "")
-                .replace("dev", "");
-        return getPlanetById(worldID);
+        int id = getNumberFromWorldName(worldName);
+        if (id == -1) return null;
+        return planets.get(id);
     }
 
     @Override
@@ -354,6 +352,22 @@ public final class Space implements PlanetsManager, Startable {
         } catch (NumberFormatException ignored) {
             return null;
         }
+    }
+
+    private int getNumberFromWorldName(@NotNull String name) {
+        int start = 16; // ./planets/planet
+        int end = name.endsWith("dev")
+                ? name.length() - 3 // dev
+                : name.length();
+        int id = 0;
+        for (int i = start; i < end; i++) {
+            char c = name.charAt(i);
+            if (c < '0' || c > '9') {
+                return -1;
+            }
+            id = id * 10 + (c - '0');
+        }
+        return id;
     }
 
     @Override

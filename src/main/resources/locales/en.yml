@@ -7405,6 +7405,28 @@ items:
           - "&6 Text &7- Author"
           - " "
           - "&eClick to set the action."
+      var-get-item-book-owner:
+        name: "&eGet Book Author"
+        lore:
+          - "&7This will set the variable"
+          - "&7to the name of the book author."
+          - " "
+          - "&fIn the chest:"
+          - "&e Variable &7- For saving"
+          - "&c Item &7- Book"
+          - " "
+          - "&eClick to set the action."
+      var-get-item-id:
+        name: "&eGet Item Material"
+        lore:
+          - "&7This will set the variable"
+          - "&7to the item's material ID text."
+          - " "
+          - "&fIn the chest:"
+          - "&e Variable &7- For saving"
+          - "&c Item &7- Item"
+          - " "
+          - "&eClick to set the action."
       var-set-item-skull-textures:
         name: "&6Set Head Texture"
         lore:
@@ -19327,6 +19349,8 @@ blocks:
   var_merge_lists: "Merge Lists"
   var_set_item_skull_textures: "Set Texture"
   var_set_item_book_owner: "Book Author"
+  var_get_item_book_owner: "Get Author"
+  var_get_item_id: "Get Material"
   var_set_item_skull_owner: "Head Owner"
 
   var_remove_item_lore_line: "&cRemove line"

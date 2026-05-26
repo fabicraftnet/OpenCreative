@@ -69,7 +69,7 @@ public final class ClickListener implements Listener {
          */
         if (event.isCancelled()) return;
         if (event.getInventory().getLocation() == null) return;
-        if (event.getInventory().getHolder() instanceof Layout) return;
+        if (event.getInventory().getHolder(false) instanceof Layout) return;
         for (ItemStack insideItem : event.getInventory().getContents()) {
             if (insideItem == null) continue;
             ItemUtils.fixItem(insideItem);
@@ -263,7 +263,7 @@ public final class ClickListener implements Listener {
 
     @EventHandler
     public void onInventorySlotChange(PlayerInventorySlotChangeEvent event) {
-        if (event.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof Layout) return;
+        if (event.getPlayer().getOpenInventory().getTopInventory().getHolder(false) instanceof Layout) return;
         ItemUtils.fixItem(event.getNewItemStack());
         ItemUtils.fixItem(event.getOldItemStack());
     }

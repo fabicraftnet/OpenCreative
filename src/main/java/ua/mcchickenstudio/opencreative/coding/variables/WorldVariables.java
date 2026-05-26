@@ -60,6 +60,8 @@ public final class WorldVariables {
     private final Map<String, WorldVariable> globalVariables = new LinkedHashMap<>();
     private final Map<String, WorldVariable> savedVariables = new LinkedHashMap<>();
 
+    private int totalAmount = 0;
+
     public WorldVariables(Planet planet) {
         this.planet = planet;
     }
@@ -156,13 +158,24 @@ public final class WorldVariables {
      */
     private void addVariable(@NotNull WorldVariable variable, @NotNull VariableLink.VariableType type) {
         switch (type) {
-            case SAVED -> savedVariables.put(variable.getName(), variable);
+            case SAVED -> {
+                WorldVariable old = savedVariables.put(variable.getName(), variable);
+                if (old != null) totalAmount -= old.getSize();
+                totalAmount += variable.getSize();
+            }
             case LOCAL -> {
                 if (variable.getHandler() == null) return;
-                localVariables.put(new LocalKey(variable.getName(),
-                        variable.getHandler().getMainActionHandler().getUniqueId()), variable);
+                LocalKey key = new LocalKey(variable.getName(),
+                        variable.getHandler().getMainActionHandler().getUniqueId());
+                WorldVariable old = localVariables.put(key, variable);
+                if (old != null) totalAmount -= old.getSize();
+                totalAmount += variable.getSize();
             }
-            default -> globalVariables.put(variable.getName(), variable);
+            default -> {
+                WorldVariable old = globalVariables.put(variable.getName(), variable);
+                if (old != null) totalAmount -= old.getSize();
+                totalAmount += variable.getSize();
+            }
         }
     }
 
@@ -213,13 +226,21 @@ public final class WorldVariables {
         String name = link.getName();
         if (action != null) name = parseEntity(link.getName(), action.getHandler(), action);
         switch (link.getVariableType()) {
-            case SAVED -> savedVariables.remove(name);
+            case SAVED -> {
+                WorldVariable old = savedVariables.remove(name);
+                if (old != null) totalAmount -= old.getSize();
+            }
             case LOCAL -> {
                 if (action == null) return;
-                localVariables.remove(new LocalKey(name,
-                        action.getHandler().getMainActionHandler().getUniqueId()));
+                LocalKey key = new LocalKey(name,
+                        action.getHandler().getMainActionHandler().getUniqueId());
+                WorldVariable old = localVariables.remove(key);
+                if (old != null) totalAmount -= old.getSize();
             }
-            default -> globalVariables.remove(name);
+            default -> {
+                WorldVariable old = globalVariables.remove(name);
+                if (old != null) totalAmount -= old.getSize();
+            }
         }
     }
 
@@ -243,6 +264,7 @@ public final class WorldVariables {
         localVariables.clear();
         globalVariables.clear();
         savedVariables.clear();
+        totalAmount = 0;
     }
 
     /**
@@ -556,17 +578,7 @@ public final class WorldVariables {
      * @return total size of variables.
      */
     public int getTotalVariablesAmount() {
-        int size = 0;
-        for (WorldVariable var : localVariables.values()) {
-            size += var.getSize();
-        }
-        for (WorldVariable var : globalVariables.values()) {
-            size += var.getSize();
-        }
-        for (WorldVariable var : savedVariables.values()) {
-            size += var.getSize();
-        }
-        return size;
+        return totalAmount;
     }
 
     /**
@@ -577,7 +589,8 @@ public final class WorldVariables {
     public void garbageCollector(ActionsHandler actionsHandler) {
         for (LocalKey localKey : new HashSet<>(localVariables.keySet())) {
             if (actionsHandler.getUniqueId().equals(localKey.handlerId)) {
-                localVariables.remove(localKey);
+                WorldVariable old = localVariables.remove(localKey);
+                if (old != null) totalAmount -= old.getSize();
             }
         }
     }
@@ -586,6 +599,9 @@ public final class WorldVariables {
      * Clears all global variables in world.
      */
     public void clearGlobalVariables() {
+        for (WorldVariable variable : globalVariables.values()) {
+            totalAmount -= variable.getSize();
+        }
         globalVariables.clear();
     }
 

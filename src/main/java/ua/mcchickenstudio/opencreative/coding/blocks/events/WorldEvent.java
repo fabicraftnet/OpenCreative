@@ -46,21 +46,21 @@ public abstract class WorldEvent {
     protected List<Entity> selection = new ArrayList<>();
 
     public WorldEvent(@NotNull Planet planet, @NotNull List<Entity> selection) {
-        world = planet.getTerritory().getWorld();
+        this.world = planet.getTerritory().getWorld();
         this.selection = selection;
     }
 
     public WorldEvent(@NotNull Planet planet) {
-        world = planet.getTerritory().getWorld();
+        this.world = planet.getTerritory().getWorld();
         if (world != null) {
-            selection.addAll(world.getPlayers());
+            this.selection.addAll(world.getPlayers());
         }
     }
 
     public WorldEvent(@NotNull Planet planet, @NotNull Block block) {
-        world = block.getWorld();
+        this.world = block.getWorld();
         if (planet.getTerritory().getWorld() != null) {
-            selection.addAll(planet.getTerritory().getWorld().getPlayers());
+            this.selection.addAll(planet.getTerritory().getWorld().getPlayers());
         }
     }
 

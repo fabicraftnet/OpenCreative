@@ -35,7 +35,7 @@ public final class SetMenuItemAction extends PlayerAction {
 
     @Override
     public void executePlayer(@NotNull Player player) {
-        if (!(player.getOpenInventory().getTopInventory().getHolder() instanceof CustomMenu)) {
+        if (!(player.getOpenInventory().getTopInventory().getHolder(false) instanceof CustomMenu)) {
             /*
              * This check prevents from modifying server
              * menus and OpenCreative+ menus too.

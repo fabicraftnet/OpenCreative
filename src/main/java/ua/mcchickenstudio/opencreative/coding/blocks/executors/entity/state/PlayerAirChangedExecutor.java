@@ -39,7 +39,7 @@ public final class PlayerAirChangedExecutor extends PlayerExecutor {
 
     @Override
     public @NotNull MenusCategory getCategory() {
-        return MenusCategory.PARAMS;
+        return MenusCategory.FIGHTING;
     }
 
     @Override
