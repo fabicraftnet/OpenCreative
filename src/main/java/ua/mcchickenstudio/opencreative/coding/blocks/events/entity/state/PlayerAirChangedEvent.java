@@ -18,16 +18,18 @@
 
 package ua.mcchickenstudio.opencreative.coding.blocks.events.entity.state;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.entity.EntityAirChangeEvent;
+import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.WorldEvent;
 
-public final class EntityAirChangedEvent extends WorldEvent implements Cancellable {
+public final class PlayerAirChangedEvent extends WorldEvent implements Cancellable {
 
     private final EntityAirChangeEvent event;
 
-    public EntityAirChangedEvent(EntityAirChangeEvent event) {
-        super(event.getEntity());
+    public PlayerAirChangedEvent(@NotNull EntityAirChangeEvent event, @NotNull Player player) {
+        super(player);
         this.event = event;
     }
 

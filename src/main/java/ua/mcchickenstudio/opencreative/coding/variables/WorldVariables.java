@@ -18,10 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.coding.variables;
 
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -42,6 +39,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 import static ua.mcchickenstudio.opencreative.coding.arguments.Argument.parseEntity;
@@ -61,6 +59,8 @@ public final class WorldVariables {
     private final Map<LocalKey, WorldVariable> localVariables = new LinkedHashMap<>();
     private final Map<String, WorldVariable> globalVariables = new LinkedHashMap<>();
     private final Map<String, WorldVariable> savedVariables = new LinkedHashMap<>();
+
+    private int totalAmount = 0;
 
     public WorldVariables(Planet planet) {
         this.planet = planet;
@@ -158,13 +158,24 @@ public final class WorldVariables {
      */
     private void addVariable(@NotNull WorldVariable variable, @NotNull VariableLink.VariableType type) {
         switch (type) {
-            case SAVED -> savedVariables.put(variable.getName(), variable);
+            case SAVED -> {
+                WorldVariable old = savedVariables.put(variable.getName(), variable);
+                if (old != null) totalAmount -= old.getSize();
+                totalAmount += variable.getSize();
+            }
             case LOCAL -> {
                 if (variable.getHandler() == null) return;
-                localVariables.put(new LocalKey(variable.getName(),
-                        variable.getHandler().getMainActionHandler().getUniqueId()), variable);
+                LocalKey key = new LocalKey(variable.getName(),
+                        variable.getHandler().getMainActionHandler().getUniqueId());
+                WorldVariable old = localVariables.put(key, variable);
+                if (old != null) totalAmount -= old.getSize();
+                totalAmount += variable.getSize();
             }
-            default -> globalVariables.put(variable.getName(), variable);
+            default -> {
+                WorldVariable old = globalVariables.put(variable.getName(), variable);
+                if (old != null) totalAmount -= old.getSize();
+                totalAmount += variable.getSize();
+            }
         }
     }
 
@@ -215,13 +226,21 @@ public final class WorldVariables {
         String name = link.getName();
         if (action != null) name = parseEntity(link.getName(), action.getHandler(), action);
         switch (link.getVariableType()) {
-            case SAVED -> savedVariables.remove(name);
+            case SAVED -> {
+                WorldVariable old = savedVariables.remove(name);
+                if (old != null) totalAmount -= old.getSize();
+            }
             case LOCAL -> {
                 if (action == null) return;
-                localVariables.remove(new LocalKey(name,
-                        action.getHandler().getMainActionHandler().getUniqueId()));
+                LocalKey key = new LocalKey(name,
+                        action.getHandler().getMainActionHandler().getUniqueId());
+                WorldVariable old = localVariables.remove(key);
+                if (old != null) totalAmount -= old.getSize();
             }
-            default -> globalVariables.remove(name);
+            default -> {
+                WorldVariable old = globalVariables.remove(name);
+                if (old != null) totalAmount -= old.getSize();
+            }
         }
     }
 
@@ -245,40 +264,48 @@ public final class WorldVariables {
         localVariables.clear();
         globalVariables.clear();
         savedVariables.clear();
+        totalAmount = 0;
     }
 
     /**
      * Loads variables from /planet/variables.json file.
      */
-    public void load() {
-        long startTime = System.currentTimeMillis();
-        OpenCreative.getPlugin().getLogger().info("Loading variables for planet " + planet.getId());
+    public @NotNull CompletableFuture<Void> load() {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
+            long startTime = System.currentTimeMillis();
+            OpenCreative.getPlugin().getLogger().info("Loading variables for planet " + planet.getId());
 
-        clearVariables();
-        File variablesJson = FileUtils.getPlanetVariablesJson(planet);
-        if (variablesJson == null || variablesJson.length() <= 2) {
-            return;
-        }
-        try {
-            JSONParser jsonParser = new JSONParser();
-            JSONArray a = (JSONArray) jsonParser.parse(new FileReader(variablesJson));
-            for (Object object : a) {
-                JSONObject jsonObject = (JSONObject) object;
-                String name = (String) jsonObject.get("name");
-                ValueType type = ValueType.valueOf((String) jsonObject.get("type"));
-                Object value = jsonObject.get("value");
-                value = deserializeObject(value, type);
-                if (getTotalVariablesAmount() < planet.getLimits().getVariablesAmountLimit()) {
-                    WorldVariable newVariable = new WorldVariable(name, VariableLink.VariableType.SAVED, type, value, null);
-                    addVariable(newVariable, VariableLink.VariableType.SAVED);
-                }
+            clearVariables();
+            File variablesJson = FileUtils.getPlanetVariablesJson(planet);
+            if (variablesJson == null || variablesJson.length() <= 2) {
+                future.complete(null);
+                return;
             }
-        } catch (Exception e) {
-            sendCriticalErrorMessage("Failed to parse JSON file " + variablesJson.getPath(), e);
-        }
+            try {
+                JSONParser jsonParser = new JSONParser();
+                JSONArray a = (JSONArray) jsonParser.parse(new FileReader(variablesJson));
+                for (Object object : a) {
+                    JSONObject jsonObject = (JSONObject) object;
+                    String name = (String) jsonObject.get("name");
+                    ValueType type = ValueType.valueOf((String) jsonObject.get("type"));
+                    Object value = jsonObject.get("value");
+                    value = deserializeObject(value, type);
+                    if (getTotalVariablesAmount() < planet.getLimits().getVariablesAmountLimit()) {
+                        WorldVariable newVariable = new WorldVariable(name, VariableLink.VariableType.SAVED, type, value, null);
+                        addVariable(newVariable, VariableLink.VariableType.SAVED);
+                    }
+                }
+                future.complete(null);
+            } catch (Exception error) {
+                sendCriticalErrorMessage("Failed to parse JSON file " + variablesJson.getPath(), error);
+                future.completeExceptionally(error);
+            }
 
-        long endTime = System.currentTimeMillis();
-        OpenCreative.getPlugin().getLogger().info("Loaded " + getTotalVariablesAmount() + " variables for planet " + planet.getId() + " in " + (endTime - startTime) + " ms");
+            long endTime = System.currentTimeMillis();
+            OpenCreative.getPlugin().getLogger().info("Loaded " + getTotalVariablesAmount() + " variables for planet " + planet.getId() + " in " + (endTime - startTime) + " ms");
+        });
+        return future;
     }
 
     /**
@@ -551,17 +578,7 @@ public final class WorldVariables {
      * @return total size of variables.
      */
     public int getTotalVariablesAmount() {
-        int size = 0;
-        for (WorldVariable var : localVariables.values()) {
-            size += var.getSize();
-        }
-        for (WorldVariable var : globalVariables.values()) {
-            size += var.getSize();
-        }
-        for (WorldVariable var : savedVariables.values()) {
-            size += var.getSize();
-        }
-        return size;
+        return totalAmount;
     }
 
     /**
@@ -572,7 +589,8 @@ public final class WorldVariables {
     public void garbageCollector(ActionsHandler actionsHandler) {
         for (LocalKey localKey : new HashSet<>(localVariables.keySet())) {
             if (actionsHandler.getUniqueId().equals(localKey.handlerId)) {
-                localVariables.remove(localKey);
+                WorldVariable old = localVariables.remove(localKey);
+                if (old != null) totalAmount -= old.getSize();
             }
         }
     }
@@ -581,6 +599,9 @@ public final class WorldVariables {
      * Clears all global variables in world.
      */
     public void clearGlobalVariables() {
+        for (WorldVariable variable : globalVariables.values()) {
+            totalAmount -= variable.getSize();
+        }
         globalVariables.clear();
     }
 

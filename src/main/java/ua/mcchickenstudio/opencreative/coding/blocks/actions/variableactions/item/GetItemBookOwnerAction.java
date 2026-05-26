@@ -16,38 +16,38 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ua.mcchickenstudio.opencreative.coding.blocks.actions.playeractions.inventory;
+package ua.mcchickenstudio.opencreative.coding.blocks.actions.variableactions.item;
 
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.InventoryView;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
-import ua.mcchickenstudio.opencreative.coding.blocks.actions.playeractions.PlayerAction;
+import ua.mcchickenstudio.opencreative.coding.blocks.actions.variableactions.VariableAction;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
+import ua.mcchickenstudio.opencreative.coding.variables.VariableLink;
 
-public final class SetMenuTitleAction extends PlayerAction {
-    public SetMenuTitleAction(Executor executor, Target target, int x, Arguments args) {
+public final class GetItemBookOwnerAction extends VariableAction {
+    public GetItemBookOwnerAction(Executor executor, Target target, int x, Arguments args) {
         super(executor, target, x, args);
     }
 
     @Override
-    public void executePlayer(@NotNull Player player) {
-        if (!(player.getOpenInventory().getTopInventory().getHolder(false) instanceof CustomMenu)) {
-            /*
-             * This check prevents from modifying server
-             * menus and OpenCreative+ menus too.
-             */
-            return;
+    protected void execute() {
+        VariableLink link = getArguments().getVariableLink("variable", this);
+        ItemStack item = getArguments().getItem("item", getArguments().getItem("variable",
+                new ItemStack(Material.APPLE), this), this);
+        ItemMeta meta = item.getItemMeta();
+        if (meta instanceof BookMeta bookmeta) {
+            setVarValue(link, bookmeta.getAuthor());
         }
-        InventoryView inventory = player.getOpenInventory();
-        String title = getArguments().getText("title", inventory.getOriginalTitle(), this);
-        inventory.setTitle(title);
     }
 
     @Override
     public @NotNull ActionType getActionType() {
-        return ActionType.PLAYER_SET_INVENTORY_VIEW_TITLE;
+        return ActionType.VAR_GET_ITEM_BOOK_OWNER;
     }
 }

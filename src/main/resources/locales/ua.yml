@@ -2938,10 +2938,10 @@ items:
           - "&7злитися на найближчого моба."
           - " "
           - "&eНатисни, щоб встановити подію."
-      entity-air-changed:
+      player-air-changed:
         name: "&bЗміна рівня кисню"
         lore:
-          - "&7Це коли моб у воді"
+          - "&7Це коли гравець у воді"
           - "&7починає втрачати кисень"
           - "&7або отримує його, коли"
           - "&7вилазить з води."
@@ -7481,6 +7481,28 @@ items:
           - "&e Змінна &7- Для збереження"
           - "&c Предмет &7- Книга"
           - "&6 Текст &7- Автор"
+          - " "
+          - "&eНатисни, щоб встановити дію."
+      var-get-item-book-owner:
+        name: "&eОтримати автора книги"
+        lore:
+          - "&7Це встановить у змінну"
+          - "&7ім'я автора книги."
+          - " "
+          - "&fУ скрині:"
+          - "&e Змінна &7- Для збереження"
+          - "&c Предмет &7- Книга"
+          - " "
+          - "&eНатисни, щоб встановити дію."
+      var-get-item-id:
+        name: "&eОтримати матеріал предмета"
+        lore:
+          - "&7Це встановить у змінну"
+          - "&7текст ID матеріалу предмета."
+          - " "
+          - "&fУ скрині:"
+          - "&e Змінна &7- Для збереження"
+          - "&c Предмет &7- Предмет"
           - " "
           - "&eНатисни, щоб встановити дію."
       var-set-item-skull-textures:
@@ -19132,7 +19154,7 @@ blocks:
   entity_resurrected: "Моб воскрес"
   entity_potion_effected: "Вплив зілля"
   entity_warden_anger_changed: "Злий сторож"
-  entity_air_changed: "Зміна кисню"
+  player_air_changed: "Зміна кисню"
   entity_piglin_bartered: "Торгівля пігліна"
   entity_interacted_block: "Взаєм. з блоком"
   entity_turtle_lays_egg: "Яйця черепахи"
@@ -19381,6 +19403,8 @@ blocks:
   var_set_item_skull_textures: "Вст. текстуру"
   var_set_item_skull_owner: "Власн. голови"
   var_set_item_book_owner: "Автор книги"
+  var_get_item_book_owner: "Отрим. автора"
+  var_get_item_id: "Отр. матеріал"
   controller_catch_error: "Спіймати помилку"
   controller_measure_time: "Вимір. час"
   control_cancel_event: "&cСкасування події"

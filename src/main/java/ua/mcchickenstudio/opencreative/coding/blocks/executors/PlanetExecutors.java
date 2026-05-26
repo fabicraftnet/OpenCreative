@@ -29,13 +29,13 @@ import ua.mcchickenstudio.opencreative.coding.blocks.actions.*;
 import ua.mcchickenstudio.opencreative.coding.blocks.conditions.Condition;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.WorldEvent;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.entity.interaction.EntitySpawnedExecutor;
-import ua.mcchickenstudio.opencreative.coding.blocks.executors.entity.state.EntityAirChangedExecutor;
+import ua.mcchickenstudio.opencreative.coding.blocks.executors.entity.state.PlayerAirChangedExecutor;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.other.Cycle;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.other.Function;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.other.Method;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.other.NameableExecutor;
-import ua.mcchickenstudio.opencreative.coding.blocks.executors.player.interaction.PlayerDestroyBlockExecutor;
-import ua.mcchickenstudio.opencreative.coding.blocks.executors.player.interaction.PlayerPlaceBlockExecutor;
+import ua.mcchickenstudio.opencreative.coding.blocks.executors.player.interaction.*;
+import ua.mcchickenstudio.opencreative.coding.blocks.executors.player.movement.PlayerJumpExecutor;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.player.movement.PlayerWalkExecutor;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.world.blocks.WorldBlockFluidChangedExecutor;
 import ua.mcchickenstudio.opencreative.coding.variables.ValueType;
@@ -58,7 +58,11 @@ import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessag
 public class PlanetExecutors {
 
     protected final Planet planet;
-    private final List<Executor> executorsList = new ArrayList<>();
+
+    private final List<Cycle> cycles = new ArrayList<>();
+    private final List<Function> functions = new ArrayList<>();
+    private final List<Method> methods = new ArrayList<>();
+    private final Map<Class<? extends WorldEvent>, List<EventAwaiter>> events = new HashMap<>();
 
     public PlanetExecutors(Planet planet) {
         this.planet = planet;
@@ -75,12 +79,10 @@ public class PlanetExecutors {
         if (planet == null) return;
         if (planet.getMode() != Planet.Mode.PLAYING) return;
         PlanetExecutors executors = planet.getTerritory().getScript().getExecutors();
-        for (Executor executor : executors.executorsList) {
-            if (executor instanceof EventAwaiter awaiter) {
-                if (awaiter.getEventClass() == event.getClass()) {
-                    activate(executor, event);
-                }
-            }
+        List<EventAwaiter> list = executors.events.get(event.getClass());
+        if (list == null) return;
+        for (EventAwaiter awaiter : list) {
+            activate((Executor) awaiter, event);
         }
     }
 
@@ -99,9 +101,11 @@ public class PlanetExecutors {
     }
 
     public static boolean canRunExecutor(@NotNull Planet planet, @NotNull Executor executor) {
-        if (executor instanceof PlayerWalkExecutor || executor instanceof EntityAirChangedExecutor
+        if (executor instanceof PlayerWalkExecutor || executor instanceof PlayerAirChangedExecutor
                 || executor instanceof WorldBlockFluidChangedExecutor || executor instanceof PlayerDestroyBlockExecutor
-                || executor instanceof PlayerPlaceBlockExecutor || executor instanceof EntitySpawnedExecutor) {
+                || executor instanceof PlayerPlaceBlockExecutor || executor instanceof EntitySpawnedExecutor
+                || executor instanceof PlayerInteractExecutor || executor instanceof PlayerLeftClickExecutor
+                || executor instanceof PlayerRightClickExecutor || executor instanceof PlayerJumpExecutor) {
             if (executor.getLastCalls() >= planet.getLimits().getCodeOperationsLimit()) {
                 planet.getTerritory().getScript().getExecutors().stopCode("operations limit");
                 sendPlanetCodeCriticalErrorMessage(planet, executor, getLocaleMessage("coding-error.operations-limit", false)
@@ -134,7 +138,10 @@ public class PlanetExecutors {
      * Clears temporary data: executors list, last executors calls.
      */
     public void clear() {
-        executorsList.clear();
+        events.clear();
+        functions.clear();
+        methods.clear();
+        cycles.clear();
     }
 
     /**
@@ -161,7 +168,9 @@ public class PlanetExecutors {
                 }
             }
             clear();
-            executorsList.addAll(executors);
+            for (Executor executor : executors) {
+                registerExecutor(executor);
+            }
             sendCodingDebugLog(planet, getLocaleMessage("coding-debug.loaded-code", false)
                     .replace("%time%", String.valueOf(Math.floor((System.currentTimeMillis() - time) / 10.0) / 100.0)));
             OpenCreative.getPlugin().getLogger().info("Loaded code in planet " + planet.getId() + " in " + (System.currentTimeMillis() - time) + " ms with " + executors.size() + " executors!");
@@ -172,8 +181,39 @@ public class PlanetExecutors {
         }
     }
 
+    private void registerExecutor(@NotNull Executor executor) {
+        if (executor instanceof EventAwaiter awaiter) {
+            events.computeIfAbsent(awaiter.getEventClass(),
+                    list -> new ArrayList<>())
+                    .add(awaiter);
+        }
+
+        if (executor instanceof Cycle cycle) {
+            cycles.add(cycle);
+        }
+
+        if (executor instanceof Function function) {
+            functions.add(function);
+        }
+
+        if (executor instanceof Method method) {
+            methods.add(method);
+        }
+    }
+
     public @NotNull List<Executor> getExecutorsList() {
-        return executorsList;
+        List<Executor> executors = new ArrayList<>();
+        for (List<EventAwaiter> list : events.values()) {
+            for (EventAwaiter awaiter : list) {
+                if (awaiter instanceof Executor executor) {
+                    executors.add(executor);
+                }
+            }
+        }
+        executors.addAll(cycles);
+        executors.addAll(methods);
+        executors.addAll(functions);
+        return executors;
     }
 
     /**
@@ -206,13 +246,7 @@ public class PlanetExecutors {
      * @return list of cycles.
      */
     public @NotNull List<Cycle> getCyclesList() {
-        List<Cycle> functions = new ArrayList<>();
-        for (Executor executor : executorsList) {
-            if (executor instanceof Cycle cycle) {
-                functions.add(cycle);
-            }
-        }
-        return functions;
+        return cycles;
     }
 
     /**
@@ -221,12 +255,6 @@ public class PlanetExecutors {
      * @return list of functions.
      */
     public @NotNull List<Function> getFunctionsList() {
-        List<Function> functions = new ArrayList<>();
-        for (Executor executor : executorsList) {
-            if (executor instanceof Function function) {
-                functions.add(function);
-            }
-        }
         return functions;
     }
 
@@ -236,12 +264,6 @@ public class PlanetExecutors {
      * @return list of methods.
      */
     public @NotNull List<Method> getMethodsList() {
-        List<Method> methods = new ArrayList<>();
-        for (Executor executor : executorsList) {
-            if (executor instanceof Method method) {
-                methods.add(method);
-            }
-        }
         return methods;
     }
 

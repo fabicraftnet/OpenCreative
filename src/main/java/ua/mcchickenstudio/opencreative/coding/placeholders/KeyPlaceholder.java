@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
 public abstract class KeyPlaceholder extends Placeholder {
 
     private final static int limit = 20;
-    private final static Pattern PATTERN_PLACEHOLDER = Pattern.compile("%[A-Za-z0-9]+%");
+    private final static Pattern PATTERN_PLACEHOLDER = Pattern.compile("%[A-Za-z0-9_]+%");
     private final String[] keys;
 
     public KeyPlaceholder(String... keys) {

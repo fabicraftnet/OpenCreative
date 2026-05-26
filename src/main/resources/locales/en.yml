@@ -2717,10 +2717,10 @@ items:
           - "&7becomes angry at the nearest mob."
           - " "
           - "&eClick to set the event."
-      entity-air-changed:
+      player-air-changed:
         name: "&bOxygen Level Changed"
         lore:
-          - "&7This occurs when a mob"
+          - "&7This occurs when a player"
           - "&7starts losing oxygen underwater"
           - "&7or regains it when surfacing."
           - " "
@@ -7403,6 +7403,28 @@ items:
           - "&e Variable &7- For saving"
           - "&c Item &7- Book"
           - "&6 Text &7- Author"
+          - " "
+          - "&eClick to set the action."
+      var-get-item-book-owner:
+        name: "&eGet Book Author"
+        lore:
+          - "&7This will set the variable"
+          - "&7to the name of the book author."
+          - " "
+          - "&fIn the chest:"
+          - "&e Variable &7- For saving"
+          - "&c Item &7- Book"
+          - " "
+          - "&eClick to set the action."
+      var-get-item-id:
+        name: "&eGet Item Material"
+        lore:
+          - "&7This will set the variable"
+          - "&7to the item's material ID text."
+          - " "
+          - "&fIn the chest:"
+          - "&e Variable &7- For saving"
+          - "&c Item &7- Item"
           - " "
           - "&eClick to set the action."
       var-set-item-skull-textures:
@@ -19078,7 +19100,7 @@ blocks:
   entity_resurrected: "Resurrected"
   entity_potion_effected: "Potion Effect Applied"
   entity_warden_anger_changed: "Warden got angry"
-  entity_air_changed: "Air level changed"
+  player_air_changed: "Air level changed"
   entity_entered_vehicle: "Entered Vehicle"
   entity_vehicle_exit: "Vehicle Exit"
   entity_projectile_hit: "Projectile hit block"
@@ -19327,6 +19349,8 @@ blocks:
   var_merge_lists: "Merge Lists"
   var_set_item_skull_textures: "Set Texture"
   var_set_item_book_owner: "Book Author"
+  var_get_item_book_owner: "Get Author"
+  var_get_item_id: "Get Material"
   var_set_item_skull_owner: "Head Owner"
 
   var_remove_item_lore_line: "&cRemove line"

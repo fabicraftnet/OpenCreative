@@ -64,7 +64,6 @@ import ua.mcchickenstudio.opencreative.utils.FileUtils;
 import ua.mcchickenstudio.opencreative.utils.PlayerUtils;
 import ua.mcchickenstudio.opencreative.utils.hooks.HookUtils;
 import ua.mcchickenstudio.opencreative.utils.hooks.Metrics;
-import ua.mcchickenstudio.opencreative.coding.blocks.events.WorldListener;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.worldactions.world.phys.data.PhysicsManager;
 
 import java.text.SimpleDateFormat;
@@ -376,11 +375,6 @@ public final class OpenCreative extends JavaPlugin {
             } catch (Exception exception) {
                 sendCriticalErrorMessage("Couldn't register event listener: " + listenerClass.getSimpleName(), exception);
             }
-        }
-        try {
-            new WorldListener().registerExecutors();
-        } catch (Exception exception) {
-            sendCriticalErrorMessage("Couldn't register executors", exception);
         }
         getLogger().info("OpenCreative+ registered " + (registeredListeners == listeners.length ? "all" : registeredListeners + "/" + listeners.length) + " event listeners.");
     }

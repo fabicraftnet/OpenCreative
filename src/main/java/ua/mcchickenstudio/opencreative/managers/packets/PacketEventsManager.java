@@ -31,6 +31,7 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.player.UserProfile;
 import com.github.retrooper.packetevents.protocol.world.blockentity.BlockEntityTypes;
 import com.github.retrooper.packetevents.protocol.world.chunk.Column;
+import com.github.retrooper.packetevents.protocol.world.chunk.TileEntity;
 import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.util.Vector3i;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
@@ -39,30 +40,32 @@ import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.managers.Toggleable;
 import ua.mcchickenstudio.opencreative.utils.world.cache.ChunkCache;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendDebugError;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleComponent;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
 import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isDevPlanet;
 
 /**
  * This class represents an implementation of PacketEvents
  * for packets actions.
  */
-public final class PacketEventsManager implements PacketManager, Toggleable {
+public final class PacketEventsManager implements PacketManager, Toggleable, SignTranslator {
 
-    //private PacketEventsManager.SignTextListener signListener;
+    private PacketEventsManager.SignTextListener signListener;
     private PacketEventsManager.ChunkPacketListener chunkListener;
+    private final static Pattern localizationPathPattern = Pattern.compile("^[a-zA-Z_]+$");
 
     @Override
     public void start() {
@@ -70,16 +73,22 @@ public final class PacketEventsManager implements PacketManager, Toggleable {
         PacketEvents.getAPI().load();
         PacketEvents.getAPI().init();
         chunkListener = new PacketEventsManager.ChunkPacketListener();
-        //signListener = new PacketEventsManager.SignTextListener();
-        PacketEvents.getAPI().getEventManager().registerListeners(chunkListener);
+        signListener = new PacketEventsManager.SignTextListener();
+        PacketEvents.getAPI().getEventManager().registerListeners(chunkListener, signListener);
     }
 
     @Override
     public void shutdown() {
         if (chunkListener != null) {
-            PacketEvents.getAPI().getEventManager().unregisterListeners(chunkListener);
+            PacketEvents.getAPI().getEventManager().unregisterListeners(chunkListener, signListener);
             chunkListener = null;
+            signListener = null;
         }
+    }
+
+    @Override
+    public boolean canTranslateSigns() {
+        return signListener != null;
     }
 
     @Override
@@ -132,15 +141,15 @@ public final class PacketEventsManager implements PacketManager, Toggleable {
     @Override
     public void displayAsSpectatorName(@NotNull Player player, @NotNull Player receiver) {
         WrapperPlayServerPlayerInfoUpdate packet = new WrapperPlayServerPlayerInfoUpdate(
-            EnumSet.of(WrapperPlayServerPlayerInfoUpdate.Action.UPDATE_GAME_MODE),
-            Collections.singletonList(
-                new WrapperPlayServerPlayerInfoUpdate.PlayerInfo(
-                        new UserProfile(player.getUniqueId(), player.getName()),
-                        true,
-                        player.getPing(),
-                        com.github.retrooper.packetevents.protocol.player.GameMode.SPECTATOR,
-                        Component.text(player.getName()),
-                        null)));
+                EnumSet.of(WrapperPlayServerPlayerInfoUpdate.Action.UPDATE_GAME_MODE),
+                Collections.singletonList(
+                        new WrapperPlayServerPlayerInfoUpdate.PlayerInfo(
+                                new UserProfile(player.getUniqueId(), player.getName()),
+                                true,
+                                player.getPing(),
+                                com.github.retrooper.packetevents.protocol.player.GameMode.SPECTATOR,
+                                Component.text(player.getName()),
+                                null)));
         PacketEvents.getAPI().getPlayerManager().sendPacket(receiver, packet);
     }
 
@@ -199,50 +208,92 @@ public final class PacketEventsManager implements PacketManager, Toggleable {
         return new WrapperPlayServerSpawnEntity(id, uuid, EntityTypes.SLIME, new com.github.retrooper.packetevents.protocol.world.Location(new Vector3d(location.getX(), location.getY(), location.getZ()), location.getYaw(), location.getPitch()), 0F, 1, null);
     }
 
-    private static class SignTextListener extends PacketListenerCommon implements PacketListener {
+    private static class SignTextListener extends PacketListenerAbstract {
 
         @Override
         public void onPacketSend(PacketSendEvent event) {
-            if (event.getPacketType() != PacketType.Play.Server.BLOCK_ENTITY_DATA) {
-                return;
-            }
-            if (!(event.getPlayer() instanceof Player player)) return;
-            World world = player.getWorld();
-            if (!isDevPlanet(world)) return;
 
-            WrapperPlayServerBlockEntityData packet = new WrapperPlayServerBlockEntityData(event);
-            if (packet.getBlockEntityType() == BlockEntityTypes.SIGN || packet.getBlockEntityType() == BlockEntityTypes.HANGING_SIGN) {
-                NBTCompound nbt = packet.getNBT();
-                NBTCompound frontText = nbt.getCompoundTagOrNull("front_text");
-                if (frontText == null) {
+            if (event.getPacketType() != PacketType.Play.Server.CHUNK_DATA) {
+                if (event.getPacketType() != PacketType.Play.Server.BLOCK_ENTITY_DATA) {
                     return;
                 }
-
-                List<String> lines = new ArrayList<>();
-                NBTList<NBTCompound> signLinesNBT = frontText.getCompoundListTagOrNull("messages");
-                if (signLinesNBT != null) {
-                    for (NBTCompound line : signLinesNBT.getTags()) {
-                        lines.add(line.getStringTagValueOrDefault("text", ""));
-                    }
+                if (!(event.getPlayer() instanceof Player player)) return;
+                if (!isDevPlanet(player.getWorld())) return;
+                WrapperPlayServerBlockEntityData packet = new WrapperPlayServerBlockEntityData(event);
+                if (packet.getBlockEntityType() != BlockEntityTypes.SIGN) return;
+                Vector3i position = packet.getPosition();
+                if (isNotWallSign(position.getX(), position.getY(), position.getZ())) {
+                    return;
                 }
-
-                NBTList<NBTString> newLines = new NBTList<>(NBTType.STRING);
-                for (String line : lines) {
-                    if (line.isEmpty()) continue;
-                    Component component = getLocaleComponent("blocks." + line, false);
-                    String json = GsonComponentSerializer.gson().serialize(component);
-                    newLines.addTag(new NBTString(json));
-                }
-
-                frontText.setTag("messages", newLines);
-                nbt.setTag("front_text", frontText);
+                NBTCompound nbt = changeSign(packet.getNBT());
+                if (nbt == null) return;
                 packet.setNBT(nbt);
+                event.markForReEncode(true);
+                return;
+            }
+
+            if (!(event.getPlayer() instanceof Player player)) return;
+            if (!isDevPlanet(player.getWorld())) return;
+            WrapperPlayServerChunkData packet = new WrapperPlayServerChunkData(event);
+            Column column = packet.getColumn();
+
+            boolean changed = false;
+            for (TileEntity tileEntity : column.getTileEntities()) {
+                if (isNotWallSign(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ())) {
+                    continue;
+                }
+                NBTCompound original = tileEntity.getNBT();
+                NBTCompound modified = changeSign(original);
+                if (modified != null) {
+                    changed = true;
+                }
+            }
+            if (changed) {
                 event.markForReEncode(true);
             }
         }
+
+        private @Nullable NBTCompound changeSign(NBTCompound nbt) {
+            if (nbt == null) return null;
+            NBTCompound frontText = nbt.getCompoundTagOrNull("front_text");
+            if (frontText == null) {
+                return null;
+            }
+
+            List<String> lines = new ArrayList<>();
+            NBTList<NBTString> signLines = frontText.getStringListTagOrNull("messages");
+            if (signLines == null) {
+                return null;
+            }
+            for (NBTString line : signLines.getTags()) {
+                lines.add(line.getValue());
+            }
+
+            NBTList<NBTString> newLines = new NBTList<>(NBTType.STRING);
+            for (String line : lines) {
+                if (line.isEmpty()) {
+                    newLines.addTag(new NBTString(""));
+                    continue;
+                }
+                if (!localizationPathPattern.matcher(line).matches()) {
+                    newLines.addTag(new NBTString(line));
+                    continue;
+                }
+                String text = getLocaleMessage("blocks." + line, false);
+                if (text.startsWith("blocks.")) {
+                    newLines.addTag(new NBTString(line));
+                    continue;
+                }
+                newLines.addTag(new NBTString(text));
+            }
+
+            frontText.setTag("messages", newLines);
+            nbt.setTag("front_text", frontText);
+            return nbt;
+        }
     }
 
-    private static class ChunkPacketListener extends PacketListenerCommon implements PacketListener {
+    private static class ChunkPacketListener extends PacketListenerAbstract {
 
         @Override
         public void onPacketSend(PacketSendEvent event) {
@@ -262,5 +313,26 @@ public final class PacketEventsManager implements PacketManager, Toggleable {
                 sendDebugError("Cannot preload chunks.", error);
             }
         }
+    }
+
+    private static boolean isNotWallSign(int x, int y, int z) {
+        int step = OpenCreative.getSettings().getCodingSettings().getHorizontalPlatformStep();
+
+        int relX = x % step;
+        int relZ = z % step;
+
+        int beginX = x - relX;
+        int beginZ = z - relZ;
+        int executorX = beginX + 4;
+
+        int signZ = z - 1;
+        int signRelZ = signZ - beginZ;
+
+        if (signRelZ % 4 != 0) return true;
+        if (signRelZ == 0) return true;
+        if (signZ == beginZ + 100) return true;
+
+        if (x == executorX) return false;
+        return x <= executorX || (x - executorX) % 2 != 0 || x >= beginX + 100 - 2;
     }
 }

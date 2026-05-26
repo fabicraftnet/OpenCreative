@@ -46,10 +46,7 @@ import ua.mcchickenstudio.opencreative.settings.items.ItemFixerSettings;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendDebug;
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendDebugError;
@@ -372,6 +369,76 @@ public final class ItemUtils {
             return "";
         }
         return dataType;
+    }
+
+    /**
+     * Checks whether specified items are same.
+     *
+     * @param first first item to compare.
+     * @param second second item to compare.
+     * @param ignoreAmount ignore amount or not.
+     * @param ignoreName ignore display name or not.
+     * @param ignoreLore ignore item lore or not.
+     * @param ignoreFlags ignore item flags or not.
+     * @param ignoreEnchantments ignore enchantments or not.
+     * @param ignoreMaterial ignore type of item or not.
+     * @param ignoreDurability ignore durability or not.
+     * @return true - items are same, false - they're different.
+     */
+    public static boolean checkItemsIgnoreData(@NotNull ItemStack first, @NotNull ItemStack second, boolean ignoreAmount,
+                                           boolean ignoreName, boolean ignoreLore, boolean ignoreFlags,
+                                           boolean ignoreEnchantments, boolean ignoreMaterial, boolean ignoreDurability) {
+
+        if (!ignoreMaterial && first.getType() != second.getType()) {
+            return false;
+        }
+
+        if (!ignoreAmount && first.getAmount() != second.getAmount()) {
+            return false;
+        }
+
+        ItemMeta firstMeta = first.getItemMeta();
+        ItemMeta secondMeta = second.getItemMeta();
+
+        if (!ignoreDurability) {
+            int firstDamage = firstMeta instanceof Damageable d ? d.getDamage() : 0;
+            int secondDamage = secondMeta instanceof Damageable d ? d.getDamage() : 0;
+
+            if (firstDamage != secondDamage) {
+                return false;
+            }
+        }
+
+        if (!ignoreName) {
+            Component firstName = firstMeta != null ? firstMeta.displayName() : null;
+            Component secondName = secondMeta != null ? secondMeta.displayName() : null;
+
+            if (!Objects.equals(firstName, secondName)) {
+                return false;
+            }
+        }
+
+        if (!ignoreLore) {
+            List<Component> firstLore = firstMeta != null ? firstMeta.lore() : null;
+            List<Component> secondLore = secondMeta != null ? secondMeta.lore() : null;
+
+            if (!Objects.equals(firstLore, secondLore)) {
+                return false;
+            }
+        }
+
+        if (!ignoreEnchantments && !(first.getEnchantments().equals(second.getEnchantments()))) {
+            return false;
+        }
+
+        if (!ignoreFlags) {
+            Set<ItemFlag> firstFlags = firstMeta != null ? firstMeta.getItemFlags() : Collections.emptySet();
+            Set<ItemFlag> secondFlags = secondMeta != null ? secondMeta.getItemFlags() : Collections.emptySet();
+
+            return firstFlags.equals(secondFlags);
+        }
+
+        return true;
     }
 
     public static @NotNull ItemStack getItemWithIgnoreData(@NotNull ItemStack item,

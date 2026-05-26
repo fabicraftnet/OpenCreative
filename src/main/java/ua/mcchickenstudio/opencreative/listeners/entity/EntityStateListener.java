@@ -208,9 +208,10 @@ public final class EntityStateListener implements Listener {
     }
 
     @EventHandler
-    public void onEntityAirChange(EntityAirChangeEvent event) {
-        Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(event.getEntity().getWorld());
-        if (planet != null) new EntityAirChangedEvent(event).callEvent();
+    public void onPlayerAirChange(EntityAirChangeEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
+        if (planet != null) new PlayerAirChangedEvent(event, player).callEvent();
     }
 
     @EventHandler

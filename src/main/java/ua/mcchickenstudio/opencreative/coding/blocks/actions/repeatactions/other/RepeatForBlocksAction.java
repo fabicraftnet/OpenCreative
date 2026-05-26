@@ -41,6 +41,7 @@ public final class RepeatForBlocksAction extends RepeatAction {
     @Override
     public boolean checkCanContinue() {
 
+        if (getWorld() == null) return false;
         VariableLink link = getArguments().getVariableLink("variable", this);
         if (!getArguments().pathExists("first") || !getArguments().pathExists("second") || link == null) {
             return false;
