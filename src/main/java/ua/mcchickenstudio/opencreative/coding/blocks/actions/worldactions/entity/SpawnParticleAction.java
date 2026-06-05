@@ -50,14 +50,15 @@ public final class SpawnParticleAction extends WorldAction {
         double offsetX = getArguments().getDouble("offset-x", 0.0d, this);
         double offsetY = getArguments().getDouble("offset-y", 0.0d, this);
         double offsetZ = getArguments().getDouble("offset-z", 0.0d, this);
+        List<Location> locations = getArguments().getLocationList("locations", this);
         List<Player> players = getWorld().getPlayers();
-        for (Location location : getArguments().getLocationList("locations", this)) {
-            Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
+            for (Location location : locations) {
                 for (Player player : players) {
                     player.spawnParticle(particle, location, count, offsetX, offsetY, offsetZ);
                 }
-            });
-        }
+            }
+        });
     }
 
     @Override

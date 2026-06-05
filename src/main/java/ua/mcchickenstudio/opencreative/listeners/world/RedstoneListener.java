@@ -18,6 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.listeners.world;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -44,34 +45,18 @@ public final class RedstoneListener implements Listener {
         Location location = event.getBlock().getLocation();
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(location.getWorld());
         if (planet != null) {
-            planet.getLimits().setLastRedstoneOperationsAmount(planet.getLimits().getLastRedstoneOperationsAmount() + 1);
-            if (planet.getLimits().getLastRedstoneOperationsAmount() > planet.getLimits().getRedstoneOperationsLimit()) {
+            if (!planet.getLimits().canRedstoneWork()) {
+                event.setNewCurrent(event.getOldCurrent());
                 sendMessageOnce(planet, "world.redstone-limit",
                         new PlaceholderReplacer("count", planet.getLimits().getRedstoneOperationsLimit()),
                         null, null, 5);
-                if (location.getBlock().getType() == Material.OBSERVER) {
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            location.getBlock().setType(Material.AIR);
-                        }
-                    }.runTaskLater(OpenCreative.getPlugin(), 1L);
-                } else {
-                    location.getBlock().setType(Material.CAVE_AIR);
-                }
-                planet.getLimits().setLastRedstoneOperationsAmount(0);
+                Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
+                    location.getBlock().setType(Material.AIR);
+                }, 1L);
                 new LimitReachedRedstoneEvent(planet).callEvent();
-            } else {
-                new ua.mcchickenstudio.opencreative.coding.blocks.events.world.blocks.BlockRedstoneEvent(planet, event).callEvent();
+                return;
             }
-            if (planet.getLimits().getLastRedstoneOperationsAmount() > 0) {
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        planet.getLimits().setLastRedstoneOperationsAmount(planet.getLimits().getLastRedstoneOperationsAmount() - 1);
-                    }
-                }.runTaskLater(OpenCreative.getPlugin(), 5L);
-            }
+            new ua.mcchickenstudio.opencreative.coding.blocks.events.world.blocks.BlockRedstoneEvent(planet, event).callEvent();
         }
 
     }

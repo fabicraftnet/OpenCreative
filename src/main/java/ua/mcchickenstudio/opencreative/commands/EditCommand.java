@@ -91,6 +91,9 @@ public class EditCommand extends CommandHandler {
             case "clear":
                 handleClear(player, item);
                 break;
+            default:
+                sender.sendMessage(getLocaleMessage("commands.edit.item"));
+                break;
         }
 
     }

@@ -128,9 +128,20 @@ public final class WorldUtils {
      * @return planet id.
      */
     public static @NotNull String getPlanetIdFromName(@NotNull World world) {
-        return world.getName()
-                .replace(Bukkit.getServer().getWorldContainer() + "/", "")
-                .replace("planets/planet", "");
+        String name = world.getName();
+
+        String prefix = "./planets/planet";
+        if (!name.startsWith(prefix)) {
+            return name;
+        }
+
+        String id = name.substring(prefix.length());
+
+        if (id.endsWith("dev")) {
+            id = id.substring(0, id.length() - 3);
+        }
+
+        return id;
     }
 
     /**

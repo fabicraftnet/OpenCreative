@@ -59,7 +59,7 @@ public class ActionsHandler {
     private final Action action;
     private final Set<Entity> selectedTargets;
     private final ActionsHandler parentActionsHandler;
-    private final Queue<Action> actionsQueue = new LinkedList<>();
+    private final Queue<Action> actionsQueue = new ArrayDeque<>();
     private final boolean doNotUseTryFlag;
     private final UUID uuid = UUID.randomUUID();
 

@@ -46,6 +46,8 @@ public final class LobbySettings {
     private boolean disallowSpawningMobs = true;
     private boolean disallowDamagingMobs = true;
     private boolean disallowWorldEdit = true;
+    private boolean disallowChangingBlocks = true;
+    private boolean disallowEditingArmorStands = true;
     private boolean disableExplosions = true;
     private boolean resetViewDistance = true;
     private boolean resetResourcePack = true;
@@ -73,6 +75,9 @@ public final class LobbySettings {
         disallowSpawningMobs = section.getBoolean("disallow-spawning-mobs", true);
         disallowPlacingBlocks = section.getBoolean("disallow-placing-blocks", true);
         disallowDestroyingBlocks = section.getBoolean("disallow-destroying-blocks", true);
+        disallowChangingBlocks = section.getBoolean("disallow-changing-blocks", true);
+        disallowEditingArmorStands = section.getBoolean("disallow-editing-armor-stands", true);
+
         resetViewDistance = section.getBoolean("reset-view-distance", true);
         resetResourcePack = section.getBoolean("reset-resource-pack", true);
         teleportOnJoin = section.getBoolean("teleport-on-join", true);
@@ -152,6 +157,27 @@ public final class LobbySettings {
      */
     public boolean isPlacingBlocksDisallowed() {
         return disallowPlacingBlocks;
+    }
+
+    /**
+     * Checks whether changing doors, trapdoors, fences
+     * and flower pots in lobby world should be cancelled
+     * without bypass permission.
+     *
+     * @return true - disable placing blocks, false - allow it.
+     */
+    public boolean isChangingBlocksDisallowed() {
+        return disallowChangingBlocks;
+    }
+
+    /**
+     * Checks whether editing armor stands in lobby world
+     * should be cancelled without bypass permission.
+     *
+     * @return true - disable placing blocks, false - allow it.
+     */
+    public boolean isEditingArmorStandsDisallowed() {
+        return disallowEditingArmorStands;
     }
 
     /**

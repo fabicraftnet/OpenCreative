@@ -33,8 +33,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static ua.mcchickenstudio.opencreative.utils.FileUtils.getPlanetConfig;
-import static ua.mcchickenstudio.opencreative.utils.FileUtils.setPlanetConfigParameter;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.*;
 
@@ -102,7 +100,7 @@ public class PlanetPlayers {
 
     public void loadPlayers() {
         clear();
-        FileConfiguration config = getPlanetConfig(planet);
+        FileConfiguration config = planet.getConfiguration().getConfig();
 
         buildersTrusted.addAll(config.getStringList("players.builders.trusted"));
         developersTrusted.addAll(config.getStringList("players.developers.trusted"));
@@ -256,8 +254,8 @@ public class PlanetPlayers {
         if (!planet.isLoaded()) loadPlayers();
         buildersNotTrusted.removeIf(builder -> builder.equalsIgnoreCase(nickname));
         buildersTrusted.removeIf(builder -> builder.equalsIgnoreCase(nickname));
-        setPlanetConfigParameter(planet, "players.builders.not-trusted", buildersNotTrusted);
-        setPlanetConfigParameter(planet, "players.builders.trusted", buildersTrusted);
+        planet.getConfiguration().set("players.builders.not-trusted", buildersNotTrusted);
+        planet.getConfiguration().set("players.builders.trusted", buildersTrusted);
     }
 
     public void removeDeveloper(String nickname) {
@@ -281,8 +279,8 @@ public class PlanetPlayers {
         if (!planet.isLoaded()) loadPlayers();
         developersNotTrusted.removeIf(developer -> developer.equalsIgnoreCase(nickname));
         developersTrusted.removeIf(developer -> developer.equalsIgnoreCase(nickname));
-        setPlanetConfigParameter(planet, "players.developers.not-trusted", developersNotTrusted);
-        setPlanetConfigParameter(planet, "players.developers.trusted", developersTrusted);
+        planet.getConfiguration().set("players.developers.not-trusted", developersNotTrusted);
+        planet.getConfiguration().set("players.developers.trusted", developersTrusted);
     }
 
     public void addDeveloperGuest(String nickname) {
@@ -299,9 +297,9 @@ public class PlanetPlayers {
         developersGuests.add(nickname);
         developersNotTrusted.removeIf(developer -> developer.equalsIgnoreCase(nickname));
         developersTrusted.removeIf(developer -> developer.equalsIgnoreCase(nickname));
-        setPlanetConfigParameter(planet, "players.developers.guests", developersGuests);
-        setPlanetConfigParameter(planet, "players.developers.not-trusted", developersNotTrusted);
-        setPlanetConfigParameter(planet, "players.developers.trusted", developersTrusted);
+        planet.getConfiguration().set("players.developers.guests", developersGuests);
+        planet.getConfiguration().set("players.developers.not-trusted", developersNotTrusted);
+        planet.getConfiguration().set("players.developers.trusted", developersTrusted);
     }
 
     public void addDeveloper(String nickname, boolean trusted) {
@@ -330,9 +328,9 @@ public class PlanetPlayers {
             developersNotTrusted.add(nickname);
         }
         developersGuests.removeIf(developer -> developer.equalsIgnoreCase(nickname));
-        setPlanetConfigParameter(planet, "players.developers.guests", developersGuests);
-        setPlanetConfigParameter(planet, "players.developers.not-trusted", developersNotTrusted);
-        setPlanetConfigParameter(planet, "players.developers.trusted", developersTrusted);
+        planet.getConfiguration().set("players.developers.guests", developersGuests);
+        planet.getConfiguration().set("players.developers.not-trusted", developersNotTrusted);
+        planet.getConfiguration().set("players.developers.trusted", developersTrusted);
     }
 
 
@@ -361,22 +359,22 @@ public class PlanetPlayers {
             buildersTrusted.removeIf(builder -> builder.equalsIgnoreCase(nickname));
             buildersNotTrusted.add(nickname);
         }
-        setPlanetConfigParameter(planet, "players.builders.not-trusted", buildersNotTrusted);
-        setPlanetConfigParameter(planet, "players.builders.trusted", buildersTrusted);
+        planet.getConfiguration().set("players.builders.not-trusted", buildersNotTrusted);
+        planet.getConfiguration().set("players.builders.trusted", buildersTrusted);
         if (!planet.isLoaded()) clear();
     }
 
     public void unbanPlayer(String nickname) {
         if (!planet.isLoaded()) loadPlayers();
         this.bannedPlayers.removeIf(ban -> ban.equalsIgnoreCase(nickname));
-        setPlanetConfigParameter(planet, "players.blacklist", bannedPlayers);
+        planet.getConfiguration().set("players.blacklist", bannedPlayers);
         if (!planet.isLoaded()) clear();
     }
 
     public void removeFromWhitelist(String nickname) {
         if (!planet.isLoaded()) loadPlayers();
         this.whitelistedPlayers.removeIf(whitelisted -> whitelisted.equalsIgnoreCase(nickname));
-        setPlanetConfigParameter(planet, "players.whitelist", whitelistedPlayers);
+        planet.getConfiguration().set("players.whitelist", whitelistedPlayers);
         if (!planet.isLoaded()) clear();
     }
 
@@ -394,7 +392,7 @@ public class PlanetPlayers {
         }
         if (!planet.isLoaded()) loadPlayers();
         bannedPlayers.add(nickname);
-        setPlanetConfigParameter(planet, "players.blacklist", bannedPlayers);
+        planet.getConfiguration().set("players.blacklist", bannedPlayers);
         if (!planet.isLoaded()) clear();
     }
 
@@ -411,7 +409,7 @@ public class PlanetPlayers {
         }
         if (!planet.isLoaded()) loadPlayers();
         whitelistedPlayers.add(nickname);
-        setPlanetConfigParameter(planet, "players.whitelist", whitelistedPlayers);
+        planet.getConfiguration().set("players.whitelist", whitelistedPlayers);
         if (!planet.isLoaded()) clear();
     }
 
@@ -443,35 +441,35 @@ public class PlanetPlayers {
 
     public Set<String> getBuildersTrusted() {
         if (!planet.isLoaded()) {
-            return new HashSet<>(getPlanetConfig(planet).getStringList("players.builders.trusted"));
+            return new HashSet<>(planet.getConfiguration().getConfig().getStringList("players.builders.trusted"));
         }
         return new HashSet<>(buildersTrusted);
     }
 
     public Set<String> getBuildersNotTrusted() {
         if (!planet.isLoaded()) {
-            return new HashSet<>(getPlanetConfig(planet).getStringList("players.builders.not-trusted"));
+            return new HashSet<>(planet.getConfiguration().getConfig().getStringList("players.builders.not-trusted"));
         }
         return new HashSet<>(buildersNotTrusted);
     }
 
     public Set<String> getDevelopersGuests() {
         if (!planet.isLoaded()) {
-            return new HashSet<>(getPlanetConfig(planet).getStringList("players.developers.guests"));
+            return new HashSet<>(planet.getConfiguration().getConfig().getStringList("players.developers.guests"));
         }
         return new HashSet<>(developersGuests);
     }
 
     public Set<String> getDevelopersTrusted() {
         if (!planet.isLoaded()) {
-            return new HashSet<>(getPlanetConfig(planet).getStringList("players.developers.trusted"));
+            return new HashSet<>(planet.getConfiguration().getConfig().getStringList("players.developers.trusted"));
         }
         return new HashSet<>(developersTrusted);
     }
 
     public Set<String> getDevelopersNotTrusted() {
         if (!planet.isLoaded()) {
-            return new HashSet<>(getPlanetConfig(planet).getStringList("players.developers.not-trusted"));
+            return new HashSet<>(planet.getConfiguration().getConfig().getStringList("players.developers.not-trusted"));
         }
         return new HashSet<>(developersNotTrusted);
     }
@@ -504,14 +502,14 @@ public class PlanetPlayers {
 
     public Set<String> getBannedPlayers() {
         if (!planet.isLoaded()) {
-            return new HashSet<>(getPlanetConfig(planet).getStringList("players.blacklist"));
+            return new HashSet<>(planet.getConfiguration().getConfig().getStringList("players.blacklist"));
         }
         return bannedPlayers;
     }
 
     public Set<String> getWhitelistedPlayers() {
         if (!planet.isLoaded()) {
-            return new HashSet<>(getPlanetConfig(planet).getStringList("players.whitelist"));
+            return new HashSet<>(planet.getConfiguration().getConfig().getStringList("players.whitelist"));
         }
         return whitelistedPlayers;
     }
@@ -519,15 +517,15 @@ public class PlanetPlayers {
     public void purgeData() {
         List<String> empty = new ArrayList<>();
         clear();
-        setPlanetConfigParameter(planet, "players.unique", empty);
-        setPlanetConfigParameter(planet, "players.liked", empty);
-        setPlanetConfigParameter(planet, "players.disliked", empty);
-        setPlanetConfigParameter(planet, "players.blacklist", empty);
-        setPlanetConfigParameter(planet, "players.whitelist", empty);
-        setPlanetConfigParameter(planet, "players.developers.trusted", empty);
-        setPlanetConfigParameter(planet, "players.developers.not-trusted", empty);
-        setPlanetConfigParameter(planet, "players.developers.guests", empty);
-        setPlanetConfigParameter(planet, "players.builders.trusted", empty);
-        setPlanetConfigParameter(planet, "players.builders.not-trusted", empty);
+        planet.getConfiguration().set("players.unique", empty);
+        planet.getConfiguration().set("players.liked", empty);
+        planet.getConfiguration().set("players.disliked", empty);
+        planet.getConfiguration().set("players.blacklist", empty);
+        planet.getConfiguration().set("players.whitelist", empty);
+        planet.getConfiguration().set("players.developers.trusted", empty);
+        planet.getConfiguration().set("players.developers.not-trusted", empty);
+        planet.getConfiguration().set("players.developers.guests", empty);
+        planet.getConfiguration().set("players.builders.trusted", empty);
+        planet.getConfiguration().set("players.builders.not-trusted", empty);
     }
 }

@@ -230,7 +230,7 @@ public class PlanetInfo {
      */
     public void setDisplayName(String name) {
         this.displayName = name;
-        setPlanetConfigParameter(planet, "name", name);
+        planet.getConfiguration().set("name", name);
     }
 
     /**
@@ -251,7 +251,7 @@ public class PlanetInfo {
      */
     public void setDescription(String description) {
         this.description = description;
-        setPlanetConfigParameter(planet, "description", description);
+        planet.getConfiguration().set("description", description);
     }
 
     /**
@@ -271,7 +271,7 @@ public class PlanetInfo {
      */
     public void setCategory(Category category) {
         this.category = category;
-        setPlanetConfigParameter(planet, "category", category.toString());
+        planet.getConfiguration().set("category", category.toString());
     }
 
     /**
@@ -292,7 +292,7 @@ public class PlanetInfo {
      */
     public void setCustomID(@NotNull String customID) {
         this.customID = customID;
-        setPlanetConfigParameter(planet, "customID", customID);
+        planet.getConfiguration().set("customID", customID);
     }
 
     /**
@@ -318,9 +318,9 @@ public class PlanetInfo {
         ItemStack newIcon = clearItemMeta(itemStack.clone());
         newIcon.setAmount(1);
         if (ItemUtils.doesItemRequireSpecialData(newIcon)) {
-            setPlanetConfigParameter(planet, "icon", ItemUtils.saveItemAsByteArray(newIcon));
+            planet.getConfiguration().set("icon", ItemUtils.saveItemAsByteArray(newIcon));
         } else {
-            setPlanetConfigParameter(planet, "icon", newIcon.getType().name());
+            planet.getConfiguration().set("icon", newIcon.getType().name());
         }
         this.icon = newIcon;
         updateIcon();
@@ -383,7 +383,7 @@ public class PlanetInfo {
      */
     public void setDownloadable(boolean downloadable) {
         this.downloadable = downloadable;
-        setPlanetConfigParameter(planet, "downloadable", downloadable);
+        planet.getConfiguration().set("downloadable", downloadable);
     }
 
     /**

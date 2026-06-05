@@ -45,6 +45,7 @@ public abstract class RepeatAction extends MultiAction {
     private int calls = 0;
     private boolean mustStop = false;
     private ActionsHandler internalHandler;
+    private long callsResetTime = 0;
 
     public RepeatAction(Executor executor, Target target, int x, Arguments args, List<Action> actions) {
         super(executor, target, x, args, actions);
@@ -94,18 +95,15 @@ public abstract class RepeatAction extends MultiAction {
      * Increases call by 1 and checks limits.
      */
     public void increaseCalls() {
+        long now = System.currentTimeMillis();
+        if (now - callsResetTime > 1000) {
+            calls = 0;
+            callsResetTime = now;
+        }
         calls++;
         if (calls > getPlanet().getLimits().getRepeatsAmountLimit()) {
             throw new TooManyRepeatsException();
         }
-        BukkitRunnable runnable = new BukkitRunnable() {
-            @Override
-            public void run() {
-                calls--;
-            }
-        };
-        getPlanet().getTerritory().addBukkitRunnable(runnable);
-        runnable.runTaskLater(OpenCreative.getPlugin(), 20L);
     }
 
     /**
