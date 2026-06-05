@@ -405,13 +405,14 @@ public class WorldCommand extends CommandHandler {
                 }.runTaskAsynchronously(OpenCreative.getPlugin());
             }
             case "info" -> sendPlanetInfo(player, planet);
-            default -> {
+            case "" -> {
                 if (planet.isOwner(player)) {
                     new WorldSettingsMenu(planet, player).open(player);
                 } else {
                     sendPlanetInfo(player, planet);
                 }
             }
+            default -> sender.sendMessage(getUnknownArgumentMessage(label, args));
         }
     }
 

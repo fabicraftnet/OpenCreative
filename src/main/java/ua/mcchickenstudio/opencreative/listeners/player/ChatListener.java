@@ -481,6 +481,7 @@ public final class ChatListener implements Listener {
                 planet.getInformation().updateIconAsync();
                 OpenCreative.getPlugin().getLogger().info("[WORLD-CHAT: " + planet.getId() + "] " + player.getName() + " renamed world to: " + input);
                 Sounds.WORLD_SETTINGS_NAME_CHANGE.play(player);
+                return true;
             }
             case WORLD_CUSTOM_ID_CHANGE -> {
                 if (planet == null || !planet.isOwner(player)) return false;
@@ -504,6 +505,7 @@ public final class ChatListener implements Listener {
                 planet.getInformation().updateIconAsync();
                 OpenCreative.getPlugin().getLogger().info("[WORLD-CHAT: " + planet.getId() + "] " + player.getName() + " changed world's ID to: " + input);
                 Sounds.WORLD_SETTINGS_CUSTOM_ID_SET.play(player);
+                return true;
             }
             case WORLD_DESCRIPTION_CHANGE -> {
                 if (planet == null || !planet.isOwner(player)) return false;
@@ -522,6 +524,7 @@ public final class ChatListener implements Listener {
                 planet.getInformation().updateIconAsync();
                 OpenCreative.getPlugin().getLogger().info("[WORLD-CHAT: " + planet.getId() + "] " + player.getName() + " changed world's description to: " + input);
                 Sounds.WORLD_SETTINGS_DESCRIPTION_SET.play(player);
+                return true;
             }
             case FIND_PLANETS_BY_NAME -> {
                 input = ChatColor.translateAlternateColorCodes('&', input);

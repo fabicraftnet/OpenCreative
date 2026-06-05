@@ -52,6 +52,7 @@ import ua.mcchickenstudio.opencreative.utils.hooks.HookUtils;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.isOutOfBorders;
@@ -78,6 +79,7 @@ public class Planet {
     private final int id;
     private final PlanetInfo info;
     private final DevPlanet devPlanet;
+    private final PlanetConfig config;
     private final PlanetLimits limits;
     private final PlanetTerritory territory;
     private final PlanetPlayers worldPlayers;
@@ -101,6 +103,7 @@ public class Planet {
     public Planet(int id) {
 
         this.id = id;
+        config = new PlanetConfig(this);
         devPlanet = new DevPlanet(this);
         info = new PlanetInfo(this);
 
@@ -136,6 +139,15 @@ public class Planet {
      */
     public PlanetPlayers getWorldPlayers() {
         return worldPlayers;
+    }
+
+    /**
+     * Returns configuration, that stores settings of planet.
+     *
+     * @return planet's config.
+     */
+    public PlanetConfig getConfiguration() {
+        return config;
     }
 
     /**
@@ -227,7 +239,7 @@ public class Planet {
     public void setSharing(@NotNull Sharing sharing) {
         if (this.sharing == sharing) return;
         this.sharing = sharing;
-        setPlanetConfigParameter(this, "sharing", sharing.name());
+        config.set("sharing", sharing.name());
     }
 
     /**
@@ -318,7 +330,7 @@ public class Planet {
      * @return true - if loaded, false - unloaded.
      */
     public boolean isLoaded() {
-        return Bukkit.getWorld(getWorldName()) != null;
+        return getWorld() != null;
     }
 
     /**
@@ -327,7 +339,10 @@ public class Planet {
      * @return world, or null.
      */
     public World getWorld() {
-        return Bukkit.getWorld(getWorldName());
+        if (territory == null) return null;
+        UUID uuid = territory.getWorldUUID();
+        if (uuid == null) return null;
+        return Bukkit.getWorld(uuid);
     }
 
     /**
@@ -383,7 +398,7 @@ public class Planet {
      */
     public void setCreationTime(long creationTime) {
         this.creationTime = creationTime;
-        FileUtils.setPlanetConfigParameter(this, "creation-time", creationTime);
+        config.set("sharing", String.valueOf(creationTime)); // string, because of older versions
         info.updateIconAsync();
     }
 
@@ -409,7 +424,7 @@ public class Planet {
      */
     public void setLastActivityTime(long activityTime) {
         this.lastActivityTime = activityTime;
-        FileUtils.setPlanetConfigParameter(this, "last-activity-time", activityTime);
+        config.set("last-activity-time", activityTime); // string, because of older versions
     }
 
     /**
@@ -462,8 +477,8 @@ public class Planet {
      */
     public void setOwner(String owner) {
         this.owner = owner;
-        FileUtils.setPlanetConfigParameter(this, "owner", owner);
-        FileUtils.setPlanetConfigParameter(this, "owner-uuid", Bukkit.getOfflinePlayer(owner).getUniqueId().toString());
+        config.set("owner", owner);
+        config.set("owner-uuid", Bukkit.getOfflinePlayer(owner).getUniqueId().toString());
         info.updateIconAsync();
     }
 
@@ -486,7 +501,7 @@ public class Planet {
      */
     public void setMode(@NotNull Mode mode, boolean ignoreEvents) {
         if (this.mode == mode) return;
-        setPlanetConfigParameter(this, "mode", mode.name());
+        config.set("mode", mode.name());
         if (!isLoaded()) {
             this.mode = mode;
             return;
@@ -692,27 +707,62 @@ public class Planet {
             Sounds.PLAYER_FAIL.play(player);
             return;
         }
-        // If world is private/player is banned, not connecting
-        if (!isOwner(player.getName())) {
-            if (getSharing() != Sharing.PUBLIC && !player.hasPermission("opencreative.world.private.bypass") && !worldPlayers.isWhitelisted(player.getName())) {
-                player.sendMessage(MessageUtils.getPlayerLocaleMessage("private-planet", player));
-                return;
-            }
-            if (worldPlayers.isBanned(player.getName()) && !player.hasPermission("opencreative.world.banned.bypass")) {
-                player.sendMessage(MessageUtils.getPlayerLocaleMessage("blacklisted-in-planet", player));
-                return;
-            }
-        }
 
+        if (territory.isBusy()) {
+            player.sendMessage(getLocaleMessage("world.connecting.unloading"));
+            return;
+        }
         Wander wander = OpenCreative.getWander(player);
         if (wander.isConnectingToPlanet()) {
             player.sendMessage(getLocaleMessage("world.connecting.busy"));
             return;
         }
-        if (territory.isBusy()) {
-            player.sendMessage(getLocaleMessage("world.connecting.unloading"));
-            return;
+
+        // If world is private/player is banned, not connecting
+        if (!isOwner(player.getName())) {
+            boolean hasPrivateBypass = player.hasPermission("opencreative.world.private.bypass");
+            boolean hasBanBypass = player.hasPermission("opencreative.world.banned.bypass");
+            Sharing sharing = getSharing();
+            if (isLoaded()) {
+                if (sharing != Sharing.PUBLIC && !hasPrivateBypass && !worldPlayers.isWhitelisted(player.getName())) {
+                    player.sendMessage(MessageUtils.getPlayerLocaleMessage("private-planet", player));
+                    return;
+                }
+                if (worldPlayers.isBanned(player.getName()) && !hasBanBypass) {
+                    player.sendMessage(MessageUtils.getPlayerLocaleMessage("blacklisted-in-planet", player));
+                    return;
+                }
+                handlePreTeleportationProcess(player, wander, hidePlayer);
+            } else {
+                Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
+                    boolean isWhitelisted = worldPlayers.isWhitelisted(player.getName());
+                    boolean isBanned = worldPlayers.isBanned(player.getName());
+                    if (sharing != Sharing.PUBLIC && !hasPrivateBypass && !isWhitelisted) {
+                        player.sendMessage(MessageUtils.getPlayerLocaleMessage("private-planet", player));
+                        return;
+                    }
+                    if (isBanned && !hasBanBypass) {
+                        player.sendMessage(MessageUtils.getPlayerLocaleMessage("blacklisted-in-planet", player));
+                        return;
+                    }
+                    Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
+                        handlePreTeleportationProcess(player, wander, hidePlayer);
+                    });
+                });
+            }
+        } else {
+            handlePreTeleportationProcess(player, wander, hidePlayer);
         }
+    }
+
+    /**
+     * Handles process of player pre-teleportation to planet.
+     *
+     * @param player  player to connect.
+     * @param wander  player as wander.
+     * @param hidePlayer whether player join message should be hidden.
+     */
+    private void handlePreTeleportationProcess(@NotNull Player player, @NotNull Wander wander, boolean hidePlayer) {
         new QuitEvent(player).callEvent();
         wander.setConnectingToPlanet(true);
         player.showTitle(Title.title(
@@ -731,7 +781,7 @@ public class Planet {
         }
         removePassengers(player);
         player.teleportAsync(territory.getSpawnLocation()).thenAccept(success -> {
-            handleConnectionProcess(player, wasLoaded, hidePlayer, success);
+            handleTeleportationProcess(player, wasLoaded, hidePlayer, success);
         }).exceptionally(error -> {
             player.clearTitle();
             sendPlayerErrorMessage(player, "Failed to connect to the world " + this.getId() +
@@ -742,14 +792,14 @@ public class Planet {
     }
 
     /**
-     * Handles process of player connection to planet.
+     * Handles process of player teleportation to planet.
      *
      * @param player     player to connect.
      * @param wasLoaded  whether world was loaded before.
      * @param hidePlayer whether player join message should be hidden.
      * @param success    chunks are loaded successfully to teleport or not.
      */
-    private void handleConnectionProcess(@NotNull Player player, boolean wasLoaded, boolean hidePlayer, boolean success) {
+    private void handleTeleportationProcess(@NotNull Player player, boolean wasLoaded, boolean hidePlayer, boolean success) {
         clearPlayer(player, false, OpenCreative.getSettings().getLobbySettings().shouldResetGameMode(player.getWorld()));
         if (success) {
             OpenCreative.getWander(player).setConnectingToPlanet(false);

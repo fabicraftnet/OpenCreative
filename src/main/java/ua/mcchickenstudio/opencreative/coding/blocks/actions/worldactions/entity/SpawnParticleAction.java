@@ -18,14 +18,19 @@
 
 package ua.mcchickenstudio.opencreative.coding.blocks.actions.worldactions.entity;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.worldactions.WorldAction;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
+
+import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCodingDebugLog;
 
@@ -45,9 +50,15 @@ public final class SpawnParticleAction extends WorldAction {
         double offsetX = getArguments().getDouble("offset-x", 0.0d, this);
         double offsetY = getArguments().getDouble("offset-y", 0.0d, this);
         double offsetZ = getArguments().getDouble("offset-z", 0.0d, this);
-        for (Location location : getArguments().getLocationList("locations", this)) {
-            getPlanet().getTerritory().getWorld().spawnParticle(particle, location, count, offsetX, offsetY, offsetZ);
-        }
+        List<Location> locations = getArguments().getLocationList("locations", this);
+        List<Player> players = getWorld().getPlayers();
+        Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
+            for (Location location : locations) {
+                for (Player player : players) {
+                    player.spawnParticle(particle, location, count, offsetX, offsetY, offsetZ);
+                }
+            }
+        });
     }
 
     @Override

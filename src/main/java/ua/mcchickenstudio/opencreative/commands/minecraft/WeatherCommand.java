@@ -34,6 +34,7 @@ import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getUnknownArgumentMessage;
 
 /**
  * <h1>WeatherCommand</h1>
@@ -90,6 +91,9 @@ public class WeatherCommand extends CommandHandler {
                 player.getWorld().setStorm(true);
                 player.getWorld().setThundering(true);
                 player.sendMessage(getLocaleMessage("commands.weather.changed.thunder"));
+            }
+            default -> {
+                sender.sendMessage(getLocaleMessage("commands.weather.help"));
             }
         }
     }

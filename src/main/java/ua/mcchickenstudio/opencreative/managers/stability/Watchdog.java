@@ -60,16 +60,9 @@ public final class Watchdog implements StabilityManager, Toggleable {
         if (runnable != null) {
             runnable.cancel();
         }
-        StabilityManager manager = this;
         runnable = new BukkitRunnable() {
             @Override
             public void run() {
-
-                if (!manager.equals(OpenCreative.getStability())) {
-                    cancel();
-                    return;
-                }
-
                 long heapSize = Runtime.getRuntime().totalMemory();
                 long heapMaxSize = Runtime.getRuntime().maxMemory();
                 if (heapSize > heapMaxSize) {

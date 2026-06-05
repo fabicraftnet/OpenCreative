@@ -18,10 +18,12 @@
 
 package ua.mcchickenstudio.opencreative.coding.blocks.actions.playeractions.appearance;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
@@ -48,7 +50,9 @@ public final class ShowParticleAction extends PlayerAction {
         double offsetY = getArguments().getDouble("offset-y", 0.0d, this);
         double offsetZ = getArguments().getDouble("offset-z", 0.0d, this);
         for (Location location : getArguments().getLocationList("locations", this)) {
-            player.spawnParticle(particle, location, count, offsetX, offsetY, offsetZ);
+            Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
+                player.spawnParticle(particle, location, count, offsetX, offsetY, offsetZ);
+            });
         }
     }
 

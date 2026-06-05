@@ -37,6 +37,7 @@ import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.modules.Module;
 import ua.mcchickenstudio.opencreative.commands.experiments.Experiment;
 import ua.mcchickenstudio.opencreative.commands.experiments.Experiments;
+import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
 import ua.mcchickenstudio.opencreative.settings.filters.Filter;
 import ua.mcchickenstudio.opencreative.settings.filters.FilterResult;
 import ua.mcchickenstudio.opencreative.utils.world.generators.EmptyGenerator;
@@ -351,6 +352,9 @@ public class CreativeCommand extends CommandHandler {
                             .replace("%id%", id));
                     Sounds.PLAYER_FAIL.play(sender);
                     return;
+                }
+                if (size > 9999999) {
+                    size = 9999999;
                 }
                 if (size == 0) {
                     planet.getTerritory().resetWorldSize();
@@ -1143,11 +1147,7 @@ public class CreativeCommand extends CommandHandler {
             }
             case "template" -> handleTemplateCommand(sender, args);
             default -> {
-                sender.sendMessage(getCopyrightMessage());
-                if (player != null) {
-                    Sounds.OPENCREATIVE.play(player);
-                    new CreativeMenu().open(player);
-                }
+                sender.sendMessage(getUnknownArgumentMessage(label, args));
             }
         }
     }
@@ -1608,12 +1608,12 @@ public class CreativeCommand extends CommandHandler {
             List<Planet> corruptedPlanets = new ArrayList<>(OpenCreative.getPlanetsManager().getCorruptedPlanets());
             sender.sendMessage(getLocaleMessage("creative.corrupted-worlds.list")
                     .replace("%amount%", String.valueOf(corruptedPlanets.size())));
-            String worldMessage = getLocaleMessage("creative.corrupted-worlds.world");
+            Component worldMessage = getLocaleComponent("creative.corrupted-worlds.world");
             Comparator<Planet> sortById = Comparator.comparingInt(Planet::getId);
             corruptedPlanets.sort(sortById);
             for (Planet planet : corruptedPlanets) {
-                sender.sendMessage(Component.text(worldMessage
-                                .replace("%id%", String.valueOf(planet.getId())))
+                sender.sendMessage(new PlaceholderReplacer("id", String.valueOf(planet.getId()))
+                    .apply(worldMessage)
                         .clickEvent(ClickEvent.runCommand("/oc corrupted " + planet.getId() + " join"))
                 );
             }
@@ -1643,12 +1643,12 @@ public class CreativeCommand extends CommandHandler {
         String action = args[2];
         switch (action.toLowerCase()) {
             case "teleport", "tp", "join", "load" -> {
-                if (getPlanetConfig(foundPlanet).getString("generator", "").isEmpty()) {
+                if (foundPlanet.getConfiguration().getConfig().getString("generator", "").isEmpty()) {
                     foundPlanet.getTerritory().setGenerator(new EmptyGenerator());
                 }
                 foundPlanet.getTerritory().load();
                 if (sender instanceof Player player) {
-                    foundPlanet.connectPlayer(player);
+                    foundPlanet.connectPlayer(player, true);
                 }
             }
             case "unload" -> foundPlanet.getTerritory().unload();
@@ -1893,6 +1893,8 @@ public class CreativeCommand extends CommandHandler {
             } else if ("groups".equalsIgnoreCase(args[0]) && "edit".equalsIgnoreCase(args[1])) {
                 tabCompleter.add("limit");
                 tabCompleter.add("modifier");
+            } else if ("corrupted".equalsIgnoreCase(args[0])) {
+                return null;
             }
         } else if (args.length == 5) {
             if ("items".equalsIgnoreCase(args[0])) {
