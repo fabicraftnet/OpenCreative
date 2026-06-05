@@ -782,6 +782,10 @@ public class EnvironmentCommand extends CommandHandler {
                                     });
                         }
                     }.runTaskAsynchronously(OpenCreative.getPlugin());
+                    break;
+                }
+                default: {
+                    sender.sendMessage(getUnknownArgumentMessage(label, args));
                 }
             }
 

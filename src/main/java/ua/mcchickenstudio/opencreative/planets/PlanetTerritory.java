@@ -44,6 +44,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static ua.mcchickenstudio.opencreative.utils.BlockUtils.isOutOfBorders;
 import static ua.mcchickenstudio.opencreative.utils.FileUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.clearOnceMessages;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
@@ -61,19 +62,19 @@ public class PlanetTerritory {
     private final PlanetFlags flags;
     private final PlanetScoreboards scoreboards;
     private final PlanetRecipes recipes;
-
     private final Map<String, BossBar> bossBars = new HashMap<>();
     private final Set<BukkitRunnable> runningBukkitRunnables = ConcurrentHashMap.newKeySet();
-
     private final CodeScript script;
-    private Location spawnLocation = null;
-    private String generator = "";
-    private int worldSize = 25;
-    private World.Environment environment;
+
+    private UUID worldID;
     private String biome;
+    private int worldSize = 25;
+    private String generator = "";
+    private Location spawnLocation;
+    private World.Environment environment;
+    private boolean ignoreUnloading = false;
     private boolean autoSave = true;
     private boolean busy = false;
-    private boolean ignoreUnloading = false;
 
     public PlanetTerritory(@NotNull Planet planet) {
         this.planet = planet;
@@ -115,7 +116,7 @@ public class PlanetTerritory {
                 showBorders(player);
             }
         }
-        if (save) FileUtils.setPlanetConfigParameter(planet, "size", size);
+        if (save) planet.getConfiguration().set("size", size);
     }
 
     private void loadInformation() {
@@ -139,11 +140,12 @@ public class PlanetTerritory {
     public synchronized void load() {
         long startTime = System.currentTimeMillis();
 
+        planet.getConfiguration().load();
         loadInformation();
         flags.loadFlags();
         planet.getWorldPlayers().loadPlayers();
 
-        ConfigurationSection spawnSection = getPlanetConfig(planet).getConfigurationSection("spawn");
+        ConfigurationSection spawnSection = planet.getConfiguration().getConfig().getConfigurationSection("spawn");
         if (spawnSection != null) {
             double x = spawnSection.getDouble("x", 0);
             double y = spawnSection.getDouble("y", 0);
@@ -280,11 +282,11 @@ public class PlanetTerritory {
             for (Location location : changes) {
                 changesString.add(location.getBlockX() + " " + location.getBlockY() + " " + location.getBlockZ());
             }
-            FileUtils.setPlanetConfigParameter(planet, "changed-code-columns", changesString);
+            planet.getConfiguration().set("changed-code-columns", changesString);
         } else {
             FileUtils.removePlanetConfigParameter(planet, "changed-code-columns");
         }
-        FileUtils.setPlanetConfigParameter(planet, "environment", planet.getTerritory().getEnvironment().name());
+        planet.getConfiguration().set("environment", planet.getTerritory().getEnvironment().name());
         planet.getVariables().save();
         clearData();
     }
@@ -306,6 +308,7 @@ public class PlanetTerritory {
         spawnLocation = null;
         clearOnceMessages(planet);
         recipes.clear();
+        planet.getConfiguration().unload();
     }
 
     public void addBukkitRunnable(BukkitRunnable runnable) {
@@ -544,6 +547,10 @@ public class PlanetTerritory {
         if (world == null) return spawnLocation;
         if (spawnLocation != null) {
             spawnLocation.setWorld(world);
+            Location location = spawnLocation;
+            if (!world.getWorldBorder().isInside(location)) {
+                spawnLocation = world.getWorldBorder().getCenter();
+            }
             return spawnLocation;
         }
         return world.getSpawnLocation();
@@ -562,7 +569,25 @@ public class PlanetTerritory {
         if (world != null) world.setSpawnLocation(spawnLocation);
 
         Map<String, Double> configLocation = WorldUtils.fromLocationToMap(spawnLocation);
-        FileUtils.setPlanetConfigParameter(planet, "spawn", configLocation);
+        planet.getConfiguration().set("spawn", configLocation);
+    }
+
+    /**
+     * Sets ID of planet's build world.
+     *
+     * @param uuid uuid of world, null - if not loaded.
+     */
+    public void setWorld(@Nullable UUID uuid) {
+        worldID = uuid;
+    }
+
+    /**
+     * Returns unique ID of loaded build world.
+     *
+     * @return uuid of world, null - if not loaded.
+     */
+    public @Nullable UUID getWorldUUID() {
+        return worldID;
     }
 
     /**
@@ -615,7 +640,7 @@ public class PlanetTerritory {
             return;
         }
         this.generator = generator.getID();
-        setPlanetConfigParameter(planet, "generator", generator.getID());
+        planet.getConfiguration().set("generator", generator.getID());
     }
 
     /**
@@ -633,6 +658,6 @@ public class PlanetTerritory {
         if (getWorld() != null) {
             getWorld().setAutoSave(autoSave);
         }
-        FileUtils.setPlanetConfigParameter(planet, "autosave", !autoSave ? false : null);
+        planet.getConfiguration().set("autosave", !autoSave ? false : null);
     }
 }

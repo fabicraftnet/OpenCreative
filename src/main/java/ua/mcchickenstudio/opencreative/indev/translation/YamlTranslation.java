@@ -16,7 +16,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ua.mcchickenstudio.opencreative.indev;
+package ua.mcchickenstudio.opencreative.indev.translation;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -39,17 +39,17 @@ import static ua.mcchickenstudio.opencreative.utils.MessageUtils.toComponent;
 
 public class YamlTranslation implements TranslationManager {
 
-    private final @NotNull List<@NotNull Translation> translations = new ArrayList<>();
+    private final Map<String,  Translation> translations = new HashMap<>();
 
     @Override
     public @NotNull List<Translation> getTranslations() {
-        return new ArrayList<>(translations);
+        return new ArrayList<>(translations.values());
     }
 
     @Override
     public @Nullable Translation getTranslation(@NotNull String lang) {
         for (Translation translation : getTranslations()) {
-            if (translation.getLang().equals(lang)) {
+            if (translation.getId().equals(lang)) {
                 return translation;
             }
         }
@@ -92,7 +92,7 @@ public class YamlTranslation implements TranslationManager {
 
     public void start() {
         /*
-         * Loads translations from file
+         * Loads translations from file.
          */
         try {
             File localesFolder = new File(OpenCreative.getPlugin().getDataFolder() + File.separator + "locales");
@@ -109,8 +109,9 @@ public class YamlTranslation implements TranslationManager {
             File[] localesFiles = localesFolder.listFiles();
             if (localesFiles == null) return;
             for (File localeFile : localesFiles) {
+                String localeID = localeFile.getName().replace(".yml", "");
                 if (localeFile.getPath().endsWith(".yml")) {
-                    Translation translation = new Translation(localeFile.getName(),new ItemStack(Material.APPLE));
+                    Translation translation = new Translation(localeID, new ItemStack(Material.APPLE));
                     FileConfiguration config = YamlConfiguration.loadConfiguration(localeFile);
                     for (String key : config.getKeys(true)) {
                         String message = config.getString(key);
@@ -119,15 +120,13 @@ public class YamlTranslation implements TranslationManager {
                         }
                     }
                     if (!translation.getMessages().isEmpty()) {
-                        translations.add(translation);
+                        translations.put(localeID, translation);
                     }
                 }
             }
         } catch (Exception exception) {
-            sendCriticalErrorMessage("Cannot load localization files.",exception);
+            sendCriticalErrorMessage("Cannot load localization files.", exception);
         }
-
-
     }
 
     @Override

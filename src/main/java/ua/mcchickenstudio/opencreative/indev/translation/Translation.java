@@ -16,7 +16,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ua.mcchickenstudio.opencreative.indev;
+package ua.mcchickenstudio.opencreative.indev.translation;
 
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -26,11 +26,11 @@ import java.util.Map;
 
 public class Translation {
 
-    private final @NotNull String lang;
+    private final @NotNull String id;
     private final @NotNull ItemStack icon;
 
-    public Translation(@NotNull String lang, @NotNull ItemStack icon) {
-        this.lang = lang;
+    public Translation(@NotNull String id, @NotNull ItemStack icon) {
+        this.id = id;
         this.icon = icon;
     }
 
@@ -44,20 +44,20 @@ public class Translation {
         return icon;
     }
 
-    public @NotNull String getLang() {
-        return lang;
+    public @NotNull String getId() {
+        return id;
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Translation translation) {
-            return translation.lang.equals(lang);
+            return translation.id.equals(id);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return lang.hashCode();
+        return id.hashCode();
     }
 }

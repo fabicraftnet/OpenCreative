@@ -41,11 +41,11 @@ public class PlanetFlags {
 
     public void setFlag(PlanetFlag planetFlag, byte value) {
         flags.put(planetFlag, value);
-        FileUtils.setPlanetConfigParameter(planet, planetFlag.getConfigPath(), value);
+        planet.getConfiguration().set(planetFlag.getConfigPath(), value);
     }
 
     public void loadFlags() {
-        FileConfiguration configuration = FileUtils.getPlanetConfig(planet);
+        FileConfiguration configuration = planet.getConfiguration().getConfig();
         for (PlanetFlag flag : PlanetFlag.values()) {
             String configValue = configuration.getString(flag.getConfigPath());
             if (configValue == null || configValue.isEmpty()) {

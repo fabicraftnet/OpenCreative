@@ -184,6 +184,10 @@ public final class BlockChangeListener implements Listener {
     public void onFallingBlock(EntityChangeBlockEvent event) {
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(event.getBlock().getWorld());
         if (planet != null && event.getEntityType() == EntityType.FALLING_BLOCK) {
+            if (!planet.getLimits().canBlockFall()) {
+                event.setCancelled(true);
+                return;
+            }
             new BlockPhysicsEvent(planet, event).callEvent();
         }
     }

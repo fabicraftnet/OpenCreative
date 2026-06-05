@@ -51,6 +51,8 @@ import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executors;
 import ua.mcchickenstudio.opencreative.coding.placeholders.Placeholders;
 import ua.mcchickenstudio.opencreative.coding.values.EventValue;
 import ua.mcchickenstudio.opencreative.coding.values.EventValues;
+import ua.mcchickenstudio.opencreative.indev.translation.TranslationManager;
+import ua.mcchickenstudio.opencreative.indev.translation.YamlTranslation;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
 import ua.mcchickenstudio.opencreative.utils.FileUtils;
@@ -181,7 +183,7 @@ public final class TestificationExperiment extends Experiment {
                     sendPlayerErrorMessage(player, "Failed to read variables and show dialog", error);
                 }
             }
-        } else if (args[0].equalsIgnoreCase("debug")) {
+        }  else if (args[0].equalsIgnoreCase("debug")) {
             if (sender instanceof Player player) {
                 showDialog(player,
                         Component.text("McChicken Studio 2017-2026", NamedTextColor.RED),
@@ -237,6 +239,11 @@ public final class TestificationExperiment extends Experiment {
                 return;
             }
             sender.sendMessage("--- Untranslated: " + untranslatedBlocks.size());
+        } else if (args[0].equalsIgnoreCase("translationstart")) {
+            OpenCreative.getManagers().register(TranslationManager.class, new YamlTranslation());
+            TranslationManager manager = OpenCreative.getManagers().get(TranslationManager.class);
+            manager.start();
+            sender.sendMessage(manager.getLocaleComponent("lobby.message", "ru"));
         } else if (args[0].equalsIgnoreCase("item")) {
             if (!(sender instanceof Player player)) {
                 return;
@@ -270,7 +277,6 @@ public final class TestificationExperiment extends Experiment {
 
                 }
             }
-
         }
     }
 

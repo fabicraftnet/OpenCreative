@@ -38,20 +38,21 @@ public class PlanetLimits {
 
     private final Planet planet;
 
-    private final LinkedList<Long> lastRecipeOperations = new LinkedList<>();
-    private final LinkedList<Long> lastExplosionSpawns = new LinkedList<>();
-    private final LinkedList<Long> lastWebRequests = new LinkedList<>();
-    private final LinkedList<Long> lastMobSpawnsBySpawner = new LinkedList<>();
-    private final LinkedList<Long> lastLightningsStrikes = new LinkedList<>();
-    private final LinkedList<Long> lastBeesSpawns = new LinkedList<>();
-    private final LinkedList<Long> lastCodingErrors = new LinkedList<>();
-    private final LinkedList<Long> lastActionsCalls = new LinkedList<>();
+    private final Deque<Long> lastRecipeOperations = new ArrayDeque<>();
+    private final Deque<Long> lastExplosionSpawns = new ArrayDeque<>();
+    private final Deque<Long> lastWebRequests = new ArrayDeque<>();
+    private final Deque<Long> lastMobSpawnsBySpawner = new ArrayDeque<>();
+    private final Deque<Long> lastLightningsStrikes = new ArrayDeque<>();
+    private final Deque<Long> lastBeesSpawns = new ArrayDeque<>();
+    private final Deque<Long> lastCodingErrors = new ArrayDeque<>();
+    private final Deque<Long> lastActionsCalls = new ArrayDeque<>();
+    private final Deque<Long> lastBlockFalls = new ArrayDeque<>();
+    private final Deque<Long> lastRedstoneOperations = new ArrayDeque<>();
 
     private final Map<UUID, Deque<Long>> lastPlayerMenuOpens = new HashMap<>();
     private final Map<UUID, Deque<Long>> lastPlayerInventoryLoads = new HashMap<>();
 
     private int lastModifiedBlocksAmount;
-    private int lastRedstoneOperationsAmount;
     private int lastModifiedTargetsAmount;
     private int lastListElementsChangesAmount;
 
@@ -295,16 +296,7 @@ public class PlanetLimits {
      * @return number of redstone operations.
      */
     public int getLastRedstoneOperationsAmount() {
-        return lastRedstoneOperationsAmount;
-    }
-
-    /**
-     * Sets last redstone operations amount.
-     *
-     * @param lastRedstoneOperationsAmount number of redstone operations.
-     */
-    public void setLastRedstoneOperationsAmount(int lastRedstoneOperationsAmount) {
-        this.lastRedstoneOperationsAmount = lastRedstoneOperationsAmount;
+        return lastRedstoneOperations.size();
     }
 
     /**
@@ -414,6 +406,56 @@ public class PlanetLimits {
             return false;
         } else {
             lastBeesSpawns.add(now);
+            return true;
+        }
+
+    }
+
+    /**
+     * Checks if redstone block (redstone, pistons, droppers...)
+     * can work to avoid too many redstone operations crash.
+     * Checks if operations amount in last 1 second is not greater than limit.
+     *
+     * @return true - if it's allowed to change redstone blocks, false - not.
+     */
+    public boolean canRedstoneWork() {
+
+        long now = System.currentTimeMillis();
+
+        // Removes time from list, if it's more than 1 second.
+        while (!lastRedstoneOperations.isEmpty() && (now - lastRedstoneOperations.peek()) > 1000) {
+            lastRedstoneOperations.poll();
+        }
+
+        if (lastRedstoneOperations.size() >= getRedstoneOperationsLimit()) {
+            return false;
+        } else {
+            lastRedstoneOperations.add(now);
+            return true;
+        }
+
+    }
+
+    /**
+     * Checks if block (anvil, gravel, sand) can fall in world
+     * to prevent too many falling blocks falling. Checks if the amount
+     * of fell blocks in last 3 seconds is not greater than 100.
+     *
+     * @return true - if it's allowed to exit from beehive for bee, false - it's disallowed.
+     */
+    public boolean canBlockFall() {
+
+        long now = System.currentTimeMillis();
+
+        // Removes time from list, if it's more than 3 seconds.
+        while (!lastBlockFalls.isEmpty() && (now - lastBlockFalls.peek()) > 3000) {
+            lastBlockFalls.poll();
+        }
+
+        if (lastBlockFalls.size() >= 100) {
+            return false;
+        } else {
+            lastBlockFalls.add(now);
             return true;
         }
 
@@ -652,8 +694,9 @@ public class PlanetLimits {
      */
     public void clear() {
         lastModifiedBlocksAmount = 0;
-        lastRedstoneOperationsAmount = 0;
         lastListElementsChangesAmount = 0;
+        lastBlockFalls.clear();
+        lastRedstoneOperations.clear();
         lastLightningsStrikes.clear();
         lastBeesSpawns.clear();
         lastPlayerMenuOpens.clear();

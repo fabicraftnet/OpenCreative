@@ -87,8 +87,12 @@ public final class Moduler implements ModuleManager {
     }
 
     public @Nullable Module getModuleById(@NotNull String id) {
-        int moduleID = Integer.parseInt(id);
-        return modules.get(moduleID);
+        try {
+            int moduleID = Integer.parseInt(id);
+            return modules.get(moduleID);
+        } catch (Exception error) {
+            return null;
+        }
     }
 
     public @NotNull Set<Module> getModules() {

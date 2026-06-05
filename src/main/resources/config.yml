@@ -185,6 +185,12 @@ lobby:
   # Disables any explosion (from creeper or TNT) in lobby.
   disable-explosions: true
 
+  # Disables changing doors, fences, flower pots, item frames and trapdoors, if player doesn't have permission: opencreative.lobby.changing-blocks.bypass
+  disallow-changing-blocks: true
+
+  # Disables changing armor stands in lobby, if player doesn't have permission: opencreative.lobby.editing-armor-stands.bypass
+  disallow-editing-armor-stands: true
+
   # Clears inventory when player moves between worlds.
   #
   # Recommended value: "all", it clears player's inventory, when they

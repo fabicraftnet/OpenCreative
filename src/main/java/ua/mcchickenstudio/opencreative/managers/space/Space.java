@@ -55,7 +55,7 @@ import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isPlanet;
 public final class Space implements PlanetsManager, Startable {
 
     private final Map<Integer, Planet> planets = new HashMap<>();
-    private final Set<Planet> corruptedPlanets = new HashSet<>();
+    private final Map<Integer, Planet> corruptedPlanets = new HashMap<>();
 
     @Override
     public void start() {
@@ -94,13 +94,13 @@ public final class Space implements PlanetsManager, Startable {
 
     @Override
     public @NotNull Set<Planet> getCorruptedPlanets() {
-        return corruptedPlanets;
+        return new HashSet<>(corruptedPlanets.values());
     }
 
     @Override
     public void registerPlanet(@NotNull Planet planet) {
         if (planet.isCorrupted()) {
-            corruptedPlanets.add(planet);
+            corruptedPlanets.put(planet.getId(), planet);
         } else {
             planets.put(planet.getId(), planet);
         }
@@ -110,7 +110,7 @@ public final class Space implements PlanetsManager, Startable {
     @Override
     public void unregisterPlanet(@NotNull Planet planet) {
         planets.remove(planet.getId());
-        corruptedPlanets.remove(planet);
+        corruptedPlanets.remove(planet.getId());
         clearOnceMessages(planet);
     }
 
@@ -333,7 +333,11 @@ public final class Space implements PlanetsManager, Startable {
         if (!isPlanet(world) && !isDevPlanet(world)) return null;
         int id = getNumberFromWorldName(world.getName());
         if (id == -1) return null;
-        return planets.get(id);
+        Planet planet = planets.get(id);
+        if (planet == null) {
+            planet = corruptedPlanets.get(id);
+        }
+        return planet;
     }
 
     @Override
@@ -341,7 +345,11 @@ public final class Space implements PlanetsManager, Startable {
         if (!isPlanet(worldName) && !isDevPlanet(worldName)) return null;
         int id = getNumberFromWorldName(worldName);
         if (id == -1) return null;
-        return planets.get(id);
+        Planet planet = planets.get(id);
+        if (planet == null) {
+            planet = corruptedPlanets.get(id);
+        }
+        return planet;
     }
 
     @Override

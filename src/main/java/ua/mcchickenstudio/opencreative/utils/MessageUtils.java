@@ -22,6 +22,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -430,6 +432,19 @@ public final class MessageUtils {
                     .replace("%cc-prefix%", getCreativeChatPrefix())
                     .replace("%player%", player.getName() == null ? "Unknown player" : player.getName())));
         }
+    }
+
+    public static @NotNull Component getUnknownArgumentMessage(@NotNull String label, @NotNull String[] args) {
+        int length = label.length();
+        if (length > 7) {
+            label = "..." + label.substring(length-7, length);
+        }
+        return Component.translatable("command.unknown.argument", NamedTextColor.RED)
+                .append(Component.newline())
+                .append(Component.text(label + (args.length == 0 ? "" : " "), NamedTextColor.GRAY))
+                .append (Component.text(String.join(" ", args),
+                        NamedTextColor.RED, TextDecoration.UNDERLINED))
+                .append(Component.translatable("command.context.here", NamedTextColor.RED, TextDecoration.ITALIC));
     }
 
     /**

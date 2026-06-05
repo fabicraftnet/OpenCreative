@@ -20,6 +20,8 @@ package ua.mcchickenstudio.opencreative.listeners.player;
 
 import com.destroystokyo.paper.event.player.PlayerStartSpectatingEntityEvent;
 import com.destroystokyo.paper.event.player.PlayerStopSpectatingEntityEvent;
+import io.papermc.paper.event.player.PlayerFlowerPotManipulateEvent;
+import io.papermc.paper.event.player.PlayerItemFrameChangeEvent;
 import io.papermc.paper.event.player.PlayerNameEntityEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -1102,4 +1104,46 @@ public final class InteractListener implements Listener {
                     .deserialize(text.substring(0, limit)));
         }
     }
+
+    @EventHandler
+    public void onFlowerPotChange(PlayerFlowerPotManipulateEvent event) {
+        if (!isEntityInLobby(event.getPlayer())) return;
+        if (OpenCreative.getSettings().getLobbySettings().isChangingBlocksDisallowed() && !event.getPlayer().hasPermission("opencreative.lobby.changing-blocks.bypass")) {
+            event.setCancelled(true);
+            event.getPlayer().sendActionBar(getLocaleComponent("not-for-lobby"));
+        }
+    }
+
+    @EventHandler
+    public void onArmorStandChange(PlayerArmorStandManipulateEvent event) {
+        if (!isEntityInLobby(event.getPlayer())) return;
+        if (OpenCreative.getSettings().getLobbySettings().isEditingArmorStandsDisallowed() && !event.getPlayer().hasPermission("opencreative.lobby.editing-armor-stands.bypass")) {
+            event.setCancelled(true);
+            event.getPlayer().sendActionBar(getLocaleComponent("not-for-lobby"));
+        }
+    }
+
+    @EventHandler
+    public void onItemFrameChange(PlayerItemFrameChangeEvent event) {
+        if (!isEntityInLobby(event.getPlayer())) return;
+        if (OpenCreative.getSettings().getLobbySettings().isEditingArmorStandsDisallowed() && !event.getPlayer().hasPermission("opencreative.lobby.editing-armor-stands.bypass")) {
+            event.setCancelled(true);
+            event.getPlayer().sendActionBar(getLocaleComponent("not-for-lobby"));
+        }
+    }
+
+    @EventHandler
+    public void onDoorsInteraction(PlayerInteractEvent event) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        Block clickedBlock = event.getClickedBlock();
+        if (clickedBlock == null) return;
+        if (!isEntityInLobby(event.getPlayer())) return;
+        String type = clickedBlock.getType().name();
+        if (!(type.contains("DOOR") || type.contains("FENCE"))) return;
+        if (OpenCreative.getSettings().getLobbySettings().isChangingBlocksDisallowed() && !event.getPlayer().hasPermission("opencreative.lobby.changing-blocks.bypass")) {
+            event.setCancelled(true);
+            event.getPlayer().sendActionBar(getLocaleComponent("not-for-lobby"));
+        }
+    }
+
 }

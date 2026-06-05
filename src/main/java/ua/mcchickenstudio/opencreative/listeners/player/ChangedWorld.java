@@ -169,6 +169,9 @@ public final class ChangedWorld implements Listener {
                 oldPlanet.getInformation().updateIconAsync();
             }
             if (newPlanet != null) {
+                if (newPlanet.getTerritory().getWorldUUID() == null) {
+                    newPlanet.getTerritory().setWorld(newWorld.getUID());
+                }
                 // Player connected to other planet
                 newPlanet.getWorldPlayers().registerPlayer(player);
                 for (Player onlinePlayer : newPlanet.getPlayers()) {

@@ -165,7 +165,7 @@ public class DevPlanet {
             sendCriticalErrorMessage("Failed to load Dev planet world " + planet.getId());
             return;
         }
-        List<String> savedChanges = getPlanetConfig(planet).getStringList("changed-code-columns");
+        List<String> savedChanges = planet.getConfiguration().getConfig().getStringList("changed-code-columns");
         if (!savedChanges.isEmpty()) {
             for (String saved : savedChanges) {
                 String[] coords = saved.split(" ");
@@ -474,7 +474,7 @@ public class DevPlanet {
 
     public void setNightVision(boolean nightVision) {
         this.nightVision = nightVision;
-        setPlanetConfigParameter(planet, "dev.night-vision", nightVision);
+        planet.getConfiguration().set("dev.night-vision", nightVision);
     }
 
     public boolean isSaveLocation() {
@@ -483,7 +483,7 @@ public class DevPlanet {
 
     public void setSaveLocation(boolean saveLocation) {
         this.saveLocation = saveLocation;
-        setPlanetConfigParameter(planet, "dev.save-location", saveLocation);
+        planet.getConfiguration().set("dev.save-location", saveLocation);
     }
 
     public boolean isDropItems() {
@@ -492,18 +492,18 @@ public class DevPlanet {
 
     public void setDropItems(boolean dropItems) {
         this.dropItems = dropItems;
-        setPlanetConfigParameter(planet, "dev.drops", dropItems);
+        planet.getConfiguration().set("dev.drops", dropItems);
     }
 
     public void setPlatformerID(String platformer) {
         this.platformerID = platformer;
-        setPlanetConfigParameter(planet, "dev.platformer", platformerID);
+        planet.getConfiguration().set("dev.platformer", platformerID);
     }
 
     public boolean setContainerMaterial(Material containerMaterial) {
         if (containerMaterial == Material.BARREL || containerMaterial == Material.CHEST || containerMaterial.name().endsWith("SHULKER_BOX")) {
             this.containerMaterial = containerMaterial;
-            setPlanetConfigParameter(planet, "dev.container", containerMaterial.name());
+            planet.getConfiguration().set("dev.container", containerMaterial.name());
             return true;
         }
         return false;
@@ -517,7 +517,7 @@ public class DevPlanet {
                 signMaterial == Material.BIRCH_WALL_SIGN || signMaterial == Material.JUNGLE_WALL_SIGN ||
                 (paleSign != null && signMaterial == paleSign)) {
             this.signMaterial = signMaterial;
-            setPlanetConfigParameter(planet, "dev.sign", signMaterial.name());
+            planet.getConfiguration().set("dev.sign", signMaterial.name());
             return true;
         }
         return false;
