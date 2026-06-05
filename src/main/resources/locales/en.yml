@@ -78,7 +78,7 @@ commands:
     teleported-coords: "%prefix%You teleported to coordinates: &6%x% %y% %z% %yaw% %pitch%"
     out-of-borders: "%prefix%&cCannot teleport beyond the world border."
   edit:
-    help: "%prefix%You can edit the item in your hand.\n &6/edit name New Name &7- Renames the item\n &6/edit lore 1 Lore Line &7- Changes the lore line by its number\n &6/edit addlore Lore Line &7- Adds a new lore line\n &6/edit clear &7- Clears the item's name and lore\n &6/edit enchant Enchantment Level &7- Enchants the item\n &6/edit removeenchant Enchantment &7- Removes an enchantment from the item\n &6/edit unenchant &7- Removes all enchantments\n &6/edit glow &7- Makes the item glow\n &6/edit unglow &7- Removes the enchantment-like glow"
+    help: "%prefix%You can edit the item in your hand.\n &6/edit name New Name &7- Renames the item\n &6/edit lore 1 Lore Line &7- Changes the lore line by its number\n &6/edit addlore Lore Line &7- Adds a new lore line\n &6/edit remlore Index &7- Removes item's lore line by index\n &6/edit clear &7- Clears the item's name and lore\n &6/edit enchant Enchantment Level &7- Enchants the item\n &6/edit unenchant Enchantment &7- Removes an enchantment from the item\n &6/edit clearenchants &7- Removes all enchantments\n &6/edit glow &7- Makes the item glow\n &6/edit unglow &7- Removes the enchantment-like glow"
     renamed: "%prefix%Item renamed: %name%"
     set-lore: "%prefix%Set line %number%: %lore%"
     cleared: "%prefix%Item's name and description cleared."

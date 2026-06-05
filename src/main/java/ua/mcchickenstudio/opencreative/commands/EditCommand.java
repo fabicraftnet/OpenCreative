@@ -23,7 +23,6 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.Registry;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
@@ -104,10 +103,10 @@ public class EditCommand extends CommandHandler {
             case "enchant":
                 handleEnchant(player, item, args);
                 break;
-            case "unenchant":
-                handleUnenchant(player, item);
+            case "clearenchants":
+                handleClearEnchantments(player, item);
                 break;
-            case "removeenchant", "remenchant":
+            case "unenchant":
                 handleRemoveEnchant(player, item, args);
                 break;
             default:
@@ -388,7 +387,7 @@ public class EditCommand extends CommandHandler {
         player.sendMessage(toComponent(getLocaleMessage("commands.edit.no-glowing")));
     }
 
-    private void handleUnenchant(Player player, ItemStack item) {
+    private void handleClearEnchantments(Player player, ItemStack item) {
         ItemMeta meta = item.getItemMeta();
         meta.removeEnchantments();
         item.setItemMeta(meta);
@@ -416,11 +415,11 @@ public class EditCommand extends CommandHandler {
             tabCompleter.add("glow");
             tabCompleter.add("unglow");
             tabCompleter.add("enchant");
-            tabCompleter.add("removeenchant");
             tabCompleter.add("unenchant");
             tabCompleter.add("clear");
+            tabCompleter.add("clearenchants");
         } else if (args.length == 2) {
-            if (args[0].equals("enchant") || args[0].equals("removeenchant")) {
+            if (args[0].equals("enchant") || args[0].equals("unenchant")) {
                 tabCompleter.addAll(Arrays.stream(Enchantment.values()).map(e
                         -> e.getKey().asMinimalString()).toList());
             }
