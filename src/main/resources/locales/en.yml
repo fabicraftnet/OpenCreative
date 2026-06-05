@@ -1494,7 +1494,7 @@ items:
           name: "&cBlock Manipulation"
           lore:
             - "&7Set block type, copy blocks,"
-            - "&7check block type."
+            - "&7set water logged, destroy them."
             - " "
             - "&eClick to choose category."
         other:
