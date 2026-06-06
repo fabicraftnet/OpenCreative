@@ -164,6 +164,7 @@ public class PlanetTerritory {
         }
         World world = creator.createWorld();
         if (world == null) return;
+        setWorld(world.getUID());
         world.setAutoSave(autoSave);
         setGameRuleIfExists("spawn_chunk_radius", 1);
         setGameRuleIfExists("command_blocks_work", false);
@@ -264,6 +265,7 @@ public class PlanetTerritory {
                 Bukkit.unloadWorld(planet.getWorldName(), autoSave);
             }
         }
+        worldID = null;
 
         if (planet.getDevPlanet().isLoaded()) {
             planet.getDevPlanet().unload(asyncSaveData);

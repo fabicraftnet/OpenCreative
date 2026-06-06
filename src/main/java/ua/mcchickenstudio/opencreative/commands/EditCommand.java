@@ -25,6 +25,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -32,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.planets.Planet;
+import ua.mcchickenstudio.opencreative.settings.Sounds;
 import ua.mcchickenstudio.opencreative.utils.CooldownUtils;
 
 import java.util.ArrayList;
@@ -72,6 +74,7 @@ public class EditCommand extends CommandHandler {
         ItemMeta meta = item.getItemMeta();
         if (item.getType().isAir() || meta == null) {
             sender.sendMessage(getLocaleMessage("commands.edit.item"));
+            Sounds.PLAYER_FAIL.play(player);
             return;
         }
 
@@ -91,8 +94,23 @@ public class EditCommand extends CommandHandler {
             case "clear":
                 handleClear(player, item);
                 break;
+            case "glowing", "glow":
+                handleGlowing(player, item);
+                break;
+            case "unglowing", "unglow":
+                handleUnglowing(player, item);
+                break;
+            case "enchant":
+                handleEnchant(player, item, args);
+                break;
+            case "clearenchants":
+                handleClearEnchantments(player, item);
+                break;
+            case "unenchant":
+                handleRemoveEnchant(player, item, args);
+                break;
             default:
-                sender.sendMessage(getLocaleMessage("commands.edit.item"));
+                sender.sendMessage(getUnknownArgumentMessage(label, args));
                 break;
         }
 
@@ -134,7 +152,9 @@ public class EditCommand extends CommandHandler {
             String message = joinArgs(args, 1);
             Component newName = fromInputToComponent(message);
             if (getComponentLength(newName) > TEXT_LIMIT) {
-                player.sendMessage(toComponent(getLocaleMessage("commands.edit.text-limit").replace("%limit%", String.valueOf(TEXT_LIMIT))));
+                player.sendMessage(toComponent(getLocaleMessage("commands.edit.text-limit")
+                        .replace("%limit%", String.valueOf(TEXT_LIMIT))));
+                Sounds.PLAYER_FAIL.play(player);
                 return;
             }
             if (!newName.hasDecoration(TextDecoration.ITALIC)) {
@@ -145,6 +165,7 @@ public class EditCommand extends CommandHandler {
             player.sendMessage(getComponentWithPlaceholders("commands.edit.renamed",
                     player, "name", newName)
                     .clickEvent(ClickEvent.suggestCommand(message)));
+            Sounds.EDIT_ITEM_RENAMED.play(player);
         }
     }
 
@@ -166,17 +187,21 @@ public class EditCommand extends CommandHandler {
             } else if (lineNumber > LINES_LIMIT) {
                 player.sendMessage(toComponent(getLocaleMessage("commands.edit.lines-limit")
                         .replace("%limit%", String.valueOf(LINES_LIMIT))));
+                Sounds.PLAYER_FAIL.play(player);
                 return;
             }
         } catch (NumberFormatException ignored) {
             getComponentWithPlaceholders("commands.edit.not-number", player,
                     "argument", args[1]);
+            Sounds.PLAYER_FAIL.play(player);
             return;
         }
         String message = joinArgs(args, 2);
         Component newLoreLine = fromInputToComponent(message);
         if (getComponentLength(newLoreLine) > TEXT_LIMIT) {
-            player.sendMessage(toComponent(getLocaleMessage("commands.edit.text-limit").replace("%limit%", String.valueOf(TEXT_LIMIT))));
+            player.sendMessage(toComponent(getLocaleMessage("commands.edit.text-limit")
+                    .replace("%limit%", String.valueOf(TEXT_LIMIT))));
+            Sounds.PLAYER_FAIL.play(player);
             return;
         }
         if (!newLoreLine.hasDecoration(TextDecoration.ITALIC)) {
@@ -201,6 +226,7 @@ public class EditCommand extends CommandHandler {
         player.sendMessage(getComponentWithPlaceholders("commands.edit.set-lore",
                 player, "number", lineNumber, "lore", newLoreLine)
                 .clickEvent(ClickEvent.suggestCommand(message)));
+        Sounds.EDIT_ITEM_LORE.play(player);
     }
 
     private void handleAddLore(Player player, ItemStack item, String[] args) {
@@ -209,6 +235,7 @@ public class EditCommand extends CommandHandler {
         Component newLoreLine = fromInputToComponent(message);
         if (getComponentLength(newLoreLine) > TEXT_LIMIT) {
             player.sendMessage(toComponent(getLocaleMessage("commands.edit.text-limit").replace("%limit%", String.valueOf(TEXT_LIMIT))));
+            Sounds.PLAYER_FAIL.play(player);
             return;
         }
         List<Component> newLore = meta.lore();
@@ -216,6 +243,7 @@ public class EditCommand extends CommandHandler {
         if (newLore.size() > LINES_LIMIT) {
             player.sendMessage(toComponent(getLocaleMessage("commands.edit.lines-limit")
                     .replace("%limit%", String.valueOf(LINES_LIMIT))));
+            Sounds.PLAYER_FAIL.play(player);
             return;
         }
         if (!newLoreLine.hasDecoration(TextDecoration.ITALIC)) {
@@ -226,26 +254,30 @@ public class EditCommand extends CommandHandler {
         item.setItemMeta(meta);
         player.sendMessage(getComponentWithPlaceholders("commands.edit.set-lore",
                 player, "number", newLore.size(), "lore", message));
+        Sounds.EDIT_ITEM_LORE.play(player);
     }
 
     private void handleRemoveLore(Player player, ItemStack item, String[] args) {
-        ItemMeta meta = item.getItemMeta();
         if (args.length == 1) {
-            player.sendMessage(getLocaleMessage("commands.edit.item"));
+            player.sendMessage(getLocaleMessage("commands.edit.help"));
             return;
         }
+        ItemMeta meta = item.getItemMeta();
         int lineNumber;
         try {
             lineNumber = Integer.parseInt(args[1]);
             if (lineNumber < 1) {
                 lineNumber = 1;
             } else if (lineNumber > LINES_LIMIT) {
-                player.sendMessage(toComponent(getLocaleMessage("commands.edit.lines-limit").replace("%limit%", String.valueOf(LINES_LIMIT))));
+                player.sendMessage(toComponent(getLocaleMessage("commands.edit.lines-limit")
+                        .replace("%limit%", String.valueOf(LINES_LIMIT))));
+                Sounds.PLAYER_FAIL.play(player);
                 return;
             }
         } catch (NumberFormatException ignored) {
             getComponentWithPlaceholders("commands.edit.not-number", player,
                     "argument", args[1]);
+            Sounds.PLAYER_FAIL.play(player);
             return;
         }
         List<Component> newLore = meta.lore();
@@ -255,8 +287,112 @@ public class EditCommand extends CommandHandler {
         }
         meta.lore(newLore);
         item.setItemMeta(meta);
-        player.sendMessage(toComponent(getLocaleMessage("commands.edit.removed-lore").replace("%number%", String.valueOf(lineNumber))));
+        player.sendMessage(toComponent(getLocaleMessage("commands.edit.removed-lore")
+                .replace("%number%", String.valueOf(lineNumber))));
+        Sounds.EDIT_ITEM_LORE.play(player);
 
+    }
+
+    private void handleEnchant(Player player, ItemStack item, String[] args) {
+        if (args.length <= 2) {
+            player.sendMessage(getLocaleMessage("commands.edit.help"));
+            return;
+        }
+        int level;
+        try {
+            level = Integer.parseInt(args[2]);
+            int limit = OpenCreative.getSettings().getItemFixerSettings().getMaxEnchantLevel();
+            if (level > limit) {
+                player.sendMessage(getLocaleMessage("commands.edit.too-big-level")
+                        .replace("%limit%", String.valueOf(limit)));
+                Sounds.PLAYER_FAIL.play(player);
+                return;
+            }
+            if (level <= 0) {
+                level = 1;
+            }
+        } catch (Exception error) {
+            player.sendMessage(getLocaleMessage("commands.edit.not-number")
+                    .replace("%argument%", args[2]));
+            Sounds.PLAYER_FAIL.play(player);
+            return;
+        }
+        String enchantmentString = args[1].toLowerCase();
+        Enchantment enchantment;
+        try {
+            enchantment = Enchantment.getByName(enchantmentString.toUpperCase());
+        } catch (Exception error) {
+            player.sendMessage(getLocaleMessage("commands.edit.not-enchantment")
+                    .replace("%enchantment%", enchantmentString));
+            Sounds.PLAYER_FAIL.play(player);
+            return;
+        }
+        if (enchantment == null) {
+            player.sendMessage(getLocaleMessage("commands.edit.not-enchantment")
+                    .replace("%enchantment%", args[1]));
+            Sounds.PLAYER_FAIL.play(player);
+            return;
+        }
+        ItemMeta meta = item.getItemMeta();
+        meta.addEnchant(enchantment, level, true);
+        item.setItemMeta(meta);
+        player.sendMessage(toComponent(getLocaleMessage("commands.edit.enchanted")
+                .replace("%enchantment%", enchantmentString)
+                .replace("%level%", String.valueOf(level))));
+        Sounds.EDIT_ITEM_ENCHANTED.play(player);
+    }
+
+    private void handleRemoveEnchant(Player player, ItemStack item, String[] args) {
+        if (args.length <= 1) {
+            player.sendMessage(getLocaleMessage("commands.edit.help"));
+            return;
+        }
+        String enchantmentString = args[1].toLowerCase();
+        Enchantment enchantment;
+        try {
+            enchantment = Enchantment.getByName(enchantmentString.toUpperCase());
+        } catch (Exception error) {
+            player.sendMessage(getLocaleMessage("commands.edit.not-enchantment")
+                    .replace("%enchantment%", enchantmentString));
+            Sounds.PLAYER_FAIL.play(player);
+            return;
+        }
+        if (enchantment == null) {
+            player.sendMessage(getLocaleMessage("commands.edit.not-enchantment")
+                    .replace("%enchantment%", args[1]));
+            Sounds.PLAYER_FAIL.play(player);
+            return;
+        }
+        ItemMeta meta = item.getItemMeta();
+        meta.removeEnchant(enchantment);
+        item.setItemMeta(meta);
+        player.sendMessage(toComponent(getLocaleMessage("commands.edit.removed-enchant")
+                .replace("%enchantment%", enchantmentString)));
+        Sounds.EDIT_ITEM_UNENCHANTED.play(player);
+    }
+
+    private void handleGlowing(Player player, ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+        meta.setEnchantmentGlintOverride(true);
+        item.setItemMeta(meta);
+        Sounds.EDIT_ITEM_GLOW.play(player);
+        player.sendMessage(toComponent(getLocaleMessage("commands.edit.glowing")));
+    }
+
+    private void handleUnglowing(Player player, ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+        meta.setEnchantmentGlintOverride(false);
+        item.setItemMeta(meta);
+        Sounds.EDIT_ITEM_UNGLOW.play(player);
+        player.sendMessage(toComponent(getLocaleMessage("commands.edit.no-glowing")));
+    }
+
+    private void handleClearEnchantments(Player player, ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+        meta.removeEnchantments();
+        item.setItemMeta(meta);
+        Sounds.EDIT_ITEM_UNENCHANTED.play(player);
+        player.sendMessage(toComponent(getLocaleMessage("commands.edit.unenchanted")));
     }
 
     private void handleClear(Player player, ItemStack item) {
@@ -264,6 +400,7 @@ public class EditCommand extends CommandHandler {
         meta.displayName(null);
         meta.lore(null);
         item.setItemMeta(meta);
+        Sounds.EDIT_ITEM_UNENCHANTED.play(player);
         player.sendMessage(toComponent(getLocaleMessage("commands.edit.cleared")));
     }
 
@@ -275,7 +412,25 @@ public class EditCommand extends CommandHandler {
             tabCompleter.add("lore");
             tabCompleter.add("addlore");
             tabCompleter.add("removelore");
+            tabCompleter.add("glow");
+            tabCompleter.add("unglow");
+            tabCompleter.add("enchant");
+            tabCompleter.add("unenchant");
             tabCompleter.add("clear");
+            tabCompleter.add("clearenchants");
+        } else if (args.length == 2) {
+            if (args[0].equals("enchant") || args[0].equals("unenchant")) {
+                tabCompleter.addAll(Arrays.stream(Enchantment.values()).map(e
+                        -> e.getKey().asMinimalString()).toList());
+            }
+        }  else if (args.length == 3) {
+            if (args[0].equals("enchant")) {
+                int limit = OpenCreative.getSettings().getItemFixerSettings().getMaxEnchantLevel();
+                for (int i = 1; i <= limit; i++) {
+                    if (i > 50) break;
+                    tabCompleter.add(String.valueOf(i));
+                }
+            }
         }
         return tabCompleter;
     }
