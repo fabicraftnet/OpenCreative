@@ -131,14 +131,6 @@ public final class ProtocolLibManager implements PacketManager {
     }
 
     @Override
-    public void showBlockForPlayer(@NotNull Player player, @NotNull Location location, @NotNull Material material) {
-        PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.BLOCK_CHANGE);
-        packet.getBlockPositionModifier().write(0, new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
-        packet.getBlockData().write(0, WrappedBlockData.createData(material));
-        ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
-    }
-
-    @Override
     public @NotNull String getName() {
         return "ProtocolLib Packet Manager";
     }

@@ -52,10 +52,6 @@ public final class DisabledPacketManager implements PacketManager {
     }
 
     @Override
-    public void showBlockForPlayer(@NotNull Player player, @NotNull Location location, @NotNull Material material) {
-    }
-
-    @Override
     public void start() {}
 
     @Override
