@@ -68,7 +68,7 @@ commands:
     teleported-coords: "%prefix%Ви телепортувалися на координати: &6%x% %y% %z% %yaw% %pitch%"
     out-of-borders: "%prefix%&cНеможливо телепортуватися за межу світу."
   edit:
-    help: "%prefix%Редагуйте назву та опис предмета у вашій руці.\n &6/edit name Нова назва &7- Перейменує предмет\n &6/edit lore 1 Рядок опису &7- Змінить рядок опису за номером \n &6/edit addlore Рядок опису &7- Додасть новий рядок опису\n &6/edit clear &7- Очистить назву та опис предмета"
+    help: "%prefix%Ви можете редагувати предмет у своїй руці.\n &6/edit name Нова назва &7- Перейменувати предмет\n &6/edit lore 1 Рядок опису &7- Змінити рядок опису за номером\n &6/edit addlore Рядок опису &7- Додати новий рядок опису\n &6/edit remlore Номер &7- Видалити рядок опису\n &6/edit clear &7- Очистити назву та опис предмета\n &6/edit enchant Зачарування Рівень &7- Зачарувати предмет\n &6/edit unenchant Зачарування &7- Зняти зачарування з предмета\n &6/edit clearenchants &7- Прибрати всі зачарування\n &6/edit glow &7- Зробити предмет сяючим\n &6/edit unglow &7- Прибрати сяйво, схоже на зачарування"
     renamed: "%prefix%Предмет перейменовано: %name%"
     set-lore: "%prefix%Встановлено %number% рядок: %lore%"
     removed-lore: "%prefix%Прибрано %number% рядок з опису предмета."
@@ -77,6 +77,13 @@ commands:
     lines-limit: "%prefix%&cДосягнуто ліміт опису в %limit% рядків"
     text-limit: "%prefix%&cДосягнуто ліміт в %limit% символів."
     not-number: "%prefix%&cНе є числом: %argument%"
+    glowing: "%prefix%Тепер предмет &dбуде сяяти&f, як зачарований."
+    no-glowing: "%prefix%Тепер предмет &cне буде сяяти&f, як зачарований."
+    not-enchantment: "%prefix%&cЗачарування %enchantment% не існує... О_о"
+    enchanted: "%prefix%Предмет тепер зачарований на &d%enchantment% &fрівня %level%&f."
+    removed-enchant: "%prefix%Зачарування &c%enchantment%&f знято з предмета."
+    unenchanted: "%prefix%Усі зачарування &cзнято&f з предмета."
+    too-big-level: "%prefix%&cЗанадто високий рівень зачарування, максимум: %limit%"
   time:
     help: "%prefix%Змінюйте час доби у вашому світі, це змінить небо, яскравість блоків та поведінку світу.\n &6/time set 0 &7- Встановить день\n &6/time set 12500 &7- Встановить вечір \n &6/time set 15000 &7- Встановить ніч\n &6/time add 1000 &7- Пропустити 1000 тіків"
     changed: "%prefix%Ви встановили час у світі: &6%time%"

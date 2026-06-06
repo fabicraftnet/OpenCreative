@@ -198,6 +198,13 @@ public enum Sounds {
     DEV_PROMPTER_THINKING("block.beacon.activate", 0.1f),
     DEV_PROMPTER_DONE("block.vault.reject_rewarded_player", 0.6f),
 
+    EDIT_ITEM_ENCHANTED("block.enchantment_table.use", 0.7f),
+    EDIT_ITEM_UNENCHANTED("block.enchantment_table.use", 1.8f),
+    EDIT_ITEM_RENAMED("entity.villager.work_cartographer", 1f),
+    EDIT_ITEM_LORE("entity.villager.work_cartographer", 1f),
+    EDIT_ITEM_GLOW("entity.allay.item_taken", 1f),
+    EDIT_ITEM_UNGLOW("entity.allay.item_taken", 0.5f),
+
     MAINTENANCE_NOTIFY("block.bell.use", 0.1f),
     MAINTENANCE_COUNT("block.end_portal_frame.fill", 2),
     MAINTENANCE_START("block.beacon.power_select", 0.5f),
