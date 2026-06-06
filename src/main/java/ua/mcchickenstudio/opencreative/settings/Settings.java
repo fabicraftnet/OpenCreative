@@ -85,6 +85,7 @@ public final class Settings {
     private final ItemFixerSettings itemFixerSettings;
     private final WorldFixerSettings worldFixerSettings;
     private final DownloaderSettings downloaderSettings;
+    private final WatchdogSettings watchdogSettings;
     private final Set<Integer> recommendedWorldsIDs = new HashSet<>();
     private final Set<String> allowedResourcePackLinks = new HashSet<>();
     private final Set<String> messagesIgnoringReset = new HashSet<>();
@@ -121,6 +122,7 @@ public final class Settings {
         itemFixerSettings = new ItemFixerSettings();
         worldFixerSettings = new WorldFixerSettings();
         downloaderSettings = new DownloaderSettings();
+        watchdogSettings = new WatchdogSettings();
     }
 
     /**
@@ -179,7 +181,6 @@ public final class Settings {
         cancelChatOnConfirmation = config.getBoolean("messages.cancel-chat-on-confirmation", false);
         handleWorldChat = config.getBoolean("messages.handle-world-chat", true);
 
-        boolean enabledWatchdog = config.getBoolean("watchdog.enabled", false);
         notifyNoPlayersAround = config.getBoolean("messages.notify-no-players-around", true);
 
         lobbySettings.load();
@@ -189,6 +190,7 @@ public final class Settings {
         economySettings.load();
         webSettings.load();
         downloaderSettings.load();
+        watchdogSettings.load();
         groups.load();
         commands.load();
 
@@ -211,7 +213,7 @@ public final class Settings {
         }
         OpenCreative.setDevPlatformer(platformer);
 
-        OpenCreative.getManagers().register(StabilityManager.class, enabledWatchdog ? new Watchdog() : new DisabledWatchdog());
+        OpenCreative.getManagers().register(StabilityManager.class, watchdogSettings.isEnabled() ? new Watchdog() : new DisabledWatchdog());
         codingSettings.load();
         loadExperiments(config);
         checkDebugAnnouncer();
@@ -841,6 +843,15 @@ public final class Settings {
      */
     public @NotNull CodingSettings getCodingSettings() {
         return codingSettings;
+    }
+
+    /**
+     * Returns settings of watchdog.
+     *
+     * @return watchdog settings.
+     */
+    public @NotNull WatchdogSettings getWatchdogSettings() {
+        return watchdogSettings;
     }
 
     /**

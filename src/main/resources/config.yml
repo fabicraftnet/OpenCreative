@@ -1034,6 +1034,7 @@ web:
   # Example: "yourserver.com"
   # If empty, will be numeric IP of server and ":port" in the ending.
   display-link: ""
+  use-https: false
 
   #
   # Downloader allows player to download archive
@@ -1089,6 +1090,12 @@ experiments:
 watchdog:
   # Enables watchdog.
   enabled: false
+
+  # Limits creating worlds and kicks all players to lobby on overload.
+  limit-operations-when-unstable: false
+
+  # Teleports all players to lobby and unloads worlds.
+  unload-worlds-when-unstable: false
 
 #
 # Maintenance mode unloads all worlds and

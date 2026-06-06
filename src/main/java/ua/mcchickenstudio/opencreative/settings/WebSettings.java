@@ -33,6 +33,7 @@ import java.net.InetAddress;
 public final class WebSettings {
 
     private String displayLink = "";
+    private boolean useHttps;
     private int port = 22912;
 
     /**
@@ -47,6 +48,7 @@ public final class WebSettings {
 
         displayLink = section.getString("display-link", "");
         port = section.getInt("port", 22912);
+        useHttps = section.getBoolean("use-https", false);
     }
 
     /**
@@ -80,5 +82,15 @@ public final class WebSettings {
      */
     public int getPort() {
         return port;
+    }
+
+    /**
+     * Checks whether link should
+     * have https instead of http.
+     *
+     * @return true - using https, false - http.
+     */
+    public boolean shouldUseHttps() {
+        return useHttps;
     }
 }

@@ -1663,7 +1663,7 @@ public class CreativeCommand extends CommandHandler {
                 if (foundPlanet.getLastActivityTime() == 0)
                     setPlanetConfigParameter(foundPlanet, "last-activity-time", System.currentTimeMillis());
                 foundPlanet.setOwner(args[3]);
-                OpenCreative.getPlanetsManager().getCorruptedPlanets().remove(foundPlanet);
+                OpenCreative.getPlanetsManager().unregisterPlanet(foundPlanet);
                 Planet planet = new Planet(foundPlanet.getId());
                 OpenCreative.getPlanetsManager().registerPlanet(planet);
             }

@@ -86,7 +86,8 @@ public final class Downloader implements DownloadManager {
         }
         session.setArchive(archive);
         sessions.put(session.getSecretToken(), session);
-        String link = "http://" + OpenCreative.getSettings().getWebSettings().getDisplayLink()
+        String protocol = OpenCreative.getSettings().getWebSettings().shouldUseHttps() ? "https" : "http";
+        String link = protocol + "://" + OpenCreative.getSettings().getWebSettings().getDisplayLink()
                 + "/download?token=" + session.getSecretToken();
         OpenCreative.getPlugin().getLogger().info("Compressed world " + planet.getId() + " folder for downloader: " + player.getName()
                 + " in " + (System.currentTimeMillis() - time) + " ms. Player can download world :)");

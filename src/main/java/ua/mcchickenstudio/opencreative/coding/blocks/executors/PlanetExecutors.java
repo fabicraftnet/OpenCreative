@@ -63,6 +63,8 @@ public class PlanetExecutors {
     private final List<Function> functions = new ArrayList<>();
     private final List<Method> methods = new ArrayList<>();
     private final Map<Class<? extends WorldEvent>, List<EventAwaiter>> events = new HashMap<>();
+    private int executorsAmount = 0;
+    private int actionsAmount = 0;
 
     public PlanetExecutors(Planet planet) {
         this.planet = planet;
@@ -142,6 +144,8 @@ public class PlanetExecutors {
         functions.clear();
         methods.clear();
         cycles.clear();
+        executorsAmount = 0;
+        actionsAmount = 0;
     }
 
     /**
@@ -150,6 +154,8 @@ public class PlanetExecutors {
      * @param file script file.
      */
     public void load(File file) {
+        executorsAmount = 0;
+        actionsAmount = 0;
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         ConfigurationSection section = config.getConfigurationSection("code.blocks");
         if (section != null) {
@@ -186,18 +192,22 @@ public class PlanetExecutors {
             events.computeIfAbsent(awaiter.getEventClass(),
                     list -> new ArrayList<>())
                     .add(awaiter);
+            executorsAmount++;
         }
 
         if (executor instanceof Cycle cycle) {
             cycles.add(cycle);
+            executorsAmount++;
         }
 
         if (executor instanceof Function function) {
             functions.add(function);
+            executorsAmount++;
         }
 
         if (executor instanceof Method method) {
             methods.add(method);
+            executorsAmount++;
         }
     }
 
@@ -350,6 +360,7 @@ public class PlanetExecutors {
                 Action action = createAction(executor, actionPath, config);
                 if (action != null) {
                     actionList.add(action);
+                    actionsAmount++;
                 }
             }
         }
@@ -430,6 +441,24 @@ public class PlanetExecutors {
             sendDebugError("Can't create an action", error);
             return null;
         }
+    }
+
+    /**
+     * Returns amount of executors.
+     *
+     * @return amount of executors.
+     */
+    public int getExecutorsAmount() {
+        return executorsAmount;
+    }
+
+    /**
+     * Returns amount of actions and conditions.
+     *
+     * @return amount of actions and conditions.
+     */
+    public int getActionsAmount() {
+        return actionsAmount;
     }
 
     /**
