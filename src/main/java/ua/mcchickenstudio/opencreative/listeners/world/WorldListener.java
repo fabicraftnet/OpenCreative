@@ -25,6 +25,7 @@ import org.bukkit.event.world.WorldUnloadEvent;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 
+import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isDevPlanet;
 import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isPlanet;
 
 /**
@@ -39,7 +40,7 @@ public final class WorldListener implements Listener {
             return;
         }
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(event.getWorld());
-        if (planet == null) return;
+        if (planet == null || isDevPlanet(event.getWorld())) return;
         planet.getTerritory().setWorld(event.getWorld().getUID());
     }
 
@@ -49,7 +50,7 @@ public final class WorldListener implements Listener {
             return;
         }
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(event.getWorld());
-        if (planet == null) return;
+        if (planet == null || isDevPlanet(event.getWorld())) return;
         planet.getTerritory().setWorld(event.getWorld().getUID());
     }
 
