@@ -136,7 +136,9 @@ public final class Watchdog implements StabilityManager, Toggleable {
                     .append(" - Uptime: ")
                     .append(convertTime(now - planet.getLastActivityTime()))
                     .append(" - Created: ")
-                    .append(getElapsedTime(now, planet.getCreationTime()));
+                    .append(getElapsedTime(now, planet.getCreationTime()))
+                    .append(" by ")
+                    .append(planet.getOwner());
             if (planet.getMode() == Planet.Mode.PLAYING) {
                 builder.append(" - ")
                         .append(planet.getVariables().getTotalVariablesAmount())
