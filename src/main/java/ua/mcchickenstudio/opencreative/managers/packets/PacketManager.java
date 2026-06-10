@@ -91,13 +91,4 @@ public interface PacketManager extends Manager, Toggleable {
      */
     void removeSpectatorName(@NotNull Player player, @NotNull Player receiver);
 
-    /**
-     * Shows fake phantom block for player.
-     *
-     * @param player   player to change display name.
-     * @param location player that will see this change.
-     * @param material type of block.
-     */
-    void showBlockForPlayer(@NotNull Player player, @NotNull Location location, @NotNull Material material);
-
 }

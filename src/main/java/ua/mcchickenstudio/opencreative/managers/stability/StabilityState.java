@@ -18,6 +18,8 @@
 
 package ua.mcchickenstudio.opencreative.managers.stability;
 
+import org.jetbrains.annotations.NotNull;
+
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
 
 public enum StabilityState {
@@ -25,17 +27,27 @@ public enum StabilityState {
     /**
      * This state allows players to create, connect worlds and launch a code.
      */
-    FINE,
+    FINE("Fine"),
     /**
      * This state allows players to connect loaded worlds, but disallows to create, compile a code.
      */
-    NOT_OKAY,
+    NOT_OKAY("Not Okay"),
     /**
      * This state disallows players everything: browsing, connecting, compiling.
      */
-    NIGHTMARE;
+    NIGHTMARE("Nightmare");
 
-    public String getLocalized() {
+    private final String name;
+
+    StabilityState(@NotNull String name) {
+        this.name = name;
+    }
+
+    public @NotNull String getName() {
+        return name;
+    }
+
+    public @NotNull String getLocalized() {
         return getLocaleMessage("creative.stability." + name().toLowerCase().replace("_", "-"), false);
     }
 
