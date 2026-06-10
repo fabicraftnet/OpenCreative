@@ -8663,6 +8663,37 @@ items:
             choices:
               false: "Set"
               true: "Add"
+      entity-set-display-rotation:
+        name: "&fRotate Display"
+        lore:
+          - "&7Rotates display using"
+          - "&7Euler angels with the"
+          - "&7rotation order X, Y, Z"
+          - ""
+          - "&fIn the chest:"
+          - "&a Number &7- Angle X"
+          - "&a Number &7- Angle Y"
+          - "&a Number &7- Angle Z"
+          - "&3 Parameter &7- Add or set"
+          - "&7 the value"
+          - " "
+          - "&eClick to set the action."
+        arguments:
+          add:
+            name: "&fSet or Add"
+            lore:
+              - "&7If Add is selected, your value"
+              - "&7will be added to the current"
+              - "&7value of the display entity."
+              - " "
+              - "&eClick to change."
+              - " "
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              false: "Set"
+              true: "Add"
       entity-set-display-item:
         name: "&6Set Display Item"
         lore:
@@ -8778,6 +8809,17 @@ items:
           - ""
           - "&fIn the chest:"
           - "&a Number &7- Light level"
+          - " "
+          - "&eClick to set the action."
+      entity-set-display-interpolation:
+        name: "&eSet Display Interpolation"
+        lore:
+          - "&7Sets the interpolation times for"
+          - "&7the display entity's transformations."
+          - ""
+          - "&fIn the chest:"
+          - "&a Number &7- Interpolation delay (ticks)"
+          - "&a Number &7- Interpolation duration (ticks)"
           - " "
           - "&eClick to set the action."
       player-set-walk-speed:
@@ -19299,6 +19341,7 @@ blocks:
   entity_set_display_text: "Display Text"
   entity_set_display_scale: "Display Scale"
   entity_set_display_translation: "Display Offset"
+  entity_set_display_rotation: "Display Rotation"
   entity_set_display_item: "Display Item"
   entity_set_display_billboard: "Display Type"
   entity_set_text_display_see_through: "See-Through Text"
@@ -19306,6 +19349,7 @@ blocks:
   entity_set_text_display_opacity: "Text Opacity"
   entity_set_text_display_width: "Text Width"
   entity_set_display_brightness: "Display Brightness"
+  entity_set_display_interpolation: "Display Interpolation"
   entity_set_friction: "Friction"
   entity_set_visual_fire: "Visual Fire"
   entity_set_parrot_color: "Parrot Color"

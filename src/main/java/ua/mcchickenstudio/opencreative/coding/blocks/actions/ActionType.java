@@ -787,6 +787,7 @@ public enum ActionType implements CodingBlockType {
     ENTITY_SET_DISPLAY_BILLBOARD(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayBillboardAction.class, Material.ENDER_EYE, new ParameterSlot("billboard", Arrays.asList("center", "fixed", "horizontal", "vertical"), Material.ENDER_EYE, Material.ENDER_PEARL, Material.SLIME_BALL, Material.SNOWBALL)),
     ENTITY_SET_DISPLAY_SCALE(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayScaleAction.class, Material.PAPER, new ArgumentSlot("x", ValueType.NUMBER), new ArgumentSlot("y", ValueType.NUMBER), new ArgumentSlot("z", ValueType.NUMBER), new ParameterSlot("add")),
     ENTITY_SET_DISPLAY_TRANSLATION(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayTranslationAction.class, Material.ARROW, new ArgumentSlot("x", ValueType.NUMBER), new ArgumentSlot("y", ValueType.NUMBER), new ArgumentSlot("z", ValueType.NUMBER), new ParameterSlot("add")),
+    ENTITY_SET_DISPLAY_ROTATION(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayRotationAction.class, Material.ENDER_EYE, new ArgumentSlot("x", ValueType.NUMBER), new ArgumentSlot("y", ValueType.NUMBER), new ArgumentSlot("z", ValueType.NUMBER), new ParameterSlot("add")),
     ENTITY_SET_DISPLAY_ITEM(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayItemAction.class, Material.CRAFTING_TABLE, new ArgumentSlot("item", ValueType.ITEM)),
     ENTITY_RELEASE_SHOULDERS(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntityReleaseShouldersAction.class, Material.PARROT_SPAWN_EGG, new ParameterSlot("type", List.of("all", "left", "right"), Material.PARROT_SPAWN_EGG, Material.SHIELD, Material.NETHERITE_SWORD)),
 
@@ -857,6 +858,7 @@ public enum ActionType implements CodingBlockType {
     ENTITY_SET_DISPLAY_TEXT(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayTextAction.class, Material.BOOK, new ArgumentSlot("text", ValueType.TEXT)),
     ENTITY_SET_DISPLAY_BRIGHTNESS(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayLightningAction.class, Material.LIGHT, new ArgumentSlot("sky", ValueType.NUMBER), new ArgumentSlot("block", ValueType.NUMBER)),
     //ENTITY_RESET_DISPLAY_BRIGHTNESS(ActionCategory.ENTITY_ACTION, MenusCategory.STATE, null, Material.GLASS_BOTTLE),
+    ENTITY_SET_DISPLAY_INTERPOLATION(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayInterpolationAction.class, Material.CLOCK, new ArgumentSlot("delay", ValueType.NUMBER), new ArgumentSlot("duration", ValueType.NUMBER)),
 
     ENTITY_TELEPORT(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_MOVEMENT, EntityTeleportAction.class, Material.ENDER_PEARL, new ArgumentSlot("location", ValueType.LOCATION), new ParameterSlot("consider", Arrays.asList("all", "only-coordinates", "only-rotation"), Material.ENDER_EYE, Material.PAPER, Material.PLAYER_HEAD)),
     ENTITY_PATH_MOVE_TO_LOCATION(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_MOVEMENT, SetEntityPathMoveToLocationAction.class, Material.PAPER, new ArgumentSlot("location", ValueType.LOCATION)),
