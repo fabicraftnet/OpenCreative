@@ -78,7 +78,7 @@ public final class Watchdog implements StabilityManager, Toggleable {
             lastTickTime = System.currentTimeMillis();
             long now = System.nanoTime();
             tickTimes.addLast(now);
-            long cutoff = now - 5_000_000_000L; // 5 seconds in ns
+            long cutoff = now - 5_000_000_000L;
             while (!tickTimes.isEmpty() && tickTimes.peekFirst() < cutoff) {
                 tickTimes.removeFirst();
             }

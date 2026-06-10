@@ -54,11 +54,9 @@ public final class EntitySetDisplayScaleAction extends EntityAction {
             z = getArguments().getFloat("z", z, this);
         }
         Vector3f vector3f = new Vector3f();
-        if (add) {
-            vector3f.x = display.getTransformation().getScale().x() + x;
-            vector3f.y = display.getTransformation().getScale().y() + y;
-            vector3f.z = display.getTransformation().getScale().z() + z;
-        }
+        vector3f.x = add ? display.getTransformation().getScale().x() + x : x;
+        vector3f.y = add ? display.getTransformation().getScale().y() + y : y;
+        vector3f.z = add ? display.getTransformation().getScale().z() + z : z;
         display.setTransformation(new Transformation(
                 display.getTransformation().getTranslation(),
                 display.getTransformation().getLeftRotation(),

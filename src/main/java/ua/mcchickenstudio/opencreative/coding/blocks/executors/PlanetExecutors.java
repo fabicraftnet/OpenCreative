@@ -173,7 +173,9 @@ public class PlanetExecutors {
                     }
                 }
             }
+            int actions = actionsAmount;
             clear();
+            actionsAmount = actions;
             for (Executor executor : executors) {
                 registerExecutor(executor);
             }
