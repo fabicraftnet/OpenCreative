@@ -38,7 +38,7 @@ public final class EntitySetDisplayBillboardAction extends EntityAction {
         String type = getArguments().getText("billboard", "center", this);
         Display.Billboard billboard = Display.Billboard.CENTER;
         try {
-            Display.Billboard.valueOf(type.toUpperCase().replace("-", "_"));
+            billboard = Display.Billboard.valueOf(type.toUpperCase().replace("-", "_"));
         } catch (Exception ignored) {
         }
         if (entity instanceof Display display) {

@@ -21,7 +21,7 @@ package ua.mcchickenstudio.opencreative.managers.stability;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.managers.Toggleable;
@@ -32,17 +32,21 @@ import java.io.IOException;
 import java.nio.file.FileStore;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendWarningErrorMessage;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isDevPlanet;
 
 public final class Watchdog implements StabilityManager, Toggleable {
 
     private FileStore STORAGE_VOLUME;
-    private BukkitRunnable runnable;
+    private BukkitTask runnable;
+
+    private final ScheduledExecutorService spectatorExecutor = Executors.newSingleThreadScheduledExecutor();
+    private volatile long lastTickTime = System.currentTimeMillis();
 
     private StabilityState pluginState = StabilityState.FINE;
     private StabilityState databaseState = StabilityState.FINE;
@@ -50,115 +54,66 @@ public final class Watchdog implements StabilityManager, Toggleable {
     private StabilityState memoryState = StabilityState.FINE;
     private StabilityState ticksState = StabilityState.FINE;
 
+    private long lastWatchdogNotificationTime = 0L;
+    private long lastTicksNotificationTime = 0L;
+    private long lastMemoryNotificationTime = 0L;
+    private long lastStorageNotificationTime = 0L;
+    private long lastDatabaseNotificationTime = 0L;
+    private long lastStableTPSTime = 0L;
+
     @Override
     public void start() {
+        lastStableTPSTime = System.currentTimeMillis();
         try {
             STORAGE_VOLUME = Files.getFileStore(Paths.get("."));
         } catch (IOException ignored) {
             STORAGE_VOLUME = null;
         }
+        spectatorExecutor.scheduleAtFixedRate(this::checkServerTicks,
+                5, 1, TimeUnit.SECONDS);
         if (runnable != null) {
             runnable.cancel();
         }
-        runnable = new BukkitRunnable() {
-            @Override
-            public void run() {
-                long heapSize = Runtime.getRuntime().totalMemory();
-                long heapMaxSize = Runtime.getRuntime().maxMemory();
-                if (heapSize > heapMaxSize) {
-                    OpenCreative.getPlugin().getLogger().warning("[WATCHDOG] A lot of memory was used :(");
-                    storageState = StabilityState.NOT_OKAY;
-                    dumpPlanets();
-                }
-                
-                long availableSpace = getAvailableSpace();
-                if (availableSpace >= 200) { // 200 MB
-                    storageState = StabilityState.FINE;
-                } else if (availableSpace >= 100) { // 100 MB
-                    storageState = StabilityState.NOT_OKAY;
-                } else {
-                    storageState = StabilityState.NIGHTMARE;
-                }
-
-                if (OpenCreative.getPlanetsManager().isStableConnection()) {
-                    databaseState = StabilityState.FINE;
-                } else if (OpenCreative.getPlanetsManager().isWorking()) {
-                    databaseState = StabilityState.NOT_OKAY;
-                } else {
-                    databaseState = StabilityState.NIGHTMARE;
-                }
-
-                long freeMemory = Runtime.getRuntime().freeMemory() / 1000000;
-                if (freeMemory >= 100) { // 100 MB
-                    memoryState = StabilityState.FINE;
-                } else if (freeMemory >= 50) { // 50 MB
-                    memoryState = StabilityState.NOT_OKAY;
-                } else {
-                    memoryState = StabilityState.NIGHTMARE;
-                }
-
-                if (getTPS() >= 17) {
-                    ticksState = StabilityState.FINE;
-                } else if (getTPS() >= 13) {
-                    ticksState = StabilityState.NOT_OKAY;
-                } else {
-                    ticksState = StabilityState.NIGHTMARE;
-                }
-
-                StabilityState oldState = pluginState;
-                if (storageState == databaseState && databaseState == memoryState && memoryState == ticksState) {
-                    pluginState = storageState;
-                } else {
-                    pluginState = StabilityState.NIGHTMARE;
-                }
-
-                if (getState() == StabilityState.NIGHTMARE) {
-                    if (memoryState == StabilityState.NIGHTMARE) {
-                        sendWarningErrorMessage("[WATCHDOG] Too low available memory: " + freeMemory + " MB");
-                    } else {
-                        OpenCreative.getPlugin().getLogger().warning("OpenCreative+ cannot continue work due to stability issues.");
-                        OpenCreative.getPlugin().getLogger().warning(" TPS: " + ticksState.name() + " (" + Math.floor(getTPS()) + "/20)");
-                        OpenCreative.getPlugin().getLogger().warning(" Memory: " + memoryState.name() + " (" + freeMemory + " MB free)");
-                        OpenCreative.getPlugin().getLogger().warning(" Storage: " + storageState.name() + " (" + availableSpace + " MB available)");
-                        OpenCreative.getPlugin().getLogger().warning(" Database: " + databaseState.name());
-                        dumpPlanets();
-                        for (Player player : Bukkit.getOnlinePlayers()) {
-                            player.sendActionBar(getLocaleMessage("creative.stability.actionbar")
-                                    .replace("%memory%", memoryState.getLocalized())
-                                    .replace("%storage%", storageState.getLocalized())
-                                    .replace("%tps%", ticksState.getLocalized())
-                                    .replace("%database%", databaseState.getLocalized())
-                            );
-                        }
-                    }
-                    if (oldState != StabilityState.NIGHTMARE) {
-                        for (Player player : Bukkit.getOnlinePlayers()) {
-                            player.sendMessage(getLocaleMessage("creative.stability.unload"));
-                            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                                Sounds.MAINTENANCE_START.play(onlinePlayer);
-                                for (Planet planet : OpenCreative.getPlanetsManager().getPlanets()) {
-                                    if (planet.isLoaded()) {
-                                        planet.getTerritory().unload();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    return;
-                }
-
-                if (databaseState != StabilityState.FINE)
-                    sendWarningErrorMessage("[WATCHDOG] Database connection is not stable.");
-                if (ticksState != StabilityState.FINE)
-                    sendWarningErrorMessage("[WATCHDOG] Server ticks aren't stable.");
-                if (storageState != StabilityState.FINE)
-                    sendWarningErrorMessage("[WATCHDOG] Storage cannot be accessed.");
+        runnable = Bukkit.getScheduler().runTaskTimer(OpenCreative.getPlugin(), () -> {
+            lastTickTime = System.currentTimeMillis();
+            long now = System.nanoTime();
+            tickTimes.addLast(now);
+            long cutoff = now - 5_000_000_000L;
+            while (!tickTimes.isEmpty() && tickTimes.peekFirst() < cutoff) {
+                tickTimes.removeFirst();
             }
-        };
-        runnable.runTaskTimerAsynchronously(OpenCreative.getPlugin(), 20L, 200L);
+        }, 60L, 1L);
     }
 
-    private void dumpPlanets() {
+    private @NotNull String dumpStackTrace() {
+        Thread thread = Thread.getAllStackTraces().keySet().stream()
+                .filter(t -> t.getName().equals("Server thread"))
+                .findFirst()
+                .orElse(null);
+        if (thread == null) {
+            return "No server thread found.";
+        }
+        boolean changed = false;
+        StringBuilder builder = new StringBuilder("Stack trace:");
+        for (StackTraceElement element : thread.getStackTrace()) {
+            if (element.getClassName().startsWith("ua.mcchickenstudio.opencreative.")) {
+                changed = true;
+                builder.append("\n ")
+                        .append(element.getClassName()
+                                .replace("ua.mcchickenstudio.opencreative.", ""))
+                        .append("#")
+                        .append(element.getMethodName())
+                        .append(":")
+                        .append(element.getLineNumber());
+            }
+        }
+        if (changed) {
+            return builder.toString();
+        }
+        return "No stack trace found.";
+    }
+
+    private @NotNull String dumpPlanets() {
         long now = System.currentTimeMillis();
         Set<Planet> loadedPlanets = new HashSet<>();
         for (World world : Bukkit.getWorlds()) {
@@ -170,16 +125,46 @@ public final class Watchdog implements StabilityManager, Toggleable {
             }
         }
         if (loadedPlanets.isEmpty()) {
-            OpenCreative.getPlugin().getLogger().info("[WATCHDOG] No loaded planets detected.");
-            return;
+            return "No loaded planets.";
         }
-        OpenCreative.getPlugin().getLogger().warning("[WATCHDOG] Dump of loaded planets (" + loadedPlanets.size() + "): ");
+        StringBuilder builder = new StringBuilder("Loaded planets (" + loadedPlanets.size() + "): ");
         for (Planet planet : loadedPlanets) {
-            OpenCreative.getPlugin().getLogger().warning("[WATCHDOG] " + planet.getId() +
-                    " - Players (" + planet.getInformation().getAsyncOnline() + ") - " +
-                    (planet.getMode() == Planet.Mode.PLAYING ? "Play" : "Build") +
-                    " - Loaded: " + getElapsedTime(now, planet.getLastActivityTime()));
+            builder.append("\n ")
+                    .append(planet.getId()).append(" - Players (")
+                    .append(planet.getInformation().getAsyncOnline())
+                    .append(") - ").append(planet.getMode() == Planet.Mode.PLAYING ? "Play" : "Build")
+                    .append(" - Uptime: ")
+                    .append(convertTime(now - planet.getLastActivityTime()))
+                    .append(" - Created: ")
+                    .append(getElapsedTime(now, planet.getCreationTime()))
+                    .append(" by ")
+                    .append(planet.getOwner());
+            if (planet.getMode() == Planet.Mode.PLAYING) {
+                builder.append(" - ")
+                        .append(planet.getVariables().getTotalVariablesAmount())
+                        .append(" variables, ")
+                        .append(planet.getTerritory().getScript().getExecutors().getExecutorsAmount())
+                        .append(" events, ")
+                        .append(planet.getTerritory().getScript().getExecutors().getActionsAmount())
+                        .append(" actions. ");
+            }
+
         }
+        return builder.toString();
+    }
+
+    private @NotNull String dumpPlayers() {
+        List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
+        if (players.isEmpty()) {
+            return "No online players.";
+        }
+        StringBuilder builder = new StringBuilder("Online players (" + players.size() + "): ");
+        StringJoiner joiner = new StringJoiner(", ");
+        for (Player player : players) {
+            joiner.add(player.getName());
+        }
+        builder.append(joiner);
+        return builder.toString();
     }
 
     @Override
@@ -192,6 +177,7 @@ public final class Watchdog implements StabilityManager, Toggleable {
         if (runnable != null) {
             runnable.cancel();
         }
+        spectatorExecutor.shutdownNow();
     }
 
     @Override
@@ -235,13 +221,6 @@ public final class Watchdog implements StabilityManager, Toggleable {
         }
     }
 
-    public double getTPS() {
-        if (Bukkit.getTPS().length >= 1) {
-            return Bukkit.getTPS()[0];
-        }
-        return 20;
-    }
-
     public long getTotalSpace() {
         if (STORAGE_VOLUME == null) {
             return 1;
@@ -253,8 +232,140 @@ public final class Watchdog implements StabilityManager, Toggleable {
         }
     }
 
+    private void checkServerTicks() {
+
+        long now = System.currentTimeMillis();
+        long passedTimeFromLastTick = now - lastTickTime;
+        double tps = getTPS();
+
+        long heapSize = Runtime.getRuntime().totalMemory();
+        long heapMaxSize = Runtime.getRuntime().maxMemory();
+        if (heapSize > heapMaxSize) {
+            if (now - lastMemoryNotificationTime > 5_000) {
+                OpenCreative.getPlugin().getLogger().warning("[WATCHDOG] A lot of memory was used :(");
+                memoryState = StabilityState.NOT_OKAY;
+                lastMemoryNotificationTime = now;
+            }
+        } else {
+            long freeMemory = Runtime.getRuntime().freeMemory() / 1000000;
+            if (freeMemory >= 100) { // 100 MB
+                memoryState = StabilityState.FINE;
+            } else if (freeMemory >= 50) { // 50 MB
+                memoryState = StabilityState.NOT_OKAY;
+            } else {
+                memoryState = StabilityState.NIGHTMARE;
+            }
+            if (memoryState != StabilityState.FINE && now - lastMemoryNotificationTime > 5_000) {
+                OpenCreative.getPlugin().getLogger().warning("[WATCHDOG] Too few memory (" + freeMemory + " MB) left :(");
+                lastMemoryNotificationTime = now;
+            }
+        }
+
+        long availableSpace = getAvailableSpace();
+        if (availableSpace >= 200) { // 200 MB
+            storageState = StabilityState.FINE;
+        } else if (availableSpace >= 100) { // 100 MB
+            storageState = StabilityState.NOT_OKAY;
+        } else {
+            storageState = StabilityState.NIGHTMARE;
+        }
+        if (storageState != StabilityState.FINE && now - lastStorageNotificationTime > 5_000) {
+            OpenCreative.getPlugin().getLogger().warning("[WATCHDOG] Too few space (" + availableSpace + " MB) left on storage :(");
+            lastStorageNotificationTime = now;
+        }
+
+        if (OpenCreative.getPlanetsManager().isStableConnection()) {
+            databaseState = StabilityState.FINE;
+        } else if (OpenCreative.getPlanetsManager().isWorking()) {
+            databaseState = StabilityState.NOT_OKAY;
+        } else {
+            databaseState = StabilityState.NIGHTMARE;
+        }
+        if (databaseState != StabilityState.FINE && now - lastDatabaseNotificationTime > 5_000) {
+            OpenCreative.getPlugin().getLogger().warning("[WATCHDOG] Database is busy :(");
+            lastDatabaseNotificationTime = now;
+        }
+
+        if (tps >= 17) {
+            if (ticksState != StabilityState.FINE) {
+                sendGreenLog("TPS is normal now :) " + "§8(passed: " + (now - lastStableTPSTime) / 1000 + " seconds)");
+            }
+            lastStableTPSTime = now;
+            ticksState = StabilityState.FINE;
+        } else if (tps >= 13) {
+            ticksState = StabilityState.NOT_OKAY;
+        } else {
+            ticksState = StabilityState.NIGHTMARE;
+        }
+        if (ticksState != StabilityState.FINE && now - lastTicksNotificationTime > 6_000) {
+            OpenCreative.getPlugin().getLogger().warning("[WATCHDOG] Server is overloaded, TPS"
+                    + (tps <= 1 ? " is too low. :(" : ": " + tps + "/20 :(\n \n" + dumpPlanets() + "\n \n" + dumpPlayers()));
+            lastTicksNotificationTime = now;
+        }
+
+        StabilityState oldState = pluginState;
+        if (storageState == databaseState && databaseState == memoryState && memoryState == ticksState) {
+            pluginState = storageState;
+        } else {
+            pluginState = StabilityState.NIGHTMARE;
+        }
+
+        if (now - lastWatchdogNotificationTime > 10_000 && passedTimeFromLastTick >= 8_000) {
+            lastWatchdogNotificationTime = now;
+            long freeMemory = Runtime.getRuntime().freeMemory() / 1000000;
+            OpenCreative.getPlugin().getLogger().warning(String.join("\n", "-------- OPENCREATIVE+ WATCHDOG --------",
+                    "Server has not responded for " + passedTimeFromLastTick / 1000 + " seconds :(",
+                    "",
+                    "  TPS: " + ticksState.getName() + " (" + tps + "/20)",
+                    "  Memory: " + memoryState.getName() + " (" + freeMemory + " MB free)",
+                    "  Storage: " + storageState.getName() + " (" + availableSpace + " MB available)",
+                    "  Database: " + databaseState.getName(),
+                    "",
+                    dumpPlanets(),
+                    dumpPlayers(),
+                    dumpStackTrace(),
+                    "-------- --------  --------"
+            ));
+        }
+
+        if (pluginState == StabilityState.NIGHTMARE) {
+            if (oldState != StabilityState.NIGHTMARE && OpenCreative.getSettings().getWatchdogSettings().shouldUnloadWorldsWhenUnstable()) {
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    player.sendMessage(getLocaleMessage("creative.stability.unload"));
+                    for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                        Sounds.MAINTENANCE_START.play(onlinePlayer);
+                        for (Planet planet : OpenCreative.getPlanetsManager().getPlanets()) {
+                            if (planet.isLoaded()) {
+                                planet.getTerritory().unload();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void sendGreenLog(@NotNull String log) {
+        Bukkit.getConsoleSender().sendMessage("§a§l[" + OpenCreative.getPlugin().getLogger().getName() + "] [WATCHDOG] " + log);
+    }
+
+    private final Deque<Long> tickTimes = new ArrayDeque<>();
+
+    public double getTPS() {
+        long now = System.nanoTime();
+        long cutoff = now - 5_000_000_000L;
+        while (!tickTimes.isEmpty() && tickTimes.peekFirst() < cutoff) {
+            tickTimes.removeFirst();
+        }
+        int ticks = tickTimes.size();
+        return ticks / 5.0;
+    }
+
     @Override
     public @NotNull StabilityState getState() {
+        if (!OpenCreative.getSettings().getWatchdogSettings().shouldLimitOperationsWhenUnstable()) {
+            return StabilityState.FINE;
+        }
         return pluginState;
     }
 }

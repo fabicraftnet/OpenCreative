@@ -277,6 +277,18 @@ public final class TestificationExperiment extends Experiment {
 
                 }
             }
+        } else if (args[0].equalsIgnoreCase("thread")) {
+            int seconds = 1;
+            if (args.length > 1) {
+                try {
+                    seconds = Integer.parseInt(args[1]);
+                } catch (Exception ignored) {}
+            }
+            seconds = Math.clamp(seconds, 1, 11);
+            try {
+                OpenCreative.getPlugin().getLogger().warning("Pausing thread for " + seconds + " seconds.");
+                Thread.sleep(seconds * 1000L);
+            } catch (Exception ignored) {}
         }
     }
 

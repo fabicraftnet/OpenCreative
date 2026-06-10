@@ -855,7 +855,7 @@ public enum ActionType implements CodingBlockType {
     ENTITY_SET_TEXT_DISPLAY_OPACITY(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayTextOpacityAction.class, Material.BIRCH_SIGN, new ArgumentSlot("opacity", ValueType.NUMBER)),
     ENTITY_SET_TEXT_DISPLAY_WIDTH(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayTextWidthAction.class, Material.OAK_SIGN, new ArgumentSlot("width", ValueType.NUMBER)),
     ENTITY_SET_DISPLAY_TEXT(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayTextAction.class, Material.BOOK, new ArgumentSlot("text", ValueType.TEXT)),
-    ENTITY_SET_DISPLAY_BRIGHTNESS(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayLightningAction.class, Material.LIGHT, new ArgumentSlot("light", ValueType.NUMBER)),
+    ENTITY_SET_DISPLAY_BRIGHTNESS(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayLightningAction.class, Material.LIGHT, new ArgumentSlot("sky", ValueType.NUMBER), new ArgumentSlot("block", ValueType.NUMBER)),
     //ENTITY_RESET_DISPLAY_BRIGHTNESS(ActionCategory.ENTITY_ACTION, MenusCategory.STATE, null, Material.GLASS_BOTTLE),
 
     ENTITY_TELEPORT(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_MOVEMENT, EntityTeleportAction.class, Material.ENDER_PEARL, new ArgumentSlot("location", ValueType.LOCATION), new ParameterSlot("consider", Arrays.asList("all", "only-coordinates", "only-rotation"), Material.ENDER_EYE, Material.PAPER, Material.PLAYER_HEAD)),

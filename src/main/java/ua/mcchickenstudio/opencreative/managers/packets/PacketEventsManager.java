@@ -170,12 +170,6 @@ public final class PacketEventsManager implements PacketManager, Toggleable, Sig
     }
 
     @Override
-    public void showBlockForPlayer(@NotNull Player player, @NotNull Location location, @NotNull Material material) {
-        WrapperPlayServerBlockChange packet = new WrapperPlayServerBlockChange(new Vector3i(location.getBlockX(), location.getBlockY(), location.getBlockZ()), SpigotConversionUtil.fromBukkitBlockData(material.createBlockData()));
-        PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
-    }
-
-    @Override
     public @NotNull String getName() {
         return "PacketEvents Packet Manager";
     }
