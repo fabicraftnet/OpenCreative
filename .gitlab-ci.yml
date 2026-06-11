@@ -2,7 +2,6 @@
 # OpenCreative+ Gitlab Deploy CI Job
 # McChicken Studio 2017-2026.
 #
-
 #
 # This file is responsible for deploying .jar artifact
 # on Gitlab package registry, so it makes possible (our catchphrase!)
@@ -13,34 +12,31 @@
 # Also, it creates Javadocs and uploads it into the web,
 # so you can see all available methods on the site.
 #
-
-image: maven:latest
-
+image: gradle:9.0.0-jdk21
 stages:
   - deploy
-
 deploy_job:
   stage: deploy
   script:
     - echo "Compiling OpenCreative+ Build ${CI_PIPELINE_IID}, please wait..."
-    - mvn versions:set -DnewVersion=6.0.0-build-${CI_PIPELINE_IID}
-    - mvn deploy -s settings.xml
+    - gradle publish -Pversion=6.0.0-build-${CI_PIPELINE_IID} --no-daemon
     - echo "Compiled OpenCreative+ Build ${CI_PIPELINE_IID}! :)"
   only:
     refs:
       - main
     changes:
-      # It deploys only in Main branch, when source files or pom.xml are changed.
+      # It deploys only in Main branch, when source files or build.gradle are changed.
       - src/**/*
-      - pom.xml
+      - build.gradle
+      - settings.gradle
       - .gitlab-ci.yml
 pages:
   stage: deploy
   script:
     - echo "Creating Javadocs for OpenCreative+, please wait..."
-    - mvn javadoc:javadoc -Dmaven.javadoc.failOnError=false
+    - gradle javadoc --no-daemon || true
     - mkdir -p public
-    - if [ -d target/site/apidocs ]; then cp -r target/site/apidocs/* public && echo "Javadocs was created successfully :)"; else echo "No Javadocs was generated... :("; fi
+    - if [ -d build/docs/javadoc ]; then cp -r build/docs/javadoc/* public && echo "Javadocs was created successfully :)"; else echo "No Javadocs was generated... :("; fi
   artifacts:
     paths:
       - public

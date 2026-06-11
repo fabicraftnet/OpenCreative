@@ -9,7 +9,7 @@ api-version: 1.21
 
 version: '6.0.0 Preview'
 description: 'Let players create the worlds'
-build: ${maven.build.timestamp}
+build: ${build_timestamp}
 
 authors: [McChicken Studio]
 contributors: [McChicken Team, onn512, pawsashatoy, LWJENNI, HACKERPRO17, liventmst]

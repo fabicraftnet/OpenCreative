@@ -607,6 +607,7 @@ commands:
   onCreativeChat: {} # %player% %message% %formatted%
   onMaintenanceStart: {} # %player%
   onMaintenanceEnd: {} # %player%
+  onWatchdogServerOverload: {} # %tps% %freememory% %freestorage% %planets% %players%
 
 #
 # If player's input new text will not follow

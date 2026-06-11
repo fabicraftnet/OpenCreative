@@ -1,0 +1,159 @@
+/*
+ * OpenCreative+, Minecraft plugin.
+ * (C) 2022-2026, McChicken Studio, mcchickenstudio@gmail.com
+ *
+ * OpenCreative+ is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * OpenCreative+ is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * OpenCreative+ Gradle Dependencies.
+ * McChicken Studio 2017-2026
+ */
+plugins {
+    id "java"
+    id "com.gradleup.shadow" version "9.0.0"
+    id "maven-publish"
+    id "io.papermc.paperweight.userdev" version "2.0.0-beta.21"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+group = "mcchickenstudio"
+description = "Minecraft plugin, that allows players to create their worlds. McChicken Studio 2026"
+version = findProperty("version") ?: "6.0.0"
+
+repositories {
+    maven { url "https://repo.papermc.io/repository/maven-public/" }
+    maven { url "https://oss.sonatype.org/content/groups/public/" }
+    maven { url "https://repo.extendedclip.com/content/repositories/placeholderapi/" }
+    maven { url "https://libraries.minecraft.net/" }
+    maven { url "https://repo.dmulloy2.net/repository/public/" }
+    maven { url "https://jitpack.io" }
+    maven { url "https://repo.md-5.net/content/groups/public/" }
+    maven { url "https://maven.enginehub.org/repo/" }
+    maven { url "https://mvn.lib.co.nz/public" }
+    maven { url "https://repo.codemc.io/repository/creatorfromhell/" }
+    maven { url "https://repo.codemc.io/repository/maven-releases/" }
+    maven { url "https://repo.codemc.io/repository/maven-snapshots/" }
+    maven {
+        name = "gitlab-maven"
+        url = "https://gitlab.com/api/v4/projects/58168569/packages/maven"
+    }
+    mavenCentral()
+}
+
+dependencies {
+    // The main part of plugin: Paper 1.21.1!
+    paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
+
+    // Swing window when user opens .jar file
+    implementation "org.openjfx:javafx-swing:22"
+
+    // bStats - tracks how many servers use this plugin
+    implementation "org.bstats:bstats-bukkit:3.0.2"
+
+    // File operations
+    implementation "commons-io:commons-io:2.16.1"
+
+    // FastAsyncWorldEdit
+    compileOnly "com.fastasyncworldedit:FastAsyncWorldEdit-Core:2.11.0"
+    compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Bukkit:2.11.0") {
+        exclude group: "*", module: "FastAsyncWorldEdit-Core"
+    }
+
+    // Addon: PlaceholderAPI support
+    compileOnly "me.clip:placeholderapi:2.11.5"
+
+    // Addon: ProtocolLib - custom effects/animations with packets
+    compileOnly "net.dmulloy2:ProtocolLib:5.4.0"
+
+    // Addon: PacketEvents - custom effects/animations with packets
+    compileOnly "com.github.retrooper:packetevents-spigot:2.12.1"
+
+    // Addon: Vault - economy operations
+    compileOnly "com.github.MilkBowl:VaultAPI:1.7.1"
+
+    // Addon: LibsDisguises - mob disguises
+    compileOnly "me.libraryaddict.disguises:libsdisguises:11.0.0"
+}
+
+compileJava.options.encoding = "UTF-8"
+javadoc.options.encoding = "UTF-8"
+
+shadowJar {
+    manifest {
+        attributes("Main-Class": "Main")
+    }
+    dependencies {
+        include(dependency("org.openjfx:javafx-swing:22"))
+    }
+    // bStats relocation (required by bStats)
+    relocate "org.bstats.bukkit", "ua.mcchickenstudio.opencreative.utils.hooks"
+    minimize()
+    archiveClassifier.set("")
+}
+
+build.dependsOn shadowJar
+processResources {
+    filteringCharset = "UTF-8"
+    filteringCharset = "UTF-8"
+
+    filesMatching("plugin.yml") {
+        expand (build_timestamp: new Date().format("dd-MM-yyyy"))
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = project.group
+            artifactId = "opencreative"
+            version = project.version
+            from components.java
+            suppressAllPomMetadataWarnings()
+        }
+    }
+    repositories {
+        maven {
+            name = "gitlab"
+            url = "${System.env.CI_API_V4_URL}/projects/${System.env.CI_PROJECT_ID}/packages/maven"
+            credentials(HttpHeaderCredentials) {
+                name = "Private-Token"
+                value = System.getenv("CI_JOB_TOKEN")
+            }
+            authentication {
+                header(HttpHeaderAuthentication)
+            }
+        }
+    }
+}
+
+javadoc {
+    options {
+        windowTitle = "OpenCreative+ Javadocs"
+        docTitle = "Welcome to OpenCreative+ Javadocs :)"
+        bottom = "Made by McChicken Studio 2017-2026."
+        overview = file("src/main/javadoc/overview.html")
+        encoding = "UTF-8"
+        charSet = "UTF-8"
+        addBooleanOption("Xdoclint:none", true)
+        addStringOption("quiet", "-quiet")
+    }
+}
