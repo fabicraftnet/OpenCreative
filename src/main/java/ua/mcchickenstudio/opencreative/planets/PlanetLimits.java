@@ -19,8 +19,10 @@
 package ua.mcchickenstudio.opencreative.planets;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Action;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.world.other.LimitReachedBlocksEvent;
 import ua.mcchickenstudio.opencreative.settings.groups.LimitType;
@@ -55,6 +57,9 @@ public class PlanetLimits {
     private int lastModifiedBlocksAmount;
     private int lastModifiedTargetsAmount;
     private int lastListElementsChangesAmount;
+
+    private long lastRedstoneLimitNotificationTime;
+    private long lastBlockFallsNotificationTime;
 
     public PlanetLimits(Planet planet) {
         this.planet = planet;
@@ -418,7 +423,7 @@ public class PlanetLimits {
      *
      * @return true - if it's allowed to change redstone blocks, false - not.
      */
-    public boolean canRedstoneWork() {
+    public boolean canRedstoneWork(@NotNull Location location) {
 
         long now = System.currentTimeMillis();
 
@@ -427,7 +432,14 @@ public class PlanetLimits {
             lastRedstoneOperations.poll();
         }
 
-        if (lastRedstoneOperations.size() >= getRedstoneOperationsLimit()) {
+        int limit = getRedstoneOperationsLimit();
+        if (lastRedstoneOperations.size() >= limit) {
+            if (System.currentTimeMillis() - lastRedstoneLimitNotificationTime > 5000) {
+                lastRedstoneLimitNotificationTime = System.currentTimeMillis();
+                OpenCreative.getPlugin().getLogger().info("[LIMITS: " + planet.getId()
+                        + "] Reached limit of redstone activations on (" + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ()
+                        + ") (" + lastRedstoneOperations.size() + "/" + limit + ")");
+            }
             return false;
         } else {
             lastRedstoneOperations.add(now);
@@ -453,6 +465,10 @@ public class PlanetLimits {
         }
 
         if (lastBlockFalls.size() >= 100) {
+            if (System.currentTimeMillis() - lastBlockFallsNotificationTime > 5000) {
+                lastBlockFallsNotificationTime = System.currentTimeMillis();
+                OpenCreative.getPlugin().getLogger().info("[LIMITS: " + planet.getId() + "] Reached limit of falling blocks (" + lastBlockFalls.size() + "/100)");
+            }
             return false;
         } else {
             lastBlockFalls.add(now);
@@ -695,6 +711,8 @@ public class PlanetLimits {
     public void clear() {
         lastModifiedBlocksAmount = 0;
         lastListElementsChangesAmount = 0;
+        lastRedstoneLimitNotificationTime = 0;
+        lastBlockFallsNotificationTime = 0;
         lastBlockFalls.clear();
         lastRedstoneOperations.clear();
         lastLightningsStrikes.clear();

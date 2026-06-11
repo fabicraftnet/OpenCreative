@@ -40,14 +40,19 @@ import java.util.concurrent.TimeUnit;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isDevPlanet;
 
+/**
+ * <h1>Watchdog</h1>
+ * This class represents a stability manager, called Watchdog, that
+ * logs about TPS stability and memory usage.
+ */
 public final class Watchdog implements StabilityManager, Toggleable {
+
+    private final Deque<Long> tickTimes = new ArrayDeque<>();
+    private volatile long lastTickTime = System.currentTimeMillis();
+    private final ScheduledExecutorService spectatorExecutor = Executors.newSingleThreadScheduledExecutor();
 
     private FileStore STORAGE_VOLUME;
     private BukkitTask runnable;
-
-    private final ScheduledExecutorService spectatorExecutor = Executors.newSingleThreadScheduledExecutor();
-    private volatile long lastTickTime = System.currentTimeMillis();
-
     private StabilityState pluginState = StabilityState.FINE;
     private StabilityState databaseState = StabilityState.FINE;
     private StabilityState storageState = StabilityState.FINE;
@@ -69,8 +74,7 @@ public final class Watchdog implements StabilityManager, Toggleable {
         } catch (IOException ignored) {
             STORAGE_VOLUME = null;
         }
-        spectatorExecutor.scheduleAtFixedRate(this::checkServerTicks,
-                5, 1, TimeUnit.SECONDS);
+        spectatorExecutor.scheduleAtFixedRate(this::checkServerTicks, 5, 1, TimeUnit.SECONDS);
         if (runnable != null) {
             runnable.cancel();
         }
@@ -85,11 +89,14 @@ public final class Watchdog implements StabilityManager, Toggleable {
         }, 60L, 1L);
     }
 
+    /**
+     * Returns a string with stack trace of currently used
+     * methods of plugin in the main server thread.
+     *
+     * @return string with plugin's stack trace.
+     */
     private @NotNull String dumpStackTrace() {
-        Thread thread = Thread.getAllStackTraces().keySet().stream()
-                .filter(t -> t.getName().equals("Server thread"))
-                .findFirst()
-                .orElse(null);
+        Thread thread = Thread.getAllStackTraces().keySet().stream().filter(t -> t.getName().equals("Server thread")).findFirst().orElse(null);
         if (thread == null) {
             return "No server thread found.";
         }
@@ -98,13 +105,7 @@ public final class Watchdog implements StabilityManager, Toggleable {
         for (StackTraceElement element : thread.getStackTrace()) {
             if (element.getClassName().startsWith("ua.mcchickenstudio.opencreative.")) {
                 changed = true;
-                builder.append("\n ")
-                        .append(element.getClassName()
-                                .replace("ua.mcchickenstudio.opencreative.", ""))
-                        .append("#")
-                        .append(element.getMethodName())
-                        .append(":")
-                        .append(element.getLineNumber());
+                builder.append("\n ").append(element.getClassName().replace("ua.mcchickenstudio.opencreative.", "")).append("#").append(element.getMethodName()).append(":").append(element.getLineNumber());
             }
         }
         if (changed) {
@@ -113,6 +114,12 @@ public final class Watchdog implements StabilityManager, Toggleable {
         return "No stack trace found.";
     }
 
+    /**
+     * Returns a string with details of loaded planets:
+     * online, uptime, creation time, mode, owner.
+     *
+     * @return string with loaded planets' info.
+     */
     private @NotNull String dumpPlanets() {
         long now = System.currentTimeMillis();
         Set<Planet> loadedPlanets = new HashSet<>();
@@ -129,30 +136,20 @@ public final class Watchdog implements StabilityManager, Toggleable {
         }
         StringBuilder builder = new StringBuilder("Loaded planets (" + loadedPlanets.size() + "): ");
         for (Planet planet : loadedPlanets) {
-            builder.append("\n ")
-                    .append(planet.getId()).append(" - Players (")
-                    .append(planet.getInformation().getAsyncOnline())
-                    .append(") - ").append(planet.getMode() == Planet.Mode.PLAYING ? "Play" : "Build")
-                    .append(" - Uptime: ")
-                    .append(convertTime(now - planet.getLastActivityTime()))
-                    .append(" - Created: ")
-                    .append(getElapsedTime(now, planet.getCreationTime()))
-                    .append(" by ")
-                    .append(planet.getOwner());
+            builder.append("\n ").append(planet.getId()).append(" - Players (").append(planet.getInformation().getAsyncOnline()).append(") - ").append(planet.getMode() == Planet.Mode.PLAYING ? "Play" : "Build").append(" - Uptime: ").append(convertTime(now - planet.getLastActivityTime())).append(" - Created: ").append(getElapsedTime(now, planet.getCreationTime())).append(" by ").append(planet.getOwner());
             if (planet.getMode() == Planet.Mode.PLAYING) {
-                builder.append(" - ")
-                        .append(planet.getVariables().getTotalVariablesAmount())
-                        .append(" variables, ")
-                        .append(planet.getTerritory().getScript().getExecutors().getExecutorsAmount())
-                        .append(" events, ")
-                        .append(planet.getTerritory().getScript().getExecutors().getActionsAmount())
-                        .append(" actions. ");
+                builder.append(" - ").append(planet.getVariables().getTotalVariablesAmount()).append(" variables, ").append(planet.getTerritory().getScript().getExecutors().getExecutorsAmount()).append(" events, ").append(planet.getTerritory().getScript().getExecutors().getActionsAmount()).append(" actions. ");
             }
 
         }
         return builder.toString();
     }
 
+    /**
+     * Returns a string with list of online players.
+     *
+     * @return loaded players.
+     */
     private @NotNull String dumpPlayers() {
         List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
         if (players.isEmpty()) {
@@ -205,11 +202,21 @@ public final class Watchdog implements StabilityManager, Toggleable {
         return "Stability Watchdog";
     }
 
-    public long getAvailableSpace() {
+    /**
+     * Returns available space on storage (in megabytes).
+     *
+     * @return available space on storage.
+     */
+    private long getAvailableSpace() {
         return (getTotalSpace() - getUsedSpace()) / 1000000;
     }
 
-    public long getUsedSpace() {
+    /**
+     * Returns used space on storage (in bytes).
+     *
+     * @return used space on storage, or 1 - if failed to get.
+     */
+    private long getUsedSpace() {
         if (STORAGE_VOLUME == null) {
             return 1;
         }
@@ -221,7 +228,12 @@ public final class Watchdog implements StabilityManager, Toggleable {
         }
     }
 
-    public long getTotalSpace() {
+    /**
+     * Returns total space of storage (in bytes).
+     *
+     * @return total space of storage, or 1 - if failed to get.
+     */
+    private long getTotalSpace() {
         if (STORAGE_VOLUME == null) {
             return 1;
         }
@@ -232,6 +244,9 @@ public final class Watchdog implements StabilityManager, Toggleable {
         }
     }
 
+    /**
+     * Checks server's stability: TPS, memory, storage, and notifies about it into console.
+     */
     private void checkServerTicks() {
 
         long now = System.currentTimeMillis();
@@ -298,8 +313,7 @@ public final class Watchdog implements StabilityManager, Toggleable {
             ticksState = StabilityState.NIGHTMARE;
         }
         if (ticksState != StabilityState.FINE && now - lastTicksNotificationTime > 6_000) {
-            OpenCreative.getPlugin().getLogger().warning("[WATCHDOG] Server is overloaded, TPS"
-                    + (tps <= 1 ? " is too low. :(" : ": " + tps + "/20 :(\n \n" + dumpPlanets() + "\n \n" + dumpPlayers()));
+            OpenCreative.getPlugin().getLogger().warning("[WATCHDOG] Server is overloaded, TPS" + (tps <= 1 ? " is too low. :(" : ": " + tps + "/20 :(\n \n" + dumpPlanets() + "\n \n" + dumpPlayers()));
             lastTicksNotificationTime = now;
         }
 
@@ -313,19 +327,7 @@ public final class Watchdog implements StabilityManager, Toggleable {
         if (now - lastWatchdogNotificationTime > 10_000 && passedTimeFromLastTick >= 8_000) {
             lastWatchdogNotificationTime = now;
             long freeMemory = Runtime.getRuntime().freeMemory() / 1000000;
-            OpenCreative.getPlugin().getLogger().warning(String.join("\n", "-------- OPENCREATIVE+ WATCHDOG --------",
-                    "Server has not responded for " + passedTimeFromLastTick / 1000 + " seconds :(",
-                    "",
-                    "  TPS: " + ticksState.getName() + " (" + tps + "/20)",
-                    "  Memory: " + memoryState.getName() + " (" + freeMemory + " MB free)",
-                    "  Storage: " + storageState.getName() + " (" + availableSpace + " MB available)",
-                    "  Database: " + databaseState.getName(),
-                    "",
-                    dumpPlanets(),
-                    dumpPlayers(),
-                    dumpStackTrace(),
-                    "-------- --------  --------"
-            ));
+            OpenCreative.getPlugin().getLogger().warning(String.join("\n", "-------- OPENCREATIVE+ WATCHDOG --------", "Server has not responded for " + passedTimeFromLastTick / 1000 + " seconds :(", "", "  TPS: " + ticksState.getName() + " (" + tps + "/20)", "  Memory: " + memoryState.getName() + " (" + freeMemory + " MB free)", "  Storage: " + storageState.getName() + " (" + availableSpace + " MB available)", "  Database: " + databaseState.getName(), "", dumpPlanets(), dumpPlayers(), dumpStackTrace(), "-------- --------  --------"));
         }
 
         if (pluginState == StabilityState.NIGHTMARE) {
@@ -345,12 +347,20 @@ public final class Watchdog implements StabilityManager, Toggleable {
         }
     }
 
+    /**
+     * Sends green-colored message into console.
+     *
+     * @param log message to send.
+     */
     private void sendGreenLog(@NotNull String log) {
         Bukkit.getConsoleSender().sendMessage("§a§l[" + OpenCreative.getPlugin().getLogger().getName() + "] [WATCHDOG] " + log);
     }
 
-    private final Deque<Long> tickTimes = new ArrayDeque<>();
-
+    /**
+     * Returns average TPS value in the latest 5 seconds.
+     *
+     * @return average TPS.
+     */
     public double getTPS() {
         long now = System.nanoTime();
         long cutoff = now - 5_000_000_000L;
