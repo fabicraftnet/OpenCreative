@@ -40,7 +40,7 @@ pages:
     - echo "Creating Javadocs for OpenCreative+, please wait..."
     - mvn javadoc:javadoc -Dmaven.javadoc.failOnError=false
     - mkdir -p public
-    - if [ -d target/reports/apidocs ]; then cp -r target/reports/apidocs/* public && echo "Javadocs was created successfully :)"; else echo "No Javadocs was generated... :("; fi
+    - if [ -d target/site/apidocs ]; then cp -r target/site/apidocs/* public && echo "Javadocs was created successfully :)"; else echo "No Javadocs was generated... :("; fi
   artifacts:
     paths:
       - public
@@ -50,3 +50,4 @@ pages:
     changes:
       # It creates Javadocs only in Main branch, when source files are changed.
       - src/**/*
+      - .gitlab-ci.yml
