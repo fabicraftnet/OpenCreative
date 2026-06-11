@@ -21,10 +21,6 @@ package ua.mcchickenstudio.opencreative.settings;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import ua.mcchickenstudio.opencreative.OpenCreative;
-import ua.mcchickenstudio.opencreative.managers.economy.DisabledEconomy;
-import ua.mcchickenstudio.opencreative.managers.economy.Economy;
-import ua.mcchickenstudio.opencreative.managers.economy.VaultEconomy;
-import ua.mcchickenstudio.opencreative.utils.hooks.HookUtils;
 
 public final class WatchdogSettings {
 

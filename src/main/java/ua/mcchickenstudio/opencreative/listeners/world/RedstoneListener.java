@@ -45,7 +45,7 @@ public final class RedstoneListener implements Listener {
         Location location = event.getBlock().getLocation();
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(location.getWorld());
         if (planet != null) {
-            if (!planet.getLimits().canRedstoneWork()) {
+            if (!planet.getLimits().canRedstoneWork(event.getBlock().getLocation())) {
                 event.setNewCurrent(event.getOldCurrent());
                 sendMessageOnce(planet, "world.redstone-limit",
                         new PlaceholderReplacer("count", planet.getLimits().getRedstoneOperationsLimit()),
