@@ -255,6 +255,8 @@ public final class Watchdog implements StabilityManager, Toggleable {
 
         long heapSize = Runtime.getRuntime().totalMemory();
         long heapMaxSize = Runtime.getRuntime().maxMemory();
+        long freeMemory = Runtime.getRuntime().freeMemory() / 1000000;
+
         if (heapSize > heapMaxSize) {
             if (now - lastMemoryNotificationTime > 5_000) {
                 OpenCreative.getPlugin().getLogger().warning("[WATCHDOG] A lot of memory was used :(");
@@ -262,7 +264,6 @@ public final class Watchdog implements StabilityManager, Toggleable {
                 lastMemoryNotificationTime = now;
             }
         } else {
-            long freeMemory = Runtime.getRuntime().freeMemory() / 1000000;
             if (freeMemory >= 100) { // 100 MB
                 memoryState = StabilityState.FINE;
             } else if (freeMemory >= 50) { // 50 MB
@@ -313,8 +314,18 @@ public final class Watchdog implements StabilityManager, Toggleable {
             ticksState = StabilityState.NIGHTMARE;
         }
         if (ticksState != StabilityState.FINE && now - lastTicksNotificationTime > 6_000) {
-            OpenCreative.getPlugin().getLogger().warning("[WATCHDOG] Server is overloaded, TPS" + (tps <= 1 ? " is too low. :(" : ": " + tps + "/20 :(\n \n" + dumpPlanets() + "\n \n" + dumpPlayers()));
+            String planetsDump = dumpPlanets();
+            String playersDump = dumpPlayers();
+            OpenCreative.getPlugin().getLogger().warning("[WATCHDOG] Server is overloaded, TPS"
+                    + (tps <= 1 ? " is too low. :(" : ": " + tps + "/20 :(\n \n" + planetsDump + "\n \n" + playersDump));
             lastTicksNotificationTime = now;
+            Map<String, Object> placeholders = new HashMap<>();
+            placeholders.put("%tps%", tps);
+            placeholders.put("%planets%", planetsDump);
+            placeholders.put("%players%", playersDump);
+            placeholders.put("%freememory%", freeMemory);
+            placeholders.put("%freestorage%", availableSpace);
+            Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> OpenCreative.getSettings().getCommands().execute(null, "onWatchdogServerOverload", placeholders));
         }
 
         StabilityState oldState = pluginState;
@@ -326,7 +337,6 @@ public final class Watchdog implements StabilityManager, Toggleable {
 
         if (now - lastWatchdogNotificationTime > 10_000 && passedTimeFromLastTick >= 8_000) {
             lastWatchdogNotificationTime = now;
-            long freeMemory = Runtime.getRuntime().freeMemory() / 1000000;
             OpenCreative.getPlugin().getLogger().warning(String.join("\n", "-------- OPENCREATIVE+ WATCHDOG --------", "Server has not responded for " + passedTimeFromLastTick / 1000 + " seconds :(", "", "  TPS: " + ticksState.getName() + " (" + tps + "/20)", "  Memory: " + memoryState.getName() + " (" + freeMemory + " MB free)", "  Storage: " + storageState.getName() + " (" + availableSpace + " MB available)", "  Database: " + databaseState.getName(), "", dumpPlanets(), dumpPlayers(), dumpStackTrace(), "-------- --------  --------"));
         }
 
