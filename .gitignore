@@ -1,4 +1,10 @@
 .idea
+gradlew
+gradlew.bat
+.gradle
+gradle
+build
+out
 dependency-reduced-pom.xml
 opencreative.iml
 target
