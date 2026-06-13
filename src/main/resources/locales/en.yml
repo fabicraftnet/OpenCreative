@@ -7361,28 +7361,6 @@ items:
           - "&3 Parameter &7- Side"
           - ""
           - "&eClick to set the action."
-      world-get-block-state:
-        name: "&bGet Block State"
-        lore:
-          - "&7Gets the blocks state"
-          - "&7at the specified locations."
-          - ""
-          - "&fIn the chest:"
-          - "&e Variable &7- To store the results"
-          - "&f Location &7- Block location"
-          - ""
-          - "&eClick to set the action."
-      world-set-block-state:
-        name: "&3Set Block State"
-        lore:
-          - "&7Sets the blocks state"
-          - "&7at the specified locations."
-          - ""
-          - "&fIn the chest:"
-          - "&f Location &7- Block location"
-          - "&6 Text &7- Block state"
-          - ""
-          - "&eClick to set the action."
         arguments:
           water:
             name: "&9Waterlogging"
@@ -19567,8 +19545,6 @@ blocks:
   world_strike_lightning: "Summon lightning"
   world_create_explosion: "Create explosion"
   world_set_block_type: "Set block"
-  world_get_block_state: "Get state"
-  world_set_block_state: "Set state"
   world_set_blocks_area_type: "Block region"
   world_destroy_block: "Destroy block"
   world_switch_to_build_mode: "&4Shut down"

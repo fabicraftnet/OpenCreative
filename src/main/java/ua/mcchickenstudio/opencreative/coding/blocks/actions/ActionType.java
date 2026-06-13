@@ -433,8 +433,6 @@ public enum ActionType implements CodingBlockType {
     WORLD_SET_SIGN_WAXED(ActionCategory.WORLD_ACTION, MenusCategory.BLOCKS, SetSignWaxedAction.class, Material.HONEYCOMB, new ArgumentSlot("locations", ValueType.LOCATION, (byte) 18), new ParameterSlot("waxed", true, Material.HONEYCOMB, Material.GLASS_BOTTLE)),
     WORLD_SET_SIGN_GLOWING_TEXT(ActionCategory.WORLD_ACTION, MenusCategory.BLOCKS, SetSignGlowingTextAction.class, Material.GLOW_INK_SAC, new ArgumentSlot("locations", ValueType.LOCATION, (byte) 18), new ParameterSlot("side", Arrays.asList("front", "back"), Material.OAK_SIGN, Material.WARPED_SIGN), new ParameterSlot("glowing", true, Material.GLOW_INK_SAC, Material.INK_SAC)),
     WORLD_SET_BLOCK_BIOME(ActionCategory.WORLD_ACTION, MenusCategory.BLOCKS, SetBlockBiomeAction.class, Material.MYCELIUM, new ArgumentSlot("locations", ValueType.LOCATION, (byte) 18), new ArgumentSlot("biome", ValueType.TEXT)),
-    WORLD_GET_BLOCK_STATE(ActionCategory.WORLD_ACTION, MenusCategory.BLOCKS, GetBlockStateAction.class, Material.PISTON, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("location", ValueType.LOCATION)),
-    WORLD_SET_BLOCK_STATE(ActionCategory.WORLD_ACTION, MenusCategory.BLOCKS, SetBlockStateAction.class, Material.STICKY_PISTON, new ArgumentSlot("location", ValueType.LOCATION), new ArgumentSlot("blockstate", ValueType.TEXT)),
 
     /**
      * <h1>Variable Actions.</h1>
