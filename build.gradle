@@ -24,7 +24,7 @@ plugins {
     id "java"
     id "com.gradleup.shadow" version "9.0.0"
     id "maven-publish"
-    id "io.papermc.paperweight.userdev" version "2.0.0-beta.21"
+    id "io.papermc.paperweight.userdev" version "2.0.0-beta.21" // If you don't want to use paperweight, remove this line.
 }
 
 java {
@@ -62,6 +62,7 @@ repositories {
 dependencies {
     // The main part of plugin: Paper 1.21.1!
     paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
+    // If you don't need paperweight, replace it with that -> compileOnly 'io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT'
 
     // Swing window when user opens .jar file
     implementation "org.openjfx:javafx-swing:22"

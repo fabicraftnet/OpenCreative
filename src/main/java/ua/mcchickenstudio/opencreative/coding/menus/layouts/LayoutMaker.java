@@ -38,6 +38,9 @@ public final class LayoutMaker extends Layout {
         if (actionType == ActionType.WORLD_ADD_CRAFTING_RECIPE) {
             fillCraftingRecipeLayout();
             return;
+        } else if (actionType == ActionType.IF_PLAYER_IS_WEARING_ITEM) {
+            fillWearingItemLayout();
+            return;
         }
         ArgumentSlot[] args = requiredSlots;
         if (args.length > 0 && args[0].isList()) {
@@ -45,6 +48,39 @@ public final class LayoutMaker extends Layout {
             return;
         }
         fillWithArguments(args);
+    }
+
+    private void fillWearingItemLayout() {
+        setRows(5);
+        setItem(DECORATION_PANE_ITEM, 0, 2, 4, 6, 8, 9, 11, 13, 15, 17, 18, 20, 22, 24, 26, 29, 28, 37, 38);
+        setArgSlotVertical(1, 10);
+        setArgSlotVertical(2, 12);
+        setArgSlotVertical(3, 14);
+        setArgSlotVertical(4, 16);
+
+        setGlass(5, 27);
+        setArgSlot(5, 36);
+
+        setGlass(6, 28);
+        setArgSlot(6, 37);
+
+        setGlass(7, 30);
+        setArgSlot(7, 39);
+
+        setGlass(8, 31);
+        setArgSlot(8, 40);
+
+        setGlass(9, 32);
+        setArgSlot(9, 41);
+
+        setGlass(10, 33);
+        setArgSlot(10, 42);
+
+        setGlass(11, 34);
+        setArgSlot(11, 43);
+
+        setGlass(12, 35);
+        setArgSlot(12, 44);
     }
 
     private void fillCraftingRecipeLayout() {

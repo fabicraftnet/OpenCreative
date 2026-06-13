@@ -74,10 +74,12 @@ public final class Watchdog implements StabilityManager, Toggleable {
         } catch (IOException ignored) {
             STORAGE_VOLUME = null;
         }
-        spectatorExecutor.scheduleAtFixedRate(this::checkServerTicks, 5, 1, TimeUnit.SECONDS);
         if (runnable != null) {
             runnable.cancel();
         }
+        Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
+            spectatorExecutor.scheduleAtFixedRate(this::checkServerTicks, 1, 1, TimeUnit.SECONDS);
+        }, 60L);
         runnable = Bukkit.getScheduler().runTaskTimer(OpenCreative.getPlugin(), () -> {
             lastTickTime = System.currentTimeMillis();
             long now = System.nanoTime();

@@ -19,6 +19,9 @@
 package ua.mcchickenstudio.opencreative.planets;
 
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -45,7 +48,6 @@ import ua.mcchickenstudio.opencreative.managers.stability.StabilityState;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
 import ua.mcchickenstudio.opencreative.settings.groups.Group;
 import ua.mcchickenstudio.opencreative.settings.items.ItemsGroup;
-import ua.mcchickenstudio.opencreative.utils.FileUtils;
 import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 import ua.mcchickenstudio.opencreative.utils.hooks.HookUtils;
 
@@ -771,24 +773,67 @@ public class Planet {
         ));
         Sounds.WORLD_CONNECTION.play(player);
 
+        if (territory.isBusy()) {
+            player.sendMessage(getLocaleMessage("world.connecting.unloading"));
+            return;
+        }
+
         boolean wasLoaded = isLoaded();
         if (!isLoaded()) {
             OpenCreative.getPlugin().getLogger().info("Loading planet " + id + " and teleporting " + player.getName());
             if (!OpenCreative.getSettings().getCodingSettings().isEnabled() && mode == Mode.PLAYING) mode = Mode.BUILD;
-            territory.load();
+            territory.load().thenAccept(ignored -> {
+                removePassengers(player);
+                player.teleportAsync(territory.getSpawnLocation()).thenAccept(success -> {
+                    handleTeleportationProcess(player, wasLoaded, hidePlayer, success);
+                }).exceptionally(error -> {
+                    player.clearTitle();
+                    wander.setConnectingToPlanet(false);
+                    String errorMessage = (error.getMessage() == null ? "Unknown error" : error.getMessage());
+                    player.sendMessage(getComponentWithPlaceholders("world.connecting.error",
+                            player, "id", id, "wasloaded", wasLoaded,
+                            "phase", "Teleportation", "loaded", isLoaded(), "error", errorMessage)
+                            .clickEvent(ClickEvent.suggestCommand(errorMessage))
+                            .hoverEvent(HoverEvent.showText(Component.text(parseException(error, true)))));
+                    sendCriticalErrorMessage("Failed to connect the player to planet " + id
+                            + " (was loaded: " + wasLoaded + ", loaded: " + isLoaded() + ", phase: Teleportation)", error);
+                    Sounds.PLAYER_ERROR.play(player);
+                    return null;
+                });
+            }).exceptionally(error -> {
+                player.clearTitle();
+                wander.setConnectingToPlanet(false);
+                String errorMessage = (error.getMessage() == null ? "Unknown error" : error.getMessage());
+                player.sendMessage(getComponentWithPlaceholders("world.connecting.error",
+                        player, "id", id, "wasloaded", wasLoaded,
+                        "phase", "Loading World", "loaded", isLoaded(), "error", errorMessage)
+                        .clickEvent(ClickEvent.suggestCommand(errorMessage))
+                        .hoverEvent(HoverEvent.showText(Component.text(parseException(error, true)))));
+                sendCriticalErrorMessage("Failed to connect the player to planet " + id
+                        + " (was loaded: " + wasLoaded + ", loaded: " + isLoaded() + ", phase: Loading World)", error);
+                Sounds.PLAYER_ERROR.play(player);
+                return null;
+            });
         } else {
             OpenCreative.getPlugin().getLogger().info("Planet " + id + " is already loaded, teleporting " + player.getName());
+            removePassengers(player);
+            player.teleportAsync(territory.getSpawnLocation()).thenAccept(success -> {
+                handleTeleportationProcess(player, wasLoaded, hidePlayer, success);
+            }).exceptionally(error -> {
+                player.clearTitle();
+                wander.setConnectingToPlanet(false);
+                String errorMessage = (error.getMessage() == null ? "Unknown error" : error.getMessage());
+                player.sendMessage(getComponentWithPlaceholders("world.connecting.error",
+                        player, "id", id, "wasloaded", wasLoaded,
+                        "phase", "Teleportation", "loaded", isLoaded(), "error", errorMessage)
+                        .clickEvent(ClickEvent.suggestCommand(errorMessage))
+                        .hoverEvent(HoverEvent.showText(Component.text(parseException(error, true)))));
+                sendCriticalErrorMessage("Failed to connect the player to planet " + id
+                        + " (was loaded: " + wasLoaded + ", loaded: " + isLoaded() + ", phase: Teleportation)", error);
+                Sounds.PLAYER_ERROR.play(player);
+                return null;
+            });
         }
-        removePassengers(player);
-        player.teleportAsync(territory.getSpawnLocation()).thenAccept(success -> {
-            handleTeleportationProcess(player, wasLoaded, hidePlayer, success);
-        }).exceptionally(error -> {
-            player.clearTitle();
-            sendPlayerErrorMessage(player, "Failed to connect to the world " + this.getId() +
-                    (error.getMessage() == null ? "." : ": " + error.getMessage()));
-            wander.setConnectingToPlanet(false);
-            return null;
-        });
     }
 
     /**
@@ -861,8 +906,8 @@ public class Planet {
                     onlinePlayer.hidePlayer(OpenCreative.getPlugin(), player);
                 }
             }
-            CompletableFuture<?> future = (planetPlayer != null) ? planetPlayer.load() : CompletableFuture.completedFuture(null);
-            future.whenComplete((ignored, error) -> {
+            CompletableFuture<?> playerDataLoad = (planetPlayer != null) ? planetPlayer.load() : CompletableFuture.completedFuture(null);
+            playerDataLoad.whenComplete((ignored, error) -> {
                 if (!wasLoaded) {
                     variables.load().whenComplete((ignoredVariables, errorVariables) -> {
                         territory.getScript().loadCode().thenAccept(result -> {
@@ -888,127 +933,20 @@ public class Planet {
             }
             if (isLoaded()) {
                 sendPlayerErrorMessage(player,
-                        "Failed to teleport to the world! World is loaded, chunk is " +
-                                (territory.getSpawnLocation().getChunk().isLoaded() ? "loaded." : "unloaded."));
+                        "Failed to teleport to the world! " );
             } else {
                 sendPlayerErrorMessage(player, "Failed to teleport to the world! World is unloaded.");
             }
             player.clearTitle();
             OpenCreative.getWander(player).setConnectingToPlanet(false);
-        }
-    }
-
-    /**
-     * Connects player to developer's world.
-     *
-     * @param player player to connect.
-     */
-    public void connectToDevPlanet(Player player) {
-        connectToDevPlanet(player, false);
-    }
-
-    /**
-     * Connects player to developer's planet.
-     *
-     * @param player     player to connect.
-     * @param hidePlayer whether hide player's join message and make him in spectator mode or not.
-     */
-    public void connectToDevPlanet(Player player, boolean hidePlayer) {
-        player.showTitle(Title.title(
-                toComponent(getLocaleMessage("world.dev-mode.connecting.title")), toComponent(getLocaleMessage("world.dev-mode.connecting.subtitle")),
-                Title.Times.times(Duration.ofSeconds(15), Duration.ofSeconds(30), Duration.ofSeconds(10))
-        ));
-        if (!devPlanet.isLoaded()) {
-            getDevPlanet().loadDevPlanetWorld();
-        }
-        getDevPlanet().getWorld().getSpawnLocation().getChunk().load(true);
-        Location lastLocation = this.getDevPlanet().getLastLocations().get(player.getUniqueId());
-        if (!this.getDevPlanet().isLoaded()) {
-            return;
-        }
-        if (lastLocation != null) {
-            Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
-                translateSigns(player, 10);
-            }, 5L);
-        }
-        if (lastLocation == null || !devPlanet.isSaveLocation()) {
-            lastLocation = getDevPlanet().getWorld().getSpawnLocation();
-        }
-        PlayerInventory playerInventory = player.getInventory();
-        ItemStack[] playerInventoryItems = (OpenCreative.getPlanetsManager().getDevPlanet(player) == null ? playerInventory.getContents() : new ItemStack[]{});
-        clearPlayer(player, false);
-        player.teleportAsync(lastLocation).thenAccept(success -> {
-            if (success) {
-                player.setAllowFlight(true);
-                player.setFlying(true);
-                if (!hidePlayer) {
-                    /*
-                     * If player is visiting world normally.
-                     */
-                    if (getWorldPlayers().canDevelop(player)) {
-                        player.sendMessage(getPlayerLocaleMessage("world.dev-mode.help", player));
-                        player.setGameMode(GameMode.CREATIVE);
-                    } else {
-                        player.setGameMode(GameMode.ADVENTURE);
-                    }
-                    for (Player onlinePlayer : player.getWorld().getPlayers()) {
-                        if (!onlinePlayer.equals(player)) {
-                            onlinePlayer.sendMessage(MessageUtils.getPlayerLocaleMessage("world.dev-mode.joined", player));
-                        }
-                    }
-                } else {
-                    /*
-                     * If player is moderator and should be hidden.
-                     */
-                    player.setGameMode(GameMode.SPECTATOR);
-                    for (Player onlinePlayer : player.getWorld().getPlayers()) {
-                        onlinePlayer.hidePlayer(OpenCreative.getPlugin(), player);
-                    }
-                }
-                if (devPlanet.isSaveLocation()) devPlanet.getLastLocations().put(player.getUniqueId(), player.getLocation());
-                if (devPlanet.isNightVision())
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false, false));
-                Sounds.DEV_CONNECTED.play(player);
-                Sounds.WORLD_MODE_DEV.play(player);
-                devPlanet.displayWorldBorders();
-                player.showTitle(Title.title(
-                        toComponent(getLocaleMessage("world.dev-mode.title")), toComponent(getLocaleMessage("world.dev-mode.subtitle")),
-                        Title.Times.times(Duration.ofMillis(750), Duration.ofSeconds(2), Duration.ofMillis(750))
-                ));
-                ItemsGroup itemsGroup = isOwner(player) ? ItemsGroup.CODING_OWNER : ItemsGroup.CODING;
-                itemsGroup.setItemsIfAbsent(player);
-                List<ItemStack> codingItems = itemsGroup.getItems(player);
-                for (ItemStack item : playerInventoryItems) {
-                    if (!codingItems.contains(item)) {
-                        player.getInventory().addItem(item);
-                    }
-                }
-            }
-        });
-    }
-
-    /**
-     * Connects player to developer's world, teleports next
-     * to block on specified coordinates.
-     * <p>
-     * Will make block glowing.
-     *
-     * @param player player to connect.
-     * @param x      x coordinate of block.
-     * @param y      y coordinate of block.
-     * @param z      z coordinate of block.
-     */
-    public void connectToDevPlanet(Player player, double x, double y, double z) {
-        connectToDevPlanet(player);
-        if (x > 0 && y > 0 && z > 0 && y < 30 && !isOutOfBorders(new Location(devPlanet.getWorld(), x + 1, y, z + 2))) {
-            Location location = new Location(this.getDevPlanet().getWorld(), x + 1, y, z + 2, 180, 5);
-            boolean blockExists = !new Location(devPlanet.getWorld(), x, y, z).getBlock().isEmpty();
-            player.teleportAsync(location).thenAccept(success -> {
-                if (success) {
-                    if (blockExists) spawnGlowingBlock(player, new Location(this.getDevPlanet().getWorld(), x + 0.5, y, z + 0.5));
-                    translateSigns(player, 5);
-                }
-            });
+            String errorMessage = "World is loaded, chunk is " + (territory.getSpawnLocation().getChunk().isLoaded() ? "loaded." : "unloaded.");
+            player.sendMessage(getComponentWithPlaceholders("world.connecting.error",
+                    player, "id", id, "wasloaded", wasLoaded,
+                    "phase", "After Teleportation", "loaded", isLoaded(), "error", errorMessage)
+                    .clickEvent(ClickEvent.suggestCommand(errorMessage)));
+            sendCriticalErrorMessage("Failed to connect the player to planet " + id
+                    + " (was loaded: " + wasLoaded + ", loaded: " + isLoaded() + ", phase: After Teleportation) " + errorMessage);
+            Sounds.PLAYER_ERROR.play(player);
         }
     }
 

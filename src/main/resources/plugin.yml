@@ -12,7 +12,7 @@ description: 'Let players create the worlds'
 build: ${build_timestamp}
 
 authors: [McChicken Studio]
-contributors: [McChicken Team, onn512, pawsashatoy, LWJENNI, HACKERPRO17, liventmst]
+contributors: [McChicken Team, onn512, pawsashatoy, LWJENNI, HACKERPRO17, liventmst, logiklop, 70N77U]
 prefix: "OC+"
 
 load: POSTWORLD

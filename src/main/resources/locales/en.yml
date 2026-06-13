@@ -556,6 +556,7 @@ world:
     owner-help: "%prefix%Welcome back to &6your world&f! Use the compass to manage your world, or use the command &6/world&f."
     busy: "%prefix%&cYou're already connecting to the world, please wait..."
     unloading: "%prefix%&cThis world is being unloaded, please try again later... :("
+    error: "%prefix%&cFailed to connect to world %id% :(\n \n&c Was loaded before: %wasloaded%\n&c Currently loaded: %loaded%\n&c Phase: %phase%\n \n&c Error: %error%"
   play-mode:
     name: "&3Play"
     message:
@@ -576,6 +577,7 @@ world:
     connecting:
       title: "&eConnecting... ⌘"
       subtitle: "&fEntering developer mode..."
+      error: "%prefix%&cFailed to connect to development world %id% :(\n \n&c Was loaded before: %wasloaded%\n&c Currently loaded: %loaded%\n&c Phase: %phase%\n \n&c Error: %error%"
     title: "&bCoding your world"
     subtitle: "&fCreate a &6game &fusing &6coding blocks"
     help: "%prefix%You have entered the &bdevelopment&f world. \n &f\n&f Check out the blocks in your inventory: &bEvents&f, &7Actions&f, &6Conditions&f. The platform consists of glass blocks where you need to place these blocks.\n&f\n&f Form your code on the glass line. Some &7actions&f and &6conditions&f place a chest where you need to put the specified values. Values can be &anumber&f, &6text&f, &eitem&f, &flocation&f.\n&f"
@@ -13211,6 +13213,156 @@ items:
             choices:
               false: "Match Any"
               true: "Require All"
+      if-player-is-wearing-item:
+        name: "&bWearing Item"
+        lore:
+          - "&7Checks whether the player"
+          - "&7is wearing an item as a helmet,"
+          - "&7chestplate, leggings,"
+          - "&7or boots."
+          - " "
+          - "&fIn the chest:"
+          - "&c Item &7- Helmet"
+          - "&c Item &7- Chestplate"
+          - "&c Item &7- Leggings"
+          - "&c Item &7- Boots"
+          - "&3 Parameter &7- Require all"
+          - "&3 Parameter &7- Require air"
+          - "&3 Parameters &7- Ignore data"
+          - " "
+          - "&eClick to set the condition."
+        arguments:
+          all:
+            name: "&fMatch Any or All"
+            lore:
+              - "&7Execute actions when"
+              - "&7the player is wearing all"
+              - "&7specified items or"
+              - "&7any one of them."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              false: "Match Any"
+              true: "Require All"
+          require-air:
+            name: "&bRequire Empty Slots"
+            lore:
+              - "&7If enabled and a slot above"
+              - "&7is empty, but the player has"
+              - "&7an item in that slot,"
+              - "&7the check will fail."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              false: "Ignore Item in Empty Slot"
+              true: "Require Empty Slot"
+          ignore-amount:
+            name: "&eIgnore Amount"
+            lore:
+              - "&7Sometimes you need to check"
+              - "&7whether the player has enough"
+              - "&7items."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              false: "Check Amount"
+              true: "Ignore Amount"
+          ignore-name:
+            name: "&6Ignore Name"
+            lore:
+              - "&7Items can be renamed"
+              - "&7using an"
+              - "&7anvil."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              false: "Check Name"
+              true: "Ignore Name"
+          ignore-lore:
+            name: "&3Ignore Lore"
+            lore:
+              - "&7Custom lore usually requires"
+              - "&7commands, plugins,"
+              - "&7or mods."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              false: "Check Lore"
+              true: "Ignore Lore"
+          ignore-enchantments:
+            name: "&dIgnore Enchantments"
+            lore:
+              - "&7Items can be enchanted"
+              - "&7using an anvil or"
+              - "&7enchanting table."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              false: "Check Enchantments"
+              true: "Ignore Enchantments"
+          ignore-flags:
+            name: "&eIgnore Item Tags"
+            lore:
+              - "&7These special tags are"
+              - "&7usually added through"
+              - "&7NBT editors."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              false: "Check Tags"
+              true: "Ignore Tags"
+          ignore-damage:
+            name: "&eIgnore Durability"
+            lore:
+              - "&7Useful when comparing"
+              - "&7tools, weapons,"
+              - "&7or armor."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              false: "Check Durability"
+              true: "Ignore Durability"
+        placeholders:
+          helmet:
+            name: "&6Helmet"
+          chestplate:
+            name: "&6Chestplate"
+          leggings:
+            name: "&6Leggings"
+          boots:
+            name: "&6Boots"
       if-player-is-dead:
         name: "&4Player is Dead"
         lore:
@@ -14885,7 +15037,7 @@ menus:
           - ""
           - "&c McChicken Studio 2017-2026"
           - "&3 Contributors: &7onn512, pawsashatoy, LWJENNI,"
-          - "&7  HACKERPRO17, liventmst, logiklop."
+          - "&7  HACKERPRO17, liventmst, logiklop, 70N77U."
           - "&3 Translators: &7initzero, Nagibator6000LoL,"
           - "&7  DrakesWeb, kogtyv, Senmpai333."
           - ""
@@ -19349,7 +19501,7 @@ blocks:
   entity_set_text_display_opacity: "Text Opacity"
   entity_set_text_display_width: "Text Width"
   entity_set_display_brightness: "Display Brightness"
-  entity_set_display_interpolation: "Display Interpolation"
+  entity_set_display_interpolation: "Dis. Interpolation"
   entity_set_friction: "Friction"
   entity_set_visual_fire: "Visual Fire"
   entity_set_parrot_color: "Parrot Color"
@@ -19589,6 +19741,7 @@ blocks:
   if_player_has_item: "Has item"
   if_player_has_item_in_hand: "Holding item"
   if_player_block_equals: "Block equals"
+  if_player_is_wearing_item: "Wearing armor"
   if_player_is_sneaking: "Is sneaking"
   if_player_is_flying: "Is flying"
   if_player_is_on_ground: "Is on ground"

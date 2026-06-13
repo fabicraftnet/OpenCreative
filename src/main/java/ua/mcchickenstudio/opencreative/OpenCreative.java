@@ -37,6 +37,8 @@ import ua.mcchickenstudio.opencreative.commands.world.*;
 import ua.mcchickenstudio.opencreative.commands.world.modes.*;
 import ua.mcchickenstudio.opencreative.commands.world.reputation.*;
 import ua.mcchickenstudio.opencreative.managers.Managers;
+import ua.mcchickenstudio.opencreative.managers.worlds.VanillaWorldManager;
+import ua.mcchickenstudio.opencreative.managers.worlds.WorldManager;
 import ua.mcchickenstudio.opencreative.wanders.OfflineWander;
 import ua.mcchickenstudio.opencreative.wanders.Wander;
 import ua.mcchickenstudio.opencreative.coding.prompters.*;
@@ -214,6 +216,7 @@ public final class OpenCreative extends JavaPlugin {
      */
     @SuppressWarnings("ConstantConditions")
     private void loadManagers() {
+        managers.register(WorldManager.class, new VanillaWorldManager());
         managers.register(PlanetsManager.class, new Space());
         managers.register(ModuleManager.class, new Moduler());
         managers.start(PlanetsManager.class, ModuleManager.class);
@@ -490,6 +493,17 @@ public final class OpenCreative extends JavaPlugin {
     @SuppressWarnings("unused")
     public static DevPlatformer getDevPlatformer() {
         return getPlugin().devPlatformer;
+    }
+
+    /**
+     * Gets world manager, that loads
+     * and unloads worlds.
+     *
+     * @return world manager.
+     */
+    @SuppressWarnings("unused")
+    public static WorldManager getWorldManager() {
+        return getPlugin().managers.get(WorldManager.class);
     }
 
     /**

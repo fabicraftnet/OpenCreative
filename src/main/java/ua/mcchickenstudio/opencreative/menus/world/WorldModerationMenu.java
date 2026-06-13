@@ -98,7 +98,7 @@ public final class WorldModerationMenu extends AbstractMenu implements WorldMenu
             }
             case "connect-dev-silent" -> {
                 player.closeInventory();
-                planet.connectToDevPlanet(player, true);
+                planet.getDevPlanet().connectPlayer(player, true);
             }
             case "clear-name" -> {
                 if (player.hasCooldown(item.getType())) {
