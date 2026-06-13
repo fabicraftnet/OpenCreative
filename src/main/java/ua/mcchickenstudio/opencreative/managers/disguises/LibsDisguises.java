@@ -21,20 +21,23 @@ package ua.mcchickenstudio.opencreative.managers.disguises;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.DisguiseConfig;
 import me.libraryaddict.disguise.disguisetypes.*;
+import me.libraryaddict.disguise.disguisetypes.watchers.MannequinWatcher;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.utils.hooks.HookUtils;
+import java.util.Optional;
 
 public final class LibsDisguises implements DisguiseManager {
 
     @Override
     public void disguiseAsPlayer(@NotNull Entity entity, @NotNull String skin, @NotNull String nickname) {
         try {
-            PlayerDisguise disguise = PlayerDisguise.class
-                    .getDeclaredConstructor(String.class, String.class)
-                    .newInstance(nickname, skin);
+            MobDisguise disguise = new MobDisguise(DisguiseType.MANNEQUIN);
+            ((MannequinWatcher)disguise.getWatcher()).setSkin(skin);
+            ((MannequinWatcher)disguise.getWatcher()).setDescription(Optional.ofNullable(null));
+            disguise.getWatcher().setCustomName(nickname);
             disguise.setEntity(entity);
             disguise.setNotifyBar(DisguiseConfig.NotifyBar.NONE);
             disguise.startDisguise();
