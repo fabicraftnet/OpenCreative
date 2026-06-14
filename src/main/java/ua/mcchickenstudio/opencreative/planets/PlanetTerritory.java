@@ -208,7 +208,7 @@ public class PlanetTerritory {
             }).exceptionally(worldError -> {
                 // World failed to load
                 busy.set(false);
-                future.complete(null);
+                future.completeExceptionally(worldError);
                 return null;
             });
         });
@@ -461,7 +461,7 @@ public class PlanetTerritory {
         planet.getVariables().load();
 
         worldCreator.keepSpawnLoaded(TriState.FALSE);
-        OpenCreative.getWorldManager().loadWorld(worldCreator, planet).thenAccept(world -> {
+        OpenCreative.getWorldManager().createWorld(worldCreator, planet).thenAccept(world -> {
             if (world == null) {
                 future.completeExceptionally(new NullPointerException("Created world is null"));
                 return;
@@ -582,7 +582,9 @@ public class PlanetTerritory {
      */
     public @NotNull Location getSpawnLocation() {
         World world = getWorld();
-        if (world == null) return spawnLocation;
+        if (world == null) {
+            return Objects.requireNonNullElseGet(spawnLocation, () -> new Location(null, 0, 0, 0));
+        }
         if (spawnLocation != null) {
             spawnLocation.setWorld(world);
             Location location = spawnLocation;

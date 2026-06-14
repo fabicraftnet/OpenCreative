@@ -8513,6 +8513,17 @@ items:
               magenta: "Пурпурний"
               pink: "Рожевий"
               brown: "Коричневий"
+      entity-set-display-interpolation:
+        name: "&eІнтерполяція візуалізатора"
+        lore:
+          - "&7Встановлює час інтерполяції для"
+          - "&7трансформації візуалізатора."
+          - ""
+          - "&fУ скрині:"
+          - "&a Число &7- Затримка"
+          - "&a Число &7- Тривалість"
+          - " "
+          - "&eНатисніть, щоб встановити дію."
       entity-set-dog-collar-color:
         name: "&dКолір нашийника собаки"
         lore:
@@ -8646,11 +8657,13 @@ items:
             choices:
               false: "Встановити"
               true: "Додати"
-      entity-set-display-item:
-        name: "&6Вставити предмет візуалізатору"
+      entity-set-item:
+        name: "&6Змінити предмет"
         lore:
           - "&7Встановлює новий предмет у"
-          - "&7предметний візуалізатор."
+          - "&7рамку, предметний візуалізатор,"
+          - "&7або замінює стрілу, зілля"
+          - "&7чи кинутий предмет на землі."
           - ""
           - "&fУ скрині:"
           - "&c Предмет &7- Новий предмет"
@@ -19516,7 +19529,8 @@ blocks:
   entity_set_display_text: "Текст візуал."
   entity_set_display_scale: "Масштаб візуал."
   entity_set_display_translation: "Зміщення візуал."
-  entity_set_display_item: "Предмет візуал."
+  entity_set_item: "Предмет візуал."
+  entity_set_display_interpolation: "Інтерполяц. візуал."
   entity_set_display_billboard: "Тип відображення"
   entity_set_text_display_see_through: "Текст наскрізь"
   entity_set_text_display_shadow: "Тінь тексту"

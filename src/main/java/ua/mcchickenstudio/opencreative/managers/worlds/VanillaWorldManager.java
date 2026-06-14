@@ -41,6 +41,11 @@ public final class VanillaWorldManager implements WorldManager {
     }
 
     @Override
+    public @NotNull CompletableFuture<World> createWorld(@NotNull WorldCreator creator, @NotNull Planet planet) {
+        return loadWorld(creator, planet);
+    }
+
+    @Override
     public @NotNull CompletableFuture<World> loadWorld(@NotNull WorldCreator creator, @NotNull Planet planet) {
         CompletableFuture<World> future = new CompletableFuture<>();
         Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {

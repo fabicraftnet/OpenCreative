@@ -20,9 +20,7 @@ package ua.mcchickenstudio.opencreative.coding.blocks.actions.entityactions.stat
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.BlockDisplay;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.ItemDisplay;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;
@@ -32,25 +30,29 @@ import ua.mcchickenstudio.opencreative.coding.blocks.actions.entityactions.Entit
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
 import ua.mcchickenstudio.opencreative.coding.exceptions.UnsupportedEntityException;
 
-public final class EntitySetDisplayItemAction extends EntityAction {
-    public EntitySetDisplayItemAction(Executor executor, Target target, int x, Arguments args) {
+public final class EntitySetItemAction extends EntityAction {
+    public EntitySetItemAction(Executor executor, Target target, int x, Arguments args) {
         super(executor, target, x, args);
     }
 
     @Override
     public void executeEntity(@NotNull Entity entity) {
         ItemStack item = getArguments().getItem("item", new ItemStack(Material.AIR), this);
-        if (entity instanceof ItemDisplay display) {
-            display.setItemStack(item);
-        } else if (entity instanceof BlockDisplay display) {
-            display.setBlock(Bukkit.createBlockData(item.getType()));
-        } else {
-            throw new UnsupportedEntityException(ItemDisplay.class, entity);
+        switch (entity) {
+            case ItemDisplay display -> display.setItemStack(item);
+            case BlockDisplay display -> display.setBlock(Bukkit.createBlockData(item.getType()));
+            case Item entityItem -> entityItem.setItemStack(item);
+            case ThrownPotion potion -> potion.setItem(item);
+            case ItemFrame frame -> frame.setItem(item);
+            case Firework firework -> firework.setItem(item);
+            case AbstractArrow arrow -> arrow.setItemStack(item);
+            case EnderSignal signal -> signal.setItem(item);
+            default -> throw new UnsupportedEntityException(ItemDisplay.class, entity);
         }
     }
 
     @Override
     public @NotNull ActionType getActionType() {
-        return ActionType.ENTITY_SET_DISPLAY_ITEM;
+        return ActionType.ENTITY_SET_ITEM;
     }
 }

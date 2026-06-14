@@ -52,6 +52,7 @@ repositories {
     maven { url "https://repo.codemc.io/repository/creatorfromhell/" }
     maven { url "https://repo.codemc.io/repository/maven-releases/" }
     maven { url "https://repo.codemc.io/repository/maven-snapshots/" }
+    maven { url = 'https://repo.infernalsuite.com/repository/maven-snapshots/' }
     maven {
         name = "gitlab-maven"
         url = "https://gitlab.com/api/v4/projects/58168569/packages/maven"
@@ -93,6 +94,9 @@ dependencies {
 
     // Addon: LibsDisguises - mob disguises
     compileOnly "me.libraryaddict.disguises:libsdisguises:11.0.0"
+
+    // Addon: AdvancedSlimePaper - async world loading and unloading
+    compileOnly 'com.infernalsuite.asp:api:4.0.0-SNAPSHOT'
 }
 
 compileJava.options.encoding = "UTF-8"

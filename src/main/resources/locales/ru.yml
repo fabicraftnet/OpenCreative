@@ -8575,6 +8575,17 @@ items:
               gray: "Серый"
               green: "Зелёный"
               cyan: "Бирюзовый"
+      entity-set-display-interpolation:
+        name: "&eИнтерполяция визуализатора"
+        lore:
+          - "&7Изменяет время интерполяции для"
+          - "&7трансформаций визуализатора."
+          - ""
+          - "&fВ сундуке:"
+          - "&a Число &7- Задержка"
+          - "&a Число &7- Длительность"
+          - " "
+          - "&eНажмите, чтобы установить действие."
       entity-set-dog-collar-color:
         name: "&dЦвет ошейника собаки"
         lore:
@@ -8708,11 +8719,13 @@ items:
             choices:
               false: "Установить"
               true: "Прибавить"
-      entity-set-display-item:
-        name: "&6Вставить предмет визуализатору"
+      entity-set-item:
+        name: "&6Установить предмет"
         lore:
           - "&7Устанавливает новый предмет в"
-          - "&7предметный визуализатор."
+          - "&7рамку, предметный визуализатор"
+          - "&7или заменяет ним стрелу, зелье,"
+          - "&7фейерверк, кинутый предмет."
           - ""
           - "&fВ сундуке:"
           - "&c Предмет &7- Новый предмет"
@@ -19734,7 +19747,7 @@ blocks:
   entity_set_display_text: "Текст визуал."
   entity_set_display_scale: "Масштаб визуал."
   entity_set_display_translation: "Смещение визуал."
-  entity_set_display_item: "Предмет визуал."
+  entity_set_item: "Предмет визуал."
   entity_set_display_billboard: "Отобр. визуал."
   entity_set_text_display_see_through: "Текст насквозь"
   entity_set_text_display_shadow: "Тень тексту"

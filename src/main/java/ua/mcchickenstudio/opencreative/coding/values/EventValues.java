@@ -32,9 +32,7 @@ import ua.mcchickenstudio.opencreative.coding.values.living.*;
 import ua.mcchickenstudio.opencreative.coding.values.player.*;
 import ua.mcchickenstudio.opencreative.coding.values.world.*;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendDebug;
 
@@ -54,7 +52,7 @@ import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendDebug;
 public final class EventValues {
 
     private static EventValues instance;
-    private final List<EventValue> eventValues = new LinkedList<>();
+    private final Map<String, EventValue> eventValues = new LinkedHashMap<>();
 
     /**
      * Returns instance of event values controller class.
@@ -83,7 +81,7 @@ public final class EventValues {
             return;
         }
         sendDebug("[VALUES] Registered event value: " + value.getName() + " (from " + value.getExtensionId() + ")");
-        eventValues.add(value);
+        eventValues.put(value.getID(), value);
     }
 
     /**
@@ -113,7 +111,7 @@ public final class EventValues {
      * @return event values list.
      */
     public @NotNull List<EventValue> getEventValues() {
-        return new ArrayList<>(eventValues);
+        return new ArrayList<>(eventValues.values());
     }
 
     private void registerDefaults() {
@@ -171,7 +169,7 @@ public final class EventValues {
      */
     public @NotNull List<EventValue> getByCategories(@NotNull MenusCategory menusCategory) {
         List<EventValue> list = new LinkedList<>();
-        for (EventValue name : eventValues) {
+        for (EventValue name : eventValues.values()) {
             if (name.getCategory() == menusCategory) {
                 list.add(name);
             }
@@ -186,7 +184,7 @@ public final class EventValues {
      */
     public @NotNull List<MenusCategory> getCategories() {
         List<MenusCategory> list = new LinkedList<>();
-        for (EventValue value : eventValues) {
+        for (EventValue value : eventValues.values()) {
             if (list.contains(value.getCategory())) continue;
             list.add(value.getCategory());
         }
@@ -221,7 +219,7 @@ public final class EventValues {
      * @return event value - if exists, or null - not exists.
      */
     public @Nullable EventValue getByClass(@NotNull Class<? extends EventValue> clazz) {
-        for (EventValue eventValue : eventValues) {
+        for (EventValue eventValue : eventValues.values()) {
             if (eventValue.getClass().equals(clazz)) {
                 return eventValue;
             }
@@ -237,12 +235,7 @@ public final class EventValues {
      * @return event value - if exists, or null - not exists.
      */
     public @Nullable EventValue getById(@NotNull String id) {
-        for (EventValue eventValue : eventValues) {
-            if (eventValue.getID().equals(id)) {
-                return eventValue;
-            }
-        }
-        return null;
+        return eventValues.get(id);
     }
 
     /**

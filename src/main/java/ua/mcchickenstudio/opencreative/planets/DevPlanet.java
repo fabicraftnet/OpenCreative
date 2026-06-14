@@ -177,7 +177,13 @@ public class DevPlanet {
         WorldCreator creator = new WorldCreator(this.getWorldName())
                 .type(WorldType.FLAT)
                 .generator(new DevPlanetChunkGenerator());
-        OpenCreative.getWorldManager().loadWorld(creator, planet).thenAccept(world -> {
+        CompletableFuture<World> worldProcess;
+        if (existed) {
+            worldProcess = OpenCreative.getWorldManager().loadWorld(creator, planet);
+        } else {
+            worldProcess = OpenCreative.getWorldManager().createWorld(creator, planet);
+        }
+        worldProcess.thenAccept(world -> {
             if (world == null) {
                 sendCriticalErrorMessage("Failed to load Dev planet world " + planet.getId());
                 future.complete(null);

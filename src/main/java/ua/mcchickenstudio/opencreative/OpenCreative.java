@@ -233,7 +233,8 @@ public final class OpenCreative extends JavaPlugin {
         managers.register(DisguiseManager.class, HookUtils.getDisguises());
         managers.start(CodingPrompter.class, StabilityManager.class, DownloadManager.class,
                 Economy.class, Updater.class, BlocksManager.class, HintManager.class,
-                DisguiseManager.class, PacketManager.class, PhysicsManager.class);
+                DisguiseManager.class, PacketManager.class, PhysicsManager.class,
+                WorldManager.class);
     }
 
     /**
@@ -243,7 +244,8 @@ public final class OpenCreative extends JavaPlugin {
         managers.shutdown(PlanetsManager.class, ModuleManager.class,
                 DownloadManager.class, Economy.class, StabilityManager.class,
                 BlocksManager.class, PacketManager.class, DisguiseManager.class,
-                CodingPrompter.class, Updater.class, HintManager.class);
+                CodingPrompter.class, Updater.class, HintManager.class,
+                WorldManager.class);
     }
 
     /**

@@ -789,7 +789,7 @@ public enum ActionType implements CodingBlockType {
     ENTITY_SET_DISPLAY_SCALE(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayScaleAction.class, Material.PAPER, new ArgumentSlot("x", ValueType.NUMBER), new ArgumentSlot("y", ValueType.NUMBER), new ArgumentSlot("z", ValueType.NUMBER), new ParameterSlot("add")),
     ENTITY_SET_DISPLAY_TRANSLATION(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayTranslationAction.class, Material.ARROW, new ArgumentSlot("x", ValueType.NUMBER), new ArgumentSlot("y", ValueType.NUMBER), new ArgumentSlot("z", ValueType.NUMBER), new ParameterSlot("add")),
     ENTITY_SET_DISPLAY_ROTATION(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayRotationAction.class, Material.ENDER_EYE, new ArgumentSlot("x", ValueType.NUMBER), new ArgumentSlot("y", ValueType.NUMBER), new ArgumentSlot("z", ValueType.NUMBER), new ParameterSlot("add")),
-    ENTITY_SET_DISPLAY_ITEM(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayItemAction.class, Material.CRAFTING_TABLE, new ArgumentSlot("item", ValueType.ITEM)),
+    ENTITY_SET_ITEM(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetItemAction.class, Material.CRAFTING_TABLE, new ArgumentSlot("item", ValueType.ITEM)),
     ENTITY_RELEASE_SHOULDERS(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntityReleaseShouldersAction.class, Material.PARROT_SPAWN_EGG, new ParameterSlot("type", List.of("all", "left", "right"), Material.PARROT_SPAWN_EGG, Material.SHIELD, Material.NETHERITE_SWORD)),
 
     //ENTITY_SET_DISPLAY_ITEM_MODE(       ActionCategory.ENTITY_ACTION, MenusCategory.STATE, null, Material.LECTERN, new ParameterSlot("mode", Arrays.asList("fixed","none","ground","gui","head","firstperson-lefthand","firstperson-righthand","thirdperson-lefthand","thirdperson-righthand"), Material.ENDER_EYE, Material.STRUCTURE_VOID, Material.GRASS_BLOCK, Material.CHEST, Material.PLAYER_HEAD, Material.TRIPWIRE_HOOK, Material.TRIPWIRE_HOOK, Material.LEVER, Material.LEVER)),
@@ -1072,6 +1072,9 @@ public enum ActionType implements CodingBlockType {
             }
         }
         if (signLine != null) {
+            if (signLine.equalsIgnoreCase("entity_set_display_item")) {
+                signLine = "entity_set_item";
+            }
             for (ActionType actionType : values()) {
                 if (actionType.name().equals(signLine.toUpperCase())) {
                     return actionType;
@@ -1082,23 +1085,21 @@ public enum ActionType implements CodingBlockType {
     }
 
     public static @Nullable ActionType getType(@NotNull String text) {
-        for (ActionType actionType : values()) {
-            if (actionType.name().equalsIgnoreCase(text)) {
-                return actionType;
-            }
+        if (text.equalsIgnoreCase("entity_set_display_item")) {
+            return ENTITY_SET_ITEM;
         }
-        return null;
+        try {
+            return ActionType.valueOf(text.toUpperCase());
+        } catch (Exception ignored) {
+            return null;
+        }
     }
 
     public static ActionType getTypeFromSelectionAction(Block block) {
         Block signBlock = block.getRelative(BlockFace.SOUTH);
         String signLine = getSignLine(signBlock.getLocation(), (byte) 3);
         if (signLine != null) {
-            for (ActionType actionType : values()) {
-                if (actionType.name().equals(signLine.toUpperCase())) {
-                    return actionType;
-                }
-            }
+            return getType(signLine);
         }
         return null;
     }

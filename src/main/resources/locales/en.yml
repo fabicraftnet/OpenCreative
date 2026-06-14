@@ -8696,11 +8696,13 @@ items:
             choices:
               false: "Set"
               true: "Add"
-      entity-set-display-item:
+      entity-set-item:
         name: "&6Set Display Item"
         lore:
-          - "&7Sets a new item for the"
-          - "&7item display entity."
+          - "&7Sets a new item for arrow,"
+          - "&7item entity, display entity,"
+          - "&7item frame, thrown potion,"
+          - "&7or dropped item."
           - ""
           - "&fIn the chest:"
           - "&c Item &7- New item"
@@ -19494,7 +19496,7 @@ blocks:
   entity_set_display_scale: "Display Scale"
   entity_set_display_translation: "Display Offset"
   entity_set_display_rotation: "Display Rotation"
-  entity_set_display_item: "Display Item"
+  entity_set_item: "Display Item"
   entity_set_display_billboard: "Display Type"
   entity_set_text_display_see_through: "See-Through Text"
   entity_set_text_display_shadow: "Text Shadow"

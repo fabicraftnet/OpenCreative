@@ -35,6 +35,17 @@ import java.util.concurrent.CompletableFuture;
 public interface WorldManager extends Manager {
 
     /**
+     * Creates a new world.
+     * <p>
+     * If specified world is already loaded, it will return that world.
+     *
+     * @param creator world creator with world info.
+     * @param planet planet of world.
+     * @return future with world, or error - if failed to load.
+     */
+    @NotNull CompletableFuture<World> createWorld(@NotNull WorldCreator creator, @NotNull Planet planet);
+
+    /**
      * Loads world.
      * <p>
      * If specified world is already loaded, it will return that world.
