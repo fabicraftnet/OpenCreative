@@ -5262,7 +5262,19 @@ items:
           - "&7inventory. To restore, use the"
           - "&7action &2Load inventory&7."
           - " "
+          - "&fIn the chest:"
+          - "&a Number &7- Inventory number"
+          - " "
           - "&eClick to set action."
+        placeholders:
+          number:
+            name: "&aInventory Number"
+            lore:
+              - "&7Place a slime with number here,"
+              - "&7which will be the inventory number."
+              - ""
+              - "&7By default: &a1"
+              - "&cNumber from 1 to 9"
       player-restore-inventory:
         name: "&2Load inventory"
         lore:
@@ -5271,7 +5283,19 @@ items:
           - "&7the player's inventory will be"
           - "&7cleared."
           - " "
+          - "&fIn the chest:"
+          - "&a Number &7- Inventory number"
+          - " "
           - "&eClick to set action."
+        placeholders:
+          number:
+            name: "&aInventory Number"
+            lore:
+              - "&7Place a slime with number here,"
+              - "&7which will be the inventory number."
+              - ""
+              - "&7By default: &a1"
+              - "&cNumber from 1 to 9"
       player-open-book:
         name: "&6Open book"
         lore:

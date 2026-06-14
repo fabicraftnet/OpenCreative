@@ -25,6 +25,7 @@ import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.playeractions.PlayerAction;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
+import ua.mcchickenstudio.opencreative.planets.PlanetPlayer;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCodingDebugLog;
 
@@ -39,7 +40,11 @@ public final class SaveInventoryAction extends PlayerAction {
             sendCodingDebugLog(getPlanet(), "Too many save inventory actions called at once " + player.getName());
             return;
         }
-        getPlanet().getWorldPlayers().getPlanetPlayer(player).saveInventory(player.getInventory().getContents());
+        PlanetPlayer planetPlayer = getPlanet().getWorldPlayers().getPlanetPlayer(player);
+        if (planetPlayer != null) {
+            int number = Math.clamp(getArguments().getInt("number", 1, this), 1, 9);
+            planetPlayer.saveInventory(player.getInventory().getContents(), number);
+        }
     }
 
     @Override

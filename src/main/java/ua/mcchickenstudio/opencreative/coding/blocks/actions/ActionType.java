@@ -128,8 +128,8 @@ public enum ActionType implements CodingBlockType {
 
     // Inventory
     PLAYER_GIVE_ITEMS(ActionCategory.PLAYER_ACTION, MenusCategory.INVENTORY, GiveItemsAction.class, Material.CHEST_MINECART, new ArgumentSlot("items", ValueType.ITEM, (byte) 27)),
-    PLAYER_SAVE_INVENTORY(ActionCategory.PLAYER_ACTION, MenusCategory.INVENTORY, SaveInventoryAction.class, Material.HOPPER),
-    PLAYER_RESTORE_INVENTORY(ActionCategory.PLAYER_ACTION, MenusCategory.INVENTORY, RestoreInventoryAction.class, Material.DROPPER),
+    PLAYER_SAVE_INVENTORY(ActionCategory.PLAYER_ACTION, MenusCategory.INVENTORY, SaveInventoryAction.class, Material.HOPPER, new ArgumentSlot("number", ValueType.NUMBER)),
+    PLAYER_RESTORE_INVENTORY(ActionCategory.PLAYER_ACTION, MenusCategory.INVENTORY, RestoreInventoryAction.class, Material.DROPPER, new ArgumentSlot("number", ValueType.NUMBER)),
     PLAYER_SET_ITEM_IN_HAND(ActionCategory.PLAYER_ACTION, MenusCategory.INVENTORY, SetItemInHandAction.class, Material.NETHERITE_SWORD, new ArgumentSlot("main", ValueType.ITEM), new ParameterSlot("replace-with-air"), new ArgumentSlot("off", ValueType.ITEM)),
     PLAYER_SET_ITEM_IN_SLOT(ActionCategory.PLAYER_ACTION, MenusCategory.INVENTORY, SetItemInSlotAction.class, Material.SLIME_BLOCK, new ArgumentSlot("slots", ValueType.NUMBER, (byte) 18), new ArgumentSlot("item", ValueType.ITEM), new ParameterSlot("replace-with-air")),
     PLAYER_SET_CURSOR_ITEM(ActionCategory.PLAYER_ACTION, MenusCategory.INVENTORY, SetCursorItemAction.class, Material.TRIPWIRE_HOOK, new ArgumentSlot("item", ValueType.ITEM)),
