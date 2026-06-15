@@ -7100,6 +7100,22 @@ items:
           - "&a Number &7- Z Offset"
           - " "
           - "&eClick to set the action."
+      world-spawn-particles-circle:
+        name: "&aSpawn particles circle"
+        lore:
+          - "&7Creates circle of particles on given"
+          - "&7location with given radius and amount of"
+          - "&7circle points, and rotating it by given"
+          - "&7plane normal vector."
+          - ""
+          - "&fIn the chest:"
+          - "&f Location &7- circle center"
+          - "&a Число &7- circle radius"
+          - "&a Число &7- amount of circle points"
+          - "&b Вектор &7- plane normal vector"
+          - "&5 Частица &7- to be spawned"
+          - ""
+          - "&Click to set the action."
       world-create-team:
         name: "&aCreate Team"
         lore:
@@ -11818,6 +11834,20 @@ items:
             name: "&eValue from dictionary"
           map:
             name: "&eDictionary"
+      repeat-on-circle:
+        name: "&aRepeat on circle"
+        lore:
+          - "&7Executes action, moving by"
+          - "&7circle with given parameters."
+          - ""
+          - "&fIn the chest:"
+          - "&e Variable &7- location of circle point"
+          - "&f Location &7- circle center"
+          - "&a Number &7- circle radius"
+          - "&a Number &7- amount of circle points"
+          - "&b Vector &7- plain normal vector"
+          - ""
+          - "&eClick to set an action."
     conditions:
       if-world-entity-exists:
         name: "&dEntity exists"
@@ -19174,6 +19204,7 @@ blocks:
   repeat_for_list: "&fFor list"
   repeat_always: "Always"
   repeat_for_entry: "&6For dictionary"
+  repeat_on_circle: "&aOn circle"
   # Events
   player_join: "Joined world"
   player_quit: "Left world"
@@ -19786,6 +19817,7 @@ blocks:
   world_create_firework_explosion: "Firework Explosion"
   world_create_experience_orb: "Spawn XP Orb"
   world_spawn_particles_line: "Line of Particles"
+  world_spawn_particles_circle: "Circle of particles"
   world_create_team: "Create Team"
   world_team_set_color: "Set Team Color"
   world_delete_team: "Delete Team"
