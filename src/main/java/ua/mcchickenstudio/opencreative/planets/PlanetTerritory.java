@@ -42,7 +42,9 @@ import ua.mcchickenstudio.opencreative.utils.world.generators.WorldGenerators;
 
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.isOutOfBorders;
 import static ua.mcchickenstudio.opencreative.utils.FileUtils.*;
@@ -74,7 +76,7 @@ public class PlanetTerritory {
     private World.Environment environment;
     private boolean ignoreUnloading = false;
     private boolean autoSave = true;
-    private boolean busy = false;
+    private AtomicBoolean busy = new AtomicBoolean(false);
 
     public PlanetTerritory(@NotNull Planet planet) {
         this.planet = planet;
@@ -135,84 +137,111 @@ public class PlanetTerritory {
     }
 
     /**
-     * Loads planet's files into worlds directory, loads and setups build world, loads script and variables.
+     * Loads planet's files into worlds directory,
+     * loads and setups build world, loads script and variables.
      */
-    public synchronized void load() {
+    public @NotNull CompletableFuture<World> load() {
+        CompletableFuture<World> future = new CompletableFuture<>();
         long startTime = System.currentTimeMillis();
+        busy.set(true);
+        planet.getConfiguration().load().whenComplete((result, configError) -> {
+            // After loading config
+            loadInformation();
+            flags.loadFlags();
+            planet.getWorldPlayers().loadPlayers();
 
-        planet.getConfiguration().load();
-        loadInformation();
-        flags.loadFlags();
-        planet.getWorldPlayers().loadPlayers();
-
-        ConfigurationSection spawnSection = planet.getConfiguration().getConfig().getConfigurationSection("spawn");
-        if (spawnSection != null) {
-            double x = spawnSection.getDouble("x", 0);
-            double y = spawnSection.getDouble("y", 0);
-            double z = spawnSection.getDouble("z", 0);
-            float yaw = (float) spawnSection.getDouble("yaw", 0);
-            float pitch = (float) spawnSection.getDouble("pitch", 0);
-            spawnLocation = new Location(null, x, y, z, yaw, pitch);
-        }
-
-        WorldGenerator worldGenerator = WorldGenerators.getInstance().getById(generator);
-        WorldCreator creator = new WorldCreator(planet.getWorldName())
-                .environment(planet.getTerritory().getEnvironment())
-                .keepSpawnLoaded(TriState.FALSE);
-        if (worldGenerator != null) {
-            worldGenerator.modifyWorldCreator(creator, biome);
-        }
-        World world = creator.createWorld();
-        if (world == null) return;
-        setWorld(world.getUID());
-        world.setAutoSave(autoSave);
-        setGameRuleIfExists("spawn_chunk_radius", 1);
-        setGameRuleIfExists("command_blocks_work", false);
-        world.setGameRule(GameRule.GLOBAL_SOUND_EVENTS, false);
-        world.setGameRule(GameRule.DO_LIMITED_CRAFTING, true);
-        if (world.getEnvironment() == World.Environment.THE_END) {
-            if (world.getEnderDragonBattle() != null) {
-                world.getEnderDragonBattle().setPreviouslyKilled(true);
-                world.getEnderDragonBattle().getBossBar().setVisible(false);
+            ConfigurationSection spawnSection = planet.getConfiguration().getConfig().getConfigurationSection("spawn");
+            if (spawnSection != null) {
+                double x = spawnSection.getDouble("x", 0);
+                double y = spawnSection.getDouble("y", 0);
+                double z = spawnSection.getDouble("z", 0);
+                float yaw = (float) spawnSection.getDouble("yaw", 0);
+                float pitch = (float) spawnSection.getDouble("pitch", 0);
+                spawnLocation = new Location(null, x, y, z, yaw, pitch);
             }
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    for (Entity entity : world.getEntities()) {
-                        if (entity instanceof EnderDragon dragon) {
-                            dragon.setHealth(0);
-                        }
-                    }
-                }
-            }.runTaskLater(OpenCreative.getPlugin(), 10L);
-        }
-        planet.setLastActivityTime(System.currentTimeMillis());
-        world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-        world.getWorldBorder().setSize(worldSize);
-        new PlanetLoadEvent(planet).callEvent();
 
-        long endTime = System.currentTimeMillis();
-        OpenCreative.getPlugin().getLogger().info("Planet " + planet.getId() + " loaded in " + (endTime - startTime) + " ms");
+            WorldGenerator worldGenerator = WorldGenerators.getInstance().getById(generator);
+            WorldCreator creator = new WorldCreator(planet.getWorldName())
+                    .environment(planet.getTerritory().getEnvironment())
+                    .keepSpawnLoaded(TriState.FALSE);
+            if (worldGenerator != null) {
+                worldGenerator.modifyWorldCreator(creator, biome);
+            }
+
+            CompletableFuture<World> worldFuture = OpenCreative.getWorldManager().loadWorld(creator, planet);
+            worldFuture.thenAccept(world -> {
+                // After loading world
+                if (world == null) {
+                    busy.set(false);
+                    future.complete(null);
+                    return;
+                }
+                Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
+                    setWorld(world.getUID());
+                    world.setAutoSave(autoSave);
+                    setGameRuleIfExists("spawn_chunk_radius", 1);
+                    setGameRuleIfExists("command_blocks_work", false);
+                    world.setGameRule(GameRule.GLOBAL_SOUND_EVENTS, false);
+                    world.setGameRule(GameRule.DO_LIMITED_CRAFTING, true);
+                    if (world.getEnvironment() == World.Environment.THE_END) {
+                        if (world.getEnderDragonBattle() != null) {
+                            world.getEnderDragonBattle().setPreviouslyKilled(true);
+                            world.getEnderDragonBattle().getBossBar().setVisible(false);
+                        }
+                        Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
+                            for (Entity entity : world.getEntities()) {
+                                if (entity instanceof EnderDragon dragon) {
+                                    dragon.setHealth(0);
+                                }
+                            }
+                        }, 10L);
+                    }
+                    planet.setLastActivityTime(System.currentTimeMillis());
+                    world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+                    world.getWorldBorder().setSize(worldSize);
+                    long endTime = System.currentTimeMillis();
+                    OpenCreative.getPlugin().getLogger().info("Planet " + planet.getId() + " loaded in " + (endTime - startTime) + " ms");
+                    new PlanetLoadEvent(planet).callEvent();
+                    busy.set(false);
+                    future.complete(world);
+                });
+            }).exceptionally(worldError -> {
+                // World failed to load
+                busy.set(false);
+                future.completeExceptionally(worldError);
+                return null;
+            });
+        });
+        return future;
     }
 
     /**
      * Saves planet's data and unloads planet's build and dev world.
      */
-    public synchronized void unload() {
-        if (ignoreUnloading) return;
+    public synchronized @NotNull CompletableFuture<Void> unload() {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        if (ignoreUnloading) {
+            future.complete(null);
+            return future;
+        }
         if (OpenCreative.getPlugin().isEnabled()) {
             Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
-                handleUnloadProcess(true);
+                handleUnloadProcess(true).whenComplete((result, error) -> {
+                    future.complete(null);
+                });
             }, 5);
         } else {
             handleUnloadProcess(false);
+            future.complete(null);
         }
+        return future;
     }
 
     /**
      * Saves planet's data and unloads planet's build and dev world.
      */
-    private void handleUnloadProcess(boolean asyncSaveData) {
+    private @NotNull CompletableFuture<Void> handleUnloadProcess(boolean asyncSaveData) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
         long startTime = System.currentTimeMillis();
         if (!planet.isLoaded()) {
             if (planet.getDevPlanet().isLoaded()) {
@@ -220,7 +249,8 @@ public class PlanetTerritory {
                 long endTime = System.currentTimeMillis();
                 OpenCreative.getPlugin().getLogger().info("Planet " + planet.getId() + " unloaded only dev in " + (endTime - startTime) + " ms");
             }
-            return;
+            future.complete(null);
+            return future;
         }
 
         World world = getWorld();
@@ -256,13 +286,16 @@ public class PlanetTerritory {
                 } catch (Exception ignored) {
                     world.save();
                 }
-                busy = true;
+                busy.set(true);
                 Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
-                    Bukkit.unloadWorld(planet.getWorldName(), false);
-                    busy = false;
+                    OpenCreative.getWorldManager().unloadWorld(world, false, planet).whenComplete((result, error) -> {
+                        busy.set(false);
+                        future.complete(null);
+                    });
                 }, 60);
             } else {
-                Bukkit.unloadWorld(planet.getWorldName(), autoSave);
+                OpenCreative.getWorldManager().unloadWorld(world, autoSave, planet);
+                future.complete(null);
             }
         }
         worldID = null;
@@ -270,10 +303,11 @@ public class PlanetTerritory {
         if (planet.getDevPlanet().isLoaded()) {
             planet.getDevPlanet().unload(asyncSaveData);
         }
-        new PlanetUnloadEvent(planet).callEvent();
 
+        new PlanetUnloadEvent(planet).callEvent();
         long endTime = System.currentTimeMillis();
         OpenCreative.getPlugin().getLogger().info("Planet " + planet.getId() + " unloaded in " + (endTime - startTime) + " ms");
+        return future;
     }
 
     private void saveData() {
@@ -303,7 +337,7 @@ public class PlanetTerritory {
         scoreboards.clear();
         flags.clear();
         script.getExecutors().clear();
-        planet.getVariables().clearVariables();
+        planet.getVariables().unload();
         planet.getWorldPlayers().clear();
         planet.getLimits().clear();
         script.unload();
@@ -387,7 +421,7 @@ public class PlanetTerritory {
      * @return planet's world, or null - if world is unloaded.
      */
     public @Nullable World getWorld() {
-        return Bukkit.getWorld(planet.getWorldName());
+        return Bukkit.getWorld(worldID);
     }
 
     /**
@@ -410,9 +444,9 @@ public class PlanetTerritory {
         return script;
     }
 
-    public @Nullable World generateWorld(WorldGenerator generator, World.Environment environment,
+    public @NotNull CompletableFuture<World> generateWorld(WorldGenerator generator, World.Environment environment,
                                          long seed, boolean generateStructures, String biome) {
-
+        CompletableFuture<World> future = new CompletableFuture<>();
         WorldCreator worldCreator = new WorldCreator(planet.getWorldName());
         if (generator instanceof StructuresCapable) {
             worldCreator.generateStructures(generateStructures);
@@ -424,50 +458,52 @@ public class PlanetTerritory {
         worldCreator.seed(seed);
 
         generator.modifyWorldCreator(worldCreator, biome);
+        planet.getVariables().load();
 
         worldCreator.keepSpawnLoaded(TriState.FALSE);
-        World world = Bukkit.createWorld(worldCreator);
-
-        if (world != null) {
-            world.setAutoSave(true);
-            setGameRuleIfExists("spawn_chunk_radius", 1);
-            world.getWorldBorder().setSize(getWorldSize());
-
-            world.setGameRule(GameRule.DO_MOB_LOOT, true);
-            world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
-            world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-            world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-            world.setGameRule(GameRule.KEEP_INVENTORY, false);
-            world.setGameRule(GameRule.MOB_GRIEFING, true);
-            world.setGameRule(GameRule.NATURAL_REGENERATION, true);
-            world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, false);
-            world.setGameRule(GameRule.DO_FIRE_TICK, true);
-            world.setGameRule(GameRule.SHOW_DEATH_MESSAGES, false);
-            world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-            world.setGameRule(GameRule.GLOBAL_SOUND_EVENTS, false);
-
-            world.setTime(0);
-            for (Entity entity : world.getEntities()) {
-                if (entity.getType() != EntityType.PLAYER) entity.remove();
+        OpenCreative.getWorldManager().createWorld(worldCreator, planet).thenAccept(world -> {
+            if (world == null) {
+                future.completeExceptionally(new NullPointerException("Created world is null"));
+                return;
             }
+            Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
+                world.setAutoSave(true);
+                setGameRuleIfExists("spawn_chunk_radius", 1);
+                world.getWorldBorder().setSize(getWorldSize());
 
-            generator.afterCreation(world);
+                world.setGameRule(GameRule.DO_MOB_LOOT, true);
+                world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+                world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+                world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+                world.setGameRule(GameRule.KEEP_INVENTORY, false);
+                world.setGameRule(GameRule.MOB_GRIEFING, true);
+                world.setGameRule(GameRule.NATURAL_REGENERATION, true);
+                world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, false);
+                world.setGameRule(GameRule.DO_FIRE_TICK, true);
+                world.setGameRule(GameRule.SHOW_DEATH_MESSAGES, false);
+                world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+                world.setGameRule(GameRule.GLOBAL_SOUND_EVENTS, false);
 
-            BukkitRunnable runnable = new BukkitRunnable() {
-                @Override
-                public void run() {
+                world.setTime(0);
+                for (Entity entity : world.getEntities()) {
+                    if (entity.getType() != EntityType.PLAYER) entity.remove();
+                }
+
+                generator.afterCreation(world);
+                Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
                     for (Entity entity : world.getEntities()) {
                         if (entity instanceof EnderDragon dragon) {
                             dragon.setHealth(0);
                         }
                     }
-                }
-            };
-            runnable.runTaskLater(OpenCreative.getPlugin(), 10L);
-
-            return world;
-        }
-        return null;
+                }, 10L);
+                future.complete(world);
+            });
+        }).exceptionally(error -> {
+            future.completeExceptionally(error);
+            return null;
+        });
+        return future;
     }
 
     @SuppressWarnings("unchecked")
@@ -546,7 +582,9 @@ public class PlanetTerritory {
      */
     public @NotNull Location getSpawnLocation() {
         World world = getWorld();
-        if (world == null) return spawnLocation;
+        if (world == null) {
+            return Objects.requireNonNullElseGet(spawnLocation, () -> new Location(null, 0, 0, 0));
+        }
         if (spawnLocation != null) {
             spawnLocation.setWorld(world);
             Location location = spawnLocation;
@@ -608,7 +646,7 @@ public class PlanetTerritory {
      * @return true - is busy, false - not.
      */
     public boolean isBusy() {
-        return busy;
+        return busy.get();
     }
 
     /**

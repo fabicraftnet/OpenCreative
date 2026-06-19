@@ -67,6 +67,7 @@ public final class QuitListener implements Listener {
         }
         if (WorldUtils.isPlanet(player.getWorld())) {
             player.setGameMode(GameMode.ADVENTURE);
+            removePassengers(player);
             teleportToLobby(player);
         }
 

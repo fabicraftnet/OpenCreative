@@ -43,6 +43,12 @@ public final class ParameterSlot extends ArgumentSlot {
         this.icons.addAll(Arrays.asList(materials));
     }
 
+    public ParameterSlot(String path, List<Object> values, List<Material> materials) {
+        super(path, ValueType.PARAMETER);
+        this.values.addAll(values);
+        this.icons.addAll(materials);
+    }
+
     public ParameterSlot(String path, Material... materials) {
         super(path, ValueType.PARAMETER);
         this.values.add(false);

@@ -53,7 +53,7 @@ public class PlanetPlayer {
     private Double worldSize;
 
     private final Set<String> purchases = new HashSet<>();
-    private final ItemStack[] savedInventory = new ItemStack[41];
+    private final Map<Integer, ItemStack[]> savedInventory = new HashMap<>();
     private final ItemStack[] savedEnderChest = new ItemStack[54];
 
     public PlanetPlayer(@NotNull Planet currentPlanet, @NotNull Player player) {
@@ -88,8 +88,12 @@ public class PlanetPlayer {
         return player;
     }
 
-    public ItemStack[] getSavedInventory() {
-        return savedInventory;
+    public ItemStack[] getSavedInventory(int number) {
+        ItemStack[] items = savedInventory.get(number);
+        if (items == null) {
+            return new ItemStack[43];
+        }
+        return items;
     }
 
     public ItemStack[] getSavedEnderChest() {
@@ -102,8 +106,8 @@ public class PlanetPlayer {
      *
      * @param items Array of ItemStacks to save.
      */
-    public void saveInventory(ItemStack[] items) {
-        Arrays.fill(savedInventory, new ItemStack(Material.AIR));
+    public void saveInventory(ItemStack[] items, int number) {
+        ItemStack[] savedInventory = getSavedInventory(number);
         int slot = 0;
         int badItems = 0;
         for (ItemStack item : items) {
@@ -115,6 +119,7 @@ public class PlanetPlayer {
             savedInventory[slot] = item;
             slot++;
         }
+        this.savedInventory.put(number, savedInventory);
     }
 
     /**
@@ -159,13 +164,36 @@ public class PlanetPlayer {
                 if (purchases instanceof JSONArray array) {
                     this.purchases.addAll(array);
                 }
-                Object savedInventory = playerObject.getOrDefault("saved-inventory", new JSONArray());
+                Object savedInventories = playerObject.get("saved-inventories");
+                if (savedInventories instanceof JSONObject map) {
+                    for (Object key : map.keySet()) {
+                        Object value = map.get(key);
+                        if (value instanceof JSONArray array) {
+                            int id;
+                            try {
+                                if (key instanceof String string) {
+                                    id = Integer.parseInt(string);
+                                } else {
+                                    continue;
+                                }
+                            } catch (Exception error) {
+                                continue;
+                            }
+                            List<ItemStack> items = new ArrayList<>();
+                            for (Object object : array) {
+                                items.add(ItemUtils.loadItemFromByteArray((String) object));
+                            }
+                            saveInventory(items.toArray(new ItemStack[]{}), id);
+                        }
+                    }
+                }
+                Object savedInventory = playerObject.get("saved-inventory");
                 if (savedInventory instanceof JSONArray array) {
                     List<ItemStack> items = new ArrayList<>();
                     for (Object object : array) {
                         items.add(ItemUtils.loadItemFromByteArray((String) object));
                     }
-                    saveInventory(items.toArray(new ItemStack[]{}));
+                    saveInventory(items.toArray(new ItemStack[]{}), 1);
                 }
                 Object savedEnderChest = playerObject.getOrDefault("saved-ender-chest", new JSONArray());
                 if (savedEnderChest instanceof JSONArray array) {
@@ -213,8 +241,8 @@ public class PlanetPlayer {
             purchasesJson.addAll(purchases);
             playerObject.put("purchases", purchasesJson);
 
-            JSONArray savedInventoryJson = serializeItems(savedInventory);
-            playerObject.put("saved-inventory", savedInventoryJson);
+            JSONObject savedInventoryJson = serializeInventories(savedInventory);
+            playerObject.put("saved-inventories", savedInventoryJson);
             JSONArray enderChestJson = serializeItems(savedEnderChest);
             playerObject.put("saved-ender-chest", enderChestJson);
 
@@ -233,6 +261,17 @@ public class PlanetPlayer {
         }
         for (ItemStack item : items) {
             json.add(ItemUtils.saveItemAsByteArray(item));
+        }
+        return json;
+    }
+
+    @SuppressWarnings("unchecked")
+    private @NotNull JSONObject serializeInventories(Map<Integer, ItemStack[]> inventories) {
+        JSONObject json = new JSONObject();
+        for (Map.Entry<Integer, ItemStack[]> entry : inventories.entrySet()) {
+            int id = entry.getKey();
+            ItemStack[] items = entry.getValue();
+            json.put(String.valueOf(id), serializeItems(items));
         }
         return json;
     }

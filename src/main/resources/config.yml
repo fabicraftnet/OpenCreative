@@ -305,7 +305,7 @@ messages:
   prefix: "&6 Worlds &8| &f"
 
   # Information about plugin, that will be displayed on /oc command.
-  version: "&f \n &fPowered by Open&7Creative&b+ &3%version%\n &f%codename% \n \n &fContributors: &7McChicken Team, onn512, pawsashatoy, LWJENNI, HACKERPRO17, liventmst, logiklop\n &fTranslators: &7initzero, Nagibator6000Lol, DrakesWeb, kogtyv, Senmpai333 \n \n &cMcChicken Studio 2017-2026\n &c"
+  version: "&f \n &fPowered by Open&7Creative&b+ &3%version%\n &f%codename% \n \n &fContributors: &7McChicken Team, onn512, pawsashatoy, LWJENNI, HACKERPRO17, liventmst, logiklop, 70N77U\n &fTranslators: &7initzero, Nagibator6000Lol, DrakesWeb, kogtyv, Senmpai333 \n \n &cMcChicken Studio 2017-2026\n &c"
 
   # Creative Chat is global chat, accessed by ! in the beginning of message, or with /cc.
   cc-prefix: "&6 Creative Chat &8| &7"

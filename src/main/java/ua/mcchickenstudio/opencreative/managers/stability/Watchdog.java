@@ -74,19 +74,21 @@ public final class Watchdog implements StabilityManager, Toggleable {
         } catch (IOException ignored) {
             STORAGE_VOLUME = null;
         }
-        spectatorExecutor.scheduleAtFixedRate(this::checkServerTicks, 5, 1, TimeUnit.SECONDS);
         if (runnable != null) {
             runnable.cancel();
         }
+        Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
+            spectatorExecutor.scheduleAtFixedRate(this::checkServerTicks, 1, 1, TimeUnit.SECONDS);
+        }, 300L);
         runnable = Bukkit.getScheduler().runTaskTimer(OpenCreative.getPlugin(), () -> {
             lastTickTime = System.currentTimeMillis();
             long now = System.nanoTime();
             tickTimes.addLast(now);
-            long cutoff = now - 5_000_000_000L;
+            long cutoff = now - 5_000_000_000L; // 5 seconds
             while (!tickTimes.isEmpty() && tickTimes.peekFirst() < cutoff) {
                 tickTimes.removeFirst();
             }
-        }, 60L, 1L);
+        }, 150L, 1L);
     }
 
     /**
@@ -105,7 +107,12 @@ public final class Watchdog implements StabilityManager, Toggleable {
         for (StackTraceElement element : thread.getStackTrace()) {
             if (element.getClassName().startsWith("ua.mcchickenstudio.opencreative.")) {
                 changed = true;
-                builder.append("\n ").append(element.getClassName().replace("ua.mcchickenstudio.opencreative.", "")).append("#").append(element.getMethodName()).append(":").append(element.getLineNumber());
+                builder.append("\n ")
+                        .append(element.getClassName().replace("ua.mcchickenstudio.opencreative.", ""))
+                        .append("#")
+                        .append(element.getMethodName())
+                        .append(":")
+                        .append(element.getLineNumber());
             }
         }
         if (changed) {
@@ -316,8 +323,9 @@ public final class Watchdog implements StabilityManager, Toggleable {
         if (ticksState != StabilityState.FINE && now - lastTicksNotificationTime > 6_000) {
             String planetsDump = dumpPlanets();
             String playersDump = dumpPlayers();
+            String stacktrace = dumpStackTrace();
             OpenCreative.getPlugin().getLogger().warning("[WATCHDOG] Server is overloaded, TPS"
-                    + (tps <= 1 ? " is too low. :(" : ": " + tps + "/20 :(\n \n" + planetsDump + "\n \n" + playersDump));
+                    + (tps <= 1 ? " is too low. :(" : ": " + tps + "/20 :(\n \n" + planetsDump + "\n \n" + playersDump + "\n" + stacktrace));
             lastTicksNotificationTime = now;
             Map<String, Object> placeholders = new HashMap<>();
             placeholders.put("%tps%", tps);

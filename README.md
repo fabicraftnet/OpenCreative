@@ -252,7 +252,7 @@ Thank you, developers of ReActions, ProtocolLib, Vault, PlaceholderAPI, LibsDisg
 
 ## Credits
 
-OpenCreative+ is made by McChicken Studio 2017-2025.
+OpenCreative+ is made by McChicken Studio 2017-2026.
 
 **Contributors:**
 - McChicken Team
@@ -261,6 +261,8 @@ OpenCreative+ is made by McChicken Studio 2017-2025.
 - LWJENNI
 - HACKERPRO17
 - liventmst
+- logiklop
+- 70N77U
 
 **Testers:**
 - tokkyo35

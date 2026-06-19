@@ -193,7 +193,7 @@ public enum ValueType {
      * @return stained-glass pane item with name and description.
      */
     public ItemStack getGlassItem(ActionType action, String path) {
-        String messagePath = "items.developer.actions." + action.name().toLowerCase().replace("_", "-") + ".placeholders." + path;
+        String messagePath = "items.developer." + (action.isCondition() ? "conditions." : "actions.") + action.name().toLowerCase().replace("_", "-") + ".placeholders." + path;
         ItemStack itemStack = createItem(getGlass(), 1);
         ItemMeta meta = itemStack.getItemMeta();
         if (!messageExists(messagePath + ".name")) {

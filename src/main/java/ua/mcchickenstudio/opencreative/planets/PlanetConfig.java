@@ -49,8 +49,13 @@ public class PlanetConfig {
         this.planet = planet;
     }
 
-    public void load() {
-        config = getPlanetConfig(planet);
+    public @NotNull CompletableFuture<Void> load() {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
+            config = getPlanetConfig(planet);
+            future.complete(null);
+        });
+        return future;
     }
 
     public void set(@NotNull String key, Object value) {

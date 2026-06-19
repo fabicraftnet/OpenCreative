@@ -93,12 +93,12 @@ public class DevCommand extends CommandHandler {
                         double x = Double.parseDouble(args[0]);
                         double y = Double.parseDouble(args[1]);
                         double z = Double.parseDouble(args[2]);
-                        planet.connectToDevPlanet(player, x, y, z);
+                        planet.getDevPlanet().connectPlayer(player, x, y, z);
                     } catch (Exception error) {
-                        planet.connectToDevPlanet(player);
+                        planet.getDevPlanet().connectPlayer(player);
                     }
                 } else {
-                    planet.connectToDevPlanet(player);
+                    planet.getDevPlanet().connectPlayer(player);
                 }
             } else {
                 sender.sendMessage(getPlayerLocaleMessage("not-owner", player));
