@@ -93,17 +93,10 @@ dependencies {
     compileOnly "com.github.MilkBowl:VaultAPI:1.7.1"
 
     // Addon: LibsDisguises - mob disguises
-<<<<<<< build.gradle
     compileOnly "me.libraryaddict.disguises:libsdisguises:11.0.18"
 
     // Addon: AdvancedSlimePaper - async world loading and unloading
     compileOnly 'com.infernalsuite.asp:api:4.0.0-SNAPSHOT'
-=======
-    compileOnly "me.libraryaddict.disguises:libsdisguises:11.0.0"
-
-    // Addon: AdvancedSlimePaper - async world loading and unloading
-    compileOnly 'com.infernalsuite.asp:api:4.0.0-SNAPSHOT'
->>>>>>> build.gradle
 }
 
 compileJava.options.encoding = "UTF-8"
