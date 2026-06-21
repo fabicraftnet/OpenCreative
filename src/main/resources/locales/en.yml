@@ -9892,6 +9892,22 @@ items:
           - "&b Vector &7- Vector"
           - " "
           - "&eClick to set the action."
+      var-count-blocks-in-region:
+        name: "&2Count amount of blocks in region"
+        lore:
+          - "&7Counts total amount of blocks"
+          - "&7in given region (between two"
+          - "&7corners). This action doesn't"
+          - "&7counts if block is solid, is not"
+          - "&7an air, etc. but rather the volume"
+          - "&7of region (parallelepiped or cube)"
+          - ""
+          - "&fIn the chest:"
+          - "&e Variable &7- To save region's volume"
+          - "&f Location &7- First corner"
+          - "&f Location &7- Second corner"
+          - ""
+          - "&eClick to set the action."
       var-sum-numbers:
         name: "&cSum of Numbers +"
         lore:
@@ -19964,6 +19980,7 @@ blocks:
   if_var_list_value_at_last_equals: "Last equals"
   if_var_list_value_at_index_equals: "At index equals"
   var_move_location_by_vector: "Move loc by vec"
+  var_count_blocks_in_region: "Blocks in region"
 time:
   ago: "ago"
   days: "d"

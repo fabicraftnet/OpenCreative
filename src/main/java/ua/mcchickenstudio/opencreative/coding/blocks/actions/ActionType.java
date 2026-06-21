@@ -536,6 +536,10 @@ public enum ActionType implements CodingBlockType {
             new ArgumentSlot("vector", ValueType.VECTOR),
             new ArgumentSlot("distance", ValueType.NUMBER)
     ),
+    VAR_COUNT_BLOCKS_IN_REGION(
+        ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, CountBlocksInRegion.class, Material.DARK_PRISMARINE,
+        new ArgumentSlot("result", ValueType.VARIABLE), new ArgumentSlot("corner1", ValueType.LOCATION), new ArgumentSlot("corner2", ValueType.LOCATION)
+    ),
     VAR_CREATE_LIST(ActionCategory.VARIABLE_ACTION, MenusCategory.LIST_OPERATIONS, CreateListAction.class, Material.BOOKSHELF, new ArgumentSlot("elements", ValueType.ANY, (byte) 18), new ArgumentSlot("variable", ValueType.VARIABLE)),
     VAR_ADD_TO_LIST(ActionCategory.VARIABLE_ACTION, MenusCategory.LIST_OPERATIONS, AddToListAction.class, Material.KNOWLEDGE_BOOK, new ArgumentSlot("elements", ValueType.ANY, (byte) 18), new ArgumentSlot("variable", ValueType.VARIABLE)),
     VAR_SET_IN_LIST(ActionCategory.VARIABLE_ACTION, MenusCategory.LIST_OPERATIONS, SetInListAction.class, Material.CAULDRON, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("index", ValueType.NUMBER), new ArgumentSlot("value", ValueType.ANY)),
