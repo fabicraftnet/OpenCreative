@@ -500,7 +500,7 @@ public enum ActionType implements CodingBlockType {
     VAR_LOCATION_TO_VECTOR(ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, LocationToVectorAction.class, Material.PRISMARINE_SHARD, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("location", ValueType.LOCATION)),
     VAR_GET_BLOCK_TYPE(ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, GetBlockTypeAction.class, Material.GRASS_BLOCK, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("location", ValueType.LOCATION)),
     VAR_GET_BLOCK_FACING(ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, GetBlockFacingAction.class, Material.ENDER_EYE, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("location", ValueType.LOCATION)),
-    VAR_GET_DISTANCE(ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, GetDistanceAction.class, Material.SPYGLASS, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("first", ValueType.LOCATION), new ArgumentSlot("second", ValueType.LOCATION)),
+    VAR_GET_DISTANCE(ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, GetDistanceAction.class, Material.SPYGLASS, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("first", ValueType.LOCATION), new ArgumentSlot("second", ValueType.LOCATION), new ParameterSlot("ignoreY")),
     VAR_GET_LOCATION_ALL(
             ActionCategory.VARIABLE_ACTION,
             MenusCategory.LOCATION_OPERATIONS,

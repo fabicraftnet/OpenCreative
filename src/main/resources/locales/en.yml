@@ -9802,8 +9802,25 @@ items:
           - "&e Variable &7- For saving"
           - "&f Location &7- Location 1"
           - "&f Location &7- Location 2"
+          - "&3 Property &7- Whether Y should be"
+          - "&7 ignored while computing distance"
           - " "
           - "&eClick to set action."
+        arguments:
+          ignoreY:
+            name: "&fIgnore Y axis?"
+            lore:
+              - "&7Whether Y axis of the location should"
+              - "&7be ignored while computing the distance."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              true: "&fIgnore"
+              false: "&fTake in account"
       var-get-location-x:
         name: "&cGet Coordinate X"
         lore:
