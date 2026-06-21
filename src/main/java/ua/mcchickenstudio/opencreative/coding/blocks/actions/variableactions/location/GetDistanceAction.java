@@ -34,10 +34,22 @@ public final class GetDistanceAction extends VariableAction {
 
     @Override
     protected void execute() {
+        if (!arguments.pathExists("variable") || !arguments.pathExists("first") || !arguments.pathExists("second")) return;
         VariableLink link = getArguments().getVariableLink("variable", this);
         Location first = getArguments().getLocation("first", getDefaultLocation(), this);
         Location second = getArguments().getLocation("second", getPlanet().getTerritory().getSpawnLocation(), this);
-        setVarValue(link, first.distance(second));
+        final boolean ignoreY = arguments.getBoolean("ignoreY", false, this);
+
+        double distance;
+        if (ignoreY) {
+            Location dummy = second.clone();
+            dummy.setY(first.y());
+            distance = first.distance(dummy);
+        } else {
+            distance = first.distance(second);
+        }
+
+        setVarValue(link, distance);
     }
 
     @Override

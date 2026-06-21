@@ -121,6 +121,15 @@ public enum ActionType implements CodingBlockType {
     PLAYER_SHOW_ACTIONBAR(ActionCategory.PLAYER_ACTION, MenusCategory.COMMUNICATION, ShowActionbarAction.class, Material.REDSTONE_TORCH, new ArgumentSlot("actionbar", ValueType.TEXT, (byte) 18), new ParameterSlot("type", Arrays.asList("join", "join-spaces"), Material.FILLED_MAP, Material.MAP)),
     PLAYER_SHOW_ADVANCEMENT(ActionCategory.PLAYER_ACTION, MenusCategory.COMMUNICATION, ShowAdvancementAction.class, Material.EMERALD, new ArgumentSlot("icon", ValueType.ITEM), new ParameterSlot("style", Arrays.asList("goal", "task", "challenge"), Material.EMERALD, Material.DIAMOND, Material.BEACON), new ArgumentSlot("title", ValueType.TEXT), new ArgumentSlot("message", ValueType.TEXT)),
     PLAYER_PLAY_SOUND(ActionCategory.PLAYER_ACTION, MenusCategory.COMMUNICATION, PlaySoundAction.class, Material.MUSIC_DISC_OTHERSIDE, new ArgumentSlot("sound", ValueType.TEXT), new ArgumentSlot("volume", ValueType.NUMBER), new ArgumentSlot("pitch", ValueType.NUMBER), new ArgumentSlot("location", ValueType.LOCATION), new ParameterSlot("category", Arrays.asList("ambient", "blocks", "hostile", "master", "music", "neutral", "players", "records", "voice", "weather"), Material.CYAN_STAINED_GLASS, Material.GRASS_BLOCK, Material.ZOMBIE_HEAD, Material.GOLDEN_PICKAXE, Material.NOTE_BLOCK, Material.PIGLIN_HEAD, Material.PLAYER_HEAD, Material.MUSIC_DISC_CAT, Material.NAUTILUS_SHELL, Material.WATER_BUCKET), new ArgumentSlot("seed", ValueType.NUMBER)),
+    PLAYER_PLAY_SOUND_FROM_ENTITY(
+        ActionCategory.PLAYER_ACTION, MenusCategory.COMMUNICATION, PlaySoundFromEntityAction.class, Material.MUSIC_DISC_WAIT,
+        new ArgumentSlot("sound", ValueType.TEXT), new ArgumentSlot("volume", ValueType.NUMBER), new ArgumentSlot("pitch", ValueType.NUMBER),
+        new ArgumentSlot("source", ValueType.TEXT), new ParameterSlot(
+            "category",
+            List.of("master", "music", "records", "weather", "blocks", "hostile", "neutral", "players", "ambient", "voice"),
+            List.of(Material.DIAMOND, Material.NOTE_BLOCK, Material.MUSIC_DISC_WAIT, Material.WATER_BUCKET, Material.COBBLESTONE, Material.IRON_SWORD, Material.SHORT_GRASS, Material.PLAYER_HEAD, Material.FLOWERING_AZALEA_LEAVES, Material.KNOWLEDGE_BOOK)
+        )
+    ),
     PLAYER_STOP_SOUNDS(ActionCategory.PLAYER_ACTION, MenusCategory.COMMUNICATION, StopSoundsAction.class, Material.MUSIC_DISC_11, new ArgumentSlot("sounds", ValueType.TEXT, (byte) 18)),
     PLAYER_SHOW_WIN_SCREEN(ActionCategory.PLAYER_ACTION, MenusCategory.COMMUNICATION, ShowWinScreenAction.class, Material.DRAGON_EGG),
     PLAYER_SHOW_DEMO_SCREEN(ActionCategory.PLAYER_ACTION, MenusCategory.COMMUNICATION, ShowDemoScreenAction.class, Material.FARMLAND),
@@ -500,7 +509,19 @@ public enum ActionType implements CodingBlockType {
     VAR_LOCATION_TO_VECTOR(ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, LocationToVectorAction.class, Material.PRISMARINE_SHARD, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("location", ValueType.LOCATION)),
     VAR_GET_BLOCK_TYPE(ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, GetBlockTypeAction.class, Material.GRASS_BLOCK, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("location", ValueType.LOCATION)),
     VAR_GET_BLOCK_FACING(ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, GetBlockFacingAction.class, Material.ENDER_EYE, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("location", ValueType.LOCATION)),
-    VAR_GET_DISTANCE(ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, GetDistanceAction.class, Material.SPYGLASS, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("first", ValueType.LOCATION), new ArgumentSlot("second", ValueType.LOCATION)),
+    VAR_GET_DISTANCE(ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, GetDistanceAction.class, Material.SPYGLASS, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("first", ValueType.LOCATION), new ArgumentSlot("second", ValueType.LOCATION), new ParameterSlot("ignoreY")),
+    VAR_ADD_LOCATIONS(
+        ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, AddLocations.class, Material.BRICKS,
+        new ArgumentSlot("result", ValueType.VARIABLE), new ArgumentSlot("first", ValueType.LOCATION), new ArgumentSlot("second", ValueType.LOCATION)
+    ),
+    VAR_SUBTRACT_LOCATIONS(
+        ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, SubtractLocations.class, Material.NETHER_BRICKS,
+        new ArgumentSlot("result", ValueType.VARIABLE), new ArgumentSlot("first", ValueType.LOCATION), new ArgumentSlot("second", ValueType.LOCATION)
+    ),
+    VAR_MULTIPLY_LOCATION(
+        ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, MultiplyLocation.class, Material.COPPER_BLOCK,
+        new ArgumentSlot("result", ValueType.VARIABLE), new ArgumentSlot("location", ValueType.LOCATION), new ArgumentSlot("factor", ValueType.NUMBER)
+    ),
     VAR_GET_LOCATION_ALL(
             ActionCategory.VARIABLE_ACTION,
             MenusCategory.LOCATION_OPERATIONS,
@@ -535,6 +556,10 @@ public enum ActionType implements CodingBlockType {
             new ArgumentSlot("target", ValueType.LOCATION),
             new ArgumentSlot("vector", ValueType.VECTOR),
             new ArgumentSlot("distance", ValueType.NUMBER)
+    ),
+    VAR_COUNT_BLOCKS_IN_REGION(
+        ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, CountBlocksInRegion.class, Material.DARK_PRISMARINE,
+        new ArgumentSlot("result", ValueType.VARIABLE), new ArgumentSlot("corner1", ValueType.LOCATION), new ArgumentSlot("corner2", ValueType.LOCATION)
     ),
     VAR_CREATE_LIST(ActionCategory.VARIABLE_ACTION, MenusCategory.LIST_OPERATIONS, CreateListAction.class, Material.BOOKSHELF, new ArgumentSlot("elements", ValueType.ANY, (byte) 18), new ArgumentSlot("variable", ValueType.VARIABLE)),
     VAR_ADD_TO_LIST(ActionCategory.VARIABLE_ACTION, MenusCategory.LIST_OPERATIONS, AddToListAction.class, Material.KNOWLEDGE_BOOK, new ArgumentSlot("elements", ValueType.ANY, (byte) 18), new ArgumentSlot("variable", ValueType.VARIABLE)),
