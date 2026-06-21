@@ -121,6 +121,15 @@ public enum ActionType implements CodingBlockType {
     PLAYER_SHOW_ACTIONBAR(ActionCategory.PLAYER_ACTION, MenusCategory.COMMUNICATION, ShowActionbarAction.class, Material.REDSTONE_TORCH, new ArgumentSlot("actionbar", ValueType.TEXT, (byte) 18), new ParameterSlot("type", Arrays.asList("join", "join-spaces"), Material.FILLED_MAP, Material.MAP)),
     PLAYER_SHOW_ADVANCEMENT(ActionCategory.PLAYER_ACTION, MenusCategory.COMMUNICATION, ShowAdvancementAction.class, Material.EMERALD, new ArgumentSlot("icon", ValueType.ITEM), new ParameterSlot("style", Arrays.asList("goal", "task", "challenge"), Material.EMERALD, Material.DIAMOND, Material.BEACON), new ArgumentSlot("title", ValueType.TEXT), new ArgumentSlot("message", ValueType.TEXT)),
     PLAYER_PLAY_SOUND(ActionCategory.PLAYER_ACTION, MenusCategory.COMMUNICATION, PlaySoundAction.class, Material.MUSIC_DISC_OTHERSIDE, new ArgumentSlot("sound", ValueType.TEXT), new ArgumentSlot("volume", ValueType.NUMBER), new ArgumentSlot("pitch", ValueType.NUMBER), new ArgumentSlot("location", ValueType.LOCATION), new ParameterSlot("category", Arrays.asList("ambient", "blocks", "hostile", "master", "music", "neutral", "players", "records", "voice", "weather"), Material.CYAN_STAINED_GLASS, Material.GRASS_BLOCK, Material.ZOMBIE_HEAD, Material.GOLDEN_PICKAXE, Material.NOTE_BLOCK, Material.PIGLIN_HEAD, Material.PLAYER_HEAD, Material.MUSIC_DISC_CAT, Material.NAUTILUS_SHELL, Material.WATER_BUCKET), new ArgumentSlot("seed", ValueType.NUMBER)),
+    PLAYER_PLAY_SOUND_FROM_ENTITY(
+        ActionCategory.PLAYER_ACTION, MenusCategory.COMMUNICATION, PlaySoundFromEntityAction.class, Material.MUSIC_DISC_WAIT,
+        new ArgumentSlot("sound", ValueType.TEXT), new ArgumentSlot("volume", ValueType.NUMBER), new ArgumentSlot("pitch", ValueType.NUMBER),
+        new ArgumentSlot("source", ValueType.TEXT), new ParameterSlot(
+            "category",
+            List.of("master", "music", "records", "weather", "blocks", "hostile", "neutral", "players", "ambient", "voice"),
+            List.of(Material.DIAMOND, Material.NOTE_BLOCK, Material.MUSIC_DISC_WAIT, Material.WATER_BUCKET, Material.COBBLESTONE, Material.IRON_SWORD, Material.SHORT_GRASS, Material.PLAYER_HEAD, Material.FLOWERING_AZALEA_LEAVES, Material.KNOWLEDGE_BOOK)
+        )
+    ),
     PLAYER_STOP_SOUNDS(ActionCategory.PLAYER_ACTION, MenusCategory.COMMUNICATION, StopSoundsAction.class, Material.MUSIC_DISC_11, new ArgumentSlot("sounds", ValueType.TEXT, (byte) 18)),
     PLAYER_SHOW_WIN_SCREEN(ActionCategory.PLAYER_ACTION, MenusCategory.COMMUNICATION, ShowWinScreenAction.class, Material.DRAGON_EGG),
     PLAYER_SHOW_DEMO_SCREEN(ActionCategory.PLAYER_ACTION, MenusCategory.COMMUNICATION, ShowDemoScreenAction.class, Material.FARMLAND),
