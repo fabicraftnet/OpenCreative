@@ -501,6 +501,18 @@ public enum ActionType implements CodingBlockType {
     VAR_GET_BLOCK_TYPE(ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, GetBlockTypeAction.class, Material.GRASS_BLOCK, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("location", ValueType.LOCATION)),
     VAR_GET_BLOCK_FACING(ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, GetBlockFacingAction.class, Material.ENDER_EYE, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("location", ValueType.LOCATION)),
     VAR_GET_DISTANCE(ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, GetDistanceAction.class, Material.SPYGLASS, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("first", ValueType.LOCATION), new ArgumentSlot("second", ValueType.LOCATION), new ParameterSlot("ignoreY")),
+    VAR_ADD_LOCATIONS(
+        ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, AddLocations.class, Material.BRICKS,
+        new ArgumentSlot("result", ValueType.VARIABLE), new ArgumentSlot("first", ValueType.LOCATION), new ArgumentSlot("second", ValueType.LOCATION)
+    ),
+    VAR_SUBTRACT_LOCATIONS(
+        ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, SubtractLocations.class, Material.NETHER_BRICKS,
+        new ArgumentSlot("result", ValueType.VARIABLE), new ArgumentSlot("first", ValueType.LOCATION), new ArgumentSlot("second", ValueType.LOCATION)
+    ),
+    VAR_MULTIPLY_LOCATION(
+        ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, MultiplyLocation.class, Material.COPPER_BLOCK,
+        new ArgumentSlot("result", ValueType.VARIABLE), new ArgumentSlot("location", ValueType.LOCATION), new ArgumentSlot("factor", ValueType.NUMBER)
+    ),
     VAR_GET_LOCATION_ALL(
             ActionCategory.VARIABLE_ACTION,
             MenusCategory.LOCATION_OPERATIONS,
