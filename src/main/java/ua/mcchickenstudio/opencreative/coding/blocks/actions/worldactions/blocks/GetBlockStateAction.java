@@ -42,10 +42,15 @@ public final class GetBlockStateAction extends VariableAction {
         // Strips block type for ease of editing and so that state can be applied to similar types e.g. slabs
         try {
             blockState = blockState.substring(blockState.indexOf("["));
+
+            blockState = blockState.replace(",", "\",\"");
+            blockState = blockState.replace("[", "{\"");
+            blockState = blockState.replace("]", "\"}");
+            blockState = blockState.replace("=","\":\"");
             setVarValue(link, blockState);
         } catch (Exception StringIndexOutOfBoundsException)
         {
-            setVarValue(link, "[]");
+            setVarValue(link, "{}");
         }
 
     }

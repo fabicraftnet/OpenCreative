@@ -40,7 +40,13 @@ public final class SetBlockStateAction extends VariableAction {
     protected void execute() {
         String blockState = getArguments().getText("blockstate", "", this);
         Location location = getArguments().getLocation("location", getPlanet().getTerritory().getSpawnLocation(), this);
+
+        blockState = blockState.replace("\",\"",",");
+        blockState = blockState.replace( "{\"","[");
+        blockState = blockState.replace( "\"}","]");
+        blockState = blockState.replace("\":\"","=");
         //tries to merge blockstate to block
+        // merge is very particular about blockData having to be parsed from a string
         String blockData =  "minecraft:"
                             +location.getBlock().getType().name().toLowerCase()
                             +blockState;

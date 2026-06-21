@@ -7364,8 +7364,8 @@ items:
       world-get-block-state:
         name: "&bGet Block State"
         lore:
-          - "&7Gets the blocks state"
-          - "&7at the specified locations."
+          - "&7Returns the blocks state as JSON"
+          - "&7text at the specified location"
           - ""
           - "&fIn the chest:"
           - "&e Variable &7- To store the results"
@@ -7375,7 +7375,7 @@ items:
       world-set-block-state:
         name: "&3Set Block State"
         lore:
-          - "&7Sets the blocks state"
+          - "&7Sets the blocks state using JSON"
           - "&7at the specified locations."
           - ""
           - "&fIn the chest:"
