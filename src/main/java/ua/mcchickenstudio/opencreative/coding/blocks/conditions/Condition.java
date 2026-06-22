@@ -74,7 +74,7 @@ public abstract class Condition extends Action {
         if (getTargets().isEmpty()) return;
         for (Entity entity : getTargets()) {
             if (entity == null) continue;
-            if (entity.getWorld().equals(getPlanet().getWorld()) || !OpenCreative.getSettings().getCodingSettings().isIgnoreActionsIfEntityNotInWorld()) {
+            if (entity.getWorld().equals(getPlanet().getWorld()) || !OpenCreative.getSettings().getCodingSettings().shouldIgnoreActionsIfEntityNotInWorld()) {
                 this.entity = entity;
                 if (check(entity)) {
                     check = true;

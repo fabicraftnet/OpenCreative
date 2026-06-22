@@ -19,7 +19,6 @@
 package ua.mcchickenstudio.opencreative.coding.blocks.actions.entityactions.other;
 
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;

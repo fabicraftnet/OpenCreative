@@ -135,7 +135,7 @@ public class WanderSettingsMenu extends AbstractMenu {
                 Sounds.PROFILE_SETTINGS_GENDER_CHANGE.play(player);
                 CHANGE_GENDER.next();
                 wander.setGender(OfflineWander.Gender.getGender(
-                        CHANGE_GENDER.getCurrentValue().toString().toUpperCase().replaceAll("-", "_")
+                        CHANGE_GENDER.getCurrentValue().toString().toUpperCase().replace("-", "_")
                 ));
                 setItem(event.getRawSlot(), CHANGE_GENDER.getItem());
                 setItem(30, getHead());

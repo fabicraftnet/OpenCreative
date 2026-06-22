@@ -50,7 +50,6 @@ public final class EntityItemValue extends ItemEventValue {
                     yield new ItemStack(Material.AIR);
                 }
             }
-            case ThrownPotion potion -> potion.getItem();
             case ThrowableProjectile snowball -> snowball.getItem();
             default -> null;
         };

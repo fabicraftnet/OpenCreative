@@ -46,7 +46,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static ua.mcchickenstudio.opencreative.utils.BlockUtils.isOutOfBorders;
 import static ua.mcchickenstudio.opencreative.utils.FileUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.clearOnceMessages;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
@@ -76,7 +75,7 @@ public class PlanetTerritory {
     private World.Environment environment;
     private boolean ignoreUnloading = false;
     private boolean autoSave = true;
-    private AtomicBoolean busy = new AtomicBoolean(false);
+    private final AtomicBoolean busy = new AtomicBoolean(false);
 
     public PlanetTerritory(@NotNull Planet planet) {
         this.planet = planet;
