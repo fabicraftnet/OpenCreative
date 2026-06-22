@@ -91,7 +91,6 @@ public final class Settings {
     private final Map<ItemsGroup, SettingsItemsGroup> itemsGroups = new HashMap<>();
     private boolean debug = false;
     private boolean maintenance = false;
-    private boolean creativeChatEnabled = true;
     private boolean consoleCriticalErrors = true;
     private boolean consoleNotFoundMessage = false;
     private boolean consoleWarnings = true;
@@ -100,6 +99,7 @@ public final class Settings {
     private boolean notifyNoPlayersAround = true;
     private boolean cancelChatOnConfirmation = false;
     private boolean handleWorldChat = true;
+    private boolean disableCreativeChat = false;
     private boolean generateFlatWorldHigher = false;
     private boolean firstLaunch = false;
     private BukkitRunnable announcer;
@@ -179,6 +179,7 @@ public final class Settings {
         consoleSignEdits = config.getBoolean("messages.sign-edits", true);
         cancelChatOnConfirmation = config.getBoolean("messages.cancel-chat-on-confirmation", false);
         handleWorldChat = config.getBoolean("messages.handle-world-chat", true);
+        disableCreativeChat = config.getBoolean("messages.disable-creative-chat", false);
 
         notifyNoPlayersAround = config.getBoolean("messages.notify-no-players-around", true);
 
@@ -802,12 +803,10 @@ public final class Settings {
         return recommendedWorldsIDs;
     }
 
-    public boolean isCreativeChatEnabled() {
-        return creativeChatEnabled;
-    }
-
-    public void setCreativeChatEnabled(boolean creativeChatEnabled) {
-        this.creativeChatEnabled = creativeChatEnabled;
+    public void setCreativeChatEnabled(boolean enabled) {
+        this.disableCreativeChat = !enabled;
+        OpenCreative.getPlugin().getConfig().set("messages.disable-creative-chat", disableCreativeChat);
+        OpenCreative.getPlugin().saveConfig();
     }
 
     public PlayerListChanger getListChanger() {
@@ -1009,12 +1008,21 @@ public final class Settings {
     }
 
     /**
+     * Checks whether creative chat is disabled.
+     *
+     * @return true - creative chat is disabled, false - enabled.
+     */
+    public boolean isCreativeChatDisabled() {
+        return disableCreativeChat;
+    }
+
+    /**
      * Returns set of messages paths, that will be recovered
      * on resetting locale from old localization file to new.
      *
      * @return set of messages paths, that should be saved.
      */
-    public Set<String> getMessagesIgnoringReset() {
+    public @NotNull Set<String> getMessagesIgnoringReset() {
         return messagesIgnoringReset;
     }
 

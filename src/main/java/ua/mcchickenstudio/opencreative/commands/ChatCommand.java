@@ -109,7 +109,7 @@ public class ChatCommand extends CommandHandler {
             sender.sendMessage(getLocaleMessage("creative.stability.cannot"));
             return;
         }
-        if (!OpenCreative.getSettings().isCreativeChatEnabled() && !sender.hasPermission("opencreative.creative-chat.bypass")) {
+        if (OpenCreative.getSettings().isCreativeChatDisabled() && !sender.hasPermission("opencreative.creative-chat.bypass")) {
             sender.sendMessage(getLocaleMessage("creative.creative-chat.off"));
             return;
         }

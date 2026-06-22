@@ -331,6 +331,11 @@ messages:
   # If you have own chat managers (ChatControl...), you can set to: false
   handle-world-chat: true
 
+  # Disables creative chat (/cc, !)
+  #
+  # To disable, set to: true
+  disable-creative-chat: false
+
   # Sends "Oops! An error has occurred..." error messages in console.
   critical-errors: true
 
