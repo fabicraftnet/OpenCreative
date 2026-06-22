@@ -20,6 +20,8 @@ package ua.mcchickenstudio.opencreative.coding.exceptions;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 /**
  * <h1>PlayerException</h1>
  * This class represents a player exception, that has
@@ -29,14 +31,19 @@ import org.jetbrains.annotations.NotNull;
 public abstract class PlayerException extends RuntimeException {
 
     private final @NotNull String playerName;
+    private final @NotNull UUID playerUUID;
 
-    public PlayerException(@NotNull String playerName, @NotNull String message) {
+    public PlayerException(@NotNull String playerName, @NotNull UUID uuid, @NotNull String message) {
         super(message);
         this.playerName = playerName;
+        this.playerUUID = uuid;
     }
 
     public @NotNull String getPlayerName() {
         return playerName;
     }
 
+    public @NotNull UUID getPlayerUUID() {
+        return playerUUID;
+    }
 }

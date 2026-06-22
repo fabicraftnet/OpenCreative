@@ -35,12 +35,15 @@ import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.events.player.CreativeChatEvent;
 import ua.mcchickenstudio.opencreative.planets.Planet;
+import ua.mcchickenstudio.opencreative.settings.filters.Filter;
+import ua.mcchickenstudio.opencreative.settings.filters.FilterResult;
 import ua.mcchickenstudio.opencreative.utils.CooldownUtils;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
@@ -140,13 +143,13 @@ public class ChatCommand extends CommandHandler {
         OpenCreative.getPlugin().getLogger().info("[CREATIVE-CHAT] " + sender.getName()
                 + ": " + String.join(" ", args));
 
-        String text = String.join(" ", args);
+        AtomicReference<String> text = new AtomicReference<>(String.join(" ", args));
         String prefix = OpenCreative.getPlugin().getConfig().getString("messages.cc-prefix", "&6 Chat &8| &7");
         if (!(sender instanceof Player player)) {
             // If sender is console
             Component formatted = toComponent(prefix + sender.getName() + text);
 
-            CreativeChatEvent event = new CreativeChatEvent(sender, text, formatted);
+            CreativeChatEvent event = new CreativeChatEvent(sender, text.get(), formatted);
             event.callEvent();
             if (event.isCancelled()) return;
 
@@ -157,25 +160,36 @@ public class ChatCommand extends CommandHandler {
             }
             return;
         }
-        String format = OpenCreative.getPlugin().getConfig().getString("messages.cc-chat", "&6%cc-prefix% &7%player%: %message%")
-                .replace("%player%", sender.getName())
-                .replace("%cc-prefix%", prefix);
-        format = parsePAPI(player, format);
-        Component formatted = toComponent(format
-                .replace("%message%", MiniMessage.miniMessage().escapeTags(text)));
-        if (formatted.clickEvent() == null) formatted = formatted.clickEvent(ClickEvent.suggestCommand(text));
-        formatted = parseAdvertisementInMessage(formatted);
-
-        CreativeChatEvent event = new CreativeChatEvent(sender, text, formatted);
-        event.callEvent();
-        if (event.isCancelled()) return;
-
-        formatted = event.getFormattedMessage();
-        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            if (!(creativeChatOff.contains(onlinePlayer))) {
-                onlinePlayer.sendMessage(formatted);
+        Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
+            FilterResult result = Filter.getInstance().checkContent(text.get(), Filter.Context.CHAT);
+            if (result.rule() != null) {
+                text.set(result.filteredMessage());
+                result.onViolation(player);
             }
-        }
+            Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
+                String format = OpenCreative.getPlugin().getConfig().getString("messages.cc-chat", "&6%cc-prefix% &7%player%: %message%")
+                        .replace("%player%", sender.getName())
+                        .replace("%cc-prefix%", prefix);
+                format = parsePAPI(player, format);
+                Component formatted = toComponent(format
+                        .replace("%message%", MiniMessage.miniMessage().escapeTags(text.get())));
+                if (formatted.clickEvent() == null) formatted = formatted.clickEvent(ClickEvent.suggestCommand(text.get()));
+                formatted = parseAdvertisementInMessage(formatted);
+
+                CreativeChatEvent event = new CreativeChatEvent(sender, text.get(), formatted);
+                event.callEvent();
+                if (event.isCancelled()) return;
+
+                formatted = event.getFormattedMessage();
+                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                    if (!(creativeChatOff.contains(onlinePlayer))) {
+                        onlinePlayer.sendMessage(formatted);
+                    }
+                }
+            });
+        });
+
+
     }
 
     @Override

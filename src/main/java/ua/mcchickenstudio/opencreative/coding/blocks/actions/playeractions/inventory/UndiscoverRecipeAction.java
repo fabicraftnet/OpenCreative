@@ -38,7 +38,7 @@ public final class UndiscoverRecipeAction extends PlayerAction {
     public void executePlayer(@NotNull Player player) {
         List<String> recipes = getArguments().getTextList("recipes", this);
         for (String recipe : recipes) {
-            NamespacedKey key = getPlanet().getTerritory().getRecipes().getRecipe(recipe);
+            NamespacedKey key = getPlanet().getTerritory().getRecipes().getRecipeKey(recipe);
             if (key == null) continue;
             player.undiscoverRecipe(key);
         }

@@ -22,7 +22,6 @@ import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.DisguiseConfig;
 import me.libraryaddict.disguise.disguisetypes.*;
 import me.libraryaddict.disguise.disguisetypes.watchers.MannequinWatcher;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -41,7 +40,7 @@ public final class LibsDisguises implements DisguiseManager {
                 // above 1.21.10
                 MobDisguise disguise = new MobDisguise(DisguiseType.MANNEQUIN);
                 ((MannequinWatcher)disguise.getWatcher()).setSkin(skin);
-                ((MannequinWatcher)disguise.getWatcher()).setDescription(Optional.ofNullable(null));
+                ((MannequinWatcher)disguise.getWatcher()).setDescription(Optional.empty());
                 disguise.getWatcher().setCustomName(nickname);
                 disguise.setEntity(entity);
                 disguise.setNotifyBar(DisguiseConfig.NotifyBar.NONE);
@@ -100,7 +99,7 @@ public final class LibsDisguises implements DisguiseManager {
             try {
                 Class.forName("org.bukkit.entity.Mannequin");
                 mannequinExists = true;
-            } catch (Exception e) {
+            } catch (Exception ignored) {
                 mannequinExists = false;
             }
         }

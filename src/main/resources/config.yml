@@ -305,7 +305,7 @@ messages:
   prefix: "&6 Worlds &8| &f"
 
   # Information about plugin, that will be displayed on /oc command.
-  version: "&f \n &fPowered by Open&7Creative&b+ &3%version%\n &f%codename% \n \n &fContributors: &7McChicken Team, onn512, pawsashatoy, LWJENNI, HACKERPRO17, liventmst, logiklop, 70N77U\n &fTranslators: &7initzero, Nagibator6000Lol, DrakesWeb, kogtyv, Senmpai333 \n \n &cMcChicken Studio 2017-2026\n &c"
+  version: "&f \n &fPowered by Open&7Creative&b+ &3%version%\n &f%codename% \n \n &fContributors: &7McChicken Team, onn512, pawsashatoy, LWJENNI, HACKERPRO17, liventmst, logiklop, 70N77U, kalienda\n &fTranslators: &7initzero, Nagibator6000Lol, DrakesWeb, kogtyv, Senmpai333 \n \n &cMcChicken Studio 2017-2026\n &c"
 
   # Creative Chat is global chat, accessed by ! in the beginning of message, or with /cc.
   cc-prefix: "&6 Creative Chat &8| &7"
@@ -1097,6 +1097,62 @@ watchdog:
 
   # Teleports all players to lobby and unloads worlds.
   unload-worlds-when-unstable: false
+
+#
+# Filter can block bad words in chat messages,
+# sign texts, item renaming in anvil and book edits.
+#
+filter:
+  # List of rules from: filter.yml
+  rules:
+    swearing:
+
+      # Whether chat messages should be filtered.
+      check-chat: true
+
+      # Whether text on signs should be filtered.
+      check-signs: true
+
+      # Whether renamed item names should be filtered.
+      check-anvils: true
+
+      # Whether books content should be filtered.
+      check-books: true
+
+      # Sends "Don't use bad words!" message to player
+      warn-player: true
+
+      # Notifies moderators about violation.
+      notify-staff: true
+
+      # Which action should be taken to text with bad word in chat
+      # (only for chat, it doesn't apply for anvil, signs, books!)
+      #
+      # full - replace whole message with specified symbol. (I like cats -> ###########)
+      # spaces - replace whole message but keep spaces. (I like cats -> # #### ####)
+      # cover-words - replace only bad words. (I like cats -> I like ####)
+      # replace-words - replace only bad words with another text. (I like cats -> I like ^_^)
+      edit-message: spaces
+      replacement: "#"
+
+      # List of commands, that will be executed on violation.
+      commands:
+        first: # Command name
+          command: "" # Command to execute, without slashes /
+          delay: 0 # Delay (in ticks, 1 second = 20 ticks)
+          console: true # true - Execute as console, false - as player
+
+    advertisement:
+      check-chat: true
+      check-signs: true
+      check-books: true
+      check-anvils: false
+
+      warn-player: true
+      notify-staff: true
+
+      edit-message: full
+      replacement: "#"
 
 #
 # Maintenance mode unloads all worlds and

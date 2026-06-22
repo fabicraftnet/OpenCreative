@@ -41,6 +41,9 @@ public final class LayoutMaker extends Layout {
         } else if (actionType == ActionType.IF_PLAYER_IS_WEARING_ITEM) {
             fillWearingItemLayout();
             return;
+        } else if (actionType == ActionType.WORLD_ADD_MERCHANT_RECIPE) {
+            fillVillagerMerchantLayout();
+            return;
         }
         ArgumentSlot[] args = requiredSlots;
         if (args.length > 0 && args[0].isList()) {
@@ -103,6 +106,39 @@ public final class LayoutMaker extends Layout {
 
         setGlass(6, 43);
         setArgSlot(6, 44);
+    }
+
+    private void fillVillagerMerchantLayout() {
+        setRows(6);
+        setItem(DECORATION_PANE_ITEM, 0, 2, 4, 5, 7, 8, 9, 11, 13, 17, 18, 20,
+                22, 23, 25, 26, 27, 28, 29, 28, 30, 31, 32, 33, 34, 35, 37, 40, 42, 46, 49, 51);
+
+        setGlass(1, 1, 19);
+        setArgSlot(1, 10);
+
+        setGlass(2, 3, 21);
+        setArgSlot(2, 12);
+
+        setGlass(3, 6, 24, 14, 16);
+        setArgSlot(3, 15);
+
+        setGlass(4, 36);
+        setArgSlot(4, 45);
+
+        setGlass(5, 38);
+        setArgSlot(5, 47);
+
+        setGlass(6, 39);
+        setArgSlot(6, 48);
+
+        setGlass(7, 41);
+        setArgSlot(7, 50);
+
+        setGlass(8, 43);
+        setArgSlot(8, 52);
+
+        setGlass(9, 44);
+        setArgSlot(9, 53);
     }
 
     private void fillWithArguments(@NotNull ArgumentSlot[] args) {

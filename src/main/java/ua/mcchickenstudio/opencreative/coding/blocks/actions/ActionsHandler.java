@@ -36,8 +36,7 @@ import ua.mcchickenstudio.opencreative.planets.Planet;
 
 import java.util.*;
 
-import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendPlanetCodeCriticalErrorMessage;
-import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendPlanetCodeErrorMessage;
+import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 
 /**
@@ -209,9 +208,15 @@ public class ActionsHandler {
             try {
                 action.prepareAndExecute(this);
             } catch (Exception error) {
-                sendErrorMessage(action, error);
                 removeAllActions();
                 executor.getPlanet().getVariables().garbageCollector(getMainActionHandler());
+                if (error instanceof TooManyOpenedMenusException playerError) {
+                    sendPlanetLimitWarningMessage(action, "opening-inventories",
+                            action.getPlanet().getLimits().getLastMenuOpensAmount(playerError.getPlayerUUID()),
+                            action.getPlanet().getLimits().getOpeningInventoriesLimit());
+                    return;
+                }
+                sendErrorMessage(action, error);
                 if (action.getPlanet().getLimits().isTooManyCodingErrors()) {
                     action.getPlanet().getTerritory().getScript().getExecutors().stopCode("errors limit");
                     sendPlanetCodeCriticalErrorMessage(action.getPlanet(), executor, getLocaleMessage("coding-error.errors-limit", false)

@@ -33,8 +33,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
-import ua.mcchickenstudio.opencreative.coding.prompters.CodingPrompter;
-import ua.mcchickenstudio.opencreative.coding.prompters.OpenAIPrompter;
 import ua.mcchickenstudio.opencreative.commands.experiments.Experiment;
 import ua.mcchickenstudio.opencreative.commands.experiments.Experiments;
 import ua.mcchickenstudio.opencreative.events.status.MaintenanceEndEvent;
@@ -145,19 +143,20 @@ public final class Settings {
             String corruptedName = "config-corrupted-" + new SimpleDateFormat("hh-mm--dd-MM-yyyy")
                     .format(new Date()) + ".yml";
             OpenCreative.getPlugin().getLogger().severe(
-                "Oops! Failed to load config.yml" + ErrorUtils.parseException(error, false) +
-                        String.join("\n", "", "",
-                                " ^ ^ ^ ^ ^",
-                                "Seems like config.yml was corrupted, so we renamed it and replaced with default config.",
-                                "For old config, see /plugins/OpenCreative/" + corruptedName,
-                                "Maybe you forgot space, tab, or brackets {} []? See above for details."
-                        ));
+                    "Oops! Failed to load config.yml" + ErrorUtils.parseException(error, false) +
+                            String.join("\n", "", "",
+                                    " ^ ^ ^ ^ ^",
+                                    "Seems like config.yml was corrupted, so we renamed it and replaced with default config.",
+                                    "For old config, see /plugins/OpenCreative/" + corruptedName,
+                                    "Maybe you forgot space, tab, or brackets {} []? See above for details."
+                            ));
             try {
                 File movedConfig = new File(OpenCreative.getPlugin().getDataFolder(), corruptedName);
                 if (!configFile.renameTo(movedConfig)) {
                     OpenCreative.getPlugin().getLogger().severe("Failed to rename old config.yml to " + movedConfig.getName());
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             OpenCreative.getPlugin().saveDefaultConfig();
             config = OpenCreative.getPlugin().getConfig();
         }
@@ -197,7 +196,7 @@ public final class Settings {
         String soundsTheme = config.getString("sounds.theme", "default");
         loadSounds(config, soundsTheme);
         loadWorldGenerators(config);
-        // TODO: loadFilterSettings(config);
+        loadFilterSettings(config);
 
         if (maintenance) {
             OpenCreative.getPlugin().getLogger().warning("Maintenance mode is still enabled in config.yml, to disable: /maintenance end");
@@ -246,7 +245,8 @@ public final class Settings {
                 if (!filterFile.renameTo(movedConfig)) {
                     OpenCreative.getPlugin().getLogger().severe("Failed to rename old filter.yml to " + movedConfig.getName());
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             OpenCreative.getPlugin().saveResource("filter.yml", true);
         }
         Set<String> rules = filterConfig.getKeys(false);
@@ -288,7 +288,8 @@ public final class Settings {
             try {
                 filterTextAction = FilterTextAction.valueOf(section.getString("edit-message", "full")
                         .toUpperCase().replace("-", "_"));
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             List<Command> filterCommands = new ArrayList<>();
             ConfigurationSection commandsSection = section.getConfigurationSection("commands");
             if (commandsSection != null) {
@@ -305,6 +306,12 @@ public final class Settings {
                     checkChat, checkAnvils, checkBooks, checkSigns,
                     filterTextAction, replacement, patterns, filterCommands));
         }
+        StringJoiner joiner = new StringJoiner("|");
+        for (String link : allowedResourcePackLinks) {
+            joiner.add(link.toLowerCase().replaceAll("^https?://(www.)?", ""));
+        }
+        Pattern allowedLinksPattern = Pattern.compile("(" + joiner + ")");
+        Filter.getInstance().addWhitelist(allowedLinksPattern);
         if (!registeredRules.isEmpty()) {
             OpenCreative.getPlugin().getLogger().info("Registered "
                     + registeredRules.size() + " filter rules (" + String.join(", ", registeredRules) + ")");
@@ -353,7 +360,7 @@ public final class Settings {
      * if it's missing in config.
      *
      * @param config config, that will be updated.
-     * @param key key to check.
+     * @param key    key to check.
      * @return true - shouldn't set key, false - will be set.
      */
     private boolean shouldNotAddDefaultKey(FileConfiguration config, String key) {

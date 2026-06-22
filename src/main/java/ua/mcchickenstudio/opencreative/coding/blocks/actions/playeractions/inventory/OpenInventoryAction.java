@@ -41,7 +41,7 @@ public final class OpenInventoryAction extends PlayerAction {
              * too many menus, that can prevent from
              * quiting the game.
              */
-            throw new TooManyOpenedMenusException(player.getName());
+            throw new TooManyOpenedMenusException(player);
         }
         String inventoryTypeString = getArguments().getText("type", "chest", this);
         InventoryType inventoryType = InventoryType.CHEST;

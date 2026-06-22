@@ -18,7 +18,25 @@
 
 package ua.mcchickenstudio.opencreative.settings.filters;
 
+import net.kyori.adventure.text.event.HoverEvent;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import ua.mcchickenstudio.opencreative.OpenCreative;
+import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
+import ua.mcchickenstudio.opencreative.settings.Sounds;
 
-public record FilterResult(@NotNull String filteredMessage, @Nullable FilterRule rule) {}
+import java.util.List;
+
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleComponent;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.substring;
+
+public record FilterResult(@NotNull String originalMessage, @NotNull String filteredMessage, @NotNull Filter.Context context, @Nullable FilterRule rule, @NotNull List<String> matches) {
+
+    public void onViolation(@NotNull Player player) {
+        if (rule == null) return;
+        rule.onViolation(player, this);
+    }
+
+}

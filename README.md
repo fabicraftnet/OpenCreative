@@ -263,9 +263,7 @@ OpenCreative+ is made by McChicken Studio 2017-2026.
 - liventmst
 - logiklop
 - 70N77U
-
-**Testers:**
-- tokkyo35
+- kalienda
 
 **Translators:**
 - Nagibator6000LoL

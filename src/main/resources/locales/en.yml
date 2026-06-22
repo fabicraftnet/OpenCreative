@@ -379,7 +379,6 @@ coding-error:
   numberformatexception: "A number was expected, but the item did not contain one. Check the items in the chest for this action."
   toolongtextexception: "Too long text was tried to write to variable. Please substring it with variable action Substring text. "
   collectionwithcollectionexception: "Tried to store a list as element of list. Use Merge Lists action instead."
-  toomanyopenedmenusexception: "Opened too many menus for %player%. Please add cooldown between opening menus."
   toomanyrepeatsexception: "Too many repeats at once! Please add control action Wait to the end of repeat before closing piston."
   nottrustedlinkexception: "Site %link% is not trusted by server. Please contact server admins."
   illegalargumentexception: "An incorrect value was found in the chest. You might have specified a negative number, or a variable returned an incorrect value, or something couldn't be retrieved from the value. Check the chest's contents!"
@@ -3677,6 +3676,114 @@ items:
           - "&6 Texts &7- Recipe identifiers"
           - " "
           - "&eClick to set action."
+      world-add-merchant-recipe:
+        name: "&aCreate Trade Recipe"
+        lore:
+          - "&7Creates a recipe that allows"
+          - "&7a player to purchase an item"
+          - "&7from a villager."
+          - ""
+          - "&7To give this recipe to a villager"
+          - "&7after creating it, use the"
+          - "&aSet Recipes&7 action on the villager."
+          - " "
+          - "&fIn the chest:"
+          - "&c Item &7- First item"
+          - "&c Item &7- Second item"
+          - "&c Item &7- Result"
+          - "&6 Text &7- Recipe identifier"
+          - "&a Number &7- Purchase count"
+          - "&a Number &7- Purchase limit"
+          - "&3 Option &7- Whether to grant player XP"
+          - "&a Number &7- XP granted to villager"
+          - "&a Number &7- Old price"
+          - " "
+          - "&eClick to set the action."
+        placeholders:
+          name:
+            name: "&6Recipe Identifier"
+            lore:
+              - "&7Place a book here that"
+              - "&7contains the recipe name."
+              - ""
+              - "&7Must contain &c&nonly English&7"
+              - "&7letters and underscores."
+              - ""
+              - "&7Default:"
+              - "&6 custom"
+          first:
+            name: "&6First Item"
+            lore:
+              - "&7Place the item here that"
+              - "&7must be placed in the left"
+              - "&7trade slot."
+          second:
+            name: "&6Second Item"
+            lore:
+              - "&7Place the item here that"
+              - "&7must be placed in the right"
+              - "&7trade slot."
+          result:
+            name: "&6Result Item"
+            lore:
+              - "&7Place the item here that"
+              - "&7will be given to the player"
+              - "&7after trading with the villager."
+          uses:
+            name: "&aPurchase Count"
+            lore:
+              - "&7Place a slime here that"
+              - "&7contains the number of times"
+              - "&7this trade has already"
+              - "&7been used."
+              - ""
+              - "&7Default: &a0"
+          max-uses:
+            name: "&aMaximum Purchase Count"
+            lore:
+              - "&7Place a slime here that"
+              - "&7contains the maximum number"
+              - "&7of purchases allowed. Once"
+              - "&7reached, this trade becomes"
+              - "&cunavailable&7."
+              - ""
+              - "&7Default: &aUnlimited"
+          villager-exp:
+            name: "&aVillager Experience"
+            lore:
+              - "&7Place a slime here that"
+              - "&7contains the amount of experience"
+              - "&7granted to the villager after"
+              - "&7a successful trade."
+              - ""
+              - "&7Default: &a0"
+          discount:
+            name: "&aItem Amount Discount"
+            lore:
+              - "&7Place a slime here that"
+              - "&7contains the discount amount"
+              - "&7for the required items."
+              - ""
+              - "&7The higher the discount, the fewer"
+              - "&7items will be required."
+              - ""
+              - "&7Default: &a0"
+        arguments:
+          player-exp:
+            name: "&2Grant Experience to Player"
+            lore:
+              - "&7When purchasing an item"
+              - "&7from a villager, the player"
+              - "&7can receive experience."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              false: "No, do not grant XP"
+              true: "Yes, grant XP"
       world-add-furnace-recipe:
         name: "&7Create Furnace Recipe"
         lore:
@@ -6387,6 +6494,24 @@ items:
           - "&f Pos &7- Jukebox place"
           - " "
           - "&eClick to set action."
+      entity-set-villager-recipes:
+        name: "&aSet Villager Trades"
+        lore:
+          - "&7Clears previous trading recipes"
+          - "&7and adds only the specified ones"
+          - "&7that the player can purchase."
+          - " "
+          - "&fIn the chest:"
+          - "&6 Texts &7- Identifiers"
+          - " "
+          - "&eClick to set the action."
+        placeholders:
+          recipes:
+            name: "&6Trade Recipe Identifiers"
+            lore:
+              - "&7Place a book here that"
+              - "&7contains the identifier of"
+              - "&7a trade recipe."
       entity-villager-shake-head:
         name: "&6Villager Head Shake"
         lore:
@@ -7127,19 +7252,17 @@ items:
       world-spawn-particles-circle:
         name: "&aSpawn particles circle"
         lore:
-          - "&7Creates circle of particles on given"
-          - "&7location with given radius and amount of"
-          - "&7circle points, and rotating it by given"
-          - "&7plane normal vector."
+          - "&7Creates circle of particles on"
+          - "&7specified location with radius."
           - ""
           - "&fIn the chest:"
-          - "&f Location &7- circle center"
-          - "&a Число &7- circle radius"
-          - "&a Число &7- amount of circle points"
-          - "&b Вектор &7- plane normal vector"
-          - "&5 Частица &7- to be spawned"
+          - "&f Location &7- Circle center"
+          - "&a Number &7- Circle radius"
+          - "&a Number &7- Amount of circle points"
+          - "&b Vector &7- Plane normal vector"
+          - "&5 Particle &7- To be spawned"
           - ""
-          - "&Click to set the action."
+          - "&eClick to set the action."
       world-create-team:
         name: "&aCreate Team"
         lore:
@@ -11867,11 +11990,11 @@ items:
           - "&7circle with given parameters."
           - ""
           - "&fIn the chest:"
-          - "&e Variable &7- location of circle point"
-          - "&f Location &7- circle center"
-          - "&a Number &7- circle radius"
-          - "&a Number &7- amount of circle points"
-          - "&b Vector &7- plain normal vector"
+          - "&e Variable &7- Location of circle point"
+          - "&f Location &7- Center of circle"
+          - "&a Number &7- Radius"
+          - "&a Number &7- Amount of circle points"
+          - "&b Vector &7- Plain normal vector"
           - ""
           - "&eClick to set an action."
     conditions:
@@ -15093,7 +15216,7 @@ menus:
           - ""
           - "&c McChicken Studio 2017-2026"
           - "&3 Contributors: &7onn512, pawsashatoy, LWJENNI,"
-          - "&7  HACKERPRO17, liventmst, logiklop, 70N77U."
+          - "&7  HACKERPRO17, liventmst, logiklop, 70N77U, kalienda."
           - "&3 Translators: &7initzero, Nagibator6000LoL,"
           - "&7  DrakesWeb, kogtyv, Senmpai333."
           - ""
@@ -19843,7 +19966,7 @@ blocks:
   world_create_firework_explosion: "Firework Explosion"
   world_create_experience_orb: "Spawn XP Orb"
   world_spawn_particles_line: "Line of Particles"
-  world_spawn_particles_circle: "Circle of particles"
+  world_spawn_particles_circle: "Circle Particles"
   world_create_team: "Create Team"
   world_team_set_color: "Set Team Color"
   world_delete_team: "Delete Team"

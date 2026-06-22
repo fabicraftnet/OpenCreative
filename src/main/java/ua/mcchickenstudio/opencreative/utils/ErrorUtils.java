@@ -223,7 +223,7 @@ public final class ErrorUtils {
 
     /**
      * Notifies planet players about reaching limit,
-     * so some operations will be cancelled.
+     * so some operations will be canceled.
      *
      * @param action   action, that produced warning.
      * @param limitID limit name.
@@ -234,7 +234,6 @@ public final class ErrorUtils {
                                                      @NotNull String limitID,
                                                      int count, int limit) {
         Planet planet = action.getExecutor().getPlanet();
-        if (planet == null) return;
         if (cantSendOnceMessage(planet, 5)) return;
         for (Player player : planet.getPlayers()) {
             Component text = getPlayerLocaleComponent("coding-warning.message", player);
@@ -300,7 +299,6 @@ public final class ErrorUtils {
     public static void sendPlanetCodeWarningMessage(@NotNull Executor executor, @NotNull Action action,
                                                     @NotNull String warningID, @NotNull PlaceholderReplacer placeholder) {
         Planet planet = executor.getPlanet();
-        if (planet == null) return;
         String command = "/dev " + action.getX() + " " + executor.getY() + " " + executor.getZ();
         sendMessageOnce(planet, "coding-warning." + warningID + ".text", placeholder,
                 command, "coding-warning." + warningID + "hover", 5);

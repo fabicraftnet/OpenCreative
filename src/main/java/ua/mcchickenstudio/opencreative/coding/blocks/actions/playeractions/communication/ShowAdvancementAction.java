@@ -43,7 +43,7 @@ public final class ShowAdvancementAction extends PlayerAction {
              * too many menus, that can prevent from
              * quiting the game.
              */
-            throw new TooManyOpenedMenusException(player.getName());
+            throw new TooManyOpenedMenusException(player);
         }
         ItemStack itemStack = getArguments().getItem("icon", new ItemStack(Material.DIAMOND), this);
         Advancement.AdvancementStyle style = Advancement.AdvancementStyle.GOAL;

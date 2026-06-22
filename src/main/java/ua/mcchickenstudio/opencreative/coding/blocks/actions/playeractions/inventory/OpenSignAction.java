@@ -49,7 +49,7 @@ public final class OpenSignAction extends PlayerAction {
              * too many menus, that can prevent from
              * quiting the game.
              */
-            throw new TooManyOpenedMenusException(player.getName());
+            throw new TooManyOpenedMenusException(player);
         }
         player.openSign(sign, side);
     }
