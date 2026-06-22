@@ -553,10 +553,9 @@ public class CreativeCommand extends CommandHandler {
                     return;
                 }
                 if (!planet.isLoaded()) {
-                    planet.getTerritory().load();
-                    sender.sendMessage(getLocaleMessage("world.loaded").replace("%id%", args[1]));
+                    planet.getTerritory().load().whenComplete((result, error) -> sender.sendMessage(getLocaleMessage("world.loaded").replace("%id%", args[1])));
                 } else if (args[1].contains("dev") && !planet.getDevPlanet().isLoaded()) {
-                    planet.getDevPlanet().loadDevPlanetWorld();
+                    planet.getDevPlanet().load();
                     sender.sendMessage(getLocaleMessage("world.loaded").replace("%id%", args[1]));
                 } else {
                     sender.sendMessage(getLocaleMessage("world.already-loaded").replace("%id%", args[1]));
@@ -583,7 +582,7 @@ public class CreativeCommand extends CommandHandler {
                 if (!planet.isLoaded()) {
                     planet.getTerritory().load();
                 }
-                planet.connectToDevPlanet(player);
+                planet.getDevPlanet().connectPlayer(player);
                 sender.sendMessage(getLocaleMessage("world.loaded").replace("%id%", args[1]));
             }
             case "creative-chat", "chat" -> {
@@ -1646,10 +1645,13 @@ public class CreativeCommand extends CommandHandler {
                 if (foundPlanet.getConfiguration().getConfig().getString("generator", "").isEmpty()) {
                     foundPlanet.getTerritory().setGenerator(new EmptyGenerator());
                 }
-                foundPlanet.getTerritory().load();
-                if (sender instanceof Player player) {
-                    foundPlanet.connectPlayer(player, true);
-                }
+                Planet finalFoundPlanet = foundPlanet;
+                foundPlanet.getTerritory().load().whenComplete((result, error) -> {
+                    if (sender instanceof Player player) {
+                        finalFoundPlanet.connectPlayer(player, true);
+                    }
+                });
+
             }
             case "unload" -> foundPlanet.getTerritory().unload();
             case "owner", "setowner" -> {

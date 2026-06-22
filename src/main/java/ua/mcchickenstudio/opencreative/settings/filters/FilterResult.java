@@ -18,7 +18,17 @@
 
 package ua.mcchickenstudio.opencreative.settings.filters;
 
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public record FilterResult(@NotNull String filteredMessage, @Nullable FilterRule rule) {}
+import java.util.List;
+
+public record FilterResult(@NotNull String originalMessage, @NotNull String filteredMessage, @NotNull Filter.Context context, @Nullable FilterRule rule, @NotNull List<String> matches) {
+
+    public void onViolation(@NotNull Player player) {
+        if (rule == null) return;
+        rule.onViolation(player, this);
+    }
+
+}

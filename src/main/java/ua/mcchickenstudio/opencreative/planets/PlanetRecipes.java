@@ -26,8 +26,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <h1>PlanetRecipes</h1>
@@ -36,7 +36,7 @@ import java.util.Set;
  */
 public class PlanetRecipes {
 
-    private final Set<NamespacedKey> recipes = new HashSet<>();
+    private final Map<NamespacedKey, Recipe> recipes = new HashMap<>();
     private final Planet planet;
 
     public PlanetRecipes(@NotNull Planet planet) {
@@ -50,7 +50,7 @@ public class PlanetRecipes {
      * @param recipe recipe to register.
      */
     public void addRecipe(@NotNull NamespacedKey key, @NotNull Recipe recipe) {
-        if (recipes.contains(key)) {
+        if (recipes.containsKey(key)) {
             return;
         }
         if (planet.getLimits().isTooManyRecipeOperationsAtOnce()) {
@@ -59,7 +59,7 @@ public class PlanetRecipes {
         if (Bukkit.getRecipe(key) != null) {
             removeRecipe(key);
         }
-        recipes.add(key);
+        recipes.put(key, recipe);
         Bukkit.addRecipe(recipe, false);
     }
 
@@ -69,7 +69,7 @@ public class PlanetRecipes {
      * @param name name of recipe.
      */
     public void removeRecipe(@NotNull String name) {
-        NamespacedKey found = getRecipe(name);
+        NamespacedKey found = getRecipeKey(name);
         if (found == null) return;
         removeRecipe(found);
     }
@@ -93,10 +93,10 @@ public class PlanetRecipes {
      * @param name name of recipe.
      * @return recipe's namespaced key, or null - if not found.
      */
-    public @Nullable NamespacedKey getRecipe(@NotNull String name) {
+    public @Nullable NamespacedKey getRecipeKey(@NotNull String name) {
         name = getFullKey(name);
         NamespacedKey found = null;
-        for (NamespacedKey key : recipes) {
+        for (NamespacedKey key : recipes.keySet()) {
             if (key.getKey().equalsIgnoreCase(name)) {
                 found = key;
                 break;
@@ -106,16 +106,27 @@ public class PlanetRecipes {
     }
 
     /**
+     * Returns recipe.
+     *
+     * @param name name of recipe.
+     * @return recipe, or null - if not found.
+     */
+    public @Nullable Recipe getRecipe(@NotNull String name) {
+        NamespacedKey key = getRecipeKey(name);
+        return recipes.get(key);
+    }
+
+    /**
      * Removes all recipes and destroys them.
      */
     public void clear() {
         if (OpenCreative.getPlugin().isEnabled()) {
             Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
-                for (NamespacedKey recipe : recipes) {
+                for (NamespacedKey recipe : recipes.keySet()) {
                     Bukkit.removeRecipe(recipe, false);
                 }
                 for (Player player : planet.getPlayers()) {
-                    player.undiscoverRecipes(recipes);
+                    player.undiscoverRecipes(recipes.keySet());
                 }
                 recipes.clear();
             });
@@ -130,7 +141,7 @@ public class PlanetRecipes {
      * @param player player to remove recipes.
      */
     public void clearForPlayer(@NotNull Player player) {
-        player.undiscoverRecipes(recipes);
+        player.undiscoverRecipes(recipes.keySet());
     }
 
     /**

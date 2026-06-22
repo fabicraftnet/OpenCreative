@@ -95,19 +95,28 @@ public final class EntitySpawnListener implements Listener {
                 event.setCancelled(true);
                 return;
             }
-            int limit = planet.getLimits().getEntitiesLimit();
-            int count = planet.getTerritory().getWorld().getEntityCount();
-            if (world.getName().contains("dev")) {
-                if (!(event.getEntity() instanceof Item)) {
-                    event.setCancelled(true);
-                }
-            }
             if (event.getEntity().getEntitySpawnReason().name().contains("SPAWNER") && planet.getLimits().isTooManyMobSpawnsBySpawner()) {
                 event.setCancelled(true);
                 return;
             }
-            if (planet.getDevPlanet() != null && planet.getDevPlanet().getWorld() != null) {
-                count += planet.getDevPlanet().getWorld().getEntityCount();
+            int limit = planet.getLimits().getEntitiesLimit();
+            int count = 0;
+            if (planet.getDevPlanet().isLoaded()) {
+                if (isDevPlanet(world)) {
+                    if (event.getEntityType() != EntityType.ITEM) {
+                        event.setCancelled(true);
+                    }
+                    World buildWorld = planet.getWorld();
+                    if (buildWorld != null) {
+                        count += buildWorld.getEntityCount();
+                    }
+                    count += world.getEntityCount();
+                } else {
+                    count += world.getEntityCount();
+                    count += planet.getDevPlanet().getWorld().getEntityCount();
+                }
+            } else {
+                count += world.getEntityCount();
             }
             if (count > limit) {
                 event.setCancelled(true);

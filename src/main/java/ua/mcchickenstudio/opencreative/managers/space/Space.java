@@ -18,6 +18,9 @@
 
 package ua.mcchickenstudio.opencreative.managers.space;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -30,6 +33,7 @@ import ua.mcchickenstudio.opencreative.events.planet.PlanetRegisterEvent;
 import ua.mcchickenstudio.opencreative.events.planet.PlanetSharingChangeEvent;
 import ua.mcchickenstudio.opencreative.events.planet.PlanetCreationEvent;
 import ua.mcchickenstudio.opencreative.managers.Startable;
+import ua.mcchickenstudio.opencreative.settings.Sounds;
 import ua.mcchickenstudio.opencreative.wanders.OfflineWander;
 import ua.mcchickenstudio.opencreative.wanders.Wander;
 import ua.mcchickenstudio.opencreative.menus.world.WorldMenu;
@@ -44,9 +48,9 @@ import ua.mcchickenstudio.opencreative.utils.world.generators.WorldTemplate;
 import java.io.File;
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
-import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCriticalErrorMessage;
-import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendPlayerErrorMessage;
+import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.FileUtils.createWorldSettings;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isDevPlanet;
@@ -161,15 +165,26 @@ public final class Space implements PlanetsManager, Startable {
                 createWorldSettings(id, owner, World.Environment.NORMAL, template.getID());
                 Planet planet = new Planet(id);
 
-                if (planet.getTerritory().generateWorld(template, World.Environment.NORMAL, 0, false, "") != null) {
-                    long endTime = System.currentTimeMillis();
-                    OpenCreative.getPlugin().getLogger().info("World for planet " + id + " successfully generated in " + (endTime - startTime) + " ms");
-                    new PlanetCreationEvent(planet, owner, template, World.Environment.NORMAL, 0, false).callEvent();
-                    planet.connectPlayer(owner);
-                } else {
-                    ErrorUtils.sendCriticalErrorMessage("Failed to create world for planet " + id + " by " + owner.getName() + ". World is null.");
-                    sendPlayerErrorMessage(owner, "Failed to create world, world is null.");
-                }
+                CompletableFuture<World> worldCreation = planet.getTerritory().generateWorld(template, World.Environment.NORMAL,
+                        0, false, "");
+                worldCreation.thenAccept(world -> {
+                    Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
+                        long endTime = System.currentTimeMillis();
+                        OpenCreative.getPlugin().getLogger().info("World for planet " + id + " successfully generated in " + (endTime - startTime) + " ms");
+                        new PlanetCreationEvent(planet, owner, template, World.Environment.NORMAL, 0, false).callEvent();
+                        planet.connectPlayer(owner);
+                    });
+                }).exceptionally(error -> {
+                    String errorMessage = (error.getMessage() == null ? "Failed to create the world" : error.getMessage());
+                    owner.sendMessage(getComponentWithPlaceholders("world.connecting.error",
+                            owner, "id", id, "wasloaded", false,
+                            "phase", "Creation", "loaded", false, "error", errorMessage)
+                            .clickEvent(ClickEvent.suggestCommand(errorMessage))
+                            .hoverEvent(HoverEvent.showText(Component.text(parseException(error, true)))));
+                    sendCriticalErrorMessage("Failed to create the world " + id, error);
+                    Sounds.PLAYER_ERROR.play(owner);
+                    return null;
+                });
             });
         });
     }
@@ -189,15 +204,25 @@ public final class Space implements PlanetsManager, Startable {
         createWorldSettings(id, owner, environment, generator.getID());
         Planet planet = new Planet(id);
 
-        if (planet.getTerritory().generateWorld(generator, environment, seed, generateStructures, biome) != null) {
-            long endTime = System.currentTimeMillis();
-            OpenCreative.getPlugin().getLogger().info("World for planet " + id + " successfully generated in " + (endTime - startTime) + " ms");
-            new PlanetCreationEvent(planet, owner, generator, environment, seed, generateStructures).callEvent();
-            planet.connectPlayer(owner);
-        } else {
-            ErrorUtils.sendCriticalErrorMessage("Failed to create world for planet " + id + " by " + owner.getName() + ". World is null.");
-            sendPlayerErrorMessage(owner, "Failed to create world, world is null.");
-        }
+        CompletableFuture<World> worldCreation = planet.getTerritory().generateWorld(generator, environment, seed, generateStructures, biome);
+        worldCreation.thenAccept(world -> {
+            Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
+                long endTime = System.currentTimeMillis();
+                OpenCreative.getPlugin().getLogger().info("World for planet " + id + " successfully generated in " + (endTime - startTime) + " ms");
+                new PlanetCreationEvent(planet, owner, generator, environment, seed, generateStructures).callEvent();
+                planet.connectPlayer(owner);
+            });
+        }).exceptionally(error -> {
+            String errorMessage = (error.getMessage() == null ? "Failed to create the world" : error.getMessage());
+            owner.sendMessage(getComponentWithPlaceholders("world.connecting.error",
+                    owner, "id", id, "wasloaded", false,
+                    "phase", "Creation", "loaded", false, "error", errorMessage)
+                    .clickEvent(ClickEvent.suggestCommand(errorMessage))
+                    .hoverEvent(HoverEvent.showText(Component.text(parseException(error, true)))));
+            sendCriticalErrorMessage("Failed to create the world " + id, error);
+            Sounds.PLAYER_ERROR.play(owner);
+            return null;
+        });
     }
 
     public @NotNull Set<Planet> getPlanetsByOwner(@NotNull Player player) {
@@ -223,10 +248,10 @@ public final class Space implements PlanetsManager, Startable {
             unregisterPlanet(planet);
             Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
                 if (planet.isLoaded()) {
-                    Bukkit.unloadWorld(planet.getWorldName(), false);
+                    OpenCreative.getWorldManager().unloadWorld(planet.getWorld(), false, planet);
                 }
                 if (planet.getDevPlanet().isLoaded()) {
-                    Bukkit.unloadWorld(planet.getDevPlanet().getWorldName(), false);
+                    OpenCreative.getWorldManager().unloadWorld(planet.getDevPlanet().getWorld(), false, planet);
                 }
                 Bukkit.getScheduler().runTaskLaterAsynchronously(OpenCreative.getPlugin(), () -> {
                     FileUtils.deleteFolder(FileUtils.getPlanetFolder(planet));

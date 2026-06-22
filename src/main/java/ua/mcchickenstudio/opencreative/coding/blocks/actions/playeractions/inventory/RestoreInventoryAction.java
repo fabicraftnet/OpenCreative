@@ -19,12 +19,14 @@
 package ua.mcchickenstudio.opencreative.coding.blocks.actions.playeractions.inventory;
 
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.playeractions.PlayerAction;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
+import ua.mcchickenstudio.opencreative.planets.PlanetPlayer;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCodingDebugLog;
 
@@ -39,7 +41,12 @@ public final class RestoreInventoryAction extends PlayerAction {
             sendCodingDebugLog(getPlanet(), "Too many restore inventory actions called at once " + player.getName());
             return;
         }
-        player.getInventory().setContents(getPlanet().getWorldPlayers().getPlanetPlayer(player).getSavedInventory());
+        PlanetPlayer planetPlayer = getPlanet().getWorldPlayers().getPlanetPlayer(player);
+        if (planetPlayer != null) {
+            int number = Math.clamp(getArguments().getInt("number", 1, this), 1, 9);
+            ItemStack[] inventory = planetPlayer.getSavedInventory(number);
+            player.getInventory().setContents(inventory);
+        }
     }
 
     @Override

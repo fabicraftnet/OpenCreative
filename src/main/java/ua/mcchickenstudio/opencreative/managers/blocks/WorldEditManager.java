@@ -65,9 +65,8 @@ public final class WorldEditManager implements BlocksManager, Toggleable {
         CompletableFuture<Integer> future = new CompletableFuture<>();
         // Checks whether its FastAsyncWorldEdit or classic WorldEdit
         if (HookUtils.isPluginEnabled("FastAsyncWorldEdit")) {
-            Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
-                setBlocks(world, future, first, second, material, limit);
-            });
+            Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () ->
+                    setBlocks(world, future, first, second, material, limit));
         } else {
             setBlocks(world, future, first, second, material, limit);
         }
@@ -95,6 +94,7 @@ public final class WorldEditManager implements BlocksManager, Toggleable {
         }
         SystemUtils.setSystemProperty("worldedit.registered", "true");
         onSessionEvent = new Object() {
+            @SuppressWarnings("unused")
             @Subscribe
             public void onEditSessionEvent(EditSessionEvent event) {
                 if (event.getStage() != EditSession.Stage.BEFORE_HISTORY) return;
@@ -142,21 +142,26 @@ public final class WorldEditManager implements BlocksManager, Toggleable {
 
     static class PlanetExtent extends AbstractDelegateExtent {
 
-        private static final BlockState AIRSTATE = BlockTypes.AIR.getDefaultState();
-        private static final BaseBlock AIRBASE = BlockTypes.AIR.getDefaultState().toBaseBlock();
+        private final BlockState airState;
+        private final BaseBlock airBase;
         private final Planet planet;
         private final Player player;
 
         public PlanetExtent(Planet planet, Extent extent) {
-            super(extent);
-            this.planet = planet;
-            this.player = null;
+            this(planet, extent, null);
         }
 
         public PlanetExtent(Planet planet, Extent extent, Player player) {
             super(extent);
             this.planet = planet;
             this.player = player;
+            if (BlockTypes.AIR != null) {
+                airState = BlockTypes.AIR.getDefaultState();
+                airBase = airState.toBaseBlock();
+            } else {
+                airState = null;
+                airBase = null;
+            }
         }
 
         @SuppressWarnings("unchecked")
@@ -217,7 +222,7 @@ public final class WorldEditManager implements BlocksManager, Toggleable {
             )) {
                 return super.getBlock(location);
             }
-            return AIRSTATE;
+            return airState;
         }
 
         @Override
@@ -230,17 +235,24 @@ public final class WorldEditManager implements BlocksManager, Toggleable {
             )) {
                 return super.getFullBlock(location);
             }
-            return AIRBASE;
+            return airBase;
         }
     }
 
     static class DisallowedExtent extends AbstractDelegateExtent {
 
-        public static final BlockState AIRSTATE = BlockTypes.AIR.getDefaultState();
-        public static final BaseBlock AIRBASE = BlockTypes.AIR.getDefaultState().toBaseBlock();
+        private final BlockState airState;
+        private final BaseBlock airBase;
 
         public DisallowedExtent(Extent extent) {
             super(extent);
+            if (BlockTypes.AIR != null) {
+                airState = BlockTypes.AIR.getDefaultState();
+                airBase = airState.toBaseBlock();
+            } else {
+                airState = null;
+                airBase = null;
+            }
         }
 
         @Override
@@ -260,12 +272,12 @@ public final class WorldEditManager implements BlocksManager, Toggleable {
 
         @Override
         public BlockState getBlock(BlockVector3 location) {
-            return AIRSTATE;
+            return airState;
         }
 
         @Override
         public BaseBlock getFullBlock(BlockVector3 location) {
-            return AIRBASE;
+            return airBase;
         }
     }
 }

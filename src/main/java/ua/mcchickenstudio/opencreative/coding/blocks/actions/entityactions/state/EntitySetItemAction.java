@@ -16,36 +16,43 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ua.mcchickenstudio.opencreative.coding.blocks.actions.entityactions.other;
+package ua.mcchickenstudio.opencreative.coding.blocks.actions.entityactions.state;
 
-import org.bukkit.entity.Entity;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.*;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.entityactions.EntityAction;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
+import ua.mcchickenstudio.opencreative.coding.exceptions.UnsupportedEntityException;
 
-import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCodingDebugLog;
-
-public final class SetDisguiseNameAction extends EntityAction {
-    public SetDisguiseNameAction(Executor executor, Target target, int x, Arguments args) {
+public final class EntitySetItemAction extends EntityAction {
+    public EntitySetItemAction(Executor executor, Target target, int x, Arguments args) {
         super(executor, target, x, args);
     }
 
     @Override
     public void executeEntity(@NotNull Entity entity) {
-        String name = getArguments().getText("name", entity.getName(), this);
-        if (!OpenCreative.getDisguiseManager().isWorking()) {
-            sendCodingDebugLog(getPlanet(), "Disguise Manager is not available.");
-            return;
+        ItemStack item = getArguments().getItem("item", new ItemStack(Material.AIR), this);
+        switch (entity) {
+            case ItemDisplay display -> display.setItemStack(item);
+            case BlockDisplay display -> display.setBlock(Bukkit.createBlockData(item.getType()));
+            case Item entityItem -> entityItem.setItemStack(item);
+            case ThrownPotion potion -> potion.setItem(item);
+            case ItemFrame frame -> frame.setItem(item);
+            case Firework firework -> firework.setItem(item);
+            case AbstractArrow arrow -> arrow.setItemStack(item);
+            case EnderSignal signal -> signal.setItem(item);
+            default -> throw new UnsupportedEntityException(ItemDisplay.class, entity);
         }
-        OpenCreative.getDisguiseManager().setDisguiseDisplayName(entity, name);
     }
 
     @Override
     public @NotNull ActionType getActionType() {
-        return ActionType.ENTITY_SET_DISGUISE_NAME;
+        return ActionType.ENTITY_SET_ITEM;
     }
 }

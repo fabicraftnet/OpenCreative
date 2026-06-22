@@ -58,7 +58,8 @@ public final class CreativeListener implements Listener {
     public void onWorldChat(WorldChatEvent event) {
         Map<String, Object> placeholders = new HashMap<>();
         placeholders.put("%player%", event.getPlayer().getName());
-        placeholders.put("%world%", event.getPlayer().getWorld().getName());
+        placeholders.put("%world%", event.getPlayer().getWorld().getName()
+                .replace("./planets/", ""));
         placeholders.put("%message%", event.getMessage());
         placeholders.put("%formatted%", event.getFormattedMessage());
         OpenCreative.getSettings().getCommands().execute(event.getPlayer(), "onWorldChat", placeholders);

@@ -268,7 +268,7 @@ public final class CodingSettings {
      * @return true - all actions require entity in same world<p>
      * false - only entity and player actions.
      */
-    public boolean isIgnoreActionsIfEntityNotInWorld() {
+    public boolean shouldIgnoreActionsIfEntityNotInWorld() {
         return ignoreActionsIfEntityNotInWorld;
     }
 

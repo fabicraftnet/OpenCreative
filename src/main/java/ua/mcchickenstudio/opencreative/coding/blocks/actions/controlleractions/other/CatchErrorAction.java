@@ -27,11 +27,13 @@ import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionsHandler;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.controlleractions.ControllerAction;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
+import ua.mcchickenstudio.opencreative.coding.exceptions.TooManyOpenedMenusException;
 import ua.mcchickenstudio.opencreative.coding.variables.VariableLink;
 
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendPlanetCodeCriticalErrorMessage;
+import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendPlanetLimitWarningMessage;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
 
 public final class CatchErrorAction extends ControllerAction {
@@ -49,12 +51,19 @@ public final class CatchErrorAction extends ControllerAction {
             errorHandler.executeActions(getActions());
         } catch (Exception error) {
             setVarValue(link, error.getClass().getSimpleName().toLowerCase());
-            if (getPlanet().getLimits().isTooManyCodingErrors()) {
-                getPlanet().getTerritory().getScript().getExecutors().stopCode("errors limit");
-                sendPlanetCodeCriticalErrorMessage(getPlanet(), getExecutor(), getLocaleMessage("coding-error.errors-limit", false)
-                        .replace("%limit%", String.valueOf(getPlanet().getLimits().getCodingErrorsLimit())));
-            }
             errorHandler.removeAllActions();
+            if (error instanceof TooManyOpenedMenusException playerError) {
+                sendPlanetLimitWarningMessage(this, "opening-inventories",
+                        getPlanet().getLimits().getLastMenuOpensAmount(playerError.getPlayerUUID()),
+                        getPlanet().getLimits().getOpeningInventoriesLimit());
+            } else {
+                if (getPlanet().getLimits().isTooManyCodingErrors()) {
+                    getPlanet().getTerritory().getScript().getExecutors().stopCode("errors limit");
+                    sendPlanetCodeCriticalErrorMessage(getPlanet(), getExecutor(), getLocaleMessage("coding-error.errors-limit", false)
+                            .replace("%limit%", String.valueOf(getPlanet().getLimits().getCodingErrorsLimit())));
+                    return;
+                }
+            }
             errorHandler.executeNextAction();
             getHandler().executeNextAction();
         }

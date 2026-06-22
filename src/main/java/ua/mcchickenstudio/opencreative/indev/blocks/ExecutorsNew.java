@@ -18,22 +18,17 @@
 
 package ua.mcchickenstudio.opencreative.indev.blocks;
 
-import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventException;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.EventExecutor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.WorldEvent;
 import ua.mcchickenstudio.opencreative.indev.blocks.executors.ExecutorBlock;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
-
-import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCriticalErrorMessage;
 
 /**
  * <h1>Executors</h1>
@@ -103,7 +98,7 @@ public class ExecutorsNew implements EventExecutor, Listener {
     }
 
     @Override
-    public void execute(@NotNull Listener listener, @NotNull Event event) throws EventException {
+    public void execute(@NotNull Listener listener, @NotNull Event event) {
         /*if (event instanceof WorldEvent worldEvent) {
             handleEvent(worldEvent);
         }*/

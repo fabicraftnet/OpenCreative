@@ -16,11 +16,9 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 package ua.mcchickenstudio.opencreative.coding.blocks.actions.worldactions.world.phys.data;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -38,8 +36,8 @@ import java.util.concurrent.ScheduledExecutorService;
 // Made by pawsashatoy :)
 public class PhysicsManager implements Manager, Toggleable {
 
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(40,
-            new ThreadFactoryBuilder().setNameFormat("opencreative-phys-thread-%d").build());
+    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(4,
+                    new ThreadFactoryBuilder().setNameFormat("opencreative-phys-%d").build());
     private final Map<Integer, List<PhysObject>> objects = new ConcurrentHashMap<>();
     private BukkitRunnable runnable;
 

@@ -22,7 +22,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.jetbrains.annotations.NotNull;
-import ua.mcchickenstudio.opencreative.managers.Toggleable;
 
 /**
  * Implementation of Vault economy,
