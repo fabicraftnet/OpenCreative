@@ -46,7 +46,6 @@ import java.util.Set;
 
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.copySignData;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleComponent;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.isEntityInLobby;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.translateBlockSign;
 

@@ -40,6 +40,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 import static ua.mcchickenstudio.opencreative.coding.arguments.Argument.parseEntity;
@@ -61,6 +62,7 @@ public final class WorldVariables {
     private final Map<String, WorldVariable> savedVariables = new LinkedHashMap<>();
 
     private int totalAmount = 0;
+    private final AtomicBoolean loaded = new AtomicBoolean(false);
 
     public WorldVariables(Planet planet) {
         this.planet = planet;
@@ -268,6 +270,14 @@ public final class WorldVariables {
     }
 
     /**
+     * Clears and marks variables as unloaded.
+     */
+    public void unload() {
+        clearVariables();
+        loaded.set(false);
+    }
+
+    /**
      * Loads variables from /planet/variables.json file.
      */
     public @NotNull CompletableFuture<Void> load() {
@@ -279,6 +289,7 @@ public final class WorldVariables {
             clearVariables();
             File variablesJson = FileUtils.getPlanetVariablesJson(planet);
             if (variablesJson == null || variablesJson.length() <= 2) {
+                loaded.set(true);
                 future.complete(null);
                 return;
             }
@@ -296,9 +307,11 @@ public final class WorldVariables {
                         addVariable(newVariable, VariableLink.VariableType.SAVED);
                     }
                 }
+                loaded.set(true);
                 future.complete(null);
             } catch (Exception error) {
                 sendCriticalErrorMessage("Failed to parse JSON file " + variablesJson.getPath(), error);
+                loaded.set(true);
                 future.completeExceptionally(error);
             }
 
@@ -313,6 +326,7 @@ public final class WorldVariables {
      */
     @SuppressWarnings("unchecked")
     public void save() {
+        if (!isLoaded()) return;
         long startTime = System.currentTimeMillis();
         OpenCreative.getPlugin().getLogger().info("Saving variables for planet " + planet.getId());
 
@@ -638,4 +652,12 @@ public final class WorldVariables {
         }
     }
 
+    /**
+     * Checks whether variables are loaded.
+     *
+     * @return true - loaded, false - not yet.
+     */
+    public boolean isLoaded() {
+        return loaded.get();
+    }
 }

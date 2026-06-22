@@ -33,8 +33,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
-import ua.mcchickenstudio.opencreative.coding.prompters.CodingPrompter;
-import ua.mcchickenstudio.opencreative.coding.prompters.OpenAIPrompter;
 import ua.mcchickenstudio.opencreative.commands.experiments.Experiment;
 import ua.mcchickenstudio.opencreative.commands.experiments.Experiments;
 import ua.mcchickenstudio.opencreative.events.status.MaintenanceEndEvent;
@@ -93,7 +91,6 @@ public final class Settings {
     private final Map<ItemsGroup, SettingsItemsGroup> itemsGroups = new HashMap<>();
     private boolean debug = false;
     private boolean maintenance = false;
-    private boolean creativeChatEnabled = true;
     private boolean consoleCriticalErrors = true;
     private boolean consoleNotFoundMessage = false;
     private boolean consoleWarnings = true;
@@ -102,6 +99,7 @@ public final class Settings {
     private boolean notifyNoPlayersAround = true;
     private boolean cancelChatOnConfirmation = false;
     private boolean handleWorldChat = true;
+    private boolean disableCreativeChat = false;
     private boolean generateFlatWorldHigher = false;
     private boolean firstLaunch = false;
     private BukkitRunnable announcer;
@@ -145,19 +143,20 @@ public final class Settings {
             String corruptedName = "config-corrupted-" + new SimpleDateFormat("hh-mm--dd-MM-yyyy")
                     .format(new Date()) + ".yml";
             OpenCreative.getPlugin().getLogger().severe(
-                "Oops! Failed to load config.yml" + ErrorUtils.parseException(error, false) +
-                        String.join("\n", "", "",
-                                " ^ ^ ^ ^ ^",
-                                "Seems like config.yml was corrupted, so we renamed it and replaced with default config.",
-                                "For old config, see /plugins/OpenCreative/" + corruptedName,
-                                "Maybe you forgot space, tab, or brackets {} []? See above for details."
-                        ));
+                    "Oops! Failed to load config.yml" + ErrorUtils.parseException(error, false) +
+                            String.join("\n", "", "",
+                                    " ^ ^ ^ ^ ^",
+                                    "Seems like config.yml was corrupted, so we renamed it and replaced with default config.",
+                                    "For old config, see /plugins/OpenCreative/" + corruptedName,
+                                    "Maybe you forgot space, tab, or brackets {} []? See above for details."
+                            ));
             try {
                 File movedConfig = new File(OpenCreative.getPlugin().getDataFolder(), corruptedName);
                 if (!configFile.renameTo(movedConfig)) {
                     OpenCreative.getPlugin().getLogger().severe("Failed to rename old config.yml to " + movedConfig.getName());
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             OpenCreative.getPlugin().saveDefaultConfig();
             config = OpenCreative.getPlugin().getConfig();
         }
@@ -180,6 +179,7 @@ public final class Settings {
         consoleSignEdits = config.getBoolean("messages.sign-edits", true);
         cancelChatOnConfirmation = config.getBoolean("messages.cancel-chat-on-confirmation", false);
         handleWorldChat = config.getBoolean("messages.handle-world-chat", true);
+        disableCreativeChat = config.getBoolean("messages.disable-creative-chat", false);
 
         notifyNoPlayersAround = config.getBoolean("messages.notify-no-players-around", true);
 
@@ -197,7 +197,7 @@ public final class Settings {
         String soundsTheme = config.getString("sounds.theme", "default");
         loadSounds(config, soundsTheme);
         loadWorldGenerators(config);
-        // TODO: loadFilterSettings(config);
+        loadFilterSettings(config);
 
         if (maintenance) {
             OpenCreative.getPlugin().getLogger().warning("Maintenance mode is still enabled in config.yml, to disable: /maintenance end");
@@ -246,7 +246,8 @@ public final class Settings {
                 if (!filterFile.renameTo(movedConfig)) {
                     OpenCreative.getPlugin().getLogger().severe("Failed to rename old filter.yml to " + movedConfig.getName());
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             OpenCreative.getPlugin().saveResource("filter.yml", true);
         }
         Set<String> rules = filterConfig.getKeys(false);
@@ -288,7 +289,8 @@ public final class Settings {
             try {
                 filterTextAction = FilterTextAction.valueOf(section.getString("edit-message", "full")
                         .toUpperCase().replace("-", "_"));
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             List<Command> filterCommands = new ArrayList<>();
             ConfigurationSection commandsSection = section.getConfigurationSection("commands");
             if (commandsSection != null) {
@@ -305,6 +307,12 @@ public final class Settings {
                     checkChat, checkAnvils, checkBooks, checkSigns,
                     filterTextAction, replacement, patterns, filterCommands));
         }
+        StringJoiner joiner = new StringJoiner("|");
+        for (String link : allowedResourcePackLinks) {
+            joiner.add(link.toLowerCase().replaceAll("^https?://(www.)?", ""));
+        }
+        Pattern allowedLinksPattern = Pattern.compile("(" + joiner + ")");
+        Filter.getInstance().addWhitelist(allowedLinksPattern);
         if (!registeredRules.isEmpty()) {
             OpenCreative.getPlugin().getLogger().info("Registered "
                     + registeredRules.size() + " filter rules (" + String.join(", ", registeredRules) + ")");
@@ -353,7 +361,7 @@ public final class Settings {
      * if it's missing in config.
      *
      * @param config config, that will be updated.
-     * @param key key to check.
+     * @param key    key to check.
      * @return true - shouldn't set key, false - will be set.
      */
     private boolean shouldNotAddDefaultKey(FileConfiguration config, String key) {
@@ -795,12 +803,10 @@ public final class Settings {
         return recommendedWorldsIDs;
     }
 
-    public boolean isCreativeChatEnabled() {
-        return creativeChatEnabled;
-    }
-
-    public void setCreativeChatEnabled(boolean creativeChatEnabled) {
-        this.creativeChatEnabled = creativeChatEnabled;
+    public void setCreativeChatEnabled(boolean enabled) {
+        this.disableCreativeChat = !enabled;
+        OpenCreative.getPlugin().getConfig().set("messages.disable-creative-chat", disableCreativeChat);
+        OpenCreative.getPlugin().saveConfig();
     }
 
     public PlayerListChanger getListChanger() {
@@ -1002,12 +1008,21 @@ public final class Settings {
     }
 
     /**
+     * Checks whether creative chat is disabled.
+     *
+     * @return true - creative chat is disabled, false - enabled.
+     */
+    public boolean isCreativeChatDisabled() {
+        return disableCreativeChat;
+    }
+
+    /**
      * Returns set of messages paths, that will be recovered
      * on resetting locale from old localization file to new.
      *
      * @return set of messages paths, that should be saved.
      */
-    public Set<String> getMessagesIgnoringReset() {
+    public @NotNull Set<String> getMessagesIgnoringReset() {
         return messagesIgnoringReset;
     }
 

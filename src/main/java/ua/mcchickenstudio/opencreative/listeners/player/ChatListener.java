@@ -43,6 +43,8 @@ import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.player.world.ChatEvent;
 import ua.mcchickenstudio.opencreative.coding.modules.Module;
 import ua.mcchickenstudio.opencreative.events.player.WorldChatEvent;
+import ua.mcchickenstudio.opencreative.settings.filters.Filter;
+import ua.mcchickenstudio.opencreative.settings.filters.FilterResult;
 import ua.mcchickenstudio.opencreative.wanders.Wander;
 import ua.mcchickenstudio.opencreative.menus.world.browsers.WorldsBrowserMenu;
 import ua.mcchickenstudio.opencreative.planets.DevPlanet;
@@ -140,7 +142,13 @@ public final class ChatListener implements Listener {
 
     @EventHandler
     public void onChat(AsyncChatEvent event) {
-        String message = PlainTextComponentSerializer.plainText().serialize(event.message());
+        String serialized = PlainTextComponentSerializer.plainText().serialize(event.message());
+        FilterResult result = Filter.getInstance().checkContent(serialized, Filter.Context.CHAT);
+        if (result.rule() != null) {
+            serialized = result.filteredMessage();
+            result.rule().onViolation(event.getPlayer(), result);
+        }
+        String message = serialized;
         try {
             Player player = event.getPlayer();
             boolean shouldHandleWorldChat = OpenCreative.getSettings().shouldHandleWorldChat();

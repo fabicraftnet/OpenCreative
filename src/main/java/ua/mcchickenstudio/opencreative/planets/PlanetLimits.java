@@ -697,6 +697,21 @@ public class PlanetLimits {
     }
 
     /**
+     * Returns how many menus were opened
+     * for player in latest 5 seconds.
+     *
+     * @param uuid unique id of player.
+     * @return amount of last menu opens.
+     */
+    public int getLastMenuOpensAmount(@NotNull UUID uuid) {
+        Deque<Long> timestamps = lastPlayerMenuOpens.get(uuid);
+        if (timestamps == null) {
+            return 0;
+        }
+        return timestamps.size();
+    }
+
+    /**
      * Clears player's data when player leaves planet.
      *
      * @param player player to clear data.

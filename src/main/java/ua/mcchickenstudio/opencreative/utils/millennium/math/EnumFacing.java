@@ -21,6 +21,7 @@ package ua.mcchickenstudio.opencreative.utils.millennium.math;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Maps;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -230,7 +231,7 @@ public enum EnumFacing {
             return facing != null && facing.getAxis().getPlane() == this;
         }
 
-        public Iterator iterator() {
+        public @NotNull Iterator iterator() {
             return Iterators.forArray(this.facings());
         }
 

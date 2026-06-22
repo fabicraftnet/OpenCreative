@@ -73,6 +73,9 @@ public final class ErrorUtils {
         newText = newText.replace("io.papermc.", "");
         newText = newText.replace("com.destroystokyo.", "");
         newText = newText.replace("java.lang.", "java.");
+        newText = newText.replace("java.util.", "java.");
+        newText = newText.replace("net.minecraft.server.", "minecraft.");
+        newText = newText.replace("net.minecraft.util.", "minecraft.");
         newText = newText.replace("blocks.", "");
         return newText;
     }
@@ -85,7 +88,7 @@ public final class ErrorUtils {
      * @param colored true - for player, false - for console.
      * @return user-friendly exception.
      */
-    public static @NotNull String parseException(@NotNull Exception error, boolean colored) {
+    public static @NotNull String parseException(@NotNull Throwable error, boolean colored) {
         Set<String> lastStacks = new HashSet<>();
         byte i = 0;
         for (StackTraceElement stackTraceElement : error.getStackTrace()) {
@@ -220,7 +223,7 @@ public final class ErrorUtils {
 
     /**
      * Notifies planet players about reaching limit,
-     * so some operations will be cancelled.
+     * so some operations will be canceled.
      *
      * @param action   action, that produced warning.
      * @param limitID limit name.
@@ -231,7 +234,6 @@ public final class ErrorUtils {
                                                      @NotNull String limitID,
                                                      int count, int limit) {
         Planet planet = action.getExecutor().getPlanet();
-        if (planet == null) return;
         if (cantSendOnceMessage(planet, 5)) return;
         for (Player player : planet.getPlayers()) {
             Component text = getPlayerLocaleComponent("coding-warning.message", player);
@@ -297,7 +299,6 @@ public final class ErrorUtils {
     public static void sendPlanetCodeWarningMessage(@NotNull Executor executor, @NotNull Action action,
                                                     @NotNull String warningID, @NotNull PlaceholderReplacer placeholder) {
         Planet planet = executor.getPlanet();
-        if (planet == null) return;
         String command = "/dev " + action.getX() + " " + executor.getY() + " " + executor.getZ();
         sendMessageOnce(planet, "coding-warning." + warningID + ".text", placeholder,
                 command, "coding-warning." + warningID + "hover", 5);
@@ -553,7 +554,7 @@ public final class ErrorUtils {
      * @param errorMessage description of critical error.
      * @param error        exception, that has occurred.
      */
-    public static void sendCriticalErrorMessage(String errorMessage, Exception error) {
+    public static void sendCriticalErrorMessage(String errorMessage, Throwable error) {
         if (OpenCreative.getSettings().shouldLogCriticalErrors()) {
             OpenCreative.getPlugin().getLogger().severe(":( Oops! An error has occurred: " + errorMessage + " " + parseException(error, false));
         }

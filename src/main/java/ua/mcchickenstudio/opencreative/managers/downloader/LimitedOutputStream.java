@@ -18,6 +18,8 @@
 
 package ua.mcchickenstudio.opencreative.managers.downloader;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -46,7 +48,7 @@ public final class LimitedOutputStream extends FilterOutputStream {
     }
 
     @Override
-    public void write(byte[] b, int off, int len) throws IOException {
+    public void write(byte @NotNull[] b, int off, int len) throws IOException {
         checkLimit(len);
         out.write(b, off, len);
         written += len;

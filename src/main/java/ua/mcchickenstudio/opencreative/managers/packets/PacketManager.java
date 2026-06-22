@@ -18,12 +18,9 @@
 
 package ua.mcchickenstudio.opencreative.managers.packets;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.managers.Manager;
 import ua.mcchickenstudio.opencreative.managers.Toggleable;

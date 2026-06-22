@@ -24,7 +24,7 @@ plugins {
     id "java"
     id "com.gradleup.shadow" version "9.0.0"
     id "maven-publish"
-    id "io.papermc.paperweight.userdev" version "2.0.0-beta.21"
+    id "io.papermc.paperweight.userdev" version "2.0.0-beta.21" // If you don't want to use paperweight, remove this line.
 }
 
 java {
@@ -52,6 +52,7 @@ repositories {
     maven { url "https://repo.codemc.io/repository/creatorfromhell/" }
     maven { url "https://repo.codemc.io/repository/maven-releases/" }
     maven { url "https://repo.codemc.io/repository/maven-snapshots/" }
+    maven { url = 'https://repo.infernalsuite.com/repository/maven-snapshots/' }
     maven {
         name = "gitlab-maven"
         url = "https://gitlab.com/api/v4/projects/58168569/packages/maven"
@@ -62,6 +63,7 @@ repositories {
 dependencies {
     // The main part of plugin: Paper 1.21.1!
     paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
+    // If you don't need paperweight, replace it with that -> compileOnly 'io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT'
 
     // Swing window when user opens .jar file
     implementation "org.openjfx:javafx-swing:22"
@@ -91,7 +93,10 @@ dependencies {
     compileOnly "com.github.MilkBowl:VaultAPI:1.7.1"
 
     // Addon: LibsDisguises - mob disguises
-    compileOnly "me.libraryaddict.disguises:libsdisguises:11.0.0"
+    compileOnly "me.libraryaddict.disguises:libsdisguises:11.0.18"
+
+    // Addon: AdvancedSlimePaper - async world loading and unloading
+    compileOnly 'com.infernalsuite.asp:api:4.0.0-SNAPSHOT'
 }
 
 compileJava.options.encoding = "UTF-8"

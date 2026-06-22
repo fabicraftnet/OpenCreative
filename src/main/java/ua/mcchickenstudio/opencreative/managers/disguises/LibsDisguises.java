@@ -21,23 +21,39 @@ package ua.mcchickenstudio.opencreative.managers.disguises;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.DisguiseConfig;
 import me.libraryaddict.disguise.disguisetypes.*;
+import me.libraryaddict.disguise.disguisetypes.watchers.MannequinWatcher;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.utils.hooks.HookUtils;
+import java.util.Optional;
 
 public final class LibsDisguises implements DisguiseManager {
+
+    private Boolean mannequinExists;
 
     @Override
     public void disguiseAsPlayer(@NotNull Entity entity, @NotNull String skin, @NotNull String nickname) {
         try {
-            PlayerDisguise disguise = PlayerDisguise.class
-                    .getDeclaredConstructor(String.class, String.class)
-                    .newInstance(nickname, skin);
-            disguise.setEntity(entity);
-            disguise.setNotifyBar(DisguiseConfig.NotifyBar.NONE);
-            disguise.startDisguise();
+            if (checkMannequinsSupport()) {
+                // above 1.21.10
+                MobDisguise disguise = new MobDisguise(DisguiseType.MANNEQUIN);
+                ((MannequinWatcher)disguise.getWatcher()).setSkin(skin);
+                ((MannequinWatcher)disguise.getWatcher()).setDescription(Optional.empty());
+                disguise.getWatcher().setCustomName(nickname);
+                disguise.setEntity(entity);
+                disguise.setNotifyBar(DisguiseConfig.NotifyBar.NONE);
+                disguise.startDisguise();
+            } else {
+                // below 1.21.10
+                PlayerDisguise disguise = PlayerDisguise.class
+                        .getDeclaredConstructor(String.class, String.class)
+                        .newInstance(nickname, skin);
+                disguise.setEntity(entity);
+                disguise.setNotifyBar(DisguiseConfig.NotifyBar.NONE);
+                disguise.startDisguise();
+            }
         } catch (Exception ignored) {}
     }
 
@@ -71,6 +87,23 @@ public final class LibsDisguises implements DisguiseManager {
         Disguise disguise = DisguiseAPI.getDisguise(entity);
         if (disguise == null) return;
         disguise.stopDisguise();
+    }
+
+    /**
+     * Checks whether mannequins are supported on this server version.
+     *
+     * @return true - supported, false - not.
+     */
+    private boolean checkMannequinsSupport() {
+        if (mannequinExists == null) {
+            try {
+                Class.forName("org.bukkit.entity.Mannequin");
+                mannequinExists = true;
+            } catch (Exception ignored) {
+                mannequinExists = false;
+            }
+        }
+        return mannequinExists;
     }
 
     @Override

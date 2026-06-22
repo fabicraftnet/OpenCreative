@@ -16,14 +16,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ua.mcchickenstudio.opencreative.coding.blocks.actions.entityactions.state;
+package ua.mcchickenstudio.opencreative.coding.blocks.actions.entityactions.other;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.ItemDisplay;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.entity.Villager;
+import org.bukkit.inventory.Merchant;
+import org.bukkit.inventory.MerchantRecipe;
+import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
@@ -32,25 +31,36 @@ import ua.mcchickenstudio.opencreative.coding.blocks.actions.entityactions.Entit
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
 import ua.mcchickenstudio.opencreative.coding.exceptions.UnsupportedEntityException;
 
-public final class EntitySetDisplayItemAction extends EntityAction {
-    public EntitySetDisplayItemAction(Executor executor, Target target, int x, Arguments args) {
+import java.util.ArrayList;
+import java.util.List;
+
+public final class SetVillagerRecipesAction extends EntityAction {
+    public SetVillagerRecipesAction(Executor executor, Target target, int x, Arguments args) {
         super(executor, target, x, args);
     }
 
     @Override
     public void executeEntity(@NotNull Entity entity) {
-        ItemStack item = getArguments().getItem("item", new ItemStack(Material.AIR), this);
-        if (entity instanceof ItemDisplay display) {
-            display.setItemStack(item);
-        } else if (entity instanceof BlockDisplay display) {
-            display.setBlock(Bukkit.createBlockData(item.getType()));
-        } else {
-            throw new UnsupportedEntityException(ItemDisplay.class, entity);
+        if (!(entity instanceof Merchant villager)) {
+            throw new UnsupportedEntityException(Villager.class, entity);
         }
+        List<String> recipes = getArguments().getTextList("recipes", this);
+        List<MerchantRecipe> merchantRecipes = new ArrayList<>();
+        for (String key : recipes) {
+            if (merchantRecipes.size() > 12) {
+                break;
+            }
+            Recipe recipe = getPlanet().getTerritory().getRecipes().getRecipe(key);
+            if (recipe == null) continue;
+            if (recipe instanceof MerchantRecipe merchant) {
+                merchantRecipes.add(merchant);
+            }
+        }
+        villager.setRecipes(merchantRecipes);
     }
 
     @Override
     public @NotNull ActionType getActionType() {
-        return ActionType.ENTITY_SET_DISPLAY_ITEM;
+        return ActionType.ENTITY_SET_VILLAGER_RECIPES;
     }
 }

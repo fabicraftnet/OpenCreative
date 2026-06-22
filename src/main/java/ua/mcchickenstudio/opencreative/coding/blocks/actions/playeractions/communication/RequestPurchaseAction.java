@@ -50,7 +50,7 @@ public final class RequestPurchaseAction extends PlayerAction {
              * too many menus, that can prevent from
              * quiting the game.
              */
-            throw new TooManyOpenedMenusException(player.getName());
+            throw new TooManyOpenedMenusException(player);
         }
         String id = getArguments().getText("id", "example", this);
         String name = getArguments().getText("name", "Example", this);

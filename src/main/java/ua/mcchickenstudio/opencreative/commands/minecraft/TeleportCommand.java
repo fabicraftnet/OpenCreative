@@ -187,7 +187,7 @@ public class TeleportCommand extends CommandHandler {
                     yaw = parseCoordinate(args[3], location.getYaw());
                 }
                 if (args.length >= 5) {
-                    pitch = parseCoordinate(args[3], location.getPitch());
+                    pitch = parseCoordinate(args[4], location.getPitch());
                 }
                 Location newLocation = new Location(location.getWorld(), x, y, z, yaw, pitch);
                 if (!isOutOfBorders(newLocation)) {

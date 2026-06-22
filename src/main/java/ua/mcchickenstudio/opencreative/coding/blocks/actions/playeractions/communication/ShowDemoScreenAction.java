@@ -40,7 +40,7 @@ public final class ShowDemoScreenAction extends PlayerAction {
              * too many menus, that can prevent from
              * quiting the game.
              */
-            throw new TooManyOpenedMenusException(player.getName());
+            throw new TooManyOpenedMenusException(player);
         }
         player.showDemoScreen();
     }
