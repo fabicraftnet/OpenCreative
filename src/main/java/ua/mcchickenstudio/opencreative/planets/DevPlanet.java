@@ -91,6 +91,7 @@ public class DevPlanet {
     private boolean saveLocation = true;
     private boolean nightVision = true;
     private boolean currentlySavingCode = false;
+    private UUID worldID;
 
     /**
      * Constructor of developer planet, that
@@ -272,6 +273,7 @@ public class DevPlanet {
                 OpenCreative.getWorldManager().unloadWorld(world, false, planet).whenComplete((result, error) -> {
                     OpenCreative.getPlugin().getLogger().info("Dev planet world " + planet.getId()
                             + " unloaded in " + (System.currentTimeMillis() - startTime) + " ms");
+                    worldID = null;
                     future.complete(null);
                 });
             }, 40);
@@ -279,6 +281,7 @@ public class DevPlanet {
             OpenCreative.getWorldManager().unloadWorld(world, true, planet).whenComplete((result, error) -> {
                 OpenCreative.getPlugin().getLogger().info("Dev planet world " + planet.getId()
                         + " unloaded in " + (System.currentTimeMillis() - startTime) + " ms");
+                worldID = null;
                 future.complete(null);
             });
         }
@@ -486,8 +489,31 @@ public class DevPlanet {
         }
     }
 
+    /**
+     * Returns unique ID of loaded developer world.
+     *
+     * @return uuid of world, null - if not loaded.
+     */
+    public @Nullable UUID getWorldUUID() {
+        return worldID;
+    }
+
+    /**
+     * Sets a unique ID of loaded developer world.
+     *
+     * @param uuid uuid of world, null - if not loaded.
+     */
+    public void setWorld(@Nullable UUID uuid) {
+        worldID = uuid;
+    }
+
+    /**
+     * Checks whether developer world is loaded.
+     *
+     * @return true - is loaded, false - unloaded.
+     */
     public boolean isLoaded() {
-        return Bukkit.getWorld(getWorldName()) != null;
+        return getWorld() != null;
     }
 
     public @Nullable Layout getOpenedMenu(@NotNull Location location) {
@@ -793,6 +819,7 @@ public class DevPlanet {
                         Sounds.PLAYER_ERROR.play(player);
                         return;
                     }
+                    worldID = loadedWorld.getUID();
                     if (player.isOnline() && previousWorld.equals(player.getWorld())) {
                         handlePlayerConnection(player, loadedWorld, hidePlayer, wander);
                     } else if (planet.getPlayers().isEmpty()) {
@@ -927,7 +954,7 @@ public class DevPlanet {
     }
 
     public World getWorld() {
-        return Bukkit.getWorld(getWorldName());
+        return Bukkit.getWorld(worldID);
     }
 
     public @NotNull Planet getPlanet() {

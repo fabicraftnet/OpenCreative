@@ -40,8 +40,12 @@ public final class WorldListener implements Listener {
             return;
         }
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(event.getWorld());
-        if (planet == null || isDevPlanet(event.getWorld())) return;
-        planet.getTerritory().setWorld(event.getWorld().getUID());
+        if (planet == null) return;
+        if (isDevPlanet(event.getWorld())) {
+            planet.getDevPlanet().setWorld(event.getWorld().getUID());
+        } else {
+            planet.getTerritory().setWorld(event.getWorld().getUID());
+        }
     }
 
     @EventHandler
@@ -50,8 +54,12 @@ public final class WorldListener implements Listener {
             return;
         }
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(event.getWorld());
-        if (planet == null || isDevPlanet(event.getWorld())) return;
-        planet.getTerritory().setWorld(event.getWorld().getUID());
+        if (planet == null) return;
+        if (isDevPlanet(event.getWorld())) {
+            planet.getDevPlanet().setWorld(event.getWorld().getUID());
+        } else {
+            planet.getTerritory().setWorld(event.getWorld().getUID());
+        }
     }
 
 }

@@ -123,7 +123,7 @@ public class Planet {
      *
      * @return planet's info.
      */
-    public PlanetInfo getInformation() {
+    public @NotNull PlanetInfo getInformation() {
         return info;
     }
 
@@ -133,7 +133,7 @@ public class Planet {
      *
      * @return planet's registry of players.
      */
-    public PlanetPlayers getWorldPlayers() {
+    public @NotNull PlanetPlayers getWorldPlayers() {
         return worldPlayers;
     }
 
@@ -142,7 +142,7 @@ public class Planet {
      *
      * @return planet's config.
      */
-    public PlanetConfig getConfiguration() {
+    public @NotNull PlanetConfig getConfiguration() {
         return config;
     }
 
@@ -169,7 +169,7 @@ public class Planet {
      *
      * @return planet's variables.
      */
-    public WorldVariables getVariables() {
+    public @NotNull WorldVariables getVariables() {
         return variables;
     }
 
@@ -188,7 +188,7 @@ public class Planet {
      *
      * @return planet's limits.
      */
-    public PlanetLimits getLimits() {
+    public @NotNull PlanetLimits getLimits() {
         return limits;
     }
 
@@ -197,7 +197,7 @@ public class Planet {
      *
      * @return planet's experiments.
      */
-    public PlanetExperiments getExperiments() {
+    public @NotNull PlanetExperiments getExperiments() {
         return experiments;
     }
 
@@ -246,7 +246,7 @@ public class Planet {
      *
      * @return world's name on server.
      */
-    public String getWorldName() {
+    public @NotNull String getWorldName() {
         return "./planets/planet" + id;
     }
 
@@ -265,7 +265,7 @@ public class Planet {
      *
      * @return developer's planet.
      */
-    public DevPlanet getDevPlanet() {
+    public @NotNull DevPlanet getDevPlanet() {
         return devPlanet;
     }
 
@@ -293,8 +293,8 @@ public class Planet {
      * @param player player to check.
      * @return true - is owner, false - not owner.
      */
-    public boolean isOwner(Player player) {
-        return getOwner().equalsIgnoreCase(player.getName());
+    public boolean isOwner(@NotNull Player player) {
+        return owner.equalsIgnoreCase(player.getName());
     }
 
     /**
@@ -305,8 +305,8 @@ public class Planet {
      * @param nickname name to check.
      * @return true - is owner, false - not owner.
      */
-    public boolean isOwner(String nickname) {
-        return getOwner().equalsIgnoreCase(nickname);
+    public boolean isOwner(@NotNull String nickname) {
+        return owner.equalsIgnoreCase(nickname);
     }
 
     /**
@@ -346,7 +346,7 @@ public class Planet {
      *
      * @return playing or build mode.
      */
-    public Mode getMode() {
+    public @NotNull Mode getMode() {
         return mode;
     }
 
@@ -378,7 +378,7 @@ public class Planet {
      * If value is unknown (0), will return {@code 1670573410000L}
      * (publication of OpenCreative+).
      *
-     * @return unix time, when world was created.
+     * @return Unix time, when world was created.
      */
     public long getCreationTime() {
         if (creationTime == 0) {
@@ -388,7 +388,7 @@ public class Planet {
     }
 
     /**
-     * Sets creation unix time of world.
+     * Sets creation Unix time of world.
      *
      * @param creationTime time, when world was created.
      */
@@ -404,7 +404,7 @@ public class Planet {
      * If value is unknown (0), will return {@code 1670573410000L}
      * (publication of OpenCreative+).
      *
-     * @return unix last time, when someone joined the world.
+     * @return Unix last time, when someone joined the world.
      */
     public long getLastActivityTime() {
         if (lastActivityTime == 0) {
@@ -414,7 +414,7 @@ public class Planet {
     }
 
     /**
-     * Sets last activity unix time in world.
+     * Sets last activity Unix time in world.
      *
      * @param activityTime last activity time.
      */
