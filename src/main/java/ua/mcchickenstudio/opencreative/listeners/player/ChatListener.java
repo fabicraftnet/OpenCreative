@@ -217,6 +217,8 @@ public final class ChatListener implements Listener {
                         ChatEvent chatEvent = new ChatEvent(event.getPlayer(), message);
                         chatEvent.callEvent();
                         if (chatEvent.isCancelled()) {
+                            sendLocalChatForSpying(player, message, planet);
+                            OpenCreative.getPlugin().getLogger().info("[WORLD-CHAT: " + planet.getId() + "] " + player.getName() + ": " + message);
                             return;
                         }
                         if (!hadConfirmation && planet.getPlayers().size() == 1 && !chatEvent.isHandledByCode() && OpenCreative.getSettings().shouldNotifyAboutNoPlayersAround()) {

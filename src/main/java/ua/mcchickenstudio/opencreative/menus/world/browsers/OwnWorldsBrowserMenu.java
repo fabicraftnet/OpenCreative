@@ -59,7 +59,8 @@ public final class OwnWorldsBrowserMenu extends ListBrowserMenu<Planet> {
         super(player, getLocaleMessage("menus.own-worlds.title", false), PlacementLayout.BOTTOM_NO_DECORATION,
                 new int[]{45, 49}, new int[]{45, 46, 47, 51, 52, 53});
         this.planets = new ArrayList<>(OpenCreative.getPlanetsManager().getPlanetsByOwner(player));
-        Comparator<Planet> sortByOnline = (planet1, planet2) -> Integer.compare(planet2.getOnline(), planet1.getOnline());
+        Comparator<Planet> sortByOnline = (planet1, planet2) -> Integer.compare(planet2.getInformation().getAsyncOnline(),
+                planet1.getInformation().getAsyncOnline());
         this.planets.sort(sortByOnline);
         CREATE_WORLD.setAmount(Math.min(64, getAvailableAmount()));
     }

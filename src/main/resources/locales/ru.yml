@@ -8792,6 +8792,35 @@ items:
           - "&a Число &7- Длительность"
           - " "
           - "&eНажмите, чтобы установить действие."
+      entity-set-display-teleport-delay:
+        name: "&3Время телепорта визуализатора"
+        lore:
+          - "&7Изменяет длительность телепорта"
+          - "&7визуализатора. Чем больше, тем"
+          - "&7плавнее будет телепорт."
+          - ""
+          - "&fВ сундуке:"
+          - "&a Число &7- Длительность"
+          - "&3 Параметр &7- Прибавить"
+          - "&7 или задать"
+          - " "
+          - "&eНажмите, чтобы установить действие."
+        arguments:
+          add:
+            name: "&fУстановить или прибавить"
+            lore:
+              - "&7Если будет выбрано прибавить, то"
+              - "&7к текущей длительности визуализатора"
+              - "&7будет прибавлено ваше."
+              - ""
+              - "&eНажми, чтобы изменить."
+              - ""
+              - "&fВарианты:"
+              - "%1%"
+              - "%2%"
+            choices:
+              false: "Установить"
+              true: "Прибавить"
       entity-set-display-text:
         name: "&6Указать текст визуализатору"
         lore:
@@ -19905,6 +19934,7 @@ blocks:
   entity_set_sheep_color: "Цвет овцы"
   entity_set_dog_collar_color: "Цвет ошейника"
   entity_set_display_text: "Текст визуал."
+  entity_set_display_teleport_duration: "Время визуал."
   entity_set_display_scale: "Масштаб визуал."
   entity_set_display_translation: "Смещение визуал."
   entity_set_item: "Предмет визуал."
@@ -19917,6 +19947,7 @@ blocks:
   entity_set_display_interpolation: "Интерполяция визуал."
   entity_set_friction: "Скольжение"
   entity_set_visual_fire: "Виз. огонь"
+  entity_set_villager_recipes: "Товары жителю"
   entity_set_parrot_color: "Цвет попугая"
   entity_set_fox_sleeping: "Сон лисы"
   entity_set_fox_leaping: "Прыжок лисы"

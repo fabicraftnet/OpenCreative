@@ -56,7 +56,7 @@ public class WorldsBrowserMenu extends ListBrowserMenu<Planet> {
         super(player, getLocaleMessage("menus.all-worlds.title", false), PlacementLayout.BOTTOM_NO_DECORATION,
                 new int[]{45, 48, 50}, new int[]{45, 46, 52, 53});
         this.planets = new ArrayList<>(planets);
-        Comparator<Planet> sortByOnline = (planet1, planet2) -> Integer.compare(planet2.getOnline(), planet1.getOnline());
+        Comparator<Planet> sortByOnline = (planet1, planet2) -> Integer.compare(planet2.getInformation().getAsyncOnline(), planet1.getInformation().getAsyncOnline());
         this.planets.sort(sortByOnline);
         RECOMMENDED = createItem(Material.WIND_CHARGE, 1, "menus.all-worlds.items.recommended");
     }
@@ -65,7 +65,7 @@ public class WorldsBrowserMenu extends ListBrowserMenu<Planet> {
         super(player, getLocaleMessage("menus.all-worlds.title", false), PlacementLayout.BOTTOM_NO_DECORATION,
                 new int[]{45, 48, 50}, new int[]{45, 46, 52, 53});
         this.planets = new ArrayList<>(planets);
-        Comparator<Planet> sortByOnline = (planet1, planet2) -> Integer.compare(planet2.getOnline(), planet1.getOnline());
+        Comparator<Planet> sortByOnline = (planet1, planet2) -> Integer.compare(planet2.getInformation().getAsyncOnline(), planet1.getInformation().getAsyncOnline());
         this.planets.sort(sortByOnline);
         RECOMMENDED = withRecommendedButton ? createItem(Material.WIND_CHARGE, 1, "menus.all-worlds.items.recommended") : DECORATION_ITEM;
     }

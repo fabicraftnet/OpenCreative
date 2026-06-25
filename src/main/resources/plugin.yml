@@ -7,7 +7,7 @@ name: 'OpenCreative'
 main: ua.mcchickenstudio.opencreative.OpenCreative
 api-version: 1.21
 
-version: '6.0.0 Preview'
+version: '6.0.0 Pre-release 1'
 description: 'Let players create the worlds'
 build: ${build_timestamp}
 
