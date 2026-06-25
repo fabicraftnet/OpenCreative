@@ -20,6 +20,7 @@ package ua.mcchickenstudio.opencreative.utils;
 
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -42,6 +43,7 @@ import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.variables.ValueType;
+import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
 import ua.mcchickenstudio.opencreative.settings.items.ItemFixerSettings;
 
 import java.io.ByteArrayInputStream;
@@ -264,6 +266,31 @@ public final class ItemUtils {
             return (!itemStack.getItemMeta().hasLore() || !itemStack2.getItemMeta().hasLore()) || (itemStack.getItemMeta().getLore().equals(itemStack2.getItemMeta().getLore()));
         }
         return true;
+    }
+
+    public static @NotNull ItemStack replacePlaceholdersInItem(@NotNull ItemStack item,
+                                                               @NotNull PlaceholderReplacer placeholder) {
+        if (!item.hasItemMeta()) return item;
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return item;
+        if (!meta.hasDisplayName() && !meta.hasLore()) return item;
+        TextReplacementConfig replacer = placeholder.get();
+        if (meta.hasDisplayName()) {
+            Component displayName = meta.displayName();
+            if (displayName == null) displayName = Component.empty();
+            meta.displayName(displayName.replaceText(replacer));
+        }
+        if (meta.hasLore()) {
+            List<Component> newLore = new ArrayList<>();
+            List<Component> oldLore = meta.lore();
+            if (oldLore == null) oldLore = List.of();
+            for (Component loreLine : oldLore) {
+                newLore.add(loreLine.replaceText(replacer));
+            }
+            meta.lore(newLore);
+        }
+        item.setItemMeta(meta);
+        return item;
     }
 
     public static @NotNull ItemStack replacePlaceholderInName(@NotNull ItemStack item,

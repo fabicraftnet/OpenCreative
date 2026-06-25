@@ -25,6 +25,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.menus.MenusCategory;
+import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
 import ua.mcchickenstudio.opencreative.menus.ListBrowserMenu;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
@@ -102,12 +103,14 @@ public abstract class ContentWithMenusCategoryMenu<T> extends ListBrowserMenu<T>
 
     @Override
     protected ItemStack getNextPageButton() {
-        return replacePlaceholderInName(createItem(Material.SPECTRAL_ARROW, 1, "items.developer.categories." + mainCategory + ".next-page"), "%page%", getCurrentPage() + 1);
+        return replacePlaceholdersInItem(createItem(Material.SPECTRAL_ARROW, 1, "items.developer.categories." + mainCategory + ".next-page"),
+                new PlaceholderReplacer("page", getCurrentPage() + 1));
     }
 
     @Override
     protected ItemStack getPreviousPageButton() {
-        return replacePlaceholderInName(createItem(Material.ARROW, 1, "items.developer.categories." + mainCategory + ".previous-page"), "%page%", getCurrentPage() - 1);
+        return replacePlaceholdersInItem(createItem(Material.ARROW, 1, "items.developer.categories." + mainCategory + ".previous-page"),
+                new PlaceholderReplacer("page", getCurrentPage() - 1));
     }
 
     @Override

@@ -25,6 +25,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.OpenCreative;
+import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
 import ua.mcchickenstudio.opencreative.menus.AbstractMenu;
 import ua.mcchickenstudio.opencreative.menus.buttons.ParameterButton;
 import ua.mcchickenstudio.opencreative.menus.world.WorldMenu;
@@ -84,18 +85,19 @@ public final class WorldEnvironmentMenu extends AbstractMenu implements WorldMen
 
     private ItemStack createInfoItem() {
         ItemStack info = createItem(Material.AMETHYST_CLUSTER, 1, "menus.developer.environment.items.info");
-        replacePlaceholderInLore(info, "%executors%", devPlanet.getPlanet().getTerritory().getScript().getExecutors().getExecutorsList().size());
-        replacePlaceholderInLore(info, "%scoreboards%", devPlanet.getPlanet().getTerritory().getScoreboards().getAmount());
-        replacePlaceholderInLore(info, "%scoreboards-limit%", devPlanet.getPlanet().getLimits().getScoreboardsLimit());
-        replacePlaceholderInLore(info, "%bossbars%", devPlanet.getPlanet().getTerritory().getBossBars().size());
-        replacePlaceholderInLore(info, "%bossbars-limit%", devPlanet.getPlanet().getLimits().getBossBarsLimit());
-        replacePlaceholderInLore(info, "%recipes%", devPlanet.getPlanet().getTerritory().getRecipes().getAmount());
-        replacePlaceholderInLore(info, "%recipes-limit%", devPlanet.getPlanet().getLimits().getRecipesLimit());
-        replacePlaceholderInLore(info, "%variables%", devPlanet.getPlanet().getVariables().getTotalVariablesAmount());
-        replacePlaceholderInLore(info, "%variables-limit%", devPlanet.getPlanet().getLimits().getVariablesAmountLimit());
-        replacePlaceholderInLore(info, "%executor-calls-limit%", devPlanet.getPlanet().getLimits().getCodeOperationsLimit());
-        replacePlaceholderInLore(info, "%planetID%", devPlanet.getPlanet().getId());
-        replacePlaceholderInLore(info, "%version%", OpenCreative.getVersion());
+        replacePlaceholdersInItem(info, new PlaceholderReplacer(
+                "executors", devPlanet.getPlanet().getTerritory().getScript().getExecutors().getExecutorsList().size(),
+                "scoreboards", devPlanet.getPlanet().getTerritory().getScoreboards().getAmount(),
+                "scoreboards-limit", devPlanet.getPlanet().getLimits().getScoreboardsLimit(),
+                "bossbars", devPlanet.getPlanet().getTerritory().getBossBars().size(),
+                "bossbars-limit", devPlanet.getPlanet().getLimits().getBossBarsLimit(),
+                "recipes", devPlanet.getPlanet().getTerritory().getRecipes().getAmount(),
+                "recipes-limit", devPlanet.getPlanet().getLimits().getRecipesLimit(),
+                "variables", devPlanet.getPlanet().getVariables().getTotalVariablesAmount(),
+                "variables-limit", devPlanet.getPlanet().getLimits().getVariablesAmountLimit(),
+                "executor-calls-limit", devPlanet.getPlanet().getLimits().getCodeOperationsLimit(),
+                "planetID", devPlanet.getPlanet().getId(),
+                "version", OpenCreative.getVersion()));
         return info;
     }
 
@@ -105,8 +107,7 @@ public final class WorldEnvironmentMenu extends AbstractMenu implements WorldMen
             int limit = devPlanet.getPlanet().getLimits().getCodingPlatformsLimit();
             ItemStack item = createItem(Material.NETHER_STAR, 1, "menus.developer.environment.items." +
                     (amount >= limit ? "create-platform-limit" : "create-platform"), (amount >= limit ? "" : "platform"));
-            replacePlaceholderInLore(item, "%limit%", limit);
-            replacePlaceholderInLore(item, "%amount%", amount);
+            replacePlaceholdersInItem(item, new PlaceholderReplacer("limit", limit, "amount", amount));
             return item;
         } else {
             return DECORATION_ITEM;

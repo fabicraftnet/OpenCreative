@@ -28,6 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.OpenCreative;
+import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
 import ua.mcchickenstudio.opencreative.menus.ListBrowserMenu;
 import ua.mcchickenstudio.opencreative.menus.world.WorldAccessMenu;
 import ua.mcchickenstudio.opencreative.menus.world.WorldGenerationMenu;
@@ -106,8 +107,7 @@ public final class OwnWorldsBrowserMenu extends ListBrowserMenu<Planet> {
         }
         if (amount >= limit) {
             setItem(createItem(Material.RED_STAINED_GLASS_PANE, 1), 47, 51);
-            replacePlaceholderInLore(WORLDS_LIMIT, "%limit%", limit);
-            replacePlaceholderInLore(WORLDS_LIMIT, "%planets%", amount);
+            replacePlaceholdersInItem(WORLDS_LIMIT, new PlaceholderReplacer("limit", limit, "planets", amount));
             setItem(49, WORLDS_LIMIT);
         } else {
             setItem(createItem(Material.LIME_STAINED_GLASS_PANE, 1), 47, 51);
@@ -186,12 +186,14 @@ public final class OwnWorldsBrowserMenu extends ListBrowserMenu<Planet> {
 
     @Override
     protected ItemStack getNextPageButton() {
-        return replacePlaceholderInLore(createItem(Material.SPECTRAL_ARROW, getCurrentPage() + 1, "menus.own-worlds.items.next-page"), "%page%", getCurrentPage() + 1);
+        return replacePlaceholdersInItem(createItem(Material.SPECTRAL_ARROW, getCurrentPage() + 1, "menus.own-worlds.items.next-page"),
+                new PlaceholderReplacer("page", getCurrentPage() + 1));
     }
 
     @Override
     protected ItemStack getPreviousPageButton() {
-        return replacePlaceholderInLore(createItem(Material.ARROW, Math.max(1, getCurrentPage() - 1), "menus.own-worlds.items.previous-page"), "%page%", getCurrentPage() - 1);
+        return replacePlaceholdersInItem(createItem(Material.ARROW, Math.max(1, getCurrentPage() - 1), "menus.own-worlds.items.previous-page"),
+                new PlaceholderReplacer("page", getCurrentPage() - 1));
     }
 
     @Override
