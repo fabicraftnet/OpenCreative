@@ -105,6 +105,20 @@ commands:
     help: "%prefix%Щоб знайти світ, у якому грає гравець, напишіть у чат: &6/locate Нікнейм"
     found: "%prefix%&fГравець &6%player%&f зараз грає у світі: \n&f %planetName%\n &f\n&a &a &n[Натисни, щоб приєднатися]&f\n &f"
     offline: "%prefix%&cГравець зараз не грає у світах."
+filters:
+  hover-text: "&fПравило: &7%rule%\n&fТекст: &6%match%"
+  sign-violation:
+    player: "%prefix%&cПопередження: Ваш текст на табличці порушив одне з правил сервера."
+    staff: "%prefix%&7Відфільтровано текст таблички від %player%. &3[?]"
+  chat-violation:
+    player: "%prefix%&cПопередження: Ваше повідомлення в чаті порушило одне з правил сервера."
+    staff: "%prefix%&7Відфільтровано повідомлення в чаті від %player%. &3[?]"
+  book-violation:
+    player: "%prefix%&cПопередження: Ваш текст у книзі порушив одне з правил сервера."
+    staff: "%prefix%&7Відфільтровано текст книги від %player%. &3[?]"
+  anvil-violation:
+    player: "%prefix%&cПопередження: Нова назва предмета порушила одне з правил сервера."
+    staff: "%prefix%&7Відфільтровано нову назву предмета від %player%. &3[?]"
 modules:
   help: "%prefix%Модулі це готові рядки блоків кодингу від гравців, які додають різні функції у світ. Їх встановлюють у світі для розробників. Для перегляду використовуйте &6/module&f.\n&6 /module load ID &f- Завантажити модуль за ID"
   not-found: "%prefix%&cМодуль з ID %id% не знайдено.. O_o"
@@ -8726,6 +8740,35 @@ items:
               magenta: "Пурпурний"
               pink: "Рожевий"
               brown: "Коричневий"
+      entity-set-display-teleport-delay:
+        name: "&3Час телепортації візуалізатора"
+        lore:
+          - "&7Змінює тривалість телепортації"
+          - "&7візуалізатора. Чим більше значення,"
+          - "&7тим плавнішою буде телепортація."
+          - ""
+          - "&fУ скрині:"
+          - "&a Число &7- Тривалість"
+          - "&3 Параметр &7- Додати"
+          - "&7 або встановити"
+          - " "
+          - "&eНатисніть, щоб встановити дію."
+        arguments:
+          add:
+            name: "&fВстановити чи додати"
+            lore:
+              - "&7Якщо буде обрано додати, то"
+              - "&7до поточних значення візуалізатора"
+              - "&7буде додано ваше."
+              - ""
+              - "&eНатисніть, щоб змінити."
+              - ""
+              - "&fВаріанти:"
+              - "%1%"
+              - "%2%"
+            choices:
+              false: "Встановити"
+              true: "Додати"
       entity-set-display-text:
         name: "&6Вказати текст візуалізатору"
         lore:
@@ -19694,6 +19737,7 @@ blocks:
   entity_set_sheep_color: "Колір вівці"
   entity_set_dog_collar_color: "Колір нашийника"
   entity_set_display_text: "Текст візуал."
+  entity_set_display_teleport_duration: "Час візуал."
   entity_set_display_scale: "Масштаб візуал."
   entity_set_display_translation: "Зміщення візуал."
   entity_set_item: "Предмет візуал."
@@ -19706,6 +19750,7 @@ blocks:
   entity_set_display_brightness: "Яскравість візуал."
   entity_set_friction: "Вст. тертя"
   entity_set_visual_fire: "Візуал. вогонь"
+  entity_set_villager_recipes: "Товари селянину"
   entity_set_parrot_color: "Колір папуги"
   entity_set_fox_sleeping: "Сон лисиці"
   entity_set_fox_leaping: "Стрибок лисиці"

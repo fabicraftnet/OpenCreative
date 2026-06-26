@@ -28,6 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.OpenCreative;
+import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
 import ua.mcchickenstudio.opencreative.menus.ListBrowserMenu;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
 import ua.mcchickenstudio.opencreative.utils.MessageUtils;
@@ -142,12 +143,14 @@ public final class OwnModulesBrowserMenu extends ListBrowserMenu<Module> {
 
     @Override
     protected ItemStack getNextPageButton() {
-        return replacePlaceholderInLore(createItem(Material.SPECTRAL_ARROW, getCurrentPage() + 1, "menus.own-modules.items.next-page"), "%page%", getCurrentPage() + 1);
+        return replacePlaceholdersInItem(createItem(Material.SPECTRAL_ARROW, getCurrentPage() + 1, "menus.own-modules.items.next-page"),
+                new PlaceholderReplacer("page", getCurrentPage() + 1));
     }
 
     @Override
     protected ItemStack getPreviousPageButton() {
-        return replacePlaceholderInLore(createItem(Material.ARROW, Math.max(1, getCurrentPage() - 1), "menus.own-modules.items.previous-page"), "%page%", getCurrentPage() - 1);
+        return replacePlaceholdersInItem(createItem(Material.ARROW, Math.max(1, getCurrentPage() - 1), "menus.own-modules.items.previous-page"),
+                new PlaceholderReplacer("page", getCurrentPage() - 1));
     }
 
     @Override

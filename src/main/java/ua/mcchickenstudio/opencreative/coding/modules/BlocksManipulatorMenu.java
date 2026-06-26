@@ -30,6 +30,7 @@ import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.CodeConfiguration;
 import ua.mcchickenstudio.opencreative.coding.CodingBlockParser;
 import ua.mcchickenstudio.opencreative.coding.CodingBlockPlacer;
+import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
 import ua.mcchickenstudio.opencreative.menus.AbstractMenu;
 import ua.mcchickenstudio.opencreative.planets.DevPlanet;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
@@ -70,14 +71,12 @@ public final class BlocksManipulatorMenu extends AbstractMenu {
         int limit = OpenCreative.getSettings().getGroups().getGroup(player).getModulesLimit();
         int left = limit - amount;
         if (left >= 1) {
-            replacePlaceholderInLore(createModule, "%amount%", amount);
-            replacePlaceholderInLore(createModule, "%limit%", limit);
-            replacePlaceholderInLore(createModule, "%left%", left);
+            replacePlaceholdersInItem(createModule, new PlaceholderReplacer(
+                    "amount", amount, "limit", limit, "left", left));
             setItem(14, createModule);
         } else {
-            replacePlaceholderInLore(createModuleLimit, "%amount%", amount);
-            replacePlaceholderInLore(createModuleLimit, "%limit%", limit);
-            replacePlaceholderInLore(createModuleLimit, "%left%", left);
+            replacePlaceholdersInItem(createModuleLimit, new PlaceholderReplacer(
+                    "amount", amount, "limit", limit, "left", left));
             setItem(14, createModuleLimit);
         }
 

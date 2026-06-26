@@ -30,6 +30,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
+import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
 import ua.mcchickenstudio.opencreative.menus.AbstractMenu;
 import ua.mcchickenstudio.opencreative.menus.buttons.ParameterButton;
 import ua.mcchickenstudio.opencreative.menus.world.WorldMenu;
@@ -173,10 +174,8 @@ public final class PlayerControlMenu extends AbstractMenu implements WorldMenu {
         } else {
             statusKey = "online";
         }
-        replacePlaceholderInLore(item, "%name%",
-                substring(nickname, 30));
-        replacePlaceholderInLore(item, "%status%",
-                getLocaleMessage("menus.player-control.items.player." + statusKey));
+        replacePlaceholdersInItem(item, new PlaceholderReplacer("name", substring(nickname, 30),
+                "status", getLocaleMessage("menus.player-control.items.player." + statusKey)));
         return item;
     }
 

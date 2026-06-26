@@ -26,6 +26,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.OpenCreative;
+import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
 import ua.mcchickenstudio.opencreative.menus.ListBrowserMenu;
 import ua.mcchickenstudio.opencreative.menus.buttons.ParameterButton;
 import ua.mcchickenstudio.opencreative.menus.world.WorldModerationMenu;
@@ -56,7 +57,7 @@ public class WorldsBrowserMenu extends ListBrowserMenu<Planet> {
         super(player, getLocaleMessage("menus.all-worlds.title", false), PlacementLayout.BOTTOM_NO_DECORATION,
                 new int[]{45, 48, 50}, new int[]{45, 46, 52, 53});
         this.planets = new ArrayList<>(planets);
-        Comparator<Planet> sortByOnline = (planet1, planet2) -> Integer.compare(planet2.getOnline(), planet1.getOnline());
+        Comparator<Planet> sortByOnline = (planet1, planet2) -> Integer.compare(planet2.getInformation().getAsyncOnline(), planet1.getInformation().getAsyncOnline());
         this.planets.sort(sortByOnline);
         RECOMMENDED = createItem(Material.WIND_CHARGE, 1, "menus.all-worlds.items.recommended");
     }
@@ -65,7 +66,7 @@ public class WorldsBrowserMenu extends ListBrowserMenu<Planet> {
         super(player, getLocaleMessage("menus.all-worlds.title", false), PlacementLayout.BOTTOM_NO_DECORATION,
                 new int[]{45, 48, 50}, new int[]{45, 46, 52, 53});
         this.planets = new ArrayList<>(planets);
-        Comparator<Planet> sortByOnline = (planet1, planet2) -> Integer.compare(planet2.getOnline(), planet1.getOnline());
+        Comparator<Planet> sortByOnline = (planet1, planet2) -> Integer.compare(planet2.getInformation().getAsyncOnline(), planet1.getInformation().getAsyncOnline());
         this.planets.sort(sortByOnline);
         RECOMMENDED = withRecommendedButton ? createItem(Material.WIND_CHARGE, 1, "menus.all-worlds.items.recommended") : DECORATION_ITEM;
     }
@@ -211,12 +212,14 @@ public class WorldsBrowserMenu extends ListBrowserMenu<Planet> {
 
     @Override
     protected ItemStack getNextPageButton() {
-        return replacePlaceholderInLore(createItem(Material.SPECTRAL_ARROW, getCurrentPage() + 1, "menus.all-worlds.items.next-page"), "%page%", getCurrentPage() + 1);
+        return replacePlaceholdersInItem(createItem(Material.SPECTRAL_ARROW, getCurrentPage() + 1, "menus.all-worlds.items.next-page"),
+                new PlaceholderReplacer("page", getCurrentPage() + 1));
     }
 
     @Override
     protected ItemStack getPreviousPageButton() {
-        return replacePlaceholderInLore(createItem(Material.ARROW, Math.max(1, getCurrentPage() - 1), "menus.all-worlds.items.previous-page"), "%page%", getCurrentPage() - 1);
+        return replacePlaceholdersInItem(createItem(Material.ARROW, Math.max(1, getCurrentPage() - 1), "menus.all-worlds.items.previous-page"),
+                new PlaceholderReplacer("page", getCurrentPage() - 1));
     }
 
     @Override
