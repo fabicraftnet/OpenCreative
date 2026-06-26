@@ -93,7 +93,7 @@ public final class OpenCreative extends JavaPlugin {
     private Settings settings;
     private DevPlatformer devPlatformer;
 
-    private static final String version = "6.0.0 Preview";
+    private static final String version = "6.0.0 Pre-release 2";
     private static final String codename = "Well, it's possible";
 
     /**

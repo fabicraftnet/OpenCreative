@@ -34,6 +34,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
 import ua.mcchickenstudio.opencreative.menus.ListBrowserMenu;
 import ua.mcchickenstudio.opencreative.planets.DevPlanet;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
@@ -74,9 +75,10 @@ public final class FunctionChooserMenu extends ListBrowserMenu<Location> {
             setPersistentData(itemStack, getCodingLocationX(), location.getX());
             setPersistentData(itemStack, getCodingLocationY(), location.getY());
             setPersistentData(itemStack, getCodingLocationZ(), location.getZ());
-            replacePlaceholderInLore(itemStack, "%x%", location.getX());
-            replacePlaceholderInLore(itemStack, "%y%", location.getY());
-            replacePlaceholderInLore(itemStack, "%z%", location.getZ());
+            replacePlaceholdersInItem(itemStack, new PlaceholderReplacer(
+                    "x", location.getBlockX(),
+                    "y", location.getBlockY(),
+                    "z", location.getBlockZ()));
             return itemStack;
         }
         return ItemStack.empty();

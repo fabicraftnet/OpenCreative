@@ -20,6 +20,7 @@ package ua.mcchickenstudio.opencreative.utils;
 
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -42,6 +43,7 @@ import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.variables.ValueType;
+import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
 import ua.mcchickenstudio.opencreative.settings.items.ItemFixerSettings;
 
 import java.io.ByteArrayInputStream;
@@ -199,7 +201,7 @@ public final class ItemUtils {
      * Returns item stack with name and description found in localization file.
      **/
     public static @NotNull ItemStack createItem(@NotNull Material material, int amount,
-                                       @NotNull String localizationPath, Object value) {
+                                                @NotNull String localizationPath, Object value) {
 
         ItemStack itemStack = createItem(material, amount, localizationPath);
         ItemMeta meta = getOrCreateItemMeta(itemStack);
@@ -266,6 +268,31 @@ public final class ItemUtils {
         return true;
     }
 
+    public static @NotNull ItemStack replacePlaceholdersInItem(@NotNull ItemStack item,
+                                                               @NotNull PlaceholderReplacer placeholder) {
+        if (!item.hasItemMeta()) return item;
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return item;
+        if (!meta.hasDisplayName() && !meta.hasLore()) return item;
+        TextReplacementConfig replacer = placeholder.get();
+        if (meta.hasDisplayName()) {
+            Component displayName = meta.displayName();
+            if (displayName == null) displayName = Component.empty();
+            meta.displayName(displayName.replaceText(replacer));
+        }
+        if (meta.hasLore()) {
+            List<Component> newLore = new ArrayList<>();
+            List<Component> oldLore = meta.lore();
+            if (oldLore == null) oldLore = List.of();
+            for (Component loreLine : oldLore) {
+                newLore.add(loreLine.replaceText(replacer));
+            }
+            meta.lore(newLore);
+        }
+        item.setItemMeta(meta);
+        return item;
+    }
+
     public static @NotNull ItemStack replacePlaceholderInName(@NotNull ItemStack item,
                                                               @NotNull String placeholder,
                                                               @NotNull Object value) {
@@ -278,8 +305,8 @@ public final class ItemUtils {
     }
 
     public static @NotNull ItemStack replacePlaceholderInLore(@NotNull ItemStack item,
-                                                     @NotNull String placeholder,
-                                                     @NotNull Object value) {
+                                                              @NotNull String placeholder,
+                                                              @NotNull Object value) {
         ItemMeta meta = item.getItemMeta();
         if (meta != null && meta.getLore() != null) {
             List<String> newLore = new ArrayList<>();
@@ -374,20 +401,20 @@ public final class ItemUtils {
     /**
      * Checks whether specified items are same.
      *
-     * @param first first item to compare.
-     * @param second second item to compare.
-     * @param ignoreAmount ignore amount or not.
-     * @param ignoreName ignore display name or not.
-     * @param ignoreLore ignore item lore or not.
-     * @param ignoreFlags ignore item flags or not.
+     * @param first              first item to compare.
+     * @param second             second item to compare.
+     * @param ignoreAmount       ignore amount or not.
+     * @param ignoreName         ignore display name or not.
+     * @param ignoreLore         ignore item lore or not.
+     * @param ignoreFlags        ignore item flags or not.
      * @param ignoreEnchantments ignore enchantments or not.
-     * @param ignoreMaterial ignore type of item or not.
-     * @param ignoreDurability ignore durability or not.
+     * @param ignoreMaterial     ignore type of item or not.
+     * @param ignoreDurability   ignore durability or not.
      * @return true - items are same, false - they're different.
      */
     public static boolean checkItemsIgnoreData(@NotNull ItemStack first, @NotNull ItemStack second, boolean ignoreAmount,
-                                           boolean ignoreName, boolean ignoreLore, boolean ignoreFlags,
-                                           boolean ignoreEnchantments, boolean ignoreMaterial, boolean ignoreDurability) {
+                                               boolean ignoreName, boolean ignoreLore, boolean ignoreFlags,
+                                               boolean ignoreEnchantments, boolean ignoreMaterial, boolean ignoreDurability) {
 
         if (!ignoreMaterial && first.getType() != second.getType()) {
             return false;
@@ -530,14 +557,17 @@ public final class ItemUtils {
      */
     @SuppressWarnings("deprecation")
     public static @NotNull ItemStack fixItem(@NotNull ItemStack item,
-                                    int displayNameMaxLength,
-                                    int loreLineMaxLength,
-                                    int loreLinesLimit,
-                                    int maxEnchantLevel,
-                                    int bookPagesLimit, boolean removeClickableBooks,
-                                    int containerBigItemsLimit, int entitiesLimit, boolean removeCustomEggs,
-                                    boolean removeBossEggs, boolean removeAttributes, boolean clearCommandBlocksData) {
+                                             int displayNameMaxLength,
+                                             int loreLineMaxLength,
+                                             int loreLinesLimit,
+                                             int maxEnchantLevel,
+                                             int bookPagesLimit, boolean removeClickableBooks,
+                                             int containerBigItemsLimit, int entitiesLimit, boolean removeCustomEggs,
+                                             boolean removeBossEggs, boolean removeAttributes, boolean clearCommandBlocksData) {
         try {
+            if (!item.hasItemMeta()) {
+                return item;
+            }
             ItemMeta meta = item.getItemMeta();
             if (meta == null) return item;
             if (meta.hasEnchants()) {
@@ -565,7 +595,7 @@ public final class ItemUtils {
             if (meta.hasAttributeModifiers() && meta.getAttributeModifiers() != null && removeAttributes) {
                 Set<Attribute> attributes = meta.getAttributeModifiers().keySet();
                 int attributesLimit = 20;
-                if (meta.getEnchants().size() > attributesLimit) {
+                if (attributes.size() > attributesLimit) {
                     sendDebug("[ITEMS] Destroyed item with too many attributes.");
                     item.setType(Material.AIR);
                     item.setItemMeta(null);
@@ -709,7 +739,7 @@ public final class ItemUtils {
         if (item.getItemMeta() instanceof BookMeta) {
             return 1;
         }
-        if (!(item.getItemMeta() instanceof BlockStateMeta blockMeta))  {
+        if (!(item.getItemMeta() instanceof BlockStateMeta blockMeta)) {
             return 0;
         }
         if (!(blockMeta.getBlockState() instanceof InventoryHolder holder)) {
@@ -722,7 +752,7 @@ public final class ItemUtils {
             insideContainers += getInsideBadItemsAmount(insideItem, 1);
             if (insideContainers >= limit) break;
         }
-        if (insideContainers >= 1) {
+        if (insideContainers >= 2) {
             item.setType(Material.AIR);
             item.setItemMeta(null);
             sendDebug("[ITEMS] Destroyed container with a lot of items");
@@ -743,24 +773,27 @@ public final class ItemUtils {
             if (container.has(key, PersistentDataType.STRING)) {
                 String val = container.get(key, PersistentDataType.STRING);
                 if (val != null) length += val.length();
-            } else if (container.has(key, PersistentDataType.BYTE_ARRAY)) {
-                byte[] val = container.get(key, PersistentDataType.BYTE_ARRAY);
-                if (val != null) length += val.length;
             } else if (container.has(key, PersistentDataType.INTEGER)) {
                 length += Integer.BYTES;
             } else if (container.has(key, PersistentDataType.LONG)) {
                 length += Long.BYTES;
             } else if (container.has(key, PersistentDataType.BYTE)) {
                 length += Byte.BYTES;
-            } else if (container.has(key, PersistentDataType.BYTE_ARRAY)) {
-                byte[] val = container.get(key, PersistentDataType.BYTE_ARRAY);
-                if (val != null) length += val.length;
             } else if (container.has(key, PersistentDataType.DOUBLE)) {
                 length += Double.BYTES;
             } else if (container.has(key, PersistentDataType.FLOAT)) {
                 length += Float.BYTES;
             } else if (container.has(key, PersistentDataType.SHORT)) {
                 length += Short.BYTES;
+            } else if (container.has(key, PersistentDataType.BYTE_ARRAY)) {
+                byte[] val = container.get(key, PersistentDataType.BYTE_ARRAY);
+                if (val != null) length += val.length;
+            } else if (container.has(key, PersistentDataType.INTEGER_ARRAY)) {
+                int[] val = container.get(key, PersistentDataType.INTEGER_ARRAY);
+                if (val != null) length += val.length * Integer.BYTES;
+            } else if (container.has(key, PersistentDataType.LONG_ARRAY)) {
+                long[] val = container.get(key, PersistentDataType.LONG_ARRAY);
+                if (val != null) length += val.length * Long.BYTES;
             }
             if (length >= limit) break;
         }

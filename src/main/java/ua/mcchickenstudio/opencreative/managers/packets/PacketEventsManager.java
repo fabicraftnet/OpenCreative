@@ -216,7 +216,7 @@ public final class PacketEventsManager implements PacketManager, Toggleable, Sig
                 WrapperPlayServerBlockEntityData packet = new WrapperPlayServerBlockEntityData(event);
                 if (packet.getBlockEntityType() != BlockEntityTypes.SIGN) return;
                 Vector3i position = packet.getPosition();
-                if (isNotWallSign(position.getX(), position.getY(), position.getZ())) {
+                if (isNotWallSign(position.getX(), position.getZ())) {
                     return;
                 }
                 NBTCompound nbt = changeSign(packet.getNBT());
@@ -233,7 +233,9 @@ public final class PacketEventsManager implements PacketManager, Toggleable, Sig
 
             boolean changed = false;
             for (TileEntity tileEntity : column.getTileEntities()) {
-                if (isNotWallSign(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ())) {
+                int worldX = (column.getX() << 4) + tileEntity.getX();
+                int worldZ = (column.getZ() << 4) + tileEntity.getZ();
+                if (isNotWallSign(worldX, worldZ)) {
                     continue;
                 }
                 NBTCompound original = tileEntity.getNBT();
@@ -268,6 +270,7 @@ public final class PacketEventsManager implements PacketManager, Toggleable, Sig
             for (String line : lines) {
                 if (line.isEmpty()) {
                     newLines.addTag(new NBTString(""));
+                    lineNumber++;
                     continue;
                 }
                 if (!localizationPathPattern.matcher(line).matches()) {
@@ -276,6 +279,7 @@ public final class PacketEventsManager implements PacketManager, Toggleable, Sig
                 }
                 if (lineNumber == 3 && (line.equals("function") || line.equals("method"))) {
                     // Skips translating function named function, or method called method
+                    newLines.addTag(new NBTString(line));
                     continue;
                 }
                 String text = getLocaleMessage("blocks." + line, false);
@@ -315,7 +319,7 @@ public final class PacketEventsManager implements PacketManager, Toggleable, Sig
         }
     }
 
-    private static boolean isNotWallSign(int x, int y, int z) {
+    private static boolean isNotWallSign(int x, int z) {
         int step = OpenCreative.getSettings().getCodingSettings().getHorizontalPlatformStep();
 
         int relX = x % step;

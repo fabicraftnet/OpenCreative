@@ -29,6 +29,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
+import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
 import ua.mcchickenstudio.opencreative.menus.ListBrowserMenu;
 import ua.mcchickenstudio.opencreative.menus.buttons.ParameterButton;
 import ua.mcchickenstudio.opencreative.menus.world.WorldMenu;
@@ -91,10 +92,6 @@ public final class PlayersBrowserMenu extends ListBrowserMenu<String> implements
         }
 
         String displayName = nickname.substring(0, Math.min(20, nickname.length()));
-        replacePlaceholderInLore(item, "%name%", displayName);
-
-        replacePlaceholderInLore(item, "%status%",
-                getLocaleMessage("menus.players-browser.items.player." + statusKey));
 
         String devKey;
         if (player != null && planet.getWorldPlayers().isDeveloperGuest(player)) {
@@ -106,8 +103,6 @@ public final class PlayersBrowserMenu extends ListBrowserMenu<String> implements
         } else {
             devKey = "none";
         }
-        replacePlaceholderInLore(item, "%dev%",
-                getLocaleMessage("menus.players-browser.items.player.dev." + devKey));
 
         String buildKey;
         if (planet.getWorldPlayers().getBuildersTrusted().contains(nickname)) {
@@ -117,12 +112,8 @@ public final class PlayersBrowserMenu extends ListBrowserMenu<String> implements
         } else {
             buildKey = "none";
         }
-        replacePlaceholderInLore(item, "%build%",
-                getLocaleMessage("menus.players-browser.items.player.build." + buildKey));
 
         String whitelistKey = String.valueOf(planet.getWorldPlayers().isWhitelisted(nickname));
-        replacePlaceholderInLore(item, "%white-list%",
-                getLocaleMessage("menus.players-browser.items.player.white-list." + whitelistKey));
 
         String flightKey;
         if (player == null || !player.getWorld().equals(planet.getWorld())) {
@@ -130,9 +121,14 @@ public final class PlayersBrowserMenu extends ListBrowserMenu<String> implements
         } else {
             flightKey = String.valueOf(player.getAllowFlight());
         }
-        replacePlaceholderInLore(item, "%flight%",
-                getLocaleMessage("menus.players-browser.items.player.flight." + flightKey));
 
+        replacePlaceholdersInItem(item, new PlaceholderReplacer(
+                "name", displayName,
+                "status", getLocaleMessage("menus.players-browser.items.player." + statusKey),
+                "dev", getLocaleMessage("menus.players-browser.items.player.dev." + devKey),
+                "build", getLocaleMessage("menus.players-browser.items.player.build." + buildKey),
+                "white-list", getLocaleMessage("menus.players-browser.items.player.white-list." + whitelistKey),
+                "flight", getLocaleMessage("menus.players-browser.items.player.flight." + flightKey)));
         setPersistentData(item, getItemTypeKey(), nickname);
         return item;
     }
@@ -286,12 +282,15 @@ public final class PlayersBrowserMenu extends ListBrowserMenu<String> implements
 
     @Override
     protected ItemStack getNextPageButton() {
-        return replacePlaceholderInLore(createItem(Material.ARROW, getCurrentPage() + 1, "menus.players-browser.items.next-page"), "%page%", getCurrentPage() + 1);
+        return replacePlaceholdersInItem(createItem(Material.ARROW, getCurrentPage() + 1,
+                "menus.players-browser.items.next-page"),
+                new PlaceholderReplacer("page", getCurrentPage() + 1));
     }
 
     @Override
     protected ItemStack getPreviousPageButton() {
-        return replacePlaceholderInLore(createItem(Material.ARROW, Math.max(1, getCurrentPage() - 1), "menus.players-browser.items.previous-page"), "%page%", getCurrentPage() - 1);
+        return replacePlaceholdersInItem(createItem(Material.ARROW, Math.max(1, getCurrentPage() - 1), "menus.players-browser.items.previous-page"),
+                new PlaceholderReplacer("page", getCurrentPage() - 1));
     }
 
     @Override

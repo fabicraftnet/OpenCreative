@@ -106,6 +106,20 @@ commands:
     help: "%prefix%To find the world where a player is playing, type in the chat: &6/locate Username"
     found: "%prefix%&fPlayer &6%player%&f is currently playing in the world: \n&f %planetName%\n &f\n&a &a &n[Click to join]&f\n &f"
     offline: "%prefix%&cThe player is not currently playing in any worlds."
+filters:
+  hover-text: "&fRule: &7%rule%\n&fText: &6%match%"
+  sign-violation:
+    player: "%prefix%&cWarning: Your sign text violated one of the server rules."
+    staff: "%prefix%&7Filtered sign text from %player%. &3[?]"
+  chat-violation:
+    player: "%prefix%&cWarning: Your chat message violated one of the server rules."
+    staff: "%prefix%&7Filtered chat message from %player%. &3[?]"
+  book-violation:
+    player: "%prefix%&cWarning: Your book text violated one of the server rules."
+    staff: "%prefix%&7Filtered book text from %player%. &3[?]"
+  anvil-violation:
+    player: "%prefix%&cWarning: The new item name violated one of the server rules."
+    staff: "%prefix%&7Filtered new item name from %player%. &3[?]"
 modules:
   help: "%prefix%Module is prepared coding blocks lines, made by players, that add some features in your world. They can be inserted in developers world. To browse modules use &6/module&f command.\n&6 /module load ID &f- Loads module by specified ID"
   not-found: "%prefix%&cCan't find module with ID %id% O_o"
@@ -8756,6 +8770,34 @@ items:
               magenta: "Magenta"
               pink: "Pink"
               brown: "Brown"
+      entity-set-display-teleport-delay:
+        name: "&3Display Teleport Duration"
+        lore:
+          - "&7Changes the duration of the"
+          - "&7display entity's teleport. Higher"
+          - "&7values make the teleport smoother."
+          - ""
+          - "&fIn the chest:"
+          - "&a Number &7- Duration"
+          - "&3 Parameter &7- Add or set"
+          - " "
+          - "&eClick to set the action."
+        arguments:
+          add:
+            name: "&fSet or Add"
+            lore:
+              - "&7If Add is selected, your value"
+              - "&7will be added to the current"
+              - "&7value of the display entity."
+              - " "
+              - "&eClick to change."
+              - " "
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              false: "Set"
+              true: "Add"
       entity-set-display-text:
         name: "&6Set Display Text"
         lore:
@@ -19671,6 +19713,7 @@ blocks:
   entity_set_sheep_color: "Sheep Color"
   entity_set_dog_collar_color: "Collar Color"
   entity_set_display_text: "Display Text"
+  entity_set_display_teleport_duration: "Display Duration"
   entity_set_display_scale: "Display Scale"
   entity_set_display_translation: "Display Offset"
   entity_set_display_rotation: "Display Rotation"
@@ -19684,6 +19727,7 @@ blocks:
   entity_set_display_interpolation: "Dis. Interpolation"
   entity_set_friction: "Friction"
   entity_set_visual_fire: "Visual Fire"
+  entity_set_villager_recipes: "Village Trades"
   entity_set_parrot_color: "Parrot Color"
   entity_set_fox_sleeping: "Fox Sleeping"
   entity_set_fox_leaping: "Fox Leaping"

@@ -104,7 +104,6 @@ import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.messageExists;
 
-
 public enum ActionType implements CodingBlockType {
 
     /**
@@ -789,6 +788,7 @@ public enum ActionType implements CodingBlockType {
     ENTITY_SET_AGGRESSIVE(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetAggressiveAction.class, Material.NETHERITE_SWORD, new ParameterSlot("boolean")),
 
     ENTITY_SET_DISPLAY_BILLBOARD(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayBillboardAction.class, Material.ENDER_EYE, new ParameterSlot("billboard", Arrays.asList("center", "fixed", "horizontal", "vertical"), Material.ENDER_EYE, Material.ENDER_PEARL, Material.SLIME_BALL, Material.SNOWBALL)),
+    ENTITY_SET_DISPLAY_TELEPORT_DURATION(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayTeleportDurationAction.class, Material.ENDER_PEARL, new ArgumentSlot("duration", ValueType.NUMBER), new ParameterSlot("add")),
     ENTITY_SET_DISPLAY_SCALE(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayScaleAction.class, Material.PAPER, new ArgumentSlot("x", ValueType.NUMBER), new ArgumentSlot("y", ValueType.NUMBER), new ArgumentSlot("z", ValueType.NUMBER), new ParameterSlot("add")),
     ENTITY_SET_DISPLAY_TRANSLATION(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayTranslationAction.class, Material.ARROW, new ArgumentSlot("x", ValueType.NUMBER), new ArgumentSlot("y", ValueType.NUMBER), new ArgumentSlot("z", ValueType.NUMBER), new ParameterSlot("add")),
     ENTITY_SET_DISPLAY_ROTATION(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayRotationAction.class, Material.ENDER_EYE, new ArgumentSlot("x", ValueType.NUMBER), new ArgumentSlot("y", ValueType.NUMBER), new ArgumentSlot("z", ValueType.NUMBER), new ParameterSlot("add")),

@@ -159,7 +159,7 @@ public final class LegacyPlatformer extends DevPlatformer implements HasVisibleB
         CompletableFuture<Integer> built = OpenCreative.getBlocksManager().setBlocksType(begin, end, floorMaterial, 10300);
         built.thenAccept((changed) -> {
             Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
-                if (Bukkit.getWorld(platform.getWorld().getName()) == null) {
+                if (Bukkit.getWorld(platform.getWorld().getUID()) == null) {
                     return;
                 }
                 for (int x = beginX; x <= endX; x++) {
