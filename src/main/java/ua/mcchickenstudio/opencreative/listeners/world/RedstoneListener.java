@@ -25,7 +25,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.world.other.LimitReachedRedstoneEvent;
 import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
@@ -50,9 +49,7 @@ public final class RedstoneListener implements Listener {
                 sendMessageOnce(planet, "world.redstone-limit",
                         new PlaceholderReplacer("count", planet.getLimits().getRedstoneOperationsLimit()),
                         null, null, 5);
-                Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
-                    location.getBlock().setType(Material.AIR);
-                }, 1L);
+                Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> location.getBlock().setType(Material.AIR), 1L);
                 new LimitReachedRedstoneEvent(planet).callEvent();
                 return;
             }

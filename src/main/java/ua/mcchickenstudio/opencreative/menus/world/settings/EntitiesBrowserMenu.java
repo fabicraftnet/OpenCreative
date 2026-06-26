@@ -26,6 +26,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
 import ua.mcchickenstudio.opencreative.menus.ListBrowserMenu;
 import ua.mcchickenstudio.opencreative.menus.buttons.ParameterButton;
 import ua.mcchickenstudio.opencreative.menus.world.WorldMenu;
@@ -69,11 +70,13 @@ public final class EntitiesBrowserMenu extends ListBrowserMenu<Entity> implement
 
     private ItemStack createEntityItem(Entity entity) {
         ItemStack item = createItem(getEntityMaterial(entity), 1, "menus.entities-browser.items.entity");
-        replacePlaceholderInLore(item, "%name%", entity.getName().substring(0, Math.min(20, entity.getName().length())));
-        replacePlaceholderInLore(item, "%type%", StringUtils.capitalize(entity.getType().name().toLowerCase().replace('_', ' ')));
-        replacePlaceholderInLore(item, "%x%", entity.getLocation().getBlockX());
-        replacePlaceholderInLore(item, "%y%", entity.getLocation().getBlockY());
-        replacePlaceholderInLore(item, "%z%", entity.getLocation().getBlockZ());
+        replacePlaceholdersInItem(item, new PlaceholderReplacer(
+                "name", entity.getName().substring(0, Math.min(20, entity.getName().length())),
+                "type", StringUtils.capitalize(entity.getType().name().toLowerCase().replace('_', ' ')),
+                "x", entity.getLocation().getBlockX(),
+                "y", entity.getLocation().getBlockY(),
+                "z", entity.getLocation().getBlockZ()
+        ));
         setPersistentData(item, getItemTypeKey(), entity.getUniqueId().toString());
         return item;
     }
@@ -268,12 +271,14 @@ public final class EntitiesBrowserMenu extends ListBrowserMenu<Entity> implement
 
     @Override
     protected ItemStack getNextPageButton() {
-        return replacePlaceholderInLore(createItem(Material.SPECTRAL_ARROW, getCurrentPage() + 1, "menus.entities-browser.items.next-page"), "%page%", getCurrentPage() + 1);
+        return replacePlaceholdersInItem(createItem(Material.SPECTRAL_ARROW, getCurrentPage() + 1, "menus.entities-browser.items.next-page"),
+                new PlaceholderReplacer("page", getCurrentPage() + 1));
     }
 
     @Override
     protected ItemStack getPreviousPageButton() {
-        return replacePlaceholderInLore(createItem(Material.ARROW, Math.max(1, getCurrentPage() - 1), "menus.entities-browser.items.previous-page"), "%page%", getCurrentPage() - 1);
+        return replacePlaceholdersInItem(createItem(Material.ARROW, Math.max(1, getCurrentPage() - 1), "menus.entities-browser.items.previous-page"),
+                new PlaceholderReplacer("page", getCurrentPage() - 1));
     }
 
     @Override

@@ -20,10 +20,7 @@ package ua.mcchickenstudio.opencreative.listeners.player;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,6 +29,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.view.AnvilView;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.player.inventory.*;
 import ua.mcchickenstudio.opencreative.coding.menus.layouts.Layout;
@@ -40,7 +38,11 @@ import ua.mcchickenstudio.opencreative.menus.EnderChestMenu;
 import ua.mcchickenstudio.opencreative.planets.DevPlanet;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
+import ua.mcchickenstudio.opencreative.settings.filters.Filter;
+import ua.mcchickenstudio.opencreative.settings.filters.FilterResult;
 import ua.mcchickenstudio.opencreative.utils.ItemUtils;
+
+import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.listeners.player.ChangedWorld.addPlayerWithLocation;
 import static ua.mcchickenstudio.opencreative.listeners.player.ChangedWorld.isPlayerWithLocation;
@@ -59,6 +61,35 @@ public final class ClickListener implements Listener {
     public void onCraft(CraftItemEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
         new PlayerItemCraftEvent(player, event).callEvent();
+    }
+
+    @EventHandler
+    public void onAnvilRename(InventoryClickEvent event) {
+        if (event.getRawSlot() != 2) {
+            return;
+        }
+        if (event.getCurrentItem() == null) {
+            return;
+        }
+        if (!(event.getWhoClicked() instanceof Player player)) {
+            return;
+        }
+        if (!(event.getView() instanceof AnvilView anvil)) {
+            return;
+        }
+        if (anvil.getTopInventory().getItem(0) == null) {
+            return;
+        }
+        String anvilText = anvil.getRenameText();
+        if (anvilText == null) {
+            return;
+        }
+        FilterResult result = Filter.getInstance().checkContent(anvilText, Filter.Context.ANVIL);
+        if (result.rule() != null) {
+            event.setCancelled(true);
+            result.onViolation(player);
+            player.closeInventory();
+        }
     }
 
     @EventHandler
@@ -243,6 +274,13 @@ public final class ClickListener implements Listener {
 
     @EventHandler
     public void onBookWrite(PlayerEditBookEvent event) {
+        Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
+            List<String> pages = event.getNewBookMeta().getPages();
+            FilterResult result = Filter.getInstance().checkContent(String.join(" ", pages), Filter.Context.BOOK);
+            if (result.rule() != null) {
+                result.onViolation(event.getPlayer());
+            }
+        });
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(event.getPlayer());
         if (planet != null) new BookWriteEvent(event.getPlayer(), event).callEvent();
     }

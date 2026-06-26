@@ -85,6 +85,8 @@ import ua.mcchickenstudio.opencreative.planets.DevPlatform;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.planets.PlanetFlags;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
+import ua.mcchickenstudio.opencreative.settings.filters.Filter;
+import ua.mcchickenstudio.opencreative.settings.filters.FilterResult;
 import ua.mcchickenstudio.opencreative.settings.groups.LimitType;
 import ua.mcchickenstudio.opencreative.utils.CooldownUtils;
 import ua.mcchickenstudio.opencreative.utils.ItemUtils;
@@ -884,6 +886,12 @@ public final class InteractListener implements Listener {
                 }
                 if (content.length() <= 1) {
                     new ChangedSignEvent(event.getPlayer(), event).callEvent();
+                    return;
+                }
+                FilterResult result = Filter.getInstance().checkContent(content.toString(), Filter.Context.SIGN);
+                if (result.rule() != null) {
+                    result.onViolation(event.getPlayer());
+                    event.setCancelled(true);
                     return;
                 }
                 OpenCreative.getPlugin().getLogger().info("[SIGN: " + planet.getId() + (isEntityInDevPlanet(event.getPlayer()) ? "dev" : "")

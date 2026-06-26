@@ -45,9 +45,7 @@ import ua.mcchickenstudio.opencreative.coding.blocks.executors.world.inventory.*
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.world.other.*;
 import ua.mcchickenstudio.opencreative.coding.menus.MenusCategory;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendDebug;
 
@@ -67,7 +65,7 @@ import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendDebug;
 public final class Executors {
 
     private static Executors instance;
-    private final List<Executor> executors = new LinkedList<>();
+    private final Map<String, Executor> executors = new LinkedHashMap<>();
 
     /**
      * Returns instance of executors controller class.
@@ -96,7 +94,7 @@ public final class Executors {
             return;
         }
         sendDebug("[EXECUTORS] Registered executor: " + executor.getName() + " (from " + executor.getExtensionId() + ")");
-        executors.add(executor);
+        executors.put(executor.getID(), executor);
     }
 
     /**
@@ -117,7 +115,7 @@ public final class Executors {
      */
     @SuppressWarnings("unused")
     public void unregisterExecutor(@NotNull Executor executor) {
-        executors.remove(executor);
+        executors.remove(executor.getID());
     }
 
     /**
@@ -126,7 +124,7 @@ public final class Executors {
      * @return executors list.
      */
     public @NotNull List<Executor> getExecutors() {
-        return new ArrayList<>(executors);
+        return new ArrayList<>(executors.values());
     }
 
     private void registerDefaults() {
@@ -199,7 +197,7 @@ public final class Executors {
      */
     public @NotNull List<Executor> getByCategories(@NotNull ExecutorCategory executorCategory, @NotNull MenusCategory menusCategory) {
         List<Executor> list = new LinkedList<>();
-        for (Executor executor : executors) {
+        for (Executor executor : executors.values()) {
             if (executor.getBlockCategory() == executorCategory) {
                 if (executor instanceof DisplayableIcon icon) {
                     if (icon.getCategory() == menusCategory) {
@@ -219,7 +217,7 @@ public final class Executors {
      */
     public @NotNull List<MenusCategory> getCategories(@NotNull ExecutorCategory executorCategory) {
         List<MenusCategory> list = new LinkedList<>();
-        for (Executor executor : executors) {
+        for (Executor executor : executors.values()) {
             if (executor.getBlockCategory() == executorCategory && executor instanceof DisplayableIcon icon) {
                 if (list.contains(icon.getCategory())) continue;
                 list.add(icon.getCategory());
@@ -256,9 +254,9 @@ public final class Executors {
      * @return executor - if exists, or null - not exists.
      */
     public @Nullable Executor getByClass(@NotNull Class<? extends Executor> clazz) {
-        for (Executor eventValue : executors) {
-            if (eventValue.getClass().equals(clazz)) {
-                return eventValue;
+        for (Executor executor : executors.values()) {
+            if (executor.getClass().equals(clazz)) {
+                return executor;
             }
         }
         return null;
@@ -272,12 +270,7 @@ public final class Executors {
      * @return executor - if exists, or null - not exists.
      */
     public @Nullable Executor getById(@NotNull String id) {
-        for (Executor eventValue : executors) {
-            if (eventValue.getID().equals(id)) {
-                return eventValue;
-            }
-        }
-        return null;
+        return executors.get(id);
     }
 
     /**
@@ -289,11 +282,11 @@ public final class Executors {
      */
     public @Nullable Executor getByBlock(@NotNull Block block) {
         if (block.getType() == Material.LAPIS_BLOCK) {
-            return new Function();
+            return executors.get("function");
         } else if (block.getType() == Material.EMERALD_BLOCK) {
-            return new Method();
+            return executors.get("method");
         } else if (block.getType() == Material.OXIDIZED_COPPER) {
-            return new Cycle();
+            return executors.get("cycle");
         }
         Block signBlock = block.getRelative(BlockFace.SOUTH);
         if (signBlock.getType().toString().contains("WALL_SIGN")) {
@@ -306,7 +299,5 @@ public final class Executors {
         }
         return null;
     }
-
-
 
 }

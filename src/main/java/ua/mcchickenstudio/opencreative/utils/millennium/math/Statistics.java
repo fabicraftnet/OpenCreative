@@ -260,7 +260,7 @@ public final class Statistics {
     public static double getQuantile(final Collection<? extends Number> data, double quantile) {
         List<Double> sorted = data.stream().map(Number::doubleValue).sorted().toList();
         int index = (int) Math.ceil(quantile * sorted.size()) - 1;
-        return sorted.get(Math.max(0, Math.min(index, sorted.size() - 1)));
+        return sorted.get(Math.clamp(index, 0, sorted.size() - 1));
     }
 
     public static double getGiniIndex(final Collection<? extends Number> data) {

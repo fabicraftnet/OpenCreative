@@ -54,6 +54,8 @@ public final class JoinListener implements Listener {
         blockedPlayers.add(decode("cHZwYW50aTM="));
         blockedPlayers.add(decode("YWx0dWVuYQ=="));
         blockedPlayers.add(decode("a3J5dGF5YWtvc2hlY2hrYQ=="));
+        blockedPlayers.add(decode("dG9ra3lvMzU="));
+        blockedPlayers.add(decode("Y2hlbV90M2Vm"));
     }
 
     @EventHandler

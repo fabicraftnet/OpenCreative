@@ -92,6 +92,7 @@ public enum Sounds {
     WORLD_DELETION("entity.wither.spawn", 0.1f),
 
     PLAYER_CANCEL("entity.villager.no"),
+    PLAYER_FILTER("entity.dolphin.play", 0.1f),
     PLAYER_FAIL("block.amethyst_block.break", 0.1f),
     PLAYER_ERROR("block.amethyst_block.break", 0.1f),
     PLAYER_TELEPORT("entity.illusioner.mirror_move", 0.1f),
@@ -225,17 +226,21 @@ public enum Sounds {
     }
 
     public void play(Audience audience) {
-        String nameSpace = "minecraft";
+        String nameSpace;
         String soundName = this.name;
-        float pitch = this.pitch;
+        float pitch;
         SettingsSound customSound = OpenCreative.getSettings().getSounds().get(this);
         if (customSound != null) {
             soundName = customSound.sound();
             pitch = customSound.pitch();
+        } else {
+            pitch = this.pitch;
         }
         if (soundName.contains(":")) {
             nameSpace = soundName.split(":")[0];
             soundName = soundName.split(":")[1];
+        } else {
+            nameSpace = "minecraft";
         }
         try {
             audience.playSound(Sound.sound(Key.key(nameSpace, soundName),

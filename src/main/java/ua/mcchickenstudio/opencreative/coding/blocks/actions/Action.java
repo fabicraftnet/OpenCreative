@@ -102,7 +102,7 @@ public abstract class Action implements CodingBlock {
         if (getPlanet().getMode() != Planet.Mode.PLAYING) return;
         for (Entity entity : targets) {
             if (entity == null) continue;
-            if (entity.getWorld().equals(getPlanet().getWorld()) || !OpenCreative.getSettings().getCodingSettings().isIgnoreActionsIfEntityNotInWorld()) {
+            if (entity.getWorld().equals(getPlanet().getWorld()) || !OpenCreative.getSettings().getCodingSettings().shouldIgnoreActionsIfEntityNotInWorld()) {
                 this.entity = entity;
                 execute(entity);
             }

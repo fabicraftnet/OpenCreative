@@ -55,7 +55,7 @@ public final class OpenContainerAction extends PlayerAction {
                 inventory = copyInventory(container.getInventory(), container.customName());
             }
             if (getPlanet().getLimits().cantOpenMenu(player)) {
-                throw new TooManyOpenedMenusException(player.getName());
+                throw new TooManyOpenedMenusException(player);
             }
             player.openInventory(inventory);
         } else if (block.getType() == Material.ENDER_CHEST) {
@@ -70,7 +70,7 @@ public final class OpenContainerAction extends PlayerAction {
                  * too many menus, that can prevent from
                  * quiting the game.
                  */
-                throw new TooManyOpenedMenusException(player.getName());
+                throw new TooManyOpenedMenusException(player);
             }
             player.openInventory(inventory);
         } else if (block.getType() == Material.CRAFTING_TABLE) {

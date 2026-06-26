@@ -18,11 +18,19 @@
 
 package ua.mcchickenstudio.opencreative.planets;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.title.Title;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
@@ -30,32 +38,39 @@ import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionCategory;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.ExecutorCategory;
 import ua.mcchickenstudio.opencreative.coding.menus.layouts.Layout;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
+import ua.mcchickenstudio.opencreative.settings.items.ItemsGroup;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 import ua.mcchickenstudio.opencreative.utils.world.DevPlanetChunkGenerator;
 import ua.mcchickenstudio.opencreative.utils.world.cache.ChunkCache;
 import ua.mcchickenstudio.opencreative.utils.world.platforms.DevPlatformer;
 import ua.mcchickenstudio.opencreative.utils.world.platforms.DevPlatformers;
 import ua.mcchickenstudio.opencreative.utils.world.platforms.HasVisibleBorder;
+import ua.mcchickenstudio.opencreative.wanders.Wander;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.getSignLine;
-import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCriticalErrorMessage;
-import static ua.mcchickenstudio.opencreative.utils.FileUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
-import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.teleportToLobby;
+import static ua.mcchickenstudio.opencreative.utils.BlockUtils.isOutOfBorders;
+import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.*;
+import static ua.mcchickenstudio.opencreative.utils.FileUtils.getDevPlanetFolder;
+import static ua.mcchickenstudio.opencreative.utils.FileUtils.getPlanetConfig;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
+import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.*;
 
 /**
  * <h1>DevPlanet</h1>
  * This class represents developer's world, where players
  * can edit and change code with blocks on platform.
  * <p>
- * Platform consists of white, blue and gray stained glass
+ * Platform consists of white, blue and gray stained-glass,
  * and it can't be destroyed. Players can place chests,
- * shulkers, signs and anvils on white stained glass.
- * On blue stained glass players should place executor blocks,
- * on gray stained glass - actions and conditions.
+ * shulkers, signs and anvils on white stained-glass.
+ * On blue stained-glass players should place executor blocks,
+ * on gray stained-glass - actions and conditions.
  * </p>
  */
 public class DevPlanet {
@@ -76,6 +91,7 @@ public class DevPlanet {
     private boolean saveLocation = true;
     private boolean nightVision = true;
     private boolean currentlySavingCode = false;
+    private UUID worldID;
 
     /**
      * Constructor of developer planet, that
@@ -155,48 +171,69 @@ public class DevPlanet {
     /**
      * Loads developer's world and setups it.
      */
-    public void loadDevPlanetWorld() {
+    public @NotNull CompletableFuture<World> load() {
+        CompletableFuture<World> future = new CompletableFuture<>();
         long startTime = System.currentTimeMillis();
         boolean existed = this.exists();
-        World world = Bukkit.createWorld(new WorldCreator(this.getWorldName())
+        WorldCreator creator = new WorldCreator(this.getWorldName())
                 .type(WorldType.FLAT)
-                .generator(new DevPlanetChunkGenerator()));
-        if (world == null) {
-            sendCriticalErrorMessage("Failed to load Dev planet world " + planet.getId());
-            return;
-        }
-        List<String> savedChanges = planet.getConfiguration().getConfig().getStringList("changed-code-columns");
-        if (!savedChanges.isEmpty()) {
-            for (String saved : savedChanges) {
-                String[] coords = saved.split(" ");
-                if (coords.length != 3) continue;
-                try {
-                    int x = Integer.parseInt(coords[0]);
-                    int y = Integer.parseInt(coords[1]);
-                    int z = Integer.parseInt(coords[2]);
-                    changedColumns.add(new Location(world, x, y, z));
-                } catch (Exception ignored) {}
-            }
-        }
+                .generator(new DevPlanetChunkGenerator());
+        CompletableFuture<World> worldProcess;
         if (existed) {
-            if (world.getBlockAt(4, 0, 4).isEmpty()) {
-                createPlatform(1, 1);
-            }
+            worldProcess = OpenCreative.getWorldManager().loadWorld(creator, planet);
         } else {
-            createPlatform(1, 1);
-            world.setTime(12500);
+            worldProcess = OpenCreative.getWorldManager().createWorld(creator, planet);
         }
-        setupWorld();
-        long endTime = System.currentTimeMillis();
-        OpenCreative.getPlugin().getLogger().info("Dev planet world " + planet.getId() + " loaded in " + (endTime - startTime) + " ms");
+        worldProcess.thenAccept(world -> {
+            if (world == null) {
+                sendCriticalErrorMessage("Failed to load Dev planet world " + planet.getId());
+                future.complete(null);
+                return;
+            }
+            Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
+                List<String> savedChanges = planet.getConfiguration().getConfig().getStringList("changed-code-columns");
+                if (!savedChanges.isEmpty()) {
+                    for (String saved : savedChanges) {
+                        String[] coords = saved.split(" ");
+                        if (coords.length != 3) continue;
+                        try {
+                            int x = Integer.parseInt(coords[0]);
+                            int y = Integer.parseInt(coords[1]);
+                            int z = Integer.parseInt(coords[2]);
+                            changedColumns.add(new Location(world, x, y, z));
+                        } catch (Exception ignored) {
+                        }
+                    }
+                }
+                Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
+                    if (existed) {
+                        if (world.getBlockAt(4, 0, 4).isEmpty()) {
+                            createPlatform(1, 1);
+                        }
+                    } else {
+                        createPlatform(1, 1);
+                        world.setTime(12500);
+                    }
+                    setupWorld(world);
+                    long endTime = System.currentTimeMillis();
+                    OpenCreative.getPlugin().getLogger().info("Dev planet world " + planet.getId() + " loaded in " + (endTime - startTime) + " ms");
+                    future.complete(world);
+                });
+            });
+        }).exceptionally(error -> {
+            sendCriticalErrorMessage("Failed to load dev planet " + planet.getId());
+            future.completeExceptionally(error);
+            return null;
+        });
+        return future;
     }
 
     /**
      * Unloads developer's world and teleports
      * all players in it to lobby.
      */
-    public void unload() {
-        unload(OpenCreative.getPlugin().isEnabled());
+    public @NotNull CompletableFuture<Void> unload() {
+        return unload(OpenCreative.getPlugin().isEnabled());
     }
 
     /**
@@ -205,60 +242,68 @@ public class DevPlanet {
      *
      * @param asyncSave true - will save world later, false - immediately.
      */
-    public void unload(boolean asyncSave) {
-        if (!isLoaded()) return;
+    public @NotNull CompletableFuture<Void> unload(boolean asyncSave) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        World world = getWorld();
 
         changedColumns.clear();
-
-        long startTime = System.currentTimeMillis();
-
-        World world = getWorld();
-        if (world != null) {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (player.getWorld().equals(world)) {
-                    teleportToLobby(player);
-                }
-            }
-            if (asyncSave) {
-                for (Chunk chunk : world.getLoadedChunks()) {
-                    world.unloadChunk(chunk.getX(), chunk.getZ(), true);
-                }
-                try {
-                    // 1.21+ Content:
-                    Method saveMethod = world.getClass().getMethod("save", boolean.class);
-                    saveMethod.invoke(world, false);
-                } catch (Exception ignored) {
-                    world.save();
-                }
-                Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
-                    Bukkit.unloadWorld(getWorldName(), false);
-                }, 40);
-            } else {
-                Bukkit.unloadWorld(getWorldName(), true);
-            }
+        if (world == null) {
+            future.complete(null);
+            return future;
         }
 
-        long endTime = System.currentTimeMillis();
-        OpenCreative.getPlugin().getLogger().info("Dev planet world " + planet.getId() + " unloaded in " + (endTime - startTime) + " ms");
+        long startTime = System.currentTimeMillis();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.getWorld().equals(world)) {
+                teleportToLobby(player);
+            }
+        }
+        if (asyncSave) {
+            for (Chunk chunk : world.getLoadedChunks()) {
+                world.unloadChunk(chunk.getX(), chunk.getZ(), true);
+            }
+            try {
+                // 1.21+ Content:
+                Method saveMethod = world.getClass().getMethod("save", boolean.class);
+                saveMethod.invoke(world, false);
+            } catch (Exception ignored) {
+                world.save();
+            }
+            Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
+                OpenCreative.getWorldManager().unloadWorld(world, false, planet).whenComplete((result, error) -> {
+                    OpenCreative.getPlugin().getLogger().info("Dev planet world " + planet.getId()
+                            + " unloaded in " + (System.currentTimeMillis() - startTime) + " ms");
+                    worldID = null;
+                    future.complete(null);
+                });
+            }, 40);
+        } else {
+            OpenCreative.getWorldManager().unloadWorld(world, true, planet).whenComplete((result, error) -> {
+                OpenCreative.getPlugin().getLogger().info("Dev planet world " + planet.getId()
+                        + " unloaded in " + (System.currentTimeMillis() - startTime) + " ms");
+                worldID = null;
+                future.complete(null);
+            });
+        }
+        return future;
     }
 
     /**
      * Setups developer's world, changes spawn location,
      * sets game rules and world border.
      */
-    public void setupWorld() {
-        this.getWorld().setSpawnLocation(2, 1, 2);
-        this.getWorld().setGameRule(GameRule.DO_LIMITED_CRAFTING, true);
-        this.getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-        this.getWorld().setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-        this.getWorld().setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-        this.getWorld().setGameRule(GameRule.DO_MOB_SPAWNING, false);
-        this.getWorld().setGameRule(GameRule.MOB_GRIEFING, false);
-        this.getWorld().setGameRule(GameRule.DO_PATROL_SPAWNING, false);
-        this.getWorld().setGameRule(GameRule.DO_FIRE_TICK, false);
-        this.getWorld().setGameRule(GameRule.GLOBAL_SOUND_EVENTS, false);
+    public void setupWorld(@NotNull World world) {
+        world.setSpawnLocation(2, 1, 2);
+        world.setGameRule(GameRule.DO_LIMITED_CRAFTING, true);
+        world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+        world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+        world.setGameRule(GameRule.MOB_GRIEFING, false);
+        world.setGameRule(GameRule.DO_PATROL_SPAWNING, false);
+        world.setGameRule(GameRule.DO_FIRE_TICK, false);
+        world.setGameRule(GameRule.GLOBAL_SOUND_EVENTS, false);
         getDevPlatformer().setWorldBorder(this);
-        changedColumns.clear();
     }
 
     /**
@@ -271,18 +316,18 @@ public class DevPlanet {
         return folder.exists() && folder.isDirectory();
     }
 
-    public Set<Material> getAllCodingBlocksForPlacing() {
+    public @NotNull Set<Material> getAllCodingBlocksForPlacing() {
         Set<Material> allBlocks = new HashSet<>();
         allBlocks.addAll(getEventsBlocks());
         allBlocks.addAll(getActionsBlocks());
         return allBlocks;
     }
 
-    public Set<Material> getEventsBlocks() {
+    public @NotNull Set<Material> getEventsBlocks() {
         return new HashSet<>(Arrays.stream(ExecutorCategory.values()).map(ExecutorCategory::getBlock).toList());
     }
 
-    public Set<Material> getActionsBlocks() {
+    public @NotNull Set<Material> getActionsBlocks() {
         return new HashSet<>(Arrays.stream(ActionCategory.values()).map(ActionCategory::getBlock).toList());
     }
 
@@ -314,7 +359,7 @@ public class DevPlanet {
      * @return true - claimed coding platform, false - already built and exists.
      */
     @SuppressWarnings("UnusedReturnValue")
-    public boolean claimPlatform(DevPlatform platform, Player player) {
+    public boolean claimPlatform(@NotNull DevPlatform platform, @NotNull Player player) {
         if (getDevPlatformer().claimPlatform(this, platform)) {
             player.setAllowFlight(true);
             player.setFlying(true);
@@ -330,7 +375,7 @@ public class DevPlanet {
         }
     }
 
-    public Set<Material> getIndestructibleBlocks() {
+    public @NotNull Set<Material> getIndestructibleBlocks() {
         Set<Material> indestructibleBlocks = new HashSet<>();
         indestructibleBlocks.add(DEFAULT_ACTION_MATERIAL);
         indestructibleBlocks.add(DEFAULT_EVENT_MATERIAL);
@@ -344,7 +389,7 @@ public class DevPlanet {
         return indestructibleBlocks;
     }
 
-    public Set<Material> getAllowedBlocks() {
+    public @NotNull Set<Material> getAllowedBlocks() {
         Set<Material> allowedBlocks = new HashSet<>();
         allowedBlocks.add(Material.LANTERN);
         allowedBlocks.add(Material.JACK_O_LANTERN);
@@ -398,7 +443,7 @@ public class DevPlanet {
         return allowedBlocks;
     }
 
-    public List<Location> getPlacedExecutors(ExecutorCategory category) {
+    public @NotNull List<Location> getPlacedExecutors(ExecutorCategory category) {
         List<Location> locations = new ArrayList<>();
         for (DevPlatform platform : getPlatforms()) {
             locations.addAll(platform.getPlacedExecutors(category));
@@ -406,7 +451,7 @@ public class DevPlanet {
         return locations;
     }
 
-    public List<Location> getPlacedFunctions() {
+    public @NotNull List<Location> getPlacedFunctions() {
         List<Location> locations = new ArrayList<>();
         for (Location location : getPlacedExecutors(ExecutorCategory.FUNCTION)) {
             Block block = location.getBlock();
@@ -418,7 +463,7 @@ public class DevPlanet {
         return locations;
     }
 
-    public List<Location> getPlacedMethods() {
+    public @NotNull List<Location> getPlacedMethods() {
         List<Location> locations = new ArrayList<>();
         for (Location location : getPlacedExecutors(ExecutorCategory.METHOD)) {
             Block block = location.getBlock();
@@ -444,27 +489,50 @@ public class DevPlanet {
         }
     }
 
-    public boolean isLoaded() {
-        return Bukkit.getWorld(getWorldName()) != null;
+    /**
+     * Returns unique ID of loaded developer world.
+     *
+     * @return uuid of world, null - if not loaded.
+     */
+    public @Nullable UUID getWorldUUID() {
+        return worldID;
     }
 
-    public Layout getOpenedMenu(Location location) {
+    /**
+     * Sets a unique ID of loaded developer world.
+     *
+     * @param uuid uuid of world, null - if not loaded.
+     */
+    public void setWorld(@Nullable UUID uuid) {
+        worldID = uuid;
+    }
+
+    /**
+     * Checks whether developer world is loaded.
+     *
+     * @return true - is loaded, false - unloaded.
+     */
+    public boolean isLoaded() {
+        return getWorld() != null;
+    }
+
+    public @Nullable Layout getOpenedMenu(@NotNull Location location) {
         return openedBlocksMenus.get(location);
     }
 
-    public void registerOpenedMenu(Location location, Layout menu) {
+    public void registerOpenedMenu(@NotNull Location location, @NotNull Layout menu) {
         openedBlocksMenus.put(location, menu);
     }
 
-    public void unregisterOpenedMenu(Location location) {
+    public void unregisterOpenedMenu(@NotNull Location location) {
         openedBlocksMenus.remove(location);
     }
 
-    public Material getContainerMaterial() {
+    public @NotNull Material getContainerMaterial() {
         return containerMaterial;
     }
 
-    public Material getSignMaterial() {
+    public @NotNull Material getSignMaterial() {
         return signMaterial;
     }
 
@@ -495,7 +563,7 @@ public class DevPlanet {
         planet.getConfiguration().set("dev.drops", dropItems);
     }
 
-    public void setPlatformerID(String platformer) {
+    public void setPlatformerID(@NotNull String platformer) {
         this.platformerID = platformer;
         planet.getConfiguration().set("dev.platformer", platformerID);
     }
@@ -570,7 +638,7 @@ public class DevPlanet {
         return platformer;
     }
 
-    public Map<UUID, Location> getLastLocations() {
+    public @NotNull Map<UUID, Location> getLastLocations() {
         return lastLocations;
     }
 
@@ -696,6 +764,185 @@ public class DevPlanet {
     }
 
     /**
+     * Connects player to developer's world.
+     *
+     * @param player player to connect.
+     */
+    public void connectPlayer(@NotNull Player player) {
+        connectPlayer(player, false);
+    }
+
+    /**
+     * Connects player to developer's planet.
+     *
+     * @param player     player to connect.
+     * @param hidePlayer whether hide player's join message and make him in spectator mode or not.
+     */
+    public void connectPlayer(@NotNull Player player, boolean hidePlayer) {
+        Wander wander = OpenCreative.getWander(player);
+        if (wander.isConnectingToPlanet()) {
+            player.sendMessage(getLocaleMessage("world.connecting.busy"));
+            return;
+        }
+        wander.setConnectingToPlanet(true);
+        player.showTitle(Title.title(
+                toComponent(getLocaleMessage("world.dev-mode.connecting.title")), toComponent(getLocaleMessage("world.dev-mode.connecting.subtitle")),
+                Title.Times.times(Duration.ofSeconds(15), Duration.ofSeconds(30), Duration.ofSeconds(10))
+        ));
+        World previousWorld = player.getWorld();
+        World world = getWorld();
+        if (world == null) {
+            load().whenComplete((loadedWorld, error) -> {
+                Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
+                    if (error != null) {
+                        String errorMessage = (error.getMessage() == null ? "Unknown error" : error.getMessage());
+                        player.sendMessage(getComponentWithPlaceholders("world.dev-mode.connecting.error",
+                                player, "id", planet.getId(), "wasloaded", false,
+                                "phase", "Loading World", "loaded", isLoaded(), "error", errorMessage)
+                                .clickEvent(ClickEvent.suggestCommand(errorMessage))
+                                .hoverEvent(HoverEvent.showText(Component.text(parseException(error, true)))));
+                        sendCriticalErrorMessage("Failed to connect the player to planet " + planet.getId()
+                                + " (was loaded: true, loaded: " + isLoaded() + ", phase: Loading World)", error);
+                        Sounds.PLAYER_ERROR.play(player);
+                        return;
+                    }
+                    if (loadedWorld == null) {
+                        wander.setConnectingToPlanet(false);
+                        String errorMessage = "Dev planet world is null";
+                        player.sendMessage(getComponentWithPlaceholders("world.dev-mode.connecting.error",
+                                player, "id", planet.getId(), "wasloaded", false,
+                                "phase", "Loading World", "loaded", isLoaded(), "error", errorMessage)
+                                .clickEvent(ClickEvent.suggestCommand(errorMessage))
+                                .hoverEvent(HoverEvent.showText(Component.text(parseException(error, true)))));
+                        sendCriticalErrorMessage("Failed to connect the player to planet " + planet.getId()
+                                + " (was loaded: false, loaded: " + isLoaded() + ", phase: Loading World)", error);
+                        Sounds.PLAYER_ERROR.play(player);
+                        return;
+                    }
+                    worldID = loadedWorld.getUID();
+                    if (player.isOnline() && previousWorld.equals(player.getWorld())) {
+                        handlePlayerConnection(player, loadedWorld, hidePlayer, wander);
+                    } else if (planet.getPlayers().isEmpty()) {
+                        unload();
+                        wander.setConnectingToPlanet(false);
+                    } else {
+                        wander.setConnectingToPlanet(false);
+                    }
+                });
+            });
+            return;
+        }
+        handlePlayerConnection(player, world, hidePlayer, wander);
+    }
+
+    private void handlePlayerConnection(@NotNull Player player, @NotNull World world, boolean hidePlayer, @NotNull Wander wander) {
+        world.getSpawnLocation().getChunk().load(true);
+        Location lastLocation = this.getLastLocations().get(player.getUniqueId());
+        if (!this.isLoaded()) {
+            wander.setConnectingToPlanet(false);
+            return;
+        }
+        if (lastLocation != null) {
+            Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
+                translateSigns(player, 10);
+            }, 5L);
+        }
+        if (lastLocation == null || !isSaveLocation()) {
+            lastLocation = world.getSpawnLocation();
+        }
+        PlayerInventory playerInventory = player.getInventory();
+        ItemStack[] playerInventoryItems = (OpenCreative.getPlanetsManager().getDevPlanet(player) == null ? playerInventory.getContents() : new ItemStack[]{});
+        clearPlayer(player, false);
+        player.teleportAsync(lastLocation).thenAccept(success -> {
+            if (success) {
+                player.setAllowFlight(true);
+                player.setFlying(true);
+                if (!hidePlayer) {
+                    /*
+                     * If player is visiting world normally.
+                     */
+                    if (planet.getWorldPlayers().canDevelop(player)) {
+                        player.sendMessage(getPlayerLocaleMessage("world.dev-mode.help", player));
+                        player.setGameMode(GameMode.CREATIVE);
+                    } else {
+                        player.setGameMode(GameMode.ADVENTURE);
+                    }
+                    for (Player onlinePlayer : player.getWorld().getPlayers()) {
+                        if (!onlinePlayer.equals(player)) {
+                            onlinePlayer.sendMessage(MessageUtils.getPlayerLocaleMessage("world.dev-mode.joined", player));
+                        }
+                    }
+                } else {
+                    /*
+                     * If player is moderator and should be hidden.
+                     */
+                    player.setGameMode(GameMode.SPECTATOR);
+                    for (Player onlinePlayer : player.getWorld().getPlayers()) {
+                        onlinePlayer.hidePlayer(OpenCreative.getPlugin(), player);
+                    }
+                }
+                if (isSaveLocation()) getLastLocations().put(player.getUniqueId(), player.getLocation());
+                if (isNightVision())
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false, false));
+                Sounds.DEV_CONNECTED.play(player);
+                Sounds.WORLD_MODE_DEV.play(player);
+                displayWorldBorders();
+                player.showTitle(Title.title(
+                        toComponent(getLocaleMessage("world.dev-mode.title")), toComponent(getLocaleMessage("world.dev-mode.subtitle")),
+                        Title.Times.times(Duration.ofMillis(750), Duration.ofSeconds(2), Duration.ofMillis(750))
+                ));
+                wander.setConnectingToPlanet(false);
+                ItemsGroup itemsGroup = planet.isOwner(player) ? ItemsGroup.CODING_OWNER : ItemsGroup.CODING;
+                itemsGroup.setItemsIfAbsent(player);
+                List<ItemStack> codingItems = itemsGroup.getItems(player);
+                for (ItemStack item : playerInventoryItems) {
+                    if (item == null) continue;
+                    if (!codingItems.contains(item)) {
+                        player.getInventory().addItem(item);
+                    }
+                }
+            }
+        }).exceptionally(error -> {
+            wander.setConnectingToPlanet(false);
+            String errorMessage = (error.getMessage() == null ? "Unknown error" : error.getMessage());
+            player.sendMessage(getComponentWithPlaceholders("world.dev-mode.connecting.error",
+                    player, "id", planet.getId(), "wasloaded", true,
+                    "phase", "Teleportation", "loaded", isLoaded(), "error", errorMessage)
+                    .clickEvent(ClickEvent.suggestCommand(errorMessage))
+                    .hoverEvent(HoverEvent.showText(Component.text(parseException(error, true)))));
+            sendCriticalErrorMessage("Failed to connect the player to planet " + planet.getId()
+                    + " (was loaded: true, loaded: " + isLoaded() + ", phase: Teleportation)", error);
+            Sounds.PLAYER_ERROR.play(player);
+            return null;
+        });
+    }
+
+    /**
+     * Connects player to developer's world, teleports next
+     * to block on specified coordinates.
+     * <p>
+     * Will make block glowing.
+     *
+     * @param player player to connect.
+     * @param x      x coordinate of block.
+     * @param y      y coordinate of block.
+     * @param z      z coordinate of block.
+     */
+    public void connectPlayer(@NotNull Player player, double x, double y, double z) {
+        connectPlayer(player);
+        if (x > 0 && y > 0 && z > 0 && y < 30 && !isOutOfBorders(new Location(getWorld(), x + 1, y, z + 2))) {
+            Location location = new Location(this.getWorld(), x + 1, y, z + 2, 180, 5);
+            boolean blockExists = !new Location(getWorld(), x, y, z).getBlock().isEmpty();
+            player.teleportAsync(location).thenAccept(success -> {
+                if (success) {
+                    if (blockExists) spawnGlowingBlock(player, new Location(this.getWorld(), x + 0.5, y, z + 0.5));
+                    translateSigns(player, 5);
+                }
+            });
+        }
+    }
+
+    /**
      * Clears set of changed coding lines, so they will be not parsed.
      */
     public void clearColumnsChanges() {
@@ -707,10 +954,10 @@ public class DevPlanet {
     }
 
     public World getWorld() {
-        return Bukkit.getWorld(getWorldName());
+        return Bukkit.getWorld(worldID);
     }
 
-    public Planet getPlanet() {
+    public @NotNull Planet getPlanet() {
         return planet;
     }
 }

@@ -37,6 +37,8 @@ import ua.mcchickenstudio.opencreative.commands.world.*;
 import ua.mcchickenstudio.opencreative.commands.world.modes.*;
 import ua.mcchickenstudio.opencreative.commands.world.reputation.*;
 import ua.mcchickenstudio.opencreative.managers.Managers;
+import ua.mcchickenstudio.opencreative.managers.worlds.VanillaWorldManager;
+import ua.mcchickenstudio.opencreative.managers.worlds.WorldManager;
 import ua.mcchickenstudio.opencreative.wanders.OfflineWander;
 import ua.mcchickenstudio.opencreative.wanders.Wander;
 import ua.mcchickenstudio.opencreative.coding.prompters.*;
@@ -91,7 +93,7 @@ public final class OpenCreative extends JavaPlugin {
     private Settings settings;
     private DevPlatformer devPlatformer;
 
-    private static final String version = "6.0.0 Preview";
+    private static final String version = "6.0.0 Pre-release 2";
     private static final String codename = "Well, it's possible";
 
     /**
@@ -214,6 +216,7 @@ public final class OpenCreative extends JavaPlugin {
      */
     @SuppressWarnings("ConstantConditions")
     private void loadManagers() {
+        managers.register(WorldManager.class, new VanillaWorldManager());
         managers.register(PlanetsManager.class, new Space());
         managers.register(ModuleManager.class, new Moduler());
         managers.start(PlanetsManager.class, ModuleManager.class);
@@ -230,7 +233,8 @@ public final class OpenCreative extends JavaPlugin {
         managers.register(DisguiseManager.class, HookUtils.getDisguises());
         managers.start(CodingPrompter.class, StabilityManager.class, DownloadManager.class,
                 Economy.class, Updater.class, BlocksManager.class, HintManager.class,
-                DisguiseManager.class, PacketManager.class, PhysicsManager.class);
+                DisguiseManager.class, PacketManager.class, PhysicsManager.class,
+                WorldManager.class);
     }
 
     /**
@@ -240,7 +244,8 @@ public final class OpenCreative extends JavaPlugin {
         managers.shutdown(PlanetsManager.class, ModuleManager.class,
                 DownloadManager.class, Economy.class, StabilityManager.class,
                 BlocksManager.class, PacketManager.class, DisguiseManager.class,
-                CodingPrompter.class, Updater.class, HintManager.class);
+                CodingPrompter.class, Updater.class, HintManager.class,
+                WorldManager.class);
     }
 
     /**
@@ -490,6 +495,17 @@ public final class OpenCreative extends JavaPlugin {
     @SuppressWarnings("unused")
     public static DevPlatformer getDevPlatformer() {
         return getPlugin().devPlatformer;
+    }
+
+    /**
+     * Gets world manager, that loads
+     * and unloads worlds.
+     *
+     * @return world manager.
+     */
+    @SuppressWarnings("unused")
+    public static WorldManager getWorldManager() {
+        return getPlugin().managers.get(WorldManager.class);
     }
 
     /**

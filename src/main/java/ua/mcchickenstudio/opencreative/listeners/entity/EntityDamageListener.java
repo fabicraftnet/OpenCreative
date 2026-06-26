@@ -35,6 +35,7 @@ import ua.mcchickenstudio.opencreative.planets.PlanetFlags;
 import ua.mcchickenstudio.opencreative.utils.world.WorldUtils;
 
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getPlayerLocaleComponent;
+import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.getLobbyLocation;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.isEntityInLobby;
 import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isLobbyWorld;
 
@@ -87,7 +88,7 @@ public final class EntityDamageListener implements Listener {
                         @Override
                         public void run() {
                             if (world.equals(victim.getWorld())) {
-                                victim.teleport(world.getSpawnLocation());
+                                victim.teleport(getLobbyLocation());
                             }
                         }
                     };

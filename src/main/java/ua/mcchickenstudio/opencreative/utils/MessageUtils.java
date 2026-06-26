@@ -881,7 +881,7 @@ public final class MessageUtils {
                     result.append(replacement);
                     if (hadStyle && !isDecoration) {
                         // If it's color, then reset decorations,
-                        // like legacy behaviour
+                        // like legacy behavior
                         result.append("<reset>");
                         hadStyle = false;
                     } else if (isDecoration) {
@@ -894,7 +894,7 @@ public final class MessageUtils {
             if (current == '\n') {
                 if (hadStyle) {
                     // If it's new line, then reset decorations,
-                    // like legacy behaviour
+                    // like legacy behavior
                     result.append("<reset>");
                     hadStyle = false;
                 }
@@ -978,7 +978,7 @@ public final class MessageUtils {
                     }
                     if (hadStyle && !isDecoration) {
                         // If it's color, then reset decorations,
-                        // like legacy behaviour
+                        // like legacy behavior
                         result.append("<reset><black>");
                         hadStyle = false;
                     } else if (isDecoration) {

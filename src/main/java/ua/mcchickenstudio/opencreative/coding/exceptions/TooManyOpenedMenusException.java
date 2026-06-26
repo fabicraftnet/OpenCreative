@@ -18,6 +18,9 @@
 
 package ua.mcchickenstudio.opencreative.coding.exceptions;
 
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
 /**
  * <h1>TooManyOpenedMenusException</h1>
  * This class represents an exception, that happens when
@@ -25,8 +28,8 @@ package ua.mcchickenstudio.opencreative.coding.exceptions;
  */
 public final class TooManyOpenedMenusException extends PlayerException {
 
-    public TooManyOpenedMenusException(String player) {
-        super(player, "Too many actions with inventory was called for " + player + " in short time.");
+    public TooManyOpenedMenusException(@NotNull Player player) {
+        super(player.getName(), player.getUniqueId(), "Too many actions with inventory was called for " + player + " in short time.");
     }
 
 }

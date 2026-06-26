@@ -104,7 +104,6 @@ import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.messageExists;
 
-
 public enum ActionType implements CodingBlockType {
 
     /**
@@ -128,8 +127,8 @@ public enum ActionType implements CodingBlockType {
 
     // Inventory
     PLAYER_GIVE_ITEMS(ActionCategory.PLAYER_ACTION, MenusCategory.INVENTORY, GiveItemsAction.class, Material.CHEST_MINECART, new ArgumentSlot("items", ValueType.ITEM, (byte) 27)),
-    PLAYER_SAVE_INVENTORY(ActionCategory.PLAYER_ACTION, MenusCategory.INVENTORY, SaveInventoryAction.class, Material.HOPPER),
-    PLAYER_RESTORE_INVENTORY(ActionCategory.PLAYER_ACTION, MenusCategory.INVENTORY, RestoreInventoryAction.class, Material.DROPPER),
+    PLAYER_SAVE_INVENTORY(ActionCategory.PLAYER_ACTION, MenusCategory.INVENTORY, SaveInventoryAction.class, Material.HOPPER, new ArgumentSlot("number", ValueType.NUMBER)),
+    PLAYER_RESTORE_INVENTORY(ActionCategory.PLAYER_ACTION, MenusCategory.INVENTORY, RestoreInventoryAction.class, Material.DROPPER, new ArgumentSlot("number", ValueType.NUMBER)),
     PLAYER_SET_ITEM_IN_HAND(ActionCategory.PLAYER_ACTION, MenusCategory.INVENTORY, SetItemInHandAction.class, Material.NETHERITE_SWORD, new ArgumentSlot("main", ValueType.ITEM), new ParameterSlot("replace-with-air"), new ArgumentSlot("off", ValueType.ITEM)),
     PLAYER_SET_ITEM_IN_SLOT(ActionCategory.PLAYER_ACTION, MenusCategory.INVENTORY, SetItemInSlotAction.class, Material.SLIME_BLOCK, new ArgumentSlot("slots", ValueType.NUMBER, (byte) 18), new ArgumentSlot("item", ValueType.ITEM), new ParameterSlot("replace-with-air")),
     PLAYER_SET_CURSOR_ITEM(ActionCategory.PLAYER_ACTION, MenusCategory.INVENTORY, SetCursorItemAction.class, Material.TRIPWIRE_HOOK, new ArgumentSlot("item", ValueType.ITEM)),
@@ -255,6 +254,7 @@ public enum ActionType implements CodingBlockType {
     IF_PLAYER_IS_IN_POWDERED_SNOW(ActionCategory.PLAYER_CONDITION, MenusCategory.MOVEMENT, IsInPowderedSnow.class, Material.POWDER_SNOW_BUCKET),
     IF_PLAYER_IS_INSIDE_VEHICLE(ActionCategory.PLAYER_CONDITION, MenusCategory.MOVEMENT, IsInsideVehicle.class, Material.MINECART),
 
+    IF_PLAYER_IS_WEARING_ITEM(ActionCategory.PLAYER_CONDITION, MenusCategory.INVENTORY, IsWearingItemCondition.class, Material.DIAMOND_CHESTPLATE, new ArgumentSlot("helmet", ValueType.ITEM), new ArgumentSlot("chestplate", ValueType.ITEM), new ArgumentSlot("leggings", ValueType.ITEM), new ArgumentSlot("boots", ValueType.ITEM), new ParameterSlot("all"), new ParameterSlot("require-air", false, Material.GLASS, Material.RED_STAINED_GLASS), new ParameterSlot("ignore-damage", Material.DEAD_BUSH, Material.GOLDEN_HOE), new ParameterSlot("ignore-name", Material.NAME_TAG, Material.STRING), new ParameterSlot("ignore-lore", Material.WRITABLE_BOOK, Material.COBWEB), new ParameterSlot("ignore-enchantments", Material.ENCHANTED_BOOK, Material.BOOK), new ParameterSlot("ignore-flags", Material.BLUE_BANNER, Material.WHITE_BANNER), new ParameterSlot("ignore-amount", Material.BEETROOT_SEEDS, Material.OAK_BUTTON)),
     IF_PLAYER_ITEM_EQUALS(ActionCategory.PLAYER_CONDITION, MenusCategory.INVENTORY, IsItemEqualsCondition.class, Material.GLOW_ITEM_FRAME, new ArgumentSlot("items", ValueType.ITEM, (byte) 18), new ParameterSlot("ignore-amount", Material.BEETROOT_SEEDS, Material.OAK_BUTTON), new ParameterSlot("ignore-name", Material.NAME_TAG, Material.STRING), new ParameterSlot("ignore-lore", Material.WRITABLE_BOOK, Material.COBWEB), new ParameterSlot("ignore-enchantments", Material.ENCHANTED_BOOK, Material.BOOK), new ParameterSlot("ignore-flags", Material.BLUE_BANNER, Material.WHITE_BANNER), new ParameterSlot("ignore-material", Material.CRAFTING_TABLE, Material.WHITE_STAINED_GLASS), new ParameterSlot("ignore-damage", Material.DEAD_BUSH, Material.GOLDEN_HOE)),
     IF_PLAYER_HAS_ITEM_COOLDOWN(ActionCategory.PLAYER_CONDITION, MenusCategory.INVENTORY, HasItemCooldownCondition.class, Material.CLOCK, new ArgumentSlot("items", ValueType.ITEM, (byte) 18)),
     IF_PLAYER_IS_NEAR_LOCATION(ActionCategory.PLAYER_CONDITION, MenusCategory.MOVEMENT, IsNearLocationCondition.class, Material.COMPASS, new ArgumentSlot("locations", ValueType.LOCATION, (byte) 18), new ArgumentSlot("distance", ValueType.NUMBER)),
@@ -328,6 +328,7 @@ public enum ActionType implements CodingBlockType {
     WORLD_ADD_BLAST_FURNACE_RECIPE(ActionCategory.WORLD_ACTION, MenusCategory.WORLD, AddBlastingFurnaceRecipeAction.class, Material.BLAST_FURNACE, new ArgumentSlot("item", ValueType.ITEM), new ArgumentSlot("result", ValueType.ITEM), new ArgumentSlot("name", ValueType.TEXT), new ArgumentSlot("time", ValueType.NUMBER), new ArgumentSlot("experience", ValueType.NUMBER), new ParameterSlot("category", List.of("misc", "building"), Material.REDSTONE_BLOCK, Material.STONE)),
     WORLD_ADD_SMOKER_RECIPE(ActionCategory.WORLD_ACTION, MenusCategory.WORLD, AddSmokerRecipeAction.class, Material.SMOKER, new ArgumentSlot("item", ValueType.ITEM), new ArgumentSlot("result", ValueType.ITEM), new ArgumentSlot("name", ValueType.TEXT), new ArgumentSlot("time", ValueType.NUMBER), new ArgumentSlot("experience", ValueType.NUMBER)),
     WORLD_ADD_CAMPFIRE_RECIPE(ActionCategory.WORLD_ACTION, MenusCategory.WORLD, AddCampfireRecipeAction.class, Material.CAMPFIRE, new ArgumentSlot("item", ValueType.ITEM), new ArgumentSlot("result", ValueType.ITEM), new ArgumentSlot("name", ValueType.TEXT), new ArgumentSlot("time", ValueType.NUMBER), new ArgumentSlot("experience", ValueType.NUMBER)),
+    WORLD_ADD_MERCHANT_RECIPE(ActionCategory.WORLD_ACTION, MenusCategory.WORLD, AddMerchantRecipeAction.class, Material.EMERALD, new ArgumentSlot("first", ValueType.ITEM), new ArgumentSlot("second", ValueType.ITEM), new ArgumentSlot("result", ValueType.ITEM), new ArgumentSlot("name", ValueType.TEXT), new ArgumentSlot("uses", ValueType.NUMBER), new ArgumentSlot("max-uses", ValueType.NUMBER), new ParameterSlot("player-exp", false, Material.EXPERIENCE_BOTTLE, Material.GLASS_BOTTLE), new ArgumentSlot("villager-exp", ValueType.NUMBER), new ArgumentSlot("discount", ValueType.NUMBER)),
 
     WORLD_REMOVE_RECIPE(ActionCategory.WORLD_ACTION, MenusCategory.WORLD, RemoveRecipeAction.class, Material.KNOWLEDGE_BOOK, new ArgumentSlot("recipes", ValueType.TEXT, (byte) 18)),
 
@@ -416,6 +417,7 @@ public enum ActionType implements CodingBlockType {
     WORLD_CREATE_FIREWORK_EXPLOSION(ActionCategory.WORLD_ACTION, MenusCategory.ENTITY, CreateFireworkExplosionAction.class, Material.FIREWORK_STAR, new ArgumentSlot("locations", ValueType.LOCATION, (byte) 18), new ArgumentSlot("firework", ValueType.ITEM)),
     WORLD_CREATE_EXPERIENCE_ORB(ActionCategory.WORLD_ACTION, MenusCategory.ENTITY, SpawnExperienceOrbAction.class, Material.EXPERIENCE_BOTTLE, new ArgumentSlot("locations", ValueType.LOCATION, (byte) 18), new ArgumentSlot("amount", ValueType.NUMBER)),
     WORLD_SPAWN_PARTICLES_LINE(ActionCategory.WORLD_ACTION, MenusCategory.ENTITY, SpawnParticlesLineAction.class, Material.BREEZE_ROD, new ArgumentSlot("first", ValueType.LOCATION), new ArgumentSlot("second", ValueType.LOCATION), new ArgumentSlot("particle", ValueType.PARTICLE), new ArgumentSlot("count", ValueType.NUMBER), new ArgumentSlot("offset-x", ValueType.NUMBER), new ArgumentSlot("offset-y", ValueType.NUMBER), new ArgumentSlot("offset-z", ValueType.NUMBER)),
+    WORLD_SPAWN_PARTICLES_CIRCLE(ActionCategory.WORLD_ACTION, MenusCategory.ENTITY, SpawnParticlesCircleAction.class, Material.ENDER_EYE, new ArgumentSlot("center", ValueType.LOCATION), new ArgumentSlot("radius", ValueType.NUMBER), new ArgumentSlot("points", ValueType.NUMBER), new ArgumentSlot("normal", ValueType.VECTOR), new ArgumentSlot("particle", ValueType.PARTICLE)),
 
     WORLD_COPY_BLOCKS(ActionCategory.WORLD_ACTION, MenusCategory.BLOCKS, CopyBlocksAction.class, Material.NETHERITE_SCRAP, new ArgumentSlot("first", ValueType.LOCATION), new ArgumentSlot("second", ValueType.LOCATION), new ArgumentSlot("from", ValueType.LOCATION), new ArgumentSlot("where", ValueType.LOCATION)),
     WORLD_SET_BLOCKS_AREA_TYPE(ActionCategory.WORLD_ACTION, MenusCategory.BLOCKS, SetBlocksAreaTypeAction.class, Material.COBBLESTONE, new ArgumentSlot("first", ValueType.LOCATION), new ArgumentSlot("second", ValueType.LOCATION), new ArgumentSlot("type", ValueType.ITEM)),
@@ -433,8 +435,6 @@ public enum ActionType implements CodingBlockType {
     WORLD_SET_SIGN_WAXED(ActionCategory.WORLD_ACTION, MenusCategory.BLOCKS, SetSignWaxedAction.class, Material.HONEYCOMB, new ArgumentSlot("locations", ValueType.LOCATION, (byte) 18), new ParameterSlot("waxed", true, Material.HONEYCOMB, Material.GLASS_BOTTLE)),
     WORLD_SET_SIGN_GLOWING_TEXT(ActionCategory.WORLD_ACTION, MenusCategory.BLOCKS, SetSignGlowingTextAction.class, Material.GLOW_INK_SAC, new ArgumentSlot("locations", ValueType.LOCATION, (byte) 18), new ParameterSlot("side", Arrays.asList("front", "back"), Material.OAK_SIGN, Material.WARPED_SIGN), new ParameterSlot("glowing", true, Material.GLOW_INK_SAC, Material.INK_SAC)),
     WORLD_SET_BLOCK_BIOME(ActionCategory.WORLD_ACTION, MenusCategory.BLOCKS, SetBlockBiomeAction.class, Material.MYCELIUM, new ArgumentSlot("locations", ValueType.LOCATION, (byte) 18), new ArgumentSlot("biome", ValueType.TEXT)),
-    WORLD_GET_BLOCK_STATE(ActionCategory.WORLD_ACTION, MenusCategory.BLOCKS, GetBlockStateAction.class, Material.PISTON, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("location", ValueType.LOCATION)),
-    WORLD_SET_BLOCK_STATE(ActionCategory.WORLD_ACTION, MenusCategory.BLOCKS, SetBlockStateAction.class, Material.STICKY_PISTON, new ArgumentSlot("location", ValueType.LOCATION), new ArgumentSlot("blockstate", ValueType.TEXT)),
 
     /**
      * <h1>Variable Actions.</h1>
@@ -778,6 +778,7 @@ public enum ActionType implements CodingBlockType {
     ENTITY_REMOVE_ITEMS(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_INVENTORY, EntityRemoveItemsAction.class, Material.COBWEB, new ArgumentSlot("items", ValueType.ITEM, (byte) 27)),
 
     ENTITY_REMOVE(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, RemoveEntityAction.class, Material.BARRIER),
+    ENTITY_SET_VILLAGER_RECIPES(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, SetVillagerRecipesAction.class, Material.EMERALD, new ArgumentSlot("recipes", ValueType.TEXT, (byte) 18)),
     ENTITY_SET_TEAM(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, SetTeamAction.class, Material.LIME_BANNER, new ArgumentSlot("scoreboard", ValueType.TEXT), new ArgumentSlot("team", ValueType.TEXT)),
     ENTITY_UNSET_TEAM(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, UnsetTeamAction.class, Material.RED_BANNER, new ArgumentSlot("scoreboard", ValueType.TEXT), new ArgumentSlot("team", ValueType.TEXT)),
     ENTITY_SET_FRICTION(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetFrictionAction.class, Material.ICE, new ParameterSlot("friction", List.of("not-set", "true", "false"), Material.LIGHT_BLUE_DYE, Material.GREEN_DYE, Material.RED_DYE)),
@@ -787,10 +788,11 @@ public enum ActionType implements CodingBlockType {
     ENTITY_SET_AGGRESSIVE(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetAggressiveAction.class, Material.NETHERITE_SWORD, new ParameterSlot("boolean")),
 
     ENTITY_SET_DISPLAY_BILLBOARD(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayBillboardAction.class, Material.ENDER_EYE, new ParameterSlot("billboard", Arrays.asList("center", "fixed", "horizontal", "vertical"), Material.ENDER_EYE, Material.ENDER_PEARL, Material.SLIME_BALL, Material.SNOWBALL)),
+    ENTITY_SET_DISPLAY_TELEPORT_DURATION(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayTeleportDurationAction.class, Material.ENDER_PEARL, new ArgumentSlot("duration", ValueType.NUMBER), new ParameterSlot("add")),
     ENTITY_SET_DISPLAY_SCALE(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayScaleAction.class, Material.PAPER, new ArgumentSlot("x", ValueType.NUMBER), new ArgumentSlot("y", ValueType.NUMBER), new ArgumentSlot("z", ValueType.NUMBER), new ParameterSlot("add")),
     ENTITY_SET_DISPLAY_TRANSLATION(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayTranslationAction.class, Material.ARROW, new ArgumentSlot("x", ValueType.NUMBER), new ArgumentSlot("y", ValueType.NUMBER), new ArgumentSlot("z", ValueType.NUMBER), new ParameterSlot("add")),
     ENTITY_SET_DISPLAY_ROTATION(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayRotationAction.class, Material.ENDER_EYE, new ArgumentSlot("x", ValueType.NUMBER), new ArgumentSlot("y", ValueType.NUMBER), new ArgumentSlot("z", ValueType.NUMBER), new ParameterSlot("add")),
-    ENTITY_SET_DISPLAY_ITEM(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayItemAction.class, Material.CRAFTING_TABLE, new ArgumentSlot("item", ValueType.ITEM)),
+    ENTITY_SET_ITEM(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetItemAction.class, Material.CRAFTING_TABLE, new ArgumentSlot("item", ValueType.ITEM)),
     ENTITY_RELEASE_SHOULDERS(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntityReleaseShouldersAction.class, Material.PARROT_SPAWN_EGG, new ParameterSlot("type", List.of("all", "left", "right"), Material.PARROT_SPAWN_EGG, Material.SHIELD, Material.NETHERITE_SWORD)),
 
     //ENTITY_SET_DISPLAY_ITEM_MODE(       ActionCategory.ENTITY_ACTION, MenusCategory.STATE, null, Material.LECTERN, new ParameterSlot("mode", Arrays.asList("fixed","none","ground","gui","head","firstperson-lefthand","firstperson-righthand","thirdperson-lefthand","thirdperson-righthand"), Material.ENDER_EYE, Material.STRUCTURE_VOID, Material.GRASS_BLOCK, Material.CHEST, Material.PLAYER_HEAD, Material.TRIPWIRE_HOOK, Material.TRIPWIRE_HOOK, Material.LEVER, Material.LEVER)),
@@ -884,6 +886,7 @@ public enum ActionType implements CodingBlockType {
     REPEAT_FOR_LIST(ActionCategory.REPEAT_ACTION, MenusCategory.REPEATS, RepeatForEachAction.class, Material.BOOKSHELF, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("list", ValueType.VARIABLE)),
     REPEAT_FOR_ENTRY(ActionCategory.REPEAT_ACTION, MenusCategory.REPEATS, RepeatForEntryAction.class, Material.CHEST_MINECART, new ArgumentSlot("key", ValueType.VARIABLE), new ArgumentSlot("value", ValueType.VARIABLE), new ArgumentSlot("map", ValueType.VARIABLE)),
     REPEAT_FOR_BLOCKS(ActionCategory.REPEAT_ACTION, MenusCategory.REPEATS, RepeatForBlocksAction.class, Material.PAPER, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("first", ValueType.LOCATION), new ArgumentSlot("second", ValueType.LOCATION)),
+    REPEAT_ON_CIRCLE(ActionCategory.REPEAT_ACTION, MenusCategory.REPEATS, RepeatOnCircleAction.class, Material.ENDER_PEARL, new ArgumentSlot("consumer", ValueType.VARIABLE), new ArgumentSlot("center", ValueType.LOCATION), new ArgumentSlot("radius", ValueType.NUMBER), new ArgumentSlot("points", ValueType.NUMBER), new ArgumentSlot("normal", ValueType.VECTOR)),
 
     LAUNCH_FUNCTION(ActionCategory.LAUNCH_FUNCTION_ACTION, MenusCategory.OTHER, LaunchFunctionAction.class, Material.LAPIS_ORE),
     LAUNCH_METHOD(ActionCategory.LAUNCH_METHOD_ACTION, MenusCategory.OTHER, LaunchMethodAction.class, Material.EMERALD),
@@ -1073,6 +1076,9 @@ public enum ActionType implements CodingBlockType {
             }
         }
         if (signLine != null) {
+            if (signLine.equalsIgnoreCase("entity_set_display_item")) {
+                signLine = "entity_set_item";
+            }
             for (ActionType actionType : values()) {
                 if (actionType.name().equals(signLine.toUpperCase())) {
                     return actionType;
@@ -1083,23 +1089,21 @@ public enum ActionType implements CodingBlockType {
     }
 
     public static @Nullable ActionType getType(@NotNull String text) {
-        for (ActionType actionType : values()) {
-            if (actionType.name().equalsIgnoreCase(text)) {
-                return actionType;
-            }
+        if (text.equalsIgnoreCase("entity_set_display_item")) {
+            return ENTITY_SET_ITEM;
         }
-        return null;
+        try {
+            return ActionType.valueOf(text.toUpperCase());
+        } catch (Exception ignored) {
+            return null;
+        }
     }
 
     public static ActionType getTypeFromSelectionAction(Block block) {
         Block signBlock = block.getRelative(BlockFace.SOUTH);
         String signLine = getSignLine(signBlock.getLocation(), (byte) 3);
         if (signLine != null) {
-            for (ActionType actionType : values()) {
-                if (actionType.name().equals(signLine.toUpperCase())) {
-                    return actionType;
-                }
-            }
+            return getType(signLine);
         }
         return null;
     }

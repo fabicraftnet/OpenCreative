@@ -34,7 +34,6 @@ import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getUnknownArgumentMessage;
 
 /**
  * <h1>WeatherCommand</h1>

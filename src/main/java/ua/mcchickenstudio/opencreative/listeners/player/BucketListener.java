@@ -29,7 +29,6 @@ import ua.mcchickenstudio.opencreative.planets.DevPlanet;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleComponent;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.isEntityInLobby;
 
 public final class BucketListener implements Listener {
@@ -59,7 +58,7 @@ public final class BucketListener implements Listener {
         if (isEntityInLobby(player) && OpenCreative.getSettings().getLobbySettings().isDestroyingBlocksDisallowed()
                 && !player.hasPermission("opencreative.lobby.destroying-blocks.bypass")) {
             event.setCancelled(true);
-            player.sendActionBar(getLocaleMessage("not-for-lobby"));
+            player.sendActionBar(getLocaleComponent("not-for-lobby"));
         }
     }
 

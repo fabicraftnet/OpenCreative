@@ -29,6 +29,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.OpenCreative;
+import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
 import ua.mcchickenstudio.opencreative.menus.AbstractMenu;
 import ua.mcchickenstudio.opencreative.menus.buttons.ParameterButton;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
@@ -76,11 +77,6 @@ public class WanderSettingsMenu extends AbstractMenu {
         if (meta == null) {
             return item;
         }
-        if (meta instanceof SkullMeta skullMeta) {
-            PlayerProfile profile = Bukkit.createProfile(nickname);
-            skullMeta.setPlayerProfile(profile);
-            item.setItemMeta(skullMeta);
-        }
         List<String> lore = new ArrayList<>();
         OfflinePlayer offlinePlayer = wander.getOfflinePlayer();
         for (String loreLine : MessageUtils.getLocaleItemDescription("menus.player-profile.items.player.lore")) {
@@ -95,9 +91,15 @@ public class WanderSettingsMenu extends AbstractMenu {
             }
         }
         meta.setLore(lore);
-        replacePlaceholderInLore(item, "%player%", nickname);
-        replacePlaceholderInLore(item, "%gender%", wander.getGender() == null
-                ? OfflineWander.Gender.UNKNOWN.getLocaleName() : wander.getGender().getLocaleName());
+        item.setItemMeta(meta);
+        if (meta instanceof SkullMeta skullMeta) {
+            PlayerProfile profile = Bukkit.createProfile(nickname);
+            skullMeta.setPlayerProfile(profile);
+            item.setItemMeta(skullMeta);
+        }
+        replacePlaceholdersInItem(item, new PlaceholderReplacer("player", nickname,
+                "gender", wander.getGender() == null
+                ? OfflineWander.Gender.UNKNOWN.getLocaleName() : wander.getGender().getLocaleName()));
         return item;
     }
 
@@ -135,7 +137,7 @@ public class WanderSettingsMenu extends AbstractMenu {
                 Sounds.PROFILE_SETTINGS_GENDER_CHANGE.play(player);
                 CHANGE_GENDER.next();
                 wander.setGender(OfflineWander.Gender.getGender(
-                        CHANGE_GENDER.getCurrentValue().toString().toUpperCase().replaceAll("-", "_")
+                        CHANGE_GENDER.getCurrentValue().toString().toUpperCase().replace("-", "_")
                 ));
                 setItem(event.getRawSlot(), CHANGE_GENDER.getItem());
                 setItem(30, getHead());
@@ -157,13 +159,17 @@ public class WanderSettingsMenu extends AbstractMenu {
     private ItemStack getSocialLinks() {
         ItemStack item = createItem(Material.NAME_TAG, 1, "menus.player-profile.items.social-links");
         List<String> socialSites = List.of("discord", "youtube", "telegram", "twitter");
+        Object[] replacement = new Object[socialSites.size() * 2];
+        int index = 0;
         for (String site : socialSites) {
             String link = wander.getLink(site);
             if (link == null) {
                 link = getLocaleMessage("menus.player-profile.items.social-links.unknown", false);
             }
-            replacePlaceholderInLore(item, "%" + site + "%", link);
+            replacement[index++] = site; // discord
+            replacement[index++] = link; // username
         }
+        replacePlaceholdersInItem(item, new PlaceholderReplacer(replacement));
         return item;
     }
 

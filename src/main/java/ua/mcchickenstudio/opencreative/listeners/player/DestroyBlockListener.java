@@ -18,7 +18,6 @@
 
 package ua.mcchickenstudio.opencreative.listeners.player;
 
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -38,10 +37,6 @@ import ua.mcchickenstudio.opencreative.planets.DevPlanet;
 import ua.mcchickenstudio.opencreative.planets.DevPlatform;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
-import ua.mcchickenstudio.opencreative.settings.items.Items;
-
-import java.util.List;
-import java.util.Random;
 
 import static ua.mcchickenstudio.opencreative.listeners.player.PlaceBlockListener.move;
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.getClosingBracketX;
@@ -57,7 +52,6 @@ import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.translateBlockSi
 public final class DestroyBlockListener implements Listener {
 
     private static final int SHIFT_COMPACT_MAX_PASSES = 20;
-    private final Random random = new Random();
 
     @EventHandler
     public void onBreak(BlockBreakEvent event) {

@@ -44,6 +44,7 @@ public class PlanetLimits {
     private final Deque<Long> lastExplosionSpawns = new ArrayDeque<>();
     private final Deque<Long> lastWebRequests = new ArrayDeque<>();
     private final Deque<Long> lastMobSpawnsBySpawner = new ArrayDeque<>();
+
     private final Deque<Long> lastLightningsStrikes = new ArrayDeque<>();
     private final Deque<Long> lastBeesSpawns = new ArrayDeque<>();
     private final Deque<Long> lastCodingErrors = new ArrayDeque<>();
@@ -614,7 +615,7 @@ public class PlanetLimits {
         }
 
         long passedTimeAfterLaunch = System.currentTimeMillis() - planet.getTerritory().getScript().getLastLaunch();
-        if (lastRecipeOperations.size() > (passedTimeAfterLaunch > 100 ? planet.getLimits().getRecipesLimit()/2 : planet.getLimits().getRecipesLimit())) {
+        if (lastRecipeOperations.size() > (passedTimeAfterLaunch > 100 ? planet.getLimits().getRecipesLimit() / 2 : planet.getLimits().getRecipesLimit())) {
             return true;
         }
 
@@ -694,6 +695,21 @@ public class PlanetLimits {
 
         timestamps.addLast(now);
         return false;
+    }
+
+    /**
+     * Returns how many menus were opened
+     * for player in latest 5 seconds.
+     *
+     * @param uuid unique id of player.
+     * @return amount of last menu opens.
+     */
+    public int getLastMenuOpensAmount(@NotNull UUID uuid) {
+        Deque<Long> timestamps = lastPlayerMenuOpens.get(uuid);
+        if (timestamps == null) {
+            return 0;
+        }
+        return timestamps.size();
     }
 
     /**

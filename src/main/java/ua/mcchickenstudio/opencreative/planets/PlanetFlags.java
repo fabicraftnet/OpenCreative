@@ -21,7 +21,6 @@ package ua.mcchickenstudio.opencreative.planets;
 import org.bukkit.GameRule;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import ua.mcchickenstudio.opencreative.utils.FileUtils;
 
 import java.util.EnumMap;
 import java.util.Map;

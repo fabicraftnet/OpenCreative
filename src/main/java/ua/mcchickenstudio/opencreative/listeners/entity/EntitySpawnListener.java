@@ -34,6 +34,7 @@ import org.bukkit.event.vehicle.VehicleCreateEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.world.other.LimitReachedEntitiesEvent;
 import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
@@ -42,11 +43,11 @@ import ua.mcchickenstudio.opencreative.planets.PlanetFlags;
 import ua.mcchickenstudio.opencreative.utils.ItemUtils;
 import ua.mcchickenstudio.opencreative.wanders.Wander;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.isOutOfBorders;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.sendMessageOnce;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.isEntityInDevPlanet;
 import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.*;
 
@@ -95,19 +96,29 @@ public final class EntitySpawnListener implements Listener {
                 event.setCancelled(true);
                 return;
             }
-            int limit = planet.getLimits().getEntitiesLimit();
-            int count = planet.getTerritory().getWorld().getEntityCount();
-            if (world.getName().contains("dev")) {
-                if (!(event.getEntity() instanceof Item)) {
-                    event.setCancelled(true);
-                }
-            }
-            if (event.getEntity().getEntitySpawnReason().name().contains("SPAWNER") && planet.getLimits().isTooManyMobSpawnsBySpawner()) {
+            if (event.getEntity().getEntitySpawnReason().name().contains("SPAWNER")
+                    && planet.getLimits().isTooManyMobSpawnsBySpawner()) {
                 event.setCancelled(true);
                 return;
             }
-            if (planet.getDevPlanet() != null && planet.getDevPlanet().getWorld() != null) {
-                count += planet.getDevPlanet().getWorld().getEntityCount();
+            int limit = planet.getLimits().getEntitiesLimit();
+            int count = 0;
+            if (planet.getDevPlanet().isLoaded()) {
+                if (isDevPlanet(world)) {
+                    if (event.getEntityType() != EntityType.ITEM) {
+                        event.setCancelled(true);
+                    }
+                    World buildWorld = planet.getWorld();
+                    if (buildWorld != null) {
+                        count += buildWorld.getEntityCount();
+                    }
+                    count += world.getEntityCount();
+                } else {
+                    count += world.getEntityCount();
+                    count += planet.getDevPlanet().getWorld().getEntityCount();
+                }
+            } else {
+                count += world.getEntityCount();
             }
             if (count > limit) {
                 event.setCancelled(true);
@@ -116,11 +127,10 @@ public final class EntitySpawnListener implements Listener {
                         new PlaceholderReplacer("count", limit),
                         "/world deletemobs", null, 3);
                 new LimitReachedEntitiesEvent(planet).callEvent();
-            } else {
-                if (!event.isCancelled()) {
-                    new ua.mcchickenstudio.opencreative.coding.blocks.events.entity.entities.EntitySpawnEvent(event).callEvent();
-                }
+                return;
             }
+            if (event.isCancelled()) return;
+            new ua.mcchickenstudio.opencreative.coding.blocks.events.entity.entities.EntitySpawnEvent(event).callEvent();
         }
     }
 
@@ -164,62 +174,8 @@ public final class EntitySpawnListener implements Listener {
             if (player == null) return;
             if (OpenCreative.getSettings().getLobbySettings().isSpawningMobsDisallowed() && !player.hasPermission("opencreative.lobby.spawning-mobs.bypass")) {
                 event.setCancelled(true);
-                player.sendActionBar(getLocaleMessage("not-for-lobby"));
+                player.sendActionBar(getLocaleComponent("not-for-lobby"));
             }
-        }
-    }
-
-    @EventHandler
-    public void onCreatureSpawn(CreatureSpawnEvent event) {
-        World world = event.getEntity().getWorld();
-        Entity entity = event.getEntity();
-        switch (event.getSpawnReason()) {
-            case EGG, SPAWNER_EGG, SPAWNER, DISPENSE_EGG, TRIAL_SPAWNER -> {
-                if (OpenCreative.getSettings().getItemFixerSettings().isRemoveBossSpawnEggs() && entity instanceof Boss) {
-                    event.setCancelled(true);
-                }
-            }
-        }
-        Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(world);
-        if (isEntityInDevPlanet(entity) && entity.getType() != EntityType.ITEM) {
-            event.setCancelled(true);
-        }
-        if (planet != null) {
-            if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.BEEHIVE) {
-                if (!planet.getLimits().canBeeSpawnFromBeehive()) {
-                    event.setCancelled(true);
-                }
-            }
-            if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.NATURAL) {
-                switch (planet.getFlagValue(PlanetFlags.PlanetFlag.MOB_SPAWN)) {
-                    case 3:
-                        if (entity instanceof Slime) {
-                            event.setCancelled(true);
-                        }
-                        break;
-                    case 4:
-                        if (isEntityHostile(entity)) {
-                            event.setCancelled(true);
-                        }
-                        break;
-                    case 5:
-                        if (!isEntityHostile(entity)) {
-                            event.setCancelled(true);
-                        }
-                        break;
-                }
-                if (world.getEntityCount() >= planet.getLimits().getEntitiesLimit() / 2) {
-                    event.setCancelled(true);
-                }
-            }
-            if (planet.getTerritory().getEnvironment() == World.Environment.THE_END) {
-                if (event.getEntity() instanceof EnderDragon dragon) {
-                    if (System.currentTimeMillis() - planet.getLastActivityTime() < 10000) {
-                        dragon.setHealth(0);
-                    }
-                }
-            }
-
         }
     }
 
@@ -235,7 +191,13 @@ public final class EntitySpawnListener implements Listener {
     public void onChunkLoad(ChunkLoadEvent event) {
         World world = event.getWorld();
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(world);
-        if (planet != null && event.isNewChunk()) {
+        if (planet == null) return;
+        if (isDevPlanet(world)) return;
+        Entity[] entities = Arrays.stream(event.getChunk().getEntities())
+                .filter(entity -> !(entity instanceof Player))
+                .toArray(Entity[]::new);
+        if (entities.length == 0) return;
+        if (event.isNewChunk()) {
             if (world.getEntityCount() >= planet.getLimits().getEntitiesLimit() / 2) {
                 for (Entity entity : event.getChunk().getEntities()) {
                     entity.remove();

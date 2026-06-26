@@ -60,7 +60,7 @@ public final class SetMenuItemsRowAction extends PlayerAction {
                  * too many menus, that can prevent from
                  * quiting the game.
                  */
-                throw new TooManyOpenedMenusException(player.getName());
+                throw new TooManyOpenedMenusException(player);
             }
             player.openInventory(inventory);
         }

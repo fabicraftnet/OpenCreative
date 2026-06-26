@@ -26,6 +26,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.OpenCreative;
+import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
 import ua.mcchickenstudio.opencreative.menus.ListBrowserMenu;
 import ua.mcchickenstudio.opencreative.menus.buttons.ParameterButton;
 import ua.mcchickenstudio.opencreative.menus.world.WorldModerationMenu;
@@ -62,7 +63,7 @@ public class RecommendedWorldsBrowserMenu extends ListBrowserMenu<Planet> {
                 this.planets.add(planet);
             }
         }
-        Comparator<Planet> sortByOnline = (planet1, planet2) -> Integer.compare(planet2.getOnline(), planet1.getOnline());
+        Comparator<Planet> sortByOnline = (planet1, planet2) -> Integer.compare(planet2.getInformation().getAsyncOnline(), planet1.getInformation().getAsyncOnline());
         this.planets.sort(sortByOnline);
         BACK_TO_CATEGORIES = createItem(Material.ARROW, 1, "menus.all-worlds.items.back-to-categories");
     }
@@ -172,7 +173,7 @@ public class RecommendedWorldsBrowserMenu extends ListBrowserMenu<Planet> {
             case 3 ->
                     (planet1, planet2) -> Long.compare(((Planet) planet2).getCreationTime(), ((Planet) planet1).getCreationTime());
             default ->
-                    (planet1, planet2) -> Integer.compare(((Planet) planet2).getOnline(), ((Planet) planet1).getOnline());
+                    (planet1, planet2) -> Integer.compare(((Planet) planet2).getInformation().getAsyncOnline(), ((Planet) planet1).getInformation().getAsyncOnline());
         };
         elements.sort(planetComparator);
     }
@@ -184,12 +185,14 @@ public class RecommendedWorldsBrowserMenu extends ListBrowserMenu<Planet> {
 
     @Override
     protected ItemStack getNextPageButton() {
-        return replacePlaceholderInLore(createItem(Material.SPECTRAL_ARROW, getCurrentPage() + 1, "menus.all-worlds.items.next-page"), "%page%", getCurrentPage() + 1);
+        return replacePlaceholdersInItem(createItem(Material.SPECTRAL_ARROW, getCurrentPage() + 1, "menus.all-worlds.items.next-page"),
+                new PlaceholderReplacer("page", getCurrentPage() + 1));
     }
 
     @Override
     protected ItemStack getPreviousPageButton() {
-        return replacePlaceholderInLore(createItem(Material.ARROW, Math.max(1, getCurrentPage() - 1), "menus.all-worlds.items.previous-page"), "%page%", getCurrentPage() - 1);
+        return replacePlaceholdersInItem(createItem(Material.ARROW, Math.max(1, getCurrentPage() - 1), "menus.all-worlds.items.previous-page"),
+                new PlaceholderReplacer("page", getCurrentPage() - 1));
     }
 
     @Override

@@ -140,8 +140,10 @@ public final class PlayerUtils {
     public static void removePassengers(@NotNull Player player) {
         player.releaseLeftShoulderEntity();
         player.releaseRightShoulderEntity();
-        for (Entity passenger : new ArrayList<>(player.getPassengers())) {
-            player.eject();
+        player.eject();
+        Entity vehicle = player.getVehicle();
+        if (vehicle != null) {
+            vehicle.eject();
         }
     }
 
