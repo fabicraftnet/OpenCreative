@@ -29,6 +29,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.modules.ModulesBrowserMenu;
+import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
 import ua.mcchickenstudio.opencreative.menus.AbstractMenu;
 import ua.mcchickenstudio.opencreative.menus.world.browsers.WorldsBrowserMenu;
 import ua.mcchickenstudio.opencreative.planets.Planet;
@@ -76,24 +77,26 @@ public class WanderMenu extends AbstractMenu {
 
     private ItemStack getStatistics(int worldsAmount, int modulesAmount) {
         ItemStack item = createItem(Material.KNOWLEDGE_BOOK, 1, "menus.player-profile.items.statistics");
-        replacePlaceholderInLore(item, "%worlds%", worldsAmount);
-        replacePlaceholderInLore(item, "%modules%", modulesAmount);
         int time = wander.getOfflinePlayer().getStatistic(Statistic.PLAY_ONE_MINUTE) / 20 * 1000;
-        replacePlaceholderInLore(item, "%playtime%", convertTime(time));
-        replacePlaceholderInLore(item, "%visits%", wander.getVisits());
+        replacePlaceholdersInItem(item, new PlaceholderReplacer("worlds", worldsAmount,
+                "modules", modulesAmount, "playtime", convertTime(time), "visits", wander.getVisits()));
         return item;
     }
 
     private ItemStack getSocialLinks() {
         ItemStack item = createItem(Material.NAME_TAG, 1, "menus.player-profile.items.social-links");
         List<String> socialSites = List.of("discord", "youtube", "telegram", "twitter");
+        Object[] replacement = new Object[socialSites.size() * 2];
+        int index = 0;
         for (String site : socialSites) {
             String link = wander.getLink(site);
             if (link == null) {
                 link = getLocaleMessage("menus.player-profile.items.social-links.unknown", false);
             }
-            replacePlaceholderInLore(item, "%" + site + "%", link);
+            replacement[index++] = site; // discord
+            replacement[index++] = link; // username
         }
+        replacePlaceholdersInItem(item, new PlaceholderReplacer(replacement));
         return item;
     }
 
@@ -102,11 +105,6 @@ public class WanderMenu extends AbstractMenu {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) {
             return item;
-        }
-        if (meta instanceof SkullMeta skullMeta) {
-            PlayerProfile profile = Bukkit.createProfile(nickname);
-            skullMeta.setPlayerProfile(profile);
-            item.setItemMeta(skullMeta);
         }
         List<String> lore = new ArrayList<>();
         OfflinePlayer offlinePlayer = wander.getOfflinePlayer();
@@ -122,8 +120,14 @@ public class WanderMenu extends AbstractMenu {
             }
         }
         meta.setLore(lore);
-        replacePlaceholderInLore(item, "%player%", nickname);
-        replacePlaceholderInLore(item, "%gender%", wander.getGender() == null ? OfflineWander.Gender.UNKNOWN.getLocaleName() : wander.getGender().getLocaleName());
+        item.setItemMeta(meta);
+        if (meta instanceof SkullMeta skullMeta) {
+            PlayerProfile profile = Bukkit.createProfile(nickname);
+            skullMeta.setPlayerProfile(profile);
+            item.setItemMeta(skullMeta);
+        }
+        replacePlaceholdersInItem(item, new PlaceholderReplacer("player", nickname,
+                "gender",  wander.getGender() == null ? OfflineWander.Gender.UNKNOWN.getLocaleName() : wander.getGender().getLocaleName()));
         return item;
     }
 

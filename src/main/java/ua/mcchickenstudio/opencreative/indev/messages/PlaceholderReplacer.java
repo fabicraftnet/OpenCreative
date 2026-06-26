@@ -25,18 +25,24 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.OfflinePlayer;
 import org.intellij.lang.annotations.RegExp;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.fromLegacyToMiniMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.parsePAPI;
 
 public class PlaceholderReplacer {
 
     private final List<String> placeholders = new ArrayList<>();
     private final List<Component> replacements = new ArrayList<>();
+    private final static Pattern pattern = Pattern.compile("%([^%]+)%");
 
-    public PlaceholderReplacer(Object... objects) {
+    public PlaceholderReplacer(@Nullable Object... objects) {
         if (objects.length == 0) return;
         for (int i = 0; i < objects.length; i++) {
             Object object = objects[i];
@@ -59,15 +65,19 @@ public class PlaceholderReplacer {
     }
 
     public @NotNull TextReplacementConfig get() {
-        TextReplacementConfig.Builder config = TextReplacementConfig.builder();
+        Map<String, Component> map = new HashMap<>();
         for (int i = 0; i < placeholders.size(); i++) {
-            if (i >= replacements.size()) {
-                break;
+            if (i < replacements.size()) {
+                map.put("%" + placeholders.get(i) + "%", replacements.get(i));
             }
-            config.match("%" + placeholders.get(i) + "%")
-                    .replacement(replacements.get(i));
         }
-        return config.build();
+        return TextReplacementConfig.builder()
+                .match(pattern)
+                .replacement((result, builder) -> {
+                    String match = result.group();
+                    return map.getOrDefault(match, builder.build());
+                })
+                .build();
     }
 
     public @NotNull Component apply(@NotNull Component input) {
@@ -92,7 +102,7 @@ public class PlaceholderReplacer {
         text = parsePAPI(player, text);
         text = text.replace(LegacyComponentSerializer.SECTION_CHAR,
                 LegacyComponentSerializer.AMPERSAND_CHAR);
-        text = fromLegacyToMiniMessage(text).replace("\\","");
+        text = fromLegacyToMiniMessage(text).replace("\\", "");
 
         return MiniMessage.miniMessage().deserialize(text);
     }
