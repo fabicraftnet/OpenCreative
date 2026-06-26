@@ -8262,6 +8262,31 @@ items:
             name: "&6Download link"
           prompt:
             name: "&6Text to be shown"
+      player-set-skin:
+        name: "&6Set Skin"
+        lore:
+          - "&7Changes player skin using"
+          - "&7a player head."
+          - ""
+          - "&fIn the chest:"
+          - "&c Item &7- Player head"
+          - ""
+          - "&eClick to set action."
+      player-set-cape:
+        name: "&6Set Cape"
+        lore:
+          - "&7Changes player cape using"
+          - "&7an official cape texture hash."
+          - "&7Ie. the last part of a texture url"
+          - "&7'textures.minecraft.net/texture/&n&e[HASH]&r&f'"
+          - ""
+          - "&fIn the chest:"
+          - "&6 Text &7- Texture hash"
+          - ""
+          - "&7 The hash must correspond to a"
+          - "&7 texture that is on Mojangs servers."
+          - ""
+          - "&eClick to set action."
       player-send-sign-change:
         name: "&6Change Sign Line"
         lore:
@@ -8613,6 +8638,34 @@ items:
               magenta: "Magenta"
               pink: "Pink"
               brown: "Brown"
+      entity-set-display-teleport-delay:
+        name: "&3Display Teleport Duration"
+        lore:
+          - "&7Changes the duration of the"
+          - "&7display entity's teleport. Higher"
+          - "&7values make the teleport smoother."
+          - ""
+          - "&fIn the chest:"
+          - "&a Number &7- Duration"
+          - "&3 Parameter &7- Add or set"
+          - " "
+          - "&eClick to set the action."
+        arguments:
+          add:
+            name: "&fSet or Add"
+            lore:
+              - "&7If Add is selected, your value"
+              - "&7will be added to the current"
+              - "&7value of the display entity."
+              - " "
+              - "&eClick to change."
+              - " "
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              false: "Set"
+              true: "Add"
       entity-set-display-text:
         name: "&6Set Display Text"
         lore:
@@ -8842,6 +8895,16 @@ items:
           - "&fIn the chest:"
           - "&a Number &7- Interpolation delay (ticks)"
           - "&a Number &7- Interpolation duration (ticks)"
+          - " "
+          - "&eClick to set the action."
+      entity-set-display-block-state:
+        name: "&aSet Block Display State"
+        lore:
+          - "&7Sets the block state of the"
+          - "&7block inside a block display."
+          - ""
+          - "&fIn the chest:"
+          - "&6 Text &7- Block state"
           - " "
           - "&eClick to set the action."
       player-set-walk-speed:
@@ -12612,6 +12675,13 @@ items:
           - ""
           - "&7Includes: Ender Dragon, Ghast,"
           - "&7Phantom, Shulker, Slime, Hoglin."
+          - " "
+          - "&eClick to set the condition."
+      if-entity-is-display:
+        name: "&6Is a display entity"
+        lore:
+          - "&7Checks if the entity"
+          - "&7is a display entity."
           - " "
           - "&eClick to set the condition."
       if-entity-is-dead:
@@ -19372,6 +19442,7 @@ blocks:
   entity_set_text_display_width: "Text Width"
   entity_set_display_brightness: "Display Brightness"
   entity_set_display_interpolation: "Display Interpolation"
+  entity_set_display_block_state: "Display Block State"
   entity_set_friction: "Friction"
   entity_set_visual_fire: "Visual Fire"
   entity_set_parrot_color: "Parrot Color"
@@ -19711,6 +19782,7 @@ blocks:
   if_entity_is_creature: "Is Creature"
   if_entity_is_monster: "Is Monster"
   if_entity_is_enemy: "Is Enemy"
+  if_entity_is_display: "Is Display"
   if_entity_is_in_team: "In Team"
   if_entity_is_dead: "Dead"
   if_entity_is_underwater: "Underwater"

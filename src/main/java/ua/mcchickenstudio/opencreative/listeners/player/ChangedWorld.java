@@ -18,6 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.listeners.player;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -38,6 +39,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.*;
@@ -209,6 +212,20 @@ public final class ChangedWorld implements Listener {
                     }
                 }
                 newPlanet.getInformation().updateIconAsync();
+            }
+        }
+        //Set skin action can persist between worlds so this resets it the skin has been modified
+        if (!player.getPlayerProfile().getTextures().isSigned())
+        {
+            PlayerProfile profile = player.getPlayerProfile();
+            profile.setTextures(null);
+            CompletableFuture<PlayerProfile> updatedProfile = profile.update();
+            try {
+                player.setPlayerProfile(updatedProfile.get());
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
             }
         }
     }

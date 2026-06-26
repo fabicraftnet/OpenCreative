@@ -18,40 +18,45 @@
 
 package ua.mcchickenstudio.opencreative.coding.blocks.actions.worldactions.blocks;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.worldactions.WorldAction;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
+import ua.mcchickenstudio.opencreative.coding.variables.VariableLink;
 
-public final class SetBlockStateAction extends WorldAction {
-    public SetBlockStateAction(Executor executor, Target target, int x, Arguments args) {
+public final class GetBlockStateAction extends WorldAction {
+    public GetBlockStateAction(Executor executor, Target target, int x, Arguments args) {
         super(executor, target, x, args);
     }
 
     @Override
     protected void execute() {
-        String blockState = getArguments().getText("blockstate", "", this);
+        VariableLink link = getArguments().getVariableLink("variable", this);
         Location location = getArguments().getLocation("location", getPlanet().getTerritory().getSpawnLocation(), this);
 
-        blockState = blockState.replace("\",\"",",");
-        blockState = blockState.replace( "{\"","[");
-        blockState = blockState.replace( "\"}","]");
-        blockState = blockState.replace("\":\"","=");
-
-        String blockData =  "minecraft:"
-                            +location.getBlock().getType().name().toLowerCase()
-                            +blockState;
+        String blockState = location.getBlock().getBlockData().getAsString();
+        // Strips block type for ease of editing and so that state can be applied to similar types e.g. slabs
         try {
-            location.getBlock().setBlockData(Bukkit.createBlockData(blockData));
-        } catch (Exception IllegalArgumentException) {}
+            blockState = blockState.substring(blockState.indexOf("["));
+
+            blockState = blockState.replace(",", "\",\"");
+            blockState = blockState.replace("[", "{\"");
+            blockState = blockState.replace("]", "\"}");
+            blockState = blockState.replace("=","\":\"");
+            setVarValue(link, blockState);
+        } catch (Exception StringIndexOutOfBoundsException)
+        {
+            setVarValue(link, "{}");
+        }
+
     }
 
     @Override
     public @NotNull ActionType getActionType() {
-        return ActionType.WORLD_SET_BLOCK_STATE;
+        return ActionType.WORLD_GET_BLOCK_STATE;
     }
 }
