@@ -237,39 +237,67 @@ This plugin is licensed under GNU GPL v3, because it uses Paper API. When you us
 [![GPLv3 Logo](https://www.gnu.org/graphics/gplv3-with-text-136x68.png)](https://www.gnu.org/licenses/gpl-3.0.txt)
 &nbsp; &nbsp; &nbsp; &nbsp;
 
-## Special thanks
-
-### ❤️ Thanks to every server, that uses this plugin.
-
-Thank you, JetBrains, for providing most powerful tool to develop with Java. 
-
-[![IntelliJ IDEA Logo](https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA.svg)](https://www.jetbrains.com/idea/) 
-&nbsp; &nbsp; &nbsp; &nbsp; 
-
-Thank you, PaperMC Team, for providing stable API and support.
-
-Thank you, developers of ReActions, ProtocolLib, Vault, PlaceholderAPI, LibsDisguises.
+<div align="center">
 
 ## Credits
 
-OpenCreative+ is made by McChicken Studio 2017-2026.
+Made by McChicken Studio 2017-2026.     
 
-**Contributors:**
-- McChicken Team
-- onn512
-- pawsashatoy
-- LWJENNI
-- HACKERPRO17
-- liventmst
-- logiklop
-- 70N77U
-- kalienda
+### _**Development**_
 
-**Translators:**
-- Nagibator6000LoL
-- initzero
-- DrakesWeb
-- kogtyv
-- Senmpai333
+McChicken Team
+
+onn512
+
+pawsashatoy
+
+LWJENNI
+
+HACKERPRO17
+
+liventmst
+
+logiklop
+
+70N77U
+
+kalienda
+
+### _**Translation**_
+
+Nagibator6000LoL
+
+initzero
+
+DrakesWeb
+
+kogtyv
+
+Senmpai333
+
+### _**Special Thanks**_
+
+PaperMC Team
+
+Developer of ReActions 
+
+Developers of Vault
+
+Developers of ProtocolLib
+
+Developers of PacketEvents
+
+Developers of PlaceholderAPI
+
+Developers of LibsDisguises
+
+Creative+ Wiki
+
+Intellij Idea Developers
+
+**❤️ Every server, that uses this plugin.**
+
+</div>
+
 ## Support
 Report any issues and send your ideas in **[our Discord server](https://discord.com/invite/sSFCXUeq63)**.
