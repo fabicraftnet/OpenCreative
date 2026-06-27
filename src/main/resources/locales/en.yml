@@ -8267,7 +8267,7 @@ items:
         lore:
           - "&7Changes player skin using"
           - "&7a player head or resets"
-          - "&fskin if no head is provided."
+          - "&7skin if no head is provided."
           - ""
           - "&fIn the chest:"
           - "&c Item &7- Player head"
