@@ -156,6 +156,12 @@ public final class InteractListener implements Listener {
                 doNotUseItem = handleSignClick(event, player, currentItem, clickedBlock, devPlanet);
             } else if (clickedBlock.getState() instanceof InventoryHolder) {
                 doNotUseItem = handleContainerClick(event, player, devPlanet, event.getClickedBlock());
+            } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                // player has possibly clicked the action/handler block, rather than the sign
+                Block clickedSignBlock = clickedBlock.getRelative(BlockFace.SOUTH);
+                if (clickedSignBlock != null && clickedSignBlock.getType().toString().contains("WALL_SIGN")) {
+                    doNotUseItem = handleSignClick(event, player, currentItem, clickedSignBlock, devPlanet);
+                }
             }
         }
         if (currentItem.getItemMeta() != null && !doNotUseItem) {
