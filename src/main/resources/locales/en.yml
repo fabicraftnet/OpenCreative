@@ -8266,7 +8266,8 @@ items:
         name: "&6Set Skin"
         lore:
           - "&7Changes player skin using"
-          - "&7a player head."
+          - "&7a player head or resets"
+          - "&fskin if no head is provided."
           - ""
           - "&fIn the chest:"
           - "&c Item &7- Player head"
@@ -8276,15 +8277,14 @@ items:
         name: "&6Set Cape"
         lore:
           - "&7Changes player cape using"
-          - "&7an official cape texture hash."
-          - "&7Ie. the last part of a texture url"
+          - "&7a cape texture hash"
+          - "&7i.e. the last part of a texture url"
           - "&7'textures.minecraft.net/texture/&n&e[HASH]&r&f'"
           - ""
           - "&fIn the chest:"
           - "&6 Text &7- Texture hash"
           - ""
-          - "&7 The hash must correspond to a"
-          - "&7 texture that is on Mojangs servers."
+          - "&7 Cape is removed when no text is given."
           - ""
           - "&eClick to set action."
       player-send-sign-change:

@@ -56,7 +56,7 @@ public final class SetSkinAction extends PlayerAction {
 
             }
         }
-        else
+        else if (item.getType() == Material.AIR)
         {
             PlayerProfile profile = player.getPlayerProfile();
             profile.setTextures(null);
