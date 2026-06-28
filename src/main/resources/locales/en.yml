@@ -106,20 +106,6 @@ commands:
     help: "%prefix%To find the world where a player is playing, type in the chat: &6/locate Username"
     found: "%prefix%&fPlayer &6%player%&f is currently playing in the world: \n&f %planetName%\n &f\n&a &a &n[Click to join]&f\n &f"
     offline: "%prefix%&cThe player is not currently playing in any worlds."
-filters:
-  hover-text: "&fRule: &7%rule%\n&fText: &6%match%"
-  sign-violation:
-    player: "%prefix%&cWarning: Your sign text violated one of the server rules."
-    staff: "%prefix%&7Filtered sign text from %player%. &3[?]"
-  chat-violation:
-    player: "%prefix%&cWarning: Your chat message violated one of the server rules."
-    staff: "%prefix%&7Filtered chat message from %player%. &3[?]"
-  book-violation:
-    player: "%prefix%&cWarning: Your book text violated one of the server rules."
-    staff: "%prefix%&7Filtered book text from %player%. &3[?]"
-  anvil-violation:
-    player: "%prefix%&cWarning: The new item name violated one of the server rules."
-    staff: "%prefix%&7Filtered new item name from %player%. &3[?]"
 modules:
   help: "%prefix%Module is prepared coding blocks lines, made by players, that add some features in your world. They can be inserted in developers world. To browse modules use &6/module&f command.\n&6 /module load ID &f- Loads module by specified ID"
   not-found: "%prefix%&cCan't find module with ID %id% O_o"
@@ -393,6 +379,7 @@ coding-error:
   numberformatexception: "A number was expected, but the item did not contain one. Check the items in the chest for this action."
   toolongtextexception: "Too long text was tried to write to variable. Please substring it with variable action Substring text. "
   collectionwithcollectionexception: "Tried to store a list as element of list. Use Merge Lists action instead."
+  toomanyopenedmenusexception: "Opened too many menus for %player%. Please add cooldown between opening menus."
   toomanyrepeatsexception: "Too many repeats at once! Please add control action Wait to the end of repeat before closing piston."
   nottrustedlinkexception: "Site %link% is not trusted by server. Please contact server admins."
   illegalargumentexception: "An incorrect value was found in the chest. You might have specified a negative number, or a variable returned an incorrect value, or something couldn't be retrieved from the value. Check the chest's contents!"
@@ -569,7 +556,6 @@ world:
     owner-help: "%prefix%Welcome back to &6your world&f! Use the compass to manage your world, or use the command &6/world&f."
     busy: "%prefix%&cYou're already connecting to the world, please wait..."
     unloading: "%prefix%&cThis world is being unloaded, please try again later... :("
-    error: "%prefix%&cFailed to connect to world %id% :(\n \n&c Was loaded before: %wasloaded%\n&c Currently loaded: %loaded%\n&c Phase: %phase%\n \n&c Error: %error%"
   play-mode:
     name: "&3Play"
     message:
@@ -590,7 +576,6 @@ world:
     connecting:
       title: "&eConnecting... ⌘"
       subtitle: "&fEntering developer mode..."
-      error: "%prefix%&cFailed to connect to development world %id% :(\n \n&c Was loaded before: %wasloaded%\n&c Currently loaded: %loaded%\n&c Phase: %phase%\n \n&c Error: %error%"
     title: "&bCoding your world"
     subtitle: "&fCreate a &6game &fusing &6coding blocks"
     help: "%prefix%You have entered the &bdevelopment&f world. \n &f\n&f Check out the blocks in your inventory: &bEvents&f, &7Actions&f, &6Conditions&f. The platform consists of glass blocks where you need to place these blocks.\n&f\n&f Form your code on the glass line. Some &7actions&f and &6conditions&f place a chest where you need to put the specified values. Values can be &anumber&f, &6text&f, &eitem&f, &flocation&f.\n&f"
@@ -3690,114 +3675,6 @@ items:
           - "&6 Texts &7- Recipe identifiers"
           - " "
           - "&eClick to set action."
-      world-add-merchant-recipe:
-        name: "&aCreate Trade Recipe"
-        lore:
-          - "&7Creates a recipe that allows"
-          - "&7a player to purchase an item"
-          - "&7from a villager."
-          - ""
-          - "&7To give this recipe to a villager"
-          - "&7after creating it, use the"
-          - "&aSet Recipes&7 action on the villager."
-          - " "
-          - "&fIn the chest:"
-          - "&c Item &7- First item"
-          - "&c Item &7- Second item"
-          - "&c Item &7- Result"
-          - "&6 Text &7- Recipe identifier"
-          - "&a Number &7- Purchase count"
-          - "&a Number &7- Purchase limit"
-          - "&3 Option &7- Whether to grant player XP"
-          - "&a Number &7- XP granted to villager"
-          - "&a Number &7- Old price"
-          - " "
-          - "&eClick to set the action."
-        placeholders:
-          name:
-            name: "&6Recipe Identifier"
-            lore:
-              - "&7Place a book here that"
-              - "&7contains the recipe name."
-              - ""
-              - "&7Must contain &c&nonly English&7"
-              - "&7letters and underscores."
-              - ""
-              - "&7Default:"
-              - "&6 custom"
-          first:
-            name: "&6First Item"
-            lore:
-              - "&7Place the item here that"
-              - "&7must be placed in the left"
-              - "&7trade slot."
-          second:
-            name: "&6Second Item"
-            lore:
-              - "&7Place the item here that"
-              - "&7must be placed in the right"
-              - "&7trade slot."
-          result:
-            name: "&6Result Item"
-            lore:
-              - "&7Place the item here that"
-              - "&7will be given to the player"
-              - "&7after trading with the villager."
-          uses:
-            name: "&aPurchase Count"
-            lore:
-              - "&7Place a slime here that"
-              - "&7contains the number of times"
-              - "&7this trade has already"
-              - "&7been used."
-              - ""
-              - "&7Default: &a0"
-          max-uses:
-            name: "&aMaximum Purchase Count"
-            lore:
-              - "&7Place a slime here that"
-              - "&7contains the maximum number"
-              - "&7of purchases allowed. Once"
-              - "&7reached, this trade becomes"
-              - "&cunavailable&7."
-              - ""
-              - "&7Default: &aUnlimited"
-          villager-exp:
-            name: "&aVillager Experience"
-            lore:
-              - "&7Place a slime here that"
-              - "&7contains the amount of experience"
-              - "&7granted to the villager after"
-              - "&7a successful trade."
-              - ""
-              - "&7Default: &a0"
-          discount:
-            name: "&aItem Amount Discount"
-            lore:
-              - "&7Place a slime here that"
-              - "&7contains the discount amount"
-              - "&7for the required items."
-              - ""
-              - "&7The higher the discount, the fewer"
-              - "&7items will be required."
-              - ""
-              - "&7Default: &a0"
-        arguments:
-          player-exp:
-            name: "&2Grant Experience to Player"
-            lore:
-              - "&7When purchasing an item"
-              - "&7from a villager, the player"
-              - "&7can receive experience."
-              - ""
-              - "&eClick to change."
-              - ""
-              - "&fOptions:"
-              - "%1%"
-              - "%2%"
-            choices:
-              false: "No, do not grant XP"
-              true: "Yes, grant XP"
       world-add-furnace-recipe:
         name: "&7Create Furnace Recipe"
         lore:
@@ -5383,19 +5260,7 @@ items:
           - "&7inventory. To restore, use the"
           - "&7action &2Load inventory&7."
           - " "
-          - "&fIn the chest:"
-          - "&a Number &7- Inventory number"
-          - " "
           - "&eClick to set action."
-        placeholders:
-          number:
-            name: "&aInventory Number"
-            lore:
-              - "&7Place a slime with number here,"
-              - "&7which will be the inventory number."
-              - ""
-              - "&7By default: &a1"
-              - "&cNumber from 1 to 9"
       player-restore-inventory:
         name: "&2Load inventory"
         lore:
@@ -5404,19 +5269,7 @@ items:
           - "&7the player's inventory will be"
           - "&7cleared."
           - " "
-          - "&fIn the chest:"
-          - "&a Number &7- Inventory number"
-          - " "
           - "&eClick to set action."
-        placeholders:
-          number:
-            name: "&aInventory Number"
-            lore:
-              - "&7Place a slime with number here,"
-              - "&7which will be the inventory number."
-              - ""
-              - "&7By default: &a1"
-              - "&cNumber from 1 to 9"
       player-open-book:
         name: "&6Open book"
         lore:
@@ -6508,24 +6361,6 @@ items:
           - "&f Pos &7- Jukebox place"
           - " "
           - "&eClick to set action."
-      entity-set-villager-recipes:
-        name: "&aSet Villager Trades"
-        lore:
-          - "&7Clears previous trading recipes"
-          - "&7and adds only the specified ones"
-          - "&7that the player can purchase."
-          - " "
-          - "&fIn the chest:"
-          - "&6 Texts &7- Identifiers"
-          - " "
-          - "&eClick to set the action."
-        placeholders:
-          recipes:
-            name: "&6Trade Recipe Identifiers"
-            lore:
-              - "&7Place a book here that"
-              - "&7contains the identifier of"
-              - "&7a trade recipe."
       entity-villager-shake-head:
         name: "&6Villager Head Shake"
         lore:
@@ -7263,20 +7098,6 @@ items:
           - "&a Number &7- Z Offset"
           - " "
           - "&eClick to set the action."
-      world-spawn-particles-circle:
-        name: "&aSpawn particles circle"
-        lore:
-          - "&7Creates circle of particles on"
-          - "&7specified location with radius."
-          - ""
-          - "&fIn the chest:"
-          - "&f Location &7- Circle center"
-          - "&a Number &7- Circle radius"
-          - "&a Number &7- Amount of circle points"
-          - "&b Vector &7- Plane normal vector"
-          - "&5 Particle &7- To be spawned"
-          - ""
-          - "&eClick to set the action."
       world-create-team:
         name: "&aCreate Team"
         lore:
@@ -7538,6 +7359,28 @@ items:
           - "&fIn the chest:"
           - "&f Locations &7- Where to change"
           - "&3 Parameter &7- Side"
+          - ""
+          - "&eClick to set the action."
+      world-get-block-state:
+        name: "&bGet Block State"
+        lore:
+          - "&7Gets the blocks state"
+          - "&7at the specified locations."
+          - ""
+          - "&fIn the chest:"
+          - "&e Variable &7- To store the results"
+          - "&f Location &7- Block location"
+          - ""
+          - "&eClick to set the action."
+      world-set-block-state:
+        name: "&3Set Block State"
+        lore:
+          - "&7Sets the blocks state"
+          - "&7at the specified locations."
+          - ""
+          - "&fIn the chest:"
+          - "&f Location &7- Block location"
+          - "&6 Text &7- Block state"
           - ""
           - "&eClick to set the action."
         arguments:
@@ -8419,6 +8262,31 @@ items:
             name: "&6Download link"
           prompt:
             name: "&6Text to be shown"
+      player-set-skin:
+        name: "&6Set Skin"
+        lore:
+          - "&7Changes player skin using"
+          - "&7a player head or resets"
+          - "&7skin if no head is provided."
+          - ""
+          - "&fIn the chest:"
+          - "&c Item &7- Player head"
+          - ""
+          - "&eClick to set action."
+      player-set-cape:
+        name: "&6Set Cape"
+        lore:
+          - "&7Changes player cape using"
+          - "&7a cape texture hash"
+          - "&7i.e. the last part of a texture url"
+          - "&7'textures.minecraft.net/texture/&n&e[HASH]&r&f'"
+          - ""
+          - "&fIn the chest:"
+          - "&6 Text &7- Texture hash"
+          - ""
+          - "&7 Cape is removed when no text is given."
+          - ""
+          - "&eClick to set action."
       player-send-sign-change:
         name: "&6Change Sign Line"
         lore:
@@ -8901,13 +8769,11 @@ items:
             choices:
               false: "Set"
               true: "Add"
-      entity-set-item:
+      entity-set-display-item:
         name: "&6Set Display Item"
         lore:
-          - "&7Sets a new item for arrow,"
-          - "&7item entity, display entity,"
-          - "&7item frame, thrown potion,"
-          - "&7or dropped item."
+          - "&7Sets a new item for the"
+          - "&7item display entity."
           - ""
           - "&fIn the chest:"
           - "&c Item &7- New item"
@@ -9029,6 +8895,16 @@ items:
           - "&fIn the chest:"
           - "&a Number &7- Interpolation delay (ticks)"
           - "&a Number &7- Interpolation duration (ticks)"
+          - " "
+          - "&eClick to set the action."
+      entity-set-display-block-state:
+        name: "&aSet Block Display State"
+        lore:
+          - "&7Sets the block state of the"
+          - "&7block inside a block display."
+          - ""
+          - "&fIn the chest:"
+          - "&6 Text &7- Block state"
           - " "
           - "&eClick to set the action."
       player-set-walk-speed:
@@ -12025,20 +11901,6 @@ items:
             name: "&eValue from dictionary"
           map:
             name: "&eDictionary"
-      repeat-on-circle:
-        name: "&aRepeat on circle"
-        lore:
-          - "&7Executes action, moving by"
-          - "&7circle with given parameters."
-          - ""
-          - "&fIn the chest:"
-          - "&e Variable &7- Location of circle point"
-          - "&f Location &7- Center of circle"
-          - "&a Number &7- Radius"
-          - "&a Number &7- Amount of circle points"
-          - "&b Vector &7- Plain normal vector"
-          - ""
-          - "&eClick to set an action."
     conditions:
       if-world-entity-exists:
         name: "&dEntity exists"
@@ -12815,6 +12677,13 @@ items:
           - "&7Phantom, Shulker, Slime, Hoglin."
           - " "
           - "&eClick to set the condition."
+      if-entity-is-display:
+        name: "&6Is a display entity"
+        lore:
+          - "&7Checks if the entity"
+          - "&7is a display entity."
+          - " "
+          - "&eClick to set the condition."
       if-entity-is-dead:
         name: "&4Entity is Dead"
         lore:
@@ -13434,156 +13303,6 @@ items:
             choices:
               false: "Match Any"
               true: "Require All"
-      if-player-is-wearing-item:
-        name: "&bWearing Item"
-        lore:
-          - "&7Checks whether the player"
-          - "&7is wearing an item as a helmet,"
-          - "&7chestplate, leggings,"
-          - "&7or boots."
-          - " "
-          - "&fIn the chest:"
-          - "&c Item &7- Helmet"
-          - "&c Item &7- Chestplate"
-          - "&c Item &7- Leggings"
-          - "&c Item &7- Boots"
-          - "&3 Parameter &7- Require all"
-          - "&3 Parameter &7- Require air"
-          - "&3 Parameters &7- Ignore data"
-          - " "
-          - "&eClick to set the condition."
-        arguments:
-          all:
-            name: "&fMatch Any or All"
-            lore:
-              - "&7Execute actions when"
-              - "&7the player is wearing all"
-              - "&7specified items or"
-              - "&7any one of them."
-              - ""
-              - "&eClick to change."
-              - ""
-              - "&fOptions:"
-              - "%1%"
-              - "%2%"
-            choices:
-              false: "Match Any"
-              true: "Require All"
-          require-air:
-            name: "&bRequire Empty Slots"
-            lore:
-              - "&7If enabled and a slot above"
-              - "&7is empty, but the player has"
-              - "&7an item in that slot,"
-              - "&7the check will fail."
-              - ""
-              - "&eClick to change."
-              - ""
-              - "&fOptions:"
-              - "%1%"
-              - "%2%"
-            choices:
-              false: "Ignore Item in Empty Slot"
-              true: "Require Empty Slot"
-          ignore-amount:
-            name: "&eIgnore Amount"
-            lore:
-              - "&7Sometimes you need to check"
-              - "&7whether the player has enough"
-              - "&7items."
-              - ""
-              - "&eClick to change."
-              - ""
-              - "&fOptions:"
-              - "%1%"
-              - "%2%"
-            choices:
-              false: "Check Amount"
-              true: "Ignore Amount"
-          ignore-name:
-            name: "&6Ignore Name"
-            lore:
-              - "&7Items can be renamed"
-              - "&7using an"
-              - "&7anvil."
-              - ""
-              - "&eClick to change."
-              - ""
-              - "&fOptions:"
-              - "%1%"
-              - "%2%"
-            choices:
-              false: "Check Name"
-              true: "Ignore Name"
-          ignore-lore:
-            name: "&3Ignore Lore"
-            lore:
-              - "&7Custom lore usually requires"
-              - "&7commands, plugins,"
-              - "&7or mods."
-              - ""
-              - "&eClick to change."
-              - ""
-              - "&fOptions:"
-              - "%1%"
-              - "%2%"
-            choices:
-              false: "Check Lore"
-              true: "Ignore Lore"
-          ignore-enchantments:
-            name: "&dIgnore Enchantments"
-            lore:
-              - "&7Items can be enchanted"
-              - "&7using an anvil or"
-              - "&7enchanting table."
-              - ""
-              - "&eClick to change."
-              - ""
-              - "&fOptions:"
-              - "%1%"
-              - "%2%"
-            choices:
-              false: "Check Enchantments"
-              true: "Ignore Enchantments"
-          ignore-flags:
-            name: "&eIgnore Item Tags"
-            lore:
-              - "&7These special tags are"
-              - "&7usually added through"
-              - "&7NBT editors."
-              - ""
-              - "&eClick to change."
-              - ""
-              - "&fOptions:"
-              - "%1%"
-              - "%2%"
-            choices:
-              false: "Check Tags"
-              true: "Ignore Tags"
-          ignore-damage:
-            name: "&eIgnore Durability"
-            lore:
-              - "&7Useful when comparing"
-              - "&7tools, weapons,"
-              - "&7or armor."
-              - ""
-              - "&eClick to change."
-              - ""
-              - "&fOptions:"
-              - "%1%"
-              - "%2%"
-            choices:
-              false: "Check Durability"
-              true: "Ignore Durability"
-        placeholders:
-          helmet:
-            name: "&6Helmet"
-          chestplate:
-            name: "&6Chestplate"
-          leggings:
-            name: "&6Leggings"
-          boots:
-            name: "&6Boots"
       if-player-is-dead:
         name: "&4Player is Dead"
         lore:
@@ -15258,7 +14977,7 @@ menus:
           - ""
           - "&c McChicken Studio 2017-2026"
           - "&3 Contributors: &7onn512, pawsashatoy, LWJENNI,"
-          - "&7  HACKERPRO17, liventmst, logiklop, 70N77U, kalienda."
+          - "&7  HACKERPRO17, liventmst, logiklop."
           - "&3 Translators: &7initzero, Nagibator6000LoL,"
           - "&7  DrakesWeb, kogtyv, Senmpai333."
           - ""
@@ -19395,7 +19114,6 @@ blocks:
   repeat_for_list: "&fFor list"
   repeat_always: "Always"
   repeat_for_entry: "&6For dictionary"
-  repeat_on_circle: "&aOn circle"
   # Events
   player_join: "Joined world"
   player_quit: "Left world"
@@ -19713,21 +19431,20 @@ blocks:
   entity_set_sheep_color: "Sheep Color"
   entity_set_dog_collar_color: "Collar Color"
   entity_set_display_text: "Display Text"
-  entity_set_display_teleport_duration: "Display Duration"
   entity_set_display_scale: "Display Scale"
   entity_set_display_translation: "Display Offset"
   entity_set_display_rotation: "Display Rotation"
-  entity_set_item: "Display Item"
+  entity_set_display_item: "Display Item"
   entity_set_display_billboard: "Display Type"
   entity_set_text_display_see_through: "See-Through Text"
   entity_set_text_display_shadow: "Text Shadow"
   entity_set_text_display_opacity: "Text Opacity"
   entity_set_text_display_width: "Text Width"
   entity_set_display_brightness: "Display Brightness"
-  entity_set_display_interpolation: "Dis. Interpolation"
+  entity_set_display_interpolation: "Display Interpolation"
+  entity_set_display_block_state: "Display Block State"
   entity_set_friction: "Friction"
   entity_set_visual_fire: "Visual Fire"
-  entity_set_villager_recipes: "Village Trades"
   entity_set_parrot_color: "Parrot Color"
   entity_set_fox_sleeping: "Fox Sleeping"
   entity_set_fox_leaping: "Fox Leaping"
@@ -19921,6 +19638,8 @@ blocks:
   world_strike_lightning: "Summon lightning"
   world_create_explosion: "Create explosion"
   world_set_block_type: "Set block"
+  world_get_block_state: "Get state"
+  world_set_block_state: "Set state"
   world_set_blocks_area_type: "Block region"
   world_destroy_block: "Destroy block"
   world_switch_to_build_mode: "&4Shut down"
@@ -19965,7 +19684,6 @@ blocks:
   if_player_has_item: "Has item"
   if_player_has_item_in_hand: "Holding item"
   if_player_block_equals: "Block equals"
-  if_player_is_wearing_item: "Wearing armor"
   if_player_is_sneaking: "Is sneaking"
   if_player_is_flying: "Is flying"
   if_player_is_on_ground: "Is on ground"
@@ -20010,7 +19728,6 @@ blocks:
   world_create_firework_explosion: "Firework Explosion"
   world_create_experience_orb: "Spawn XP Orb"
   world_spawn_particles_line: "Line of Particles"
-  world_spawn_particles_circle: "Circle Particles"
   world_create_team: "Create Team"
   world_team_set_color: "Set Team Color"
   world_delete_team: "Delete Team"
@@ -20065,6 +19782,7 @@ blocks:
   if_entity_is_creature: "Is Creature"
   if_entity_is_monster: "Is Monster"
   if_entity_is_enemy: "Is Enemy"
+  if_entity_is_display: "Is Display"
   if_entity_is_in_team: "In Team"
   if_entity_is_dead: "Dead"
   if_entity_is_underwater: "Underwater"
