@@ -235,6 +235,8 @@ public enum ActionType implements CodingBlockType {
     PLAYER_HIDE_ENTITY(ActionCategory.PLAYER_ACTION, MenusCategory.APPEARANCE, HideEntityAction.class, Material.SKELETON_SKULL, new ArgumentSlot("entity", ValueType.TEXT)),
     PLAYER_SHOW_PLAYER(ActionCategory.PLAYER_ACTION, MenusCategory.APPEARANCE, ShowPlayerAction.class, Material.PLAYER_HEAD, new ArgumentSlot("player", ValueType.TEXT)),
     PLAYER_HIDE_PLAYER(ActionCategory.PLAYER_ACTION, MenusCategory.APPEARANCE, HidePlayerAction.class, Material.WITHER_SKELETON_SKULL, new ArgumentSlot("player", ValueType.TEXT)),
+    PLAYER_SET_SKIN(ActionCategory.PLAYER_ACTION, MenusCategory.APPEARANCE, SetSkinAction.class, Material.DIAMOND_CHESTPLATE, new ArgumentSlot("head", ValueType.ITEM)),
+    PLAYER_SET_CAPE(ActionCategory.PLAYER_ACTION, MenusCategory.APPEARANCE, SetCapeAction.class, Material.RED_BANNER, new ArgumentSlot("cape", ValueType.TEXT)),
 
     /**
      * <h1>Player Conditions.</h1>
@@ -435,6 +437,8 @@ public enum ActionType implements CodingBlockType {
     WORLD_SET_SIGN_WAXED(ActionCategory.WORLD_ACTION, MenusCategory.BLOCKS, SetSignWaxedAction.class, Material.HONEYCOMB, new ArgumentSlot("locations", ValueType.LOCATION, (byte) 18), new ParameterSlot("waxed", true, Material.HONEYCOMB, Material.GLASS_BOTTLE)),
     WORLD_SET_SIGN_GLOWING_TEXT(ActionCategory.WORLD_ACTION, MenusCategory.BLOCKS, SetSignGlowingTextAction.class, Material.GLOW_INK_SAC, new ArgumentSlot("locations", ValueType.LOCATION, (byte) 18), new ParameterSlot("side", Arrays.asList("front", "back"), Material.OAK_SIGN, Material.WARPED_SIGN), new ParameterSlot("glowing", true, Material.GLOW_INK_SAC, Material.INK_SAC)),
     WORLD_SET_BLOCK_BIOME(ActionCategory.WORLD_ACTION, MenusCategory.BLOCKS, SetBlockBiomeAction.class, Material.MYCELIUM, new ArgumentSlot("locations", ValueType.LOCATION, (byte) 18), new ArgumentSlot("biome", ValueType.TEXT)),
+    WORLD_GET_BLOCK_STATE(ActionCategory.WORLD_ACTION, MenusCategory.BLOCKS, GetBlockStateAction.class, Material.STICKY_PISTON, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("location", ValueType.LOCATION)),
+    WORLD_SET_BLOCK_STATE(ActionCategory.WORLD_ACTION, MenusCategory.BLOCKS, SetBlockStateAction.class, Material.PISTON, new ArgumentSlot("location", ValueType.LOCATION), new ArgumentSlot("blockstate", ValueType.TEXT)),
 
     /**
      * <h1>Variable Actions.</h1>
@@ -863,6 +867,7 @@ public enum ActionType implements CodingBlockType {
     ENTITY_SET_DISPLAY_BRIGHTNESS(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayLightningAction.class, Material.LIGHT, new ArgumentSlot("sky", ValueType.NUMBER), new ArgumentSlot("block", ValueType.NUMBER)),
     //ENTITY_RESET_DISPLAY_BRIGHTNESS(ActionCategory.ENTITY_ACTION, MenusCategory.STATE, null, Material.GLASS_BOTTLE),
     ENTITY_SET_DISPLAY_INTERPOLATION(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayInterpolationAction.class, Material.CLOCK, new ArgumentSlot("delay", ValueType.NUMBER), new ArgumentSlot("duration", ValueType.NUMBER)),
+    ENTITY_SET_DISPLAY_BLOCK_STATE(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_STATE, EntitySetDisplayBlockState.class, Material.PISTON, new ArgumentSlot("blockstate", ValueType.TEXT)),
 
     ENTITY_TELEPORT(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_MOVEMENT, EntityTeleportAction.class, Material.ENDER_PEARL, new ArgumentSlot("location", ValueType.LOCATION), new ParameterSlot("consider", Arrays.asList("all", "only-coordinates", "only-rotation"), Material.ENDER_EYE, Material.PAPER, Material.PLAYER_HEAD)),
     ENTITY_PATH_MOVE_TO_LOCATION(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_MOVEMENT, SetEntityPathMoveToLocationAction.class, Material.PAPER, new ArgumentSlot("location", ValueType.LOCATION)),
@@ -1003,6 +1008,7 @@ public enum ActionType implements CodingBlockType {
     IF_ENTITY_IS_CREATURE(ActionCategory.ENTITY_CONDITION, MenusCategory.ENTITY_STATE, IsEntityCreature.class, Material.PIGLIN_HEAD),
     IF_ENTITY_IS_MONSTER(ActionCategory.ENTITY_CONDITION, MenusCategory.ENTITY_STATE, IsEntityMonster.class, Material.ZOMBIE_SPAWN_EGG),
     IF_ENTITY_IS_ENEMY(ActionCategory.ENTITY_CONDITION, MenusCategory.ENTITY_STATE, IsEntityEnemy.class, Material.ENDER_DRAGON_SPAWN_EGG),
+    IF_ENTITY_IS_DISPLAY(ActionCategory.ENTITY_CONDITION, MenusCategory.ENTITY_STATE, IsEntityDisplay.class, Material.ITEM_FRAME),
 
     IF_ENTITY_IS_IN_TEAM(ActionCategory.ENTITY_CONDITION, MenusCategory.ENTITY_INTERACTION, IsEntityInTeam.class, Material.LIME_BANNER, new ArgumentSlot("scoreboard", ValueType.TEXT), new ArgumentSlot("team", ValueType.TEXT)),
     IF_ENTITY_IS_UNDERWATER(ActionCategory.ENTITY_CONDITION, MenusCategory.ENTITY_INTERACTION, IsEntityUnderWater.class, Material.BLUE_STAINED_GLASS),
