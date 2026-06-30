@@ -143,7 +143,7 @@ public final class Watchdog implements StabilityManager, Toggleable {
         }
         StringBuilder builder = new StringBuilder("Loaded planets (" + loadedPlanets.size() + "): ");
         for (Planet planet : loadedPlanets) {
-            builder.append("\n ").append(planet.getId()).append(" - Players (").append(planet.getInformation().getAsyncOnline()).append(") - ").append(planet.getMode() == Planet.Mode.PLAYING ? "Play" : "Build").append(" - Uptime: ").append(convertTime(now - planet.getLastActivityTime())).append(" - Created: ").append(getElapsedTime(now, planet.getCreationTime())).append(" by ").append(planet.getOwner());
+            builder.append("\n ").append(planet.getId()).append(" - Players (").append(planet.getInformation().getAsyncOnline()).append(") - ").append(planet.getMode() == Planet.Mode.PLAYING ? "Play" : "Build").append(" - Uptime: ").append(convertTime(now - planet.getLastActivityTime())).append(" - Created: ").append(getElapsedTime(now, planet.getCreationTime())).append(" by ").append(planet.getOwnerName());
             if (planet.getMode() == Planet.Mode.PLAYING) {
                 builder.append(" - ").append(planet.getVariables().getTotalVariablesAmount()).append(" variables, ").append(planet.getTerritory().getScript().getExecutors().getExecutorsAmount()).append(" events, ").append(planet.getTerritory().getScript().getExecutors().getActionsAmount()).append(" actions. ");
             }

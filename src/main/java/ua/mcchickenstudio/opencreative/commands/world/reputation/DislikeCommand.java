@@ -64,9 +64,9 @@ public class DislikeCommand extends CommandHandler {
                         convertTime(unlockTime)));
                 return;
             }
-            if (FileUtils.getPlayersFromPlanetList(planet, Planet.PlayersType.LIKED).contains(sender.getName())) {
+            if (FileUtils.getPlayersFromPlanetList(planet, Planet.PlayersType.LIKED).contains(((Player) sender).getUniqueId().toString())) {
                 sender.sendMessage(MessageUtils.getLocaleMessage("world.already-rated"));
-            } else if (FileUtils.getPlayersFromPlanetList(planet, Planet.PlayersType.DISLIKED).contains(sender.getName())) {
+            } else if (FileUtils.getPlayersFromPlanetList(planet, Planet.PlayersType.DISLIKED).contains(((Player) sender).getUniqueId().toString())) {
                 sender.sendMessage(MessageUtils.getLocaleMessage("world.already-rated"));
             } else {
                 if (FileUtils.addPlayerInPlanetList(planet, sender.getName(), Planet.PlayersType.DISLIKED)) {
