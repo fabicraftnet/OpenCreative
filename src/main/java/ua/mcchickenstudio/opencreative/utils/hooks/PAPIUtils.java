@@ -170,7 +170,7 @@ class Placeholder extends PlaceholderExpansion {
                 return planet.getInformation().getIcon().getType().name();
             }
             case "owner" -> {
-                return planet.getOwner();
+                return planet.getOwnerName();
             }
             case "category" -> {
                 return String.valueOf(planet.getInformation().getCategory());
@@ -203,7 +203,7 @@ class Placeholder extends PlaceholderExpansion {
                 return String.valueOf(planet.getLimits().getLastCodingErrorsAmount());
             }
             case "whitelisted_players" -> {
-                return String.join(", ", planet.getWorldPlayers().getWhitelistedPlayers());
+                return String.join(", ", planet.getWorldPlayers().getWhitelistedPlayers()); //FIXME gives uuids should be names
             }
             case "blacklisted_players", "banned_players" -> {
                 return String.join(", ", planet.getWorldPlayers().getBannedPlayers());
@@ -227,7 +227,7 @@ class Placeholder extends PlaceholderExpansion {
                 return String.join(", ", planet.getWorldPlayers().getBuildersTrusted());
             }
             case "not_trusted_builders" -> {
-                return String.join(", ", planet.getWorldPlayers().getBuildersNotTrusted());
+                return String.join(", ", planet.getWorldPlayers().getBuildersNotTrusted()); //FIXME
             }
             case "entities_amount" -> {
                 int entities = planet.getTerritory().getWorld().getEntityCount()

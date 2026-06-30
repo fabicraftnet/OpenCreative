@@ -106,7 +106,7 @@ public final class WorldModerationMenu extends AbstractMenu implements WorldMenu
                     return;
                 }
                 player.setCooldown(item.getType(), 20);
-                planet.getInformation().setDisplayName(getLocaleMessage("creating-world.default-world-name").replace("%player%", planet.getOwner()));
+                planet.getInformation().setDisplayName(getLocaleMessage("creating-world.default-world-name").replace("%player%", planet.getOwnerName()));
                 Sounds.MENU_CLEAR_DATA.play(player);
                 planet.getInformation().updateIcon();
                 fillItems(player);
@@ -117,7 +117,7 @@ public final class WorldModerationMenu extends AbstractMenu implements WorldMenu
                     return;
                 }
                 player.setCooldown(item.getType(), 20);
-                planet.getInformation().setDescription(getLocaleMessage("creating-world.default-world-description").replace("%player%", planet.getOwner()));
+                planet.getInformation().setDescription(getLocaleMessage("creating-world.default-world-description").replace("%player%", planet.getOwnerName()));
                 Sounds.MENU_CLEAR_DATA.play(player);
                 planet.getInformation().updateIcon();
                 fillItems(player);

@@ -72,9 +72,9 @@ public class LikeCommand extends CommandHandler {
                         convertTime(unlockTime)));
                 return;
             }
-            if (getPlayersFromPlanetList(planet, Planet.PlayersType.LIKED).contains(sender.getName())) {
+            if (getPlayersFromPlanetList(planet, Planet.PlayersType.LIKED).contains(((Player) sender).getUniqueId().toString())) {
                 sender.sendMessage(getLocaleMessage("world.already-rated"));
-            } else if (getPlayersFromPlanetList(planet, Planet.PlayersType.DISLIKED).contains(sender.getName())) {
+            } else if (getPlayersFromPlanetList(planet, Planet.PlayersType.DISLIKED).contains(((Player) sender).getUniqueId().toString())) {
                 sender.sendMessage(getLocaleMessage("world.already-rated"));
             } else {
                 if (addPlayerInPlanetList(planet, sender.getName(), Planet.PlayersType.LIKED)) {

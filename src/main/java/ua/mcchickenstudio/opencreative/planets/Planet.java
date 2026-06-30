@@ -47,9 +47,7 @@ import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 import ua.mcchickenstudio.opencreative.utils.hooks.HookUtils;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.*;
@@ -81,7 +79,8 @@ public class Planet {
     private final PlanetPlayers worldPlayers;
     private final WorldVariables variables;
     private final PlanetExperiments experiments;
-    private String owner;
+    private UUID ownerUUID;
+    private String ownerName;
     private String ownerGroup;
     private long creationTime;
     private long lastActivityTime;
@@ -294,19 +293,29 @@ public class Planet {
      * @return true - is owner, false - not owner.
      */
     public boolean isOwner(@NotNull Player player) {
-        return owner.equalsIgnoreCase(player.getName());
+        return ownerUUID.equals(player.getUniqueId());
     }
 
     /**
-     * Checks whether the owner's nickname same as specified.
+     * Checks whether the player is owner of planet.
      * <p>
      * Ignores caps consideration.
      *
-     * @param nickname name to check.
+     * @param nickname name of player.
      * @return true - is owner, false - not owner.
      */
     public boolean isOwner(@NotNull String nickname) {
-        return owner.equalsIgnoreCase(nickname);
+        return ownerUUID.equals(Bukkit.getOfflinePlayer(nickname).getUniqueId());
+    }
+
+    /**
+     * Checks whether the player is owner of planet.
+     *
+     * @param uuid uuid to check.
+     * @return true - is owner, false - not owner.
+     */
+    public boolean isOwner(@NotNull UUID uuid) {
+        return ownerUUID.equals(uuid);
     }
 
     /**
@@ -346,7 +355,7 @@ public class Planet {
      *
      * @return playing or build mode.
      */
-    public @NotNull Mode getMode() {
+    public Mode getMode() {
         return mode;
     }
 
@@ -378,7 +387,7 @@ public class Planet {
      * If value is unknown (0), will return {@code 1670573410000L}
      * (publication of OpenCreative+).
      *
-     * @return Unix time, when world was created.
+     * @return unix time, when world was created.
      */
     public long getCreationTime() {
         if (creationTime == 0) {
@@ -388,7 +397,7 @@ public class Planet {
     }
 
     /**
-     * Sets creation Unix time of world.
+     * Sets creation unix time of world.
      *
      * @param creationTime time, when world was created.
      */
@@ -404,7 +413,7 @@ public class Planet {
      * If value is unknown (0), will return {@code 1670573410000L}
      * (publication of OpenCreative+).
      *
-     * @return Unix last time, when someone joined the world.
+     * @return unix last time, when someone joined the world.
      */
     public long getLastActivityTime() {
         if (lastActivityTime == 0) {
@@ -414,7 +423,7 @@ public class Planet {
     }
 
     /**
-     * Sets last activity Unix time in world.
+     * Sets last activity unix time in world.
      *
      * @param activityTime last activity time.
      */
@@ -458,12 +467,21 @@ public class Planet {
     }
 
     /**
-     * Returns owner's nickname of planet.
+     * Returns planet owner's UUID.
      *
      * @return owner's name.
      */
-    public String getOwner() {
-        return owner;
+    public UUID getOwner() {
+        return ownerUUID;
+    }
+
+    /**
+     * Returns planet owner's nickname.
+     *
+     * @return owner's name.
+     */
+    public String getOwnerName() {
+        return ownerName;
     }
 
     /**
@@ -472,7 +490,7 @@ public class Planet {
      * @param owner owner to set.
      */
     public void setOwner(String owner) {
-        this.owner = owner;
+        this.ownerUUID = Bukkit.getOfflinePlayer(owner).getUniqueId();
         config.set("owner", owner);
         config.set("owner-uuid", Bukkit.getOfflinePlayer(owner).getUniqueId().toString());
         info.updateIconAsync();
@@ -604,15 +622,28 @@ public class Planet {
      */
     public void loadInfo() {
         FileConfiguration config = getPlanetConfig(this);
-        String owner = "Unknown owner";
+        if (config.getInt("config-version") != 1)
+        {
+            // call updater
+            configUpdate();
+            config = getPlanetConfig(this);
+        }
+        String ownerName = "Unknown owner";
+        UUID ownerUUID = null;
         String ownerGroup = "default";
         Mode mode = Mode.BUILD;
         Sharing sharing = Sharing.PRIVATE;
-        if (config.getString("owner") != null) {
-            owner = config.getString("owner");
+
+        if (config.getString("owner-uuid") != null) {
+            ownerUUID = UUID.fromString(config.getString("owner-uuid"));
         } else {
             corrupted = true;
         }
+        if (config.getString("owner") != null)
+        {
+            ownerName = config.getString("owner"); //this should not be done im just lazy TODO
+        }
+
         if (config.getString("owner-group") != null) {
             ownerGroup = config.getString("owner-group");
         }
@@ -645,12 +676,38 @@ public class Planet {
         if (corrupted) {
             sendCriticalErrorMessage("Planet " + id + " lost it's config file, please check planet files in " + getWorldName());
         }
-        this.owner = owner;
+        this.ownerUUID = ownerUUID;
+        this.ownerName = ownerName;
         this.ownerGroup = ownerGroup;
         this.mode = mode;
         this.sharing = sharing;
     }
 
+    /**
+     * Transforms old config data to new format.
+     *
+      */
+    private void configUpdate()
+    {
+        FileConfiguration config = getPlanetConfig(this);
+        int version = config.getInt("config-version");
+        if (version < 1) //Replaces nicknames with uuids
+        {
+            String[] playerList = {"players.unique","players.liked","players.builders.trusted","players.builders.not-trusted",
+                    "players.developers.trusted","players.developers.not-trusted","players.whitelist","players.blacklist"};
+            for (String key:  playerList)
+            {
+                List<String> list = config.getStringList(key);
+                HashSet<String> set = new HashSet<String>();
+                list.forEach(nickname ->{set.add(Bukkit.getOfflinePlayer(nickname).getUniqueId().toString());});
+
+                getConfiguration().set(key, set);
+            }
+            version = 1;
+            getConfiguration().set("config-version", version);
+        }
+
+    }
     /**
      * Returns byte value of flag.
      *
@@ -715,7 +772,7 @@ public class Planet {
         }
 
         // If world is private/player is banned, not connecting
-        if (!isOwner(player.getName())) {
+        if (!isOwner(player.getUniqueId())) {
             boolean hasPrivateBypass = player.hasPermission("opencreative.world.private.bypass");
             boolean hasBanBypass = player.hasPermission("opencreative.world.banned.bypass");
             Sharing sharing = getSharing();
@@ -853,7 +910,7 @@ public class Planet {
             PlanetPlayer planetPlayer = getWorldPlayers().getPlanetPlayer(player);
             player.clearTitle();
             territory.showBorders(player);
-            if (!getPlayersFromPlanetList(this, PlayersType.UNIQUE).contains(player.getName())) {
+            if (!getPlayersFromPlanetList(this, PlayersType.UNIQUE).contains(player.getUniqueId().toString())) {
                 if (Experiments.isEnabled("wanders") && !isOwner(player)) {
                     Wander wander = OpenCreative.getWander(player);
                     wander.setVisits(wander.getVisits() + 1);

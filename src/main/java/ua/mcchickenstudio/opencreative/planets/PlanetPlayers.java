@@ -133,8 +133,8 @@ public class PlanetPlayers {
         if (player.hasPermission("opencreative.world.dev.others")) {
             return true;
         }
-        for (String nickname : getDevelopersTrusted()) {
-            if (nickname.equalsIgnoreCase(player.getName())) {
+        for (String uuid : getDevelopersTrusted()) {
+            if (getUUIDFromText(uuid) == player.getUniqueId()) {
                 return true;
             }
         }
@@ -142,8 +142,8 @@ public class PlanetPlayers {
     }
 
     public boolean isNotTrustedDeveloper(Player player) {
-        for (String nickname : getDevelopersNotTrusted()) {
-            if (nickname.equalsIgnoreCase(player.getName())) {
+        for (String uuid : getDevelopersNotTrusted()) {
+            if (getUUIDFromText(uuid) == player.getUniqueId()) {
                 return true;
             }
         }
@@ -151,8 +151,8 @@ public class PlanetPlayers {
     }
 
     public boolean isNotTrustedBuilder(Player player) {
-        for (String nickname : getBuildersNotTrusted()) {
-            if (nickname.equalsIgnoreCase(player.getName())) {
+        for (String uuid : getBuildersNotTrusted()) {
+            if (getUUIDFromText(uuid) == player.getUniqueId()) {
                 return true;
             }
         }
@@ -166,8 +166,8 @@ public class PlanetPlayers {
         if (player.hasPermission("opencreative.world.build.others")) {
             return true;
         }
-        for (String nickname : getBuildersTrusted()) {
-            if (nickname.equalsIgnoreCase(player.getName())) {
+        for (String uuid : getBuildersTrusted()) {
+            if (getUUIDFromText(uuid) == player.getUniqueId()) {
                 return true;
             }
         }
@@ -175,8 +175,8 @@ public class PlanetPlayers {
     }
 
     public boolean isDeveloperGuest(Player player) {
-        for (String nickname : getDevelopersGuests()) {
-            if (nickname.equalsIgnoreCase(player.getName())) {
+        for (String uuid : getDevelopersGuests()) {
+            if (getUUIDFromText(uuid) == player.getUniqueId()) {
                 return true;
             }
         }
@@ -190,8 +190,8 @@ public class PlanetPlayers {
         if (player.hasPermission("opencreative.world.dev.others")) {
             return true;
         }
-        for (String nickname : getDevelopersTrusted()) {
-            if (nickname.equalsIgnoreCase(player.getName())) {
+        for (String uuid : getDevelopersTrusted()) {
+            if (getUUIDFromText(uuid) == player.getUniqueId()) {
                 return true;
             }
         }
@@ -202,8 +202,8 @@ public class PlanetPlayers {
         if (!planet.equals(OpenCreative.getPlanetsManager().getPlanetByPlayer(owner))) {
             return false;
         }
-        for (String nickname : getDevelopersNotTrusted()) {
-            if (nickname.equalsIgnoreCase(player.getName())) {
+        for (String uuid : getDevelopersNotTrusted()) {
+            if (getUUIDFromText(uuid) == player.getUniqueId()) {
                 return true;
             }
         }
@@ -217,8 +217,8 @@ public class PlanetPlayers {
         if (player.hasPermission("opencreative.world.build.others")) {
             return true;
         }
-        for (String nickname : getBuildersTrusted()) {
-            if (nickname.equalsIgnoreCase(player.getName())) {
+        for (String uuid : getBuildersTrusted()) {
+            if (getUUIDFromText(uuid) == player.getUniqueId()) {
                 return true;
             }
         }
@@ -229,8 +229,8 @@ public class PlanetPlayers {
         if (!planet.equals(OpenCreative.getPlanetsManager().getPlanetByPlayer(owner))) {
             return false;
         }
-        for (String nickname : getBuildersNotTrusted()) {
-            if (nickname.equalsIgnoreCase(player.getName())) {
+        for (String uuid : getBuildersNotTrusted()) {
+            if (getUUIDFromText(uuid) == player.getUniqueId()) {
                 return true;
             }
         }
@@ -239,6 +239,7 @@ public class PlanetPlayers {
 
     public void removeBuilder(String nickname) {
         Player player = Bukkit.getPlayer(nickname);
+        String uuid = player.getUniqueId().toString();
         if (player != null) {
             Planet playerPlanet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
             if (planet.equals(playerPlanet)) {
@@ -252,14 +253,15 @@ public class PlanetPlayers {
             }
         }
         if (!planet.isLoaded()) loadPlayers();
-        buildersNotTrusted.removeIf(builder -> builder.equalsIgnoreCase(nickname));
-        buildersTrusted.removeIf(builder -> builder.equalsIgnoreCase(nickname));
+        buildersNotTrusted.removeIf(builder -> builder.equalsIgnoreCase(uuid));
+        buildersTrusted.removeIf(builder -> builder.equalsIgnoreCase(uuid));
         planet.getConfiguration().set("players.builders.not-trusted", buildersNotTrusted);
         planet.getConfiguration().set("players.builders.trusted", buildersTrusted);
     }
 
     public void removeDeveloper(String nickname) {
         Player player = Bukkit.getPlayer(nickname);
+        String uuid = player.getUniqueId().toString();
         if (player != null) {
             Planet playerPlanet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
             if (planet.equals(playerPlanet)) {
@@ -277,8 +279,8 @@ public class PlanetPlayers {
             }
         }
         if (!planet.isLoaded()) loadPlayers();
-        developersNotTrusted.removeIf(developer -> developer.equalsIgnoreCase(nickname));
-        developersTrusted.removeIf(developer -> developer.equalsIgnoreCase(nickname));
+        developersNotTrusted.removeIf(developer -> developer.equalsIgnoreCase(uuid));
+        developersTrusted.removeIf(developer -> developer.equalsIgnoreCase(uuid));
         planet.getConfiguration().set("players.developers.not-trusted", developersNotTrusted);
         planet.getConfiguration().set("players.developers.trusted", developersTrusted);
     }
@@ -286,6 +288,7 @@ public class PlanetPlayers {
     public void addDeveloperGuest(String nickname) {
         if (getAllDevelopers().size() > planet.getLimits().getDevelopersLimit()) return;
         Player player = Bukkit.getPlayer(nickname);
+        String uuid = player.getUniqueId().toString();
         if (player != null) {
             Planet playerPlanet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
             if (planet.equals(playerPlanet)) {
@@ -294,9 +297,9 @@ public class PlanetPlayers {
             }
         }
         if (!planet.isLoaded()) loadPlayers();
-        developersGuests.add(nickname);
-        developersNotTrusted.removeIf(developer -> developer.equalsIgnoreCase(nickname));
-        developersTrusted.removeIf(developer -> developer.equalsIgnoreCase(nickname));
+        developersGuests.add(uuid);
+        developersNotTrusted.removeIf(developer -> developer.equalsIgnoreCase(uuid));
+        developersTrusted.removeIf(developer -> developer.equalsIgnoreCase(uuid));
         planet.getConfiguration().set("players.developers.guests", developersGuests);
         planet.getConfiguration().set("players.developers.not-trusted", developersNotTrusted);
         planet.getConfiguration().set("players.developers.trusted", developersTrusted);
@@ -305,6 +308,7 @@ public class PlanetPlayers {
     public void addDeveloper(String nickname, boolean trusted) {
         if (getAllDevelopers().size() > planet.getLimits().getDevelopersLimit()) return;
         Player player = Bukkit.getPlayer(nickname);
+        String uuid = player.getUniqueId().toString();
         if (player != null) {
             Planet playerPlanet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
             if (planet.equals(playerPlanet)) {
@@ -337,6 +341,7 @@ public class PlanetPlayers {
     public void addBuilder(String nickname, boolean trusted) {
         if (getAllBuilders().size() > planet.getLimits().getBuildersLimit()) return;
         Player player = Bukkit.getPlayer(nickname);
+        String uuid = player.getUniqueId().toString();
         if (player != null) {
             Planet playerPlanet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
             if (planet.equals(playerPlanet)) {
@@ -353,11 +358,11 @@ public class PlanetPlayers {
         }
         if (!planet.isLoaded()) loadPlayers();
         if (trusted) {
-            buildersNotTrusted.removeIf(builder -> builder.equalsIgnoreCase(nickname));
-            buildersTrusted.add(nickname);
+            buildersNotTrusted.removeIf(builder -> builder.equalsIgnoreCase(uuid));
+            buildersTrusted.add(uuid);
         } else {
-            buildersTrusted.removeIf(builder -> builder.equalsIgnoreCase(nickname));
-            buildersNotTrusted.add(nickname);
+            buildersTrusted.removeIf(builder -> builder.equalsIgnoreCase(uuid));
+            buildersNotTrusted.add(uuid);
         }
         planet.getConfiguration().set("players.builders.not-trusted", buildersNotTrusted);
         planet.getConfiguration().set("players.builders.trusted", buildersTrusted);
@@ -366,22 +371,25 @@ public class PlanetPlayers {
 
     public void unbanPlayer(String nickname) {
         if (!planet.isLoaded()) loadPlayers();
-        this.bannedPlayers.removeIf(ban -> ban.equalsIgnoreCase(nickname));
+        String uuid = Bukkit.getOfflinePlayer(nickname).getUniqueId().toString();
+        this.bannedPlayers.removeIf(ban -> ban.equalsIgnoreCase(uuid));
         planet.getConfiguration().set("players.blacklist", bannedPlayers);
         if (!planet.isLoaded()) clear();
     }
 
     public void removeFromWhitelist(String nickname) {
         if (!planet.isLoaded()) loadPlayers();
-        this.whitelistedPlayers.removeIf(whitelisted -> whitelisted.equalsIgnoreCase(nickname));
+        String uuid = Bukkit.getOfflinePlayer(nickname).getUniqueId().toString();
+        this.whitelistedPlayers.removeIf(whitelisted -> whitelisted.equalsIgnoreCase(uuid));
         planet.getConfiguration().set("players.whitelist", whitelistedPlayers);
         if (!planet.isLoaded()) clear();
     }
 
     public void banPlayer(String nickname) {
-        if (planet.isOwner(nickname)) return;
+        if (planet.isOwner(Bukkit.getOfflinePlayer(nickname).getUniqueId())) return;
         if (getBannedPlayers().size() > planet.getLimits().getBlacklistedLimit()) return;
         Player player = Bukkit.getPlayer(nickname);
+        String uuid = player.getUniqueId().toString();
         if (player != null && !player.hasPermission("opencreative.world.ban.bypass")) {
             Planet playerPlanet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
             if (planet.equals(playerPlanet)) {
@@ -391,15 +399,16 @@ public class PlanetPlayers {
             }
         }
         if (!planet.isLoaded()) loadPlayers();
-        bannedPlayers.add(nickname);
+        bannedPlayers.add(uuid);
         planet.getConfiguration().set("players.blacklist", bannedPlayers);
         if (!planet.isLoaded()) clear();
     }
 
     public void whitelistPlayer(String nickname) {
-        if (planet.isOwner(nickname)) return;
+        if (planet.isOwner(Bukkit.getOfflinePlayer(nickname).getUniqueId())) return;
         if (getWhitelistedPlayers().size() > planet.getLimits().getWhitelistedLimit()) return;
         Player player = Bukkit.getPlayer(nickname);
+        String uuid = player.getUniqueId().toString();
         if (player != null) {
             Planet playerPlanet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
             if (planet.equals(playerPlanet)) {
@@ -408,7 +417,7 @@ public class PlanetPlayers {
             }
         }
         if (!planet.isLoaded()) loadPlayers();
-        whitelistedPlayers.add(nickname);
+        whitelistedPlayers.add(uuid);
         planet.getConfiguration().set("players.whitelist", whitelistedPlayers);
         if (!planet.isLoaded()) clear();
     }
@@ -427,7 +436,7 @@ public class PlanetPlayers {
 
     public Set<String> getAllPlayersFromConfig() {
         Set<String> allPlayers = new HashSet<>();
-        planet.getPlayers().forEach(player -> allPlayers.add(player.getName()));
+        planet.getPlayers().forEach(player -> allPlayers.add(player.getUniqueId().toString()));
         allPlayers.addAll(getBuildersTrusted());
         allPlayers.addAll(getBuildersNotTrusted());
         allPlayers.addAll(getDevelopersTrusted());
@@ -435,7 +444,7 @@ public class PlanetPlayers {
         allPlayers.addAll(getDevelopersGuests());
         allPlayers.addAll(getBannedPlayers());
         allPlayers.addAll(getWhitelistedPlayers());
-        allPlayers.remove(planet.getOwner());
+        allPlayers.remove(planet.getOwner().toString());
         return allPlayers;
     }
 
@@ -483,8 +492,9 @@ public class PlanetPlayers {
     }
 
     public boolean isBanned(String nickname) {
+        String uuid = Bukkit.getOfflinePlayer(nickname).getUniqueId().toString();
         for (String banned : getBannedPlayers()) {
-            if (banned.equalsIgnoreCase(nickname)) {
+            if (banned.equalsIgnoreCase(uuid)) {
                 return true;
             }
         }
@@ -492,8 +502,9 @@ public class PlanetPlayers {
     }
 
     public boolean isWhitelisted(String nickname) {
+        String uuid = Bukkit.getOfflinePlayer(nickname).getUniqueId().toString();
         for (String whitelisted : getWhitelistedPlayers()) {
-            if (whitelisted.equalsIgnoreCase(nickname)) {
+            if (whitelisted.equalsIgnoreCase(uuid)) {
                 return true;
             }
         }

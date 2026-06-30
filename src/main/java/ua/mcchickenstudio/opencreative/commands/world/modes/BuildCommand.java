@@ -38,6 +38,7 @@ import ua.mcchickenstudio.opencreative.utils.CooldownUtils;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static ua.mcchickenstudio.opencreative.listeners.player.ChangedWorld.removePlayerWithLocation;
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
@@ -121,7 +122,7 @@ public class BuildCommand extends CommandHandler {
                 Sounds.WORLD_MODE_BUILD.play(player);
                 if (planet.getWorldPlayers().canBuild(player)) {
                     Player planetOwner = Bukkit.getPlayer(planet.getOwner());
-                    if (planet.getWorldPlayers().getBuildersNotTrusted().contains(sender.getName())) {
+                    if (planet.getWorldPlayers().getBuildersNotTrusted().contains(((Player) sender).getUniqueId().toString())) {
                         if (planetOwner == null) {
                             sender.sendMessage(getLocaleMessage("world.build-mode.cant-build-when-offline"));
                             return;
@@ -153,12 +154,13 @@ public class BuildCommand extends CommandHandler {
             }
             String nickname = args[0];
             Player onlinePlayer = Bukkit.getPlayer(nickname);
-            if (!planet.getWorldPlayers().getAllBuilders().contains(nickname)) {
+            UUID uuid = Bukkit.getPlayerUniqueId(nickname);
+            if (!planet.getWorldPlayers().getAllBuilders().contains(uuid.toString())) {
                 if (onlinePlayer != null) {
                     nickname = onlinePlayer.getName();
                 }
             }
-            if (planet.isOwner(nickname)) {
+            if (planet.isOwner(uuid)) {
                 sender.sendMessage(getLocaleMessage("same-player"));
                 return;
             }
@@ -166,12 +168,12 @@ public class BuildCommand extends CommandHandler {
              * Checks if player's name contains in not trusted
              * or trusted builders.
              */
-            if (planet.getWorldPlayers().getBuildersNotTrusted().contains(nickname)) {
+            if (planet.getWorldPlayers().getBuildersNotTrusted().contains(uuid.toString())) {
                 planet.getWorldPlayers().addBuilder(nickname, true);
                 sender.sendMessage(getLocaleMessage("world.players.builders.trusted").replace("%player%", nickname));
                 return;
             }
-            if (planet.getWorldPlayers().getBuildersTrusted().contains(nickname)) {
+            if (planet.getWorldPlayers().getBuildersTrusted().contains(uuid.toString())) {
                 planet.getWorldPlayers().removeBuilder(nickname);
                 sender.sendMessage(getLocaleMessage("world.players.builders.removed").replace("%player%", nickname));
                 return;
@@ -207,8 +209,8 @@ public class BuildCommand extends CommandHandler {
         if (planet.isOwner(player)) {
             List<String> list = new ArrayList<>(planet.getWorldPlayers().getAllBuilders());
             for (Player planetPlayer : planet.getPlayers()) {
-                if (planet.isOwner(planetPlayer) || list.contains(planetPlayer.getName())) continue;
-                list.add(planetPlayer.getName());
+                if (planet.isOwner(planetPlayer) || list.contains(planetPlayer.getUniqueId().toString())) continue;
+                list.add(planetPlayer.getName()); //FIXME should be names but is uudis
             }
             return list.subList(0, Math.min(10, list.size()));
         }

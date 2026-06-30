@@ -801,11 +801,11 @@ public final class FileUtils {
     }
 
     /**
-     * Returns a specified list of players nicknames.
+     * Returns a specified list of players uuids.
      *
      * @param planet planet to get list.
      * @param type   type of players list.
-     * @return list of nicknames.
+     * @return list of uuids.
      */
     public static List<String> getPlayersFromPlanetList(Planet planet, Planet.PlayersType type) {
         return new ArrayList<>(getPlanetConfig(planet).getStringList(type.getPath()));
@@ -822,16 +822,17 @@ public final class FileUtils {
     public static boolean addPlayerInPlanetList(Planet planet, String nickname, Planet.PlayersType type) {
         FileConfiguration planetConfig = getPlanetConfig(planet);
         List<String> playersList = planetConfig.getStringList(type.getPath());
+        String uuid = Bukkit.getPlayerUniqueId(nickname).toString();
         for (String player : playersList) {
             /*
              * We will not add player, if list
              * already contains him.
              */
-            if (player.equalsIgnoreCase(nickname)) {
+            if (player.equals(uuid)) {
                 return false;
             }
         }
-        playersList.add(nickname);
+        playersList.add(uuid);
         setPlanetConfigParameter(planet, type.getPath(), playersList);
         return true;
     }
