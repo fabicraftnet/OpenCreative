@@ -28,10 +28,7 @@ import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.player.world.QuitEvent;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.*;
@@ -134,7 +131,7 @@ public class PlanetPlayers {
             return true;
         }
         for (String uuid : getDevelopersTrusted()) {
-            if (getUUIDFromText(uuid) == player.getUniqueId()) {
+            if (getUUIDFromText(uuid).equals(player.getUniqueId())) {
                 return true;
             }
         }
@@ -143,7 +140,7 @@ public class PlanetPlayers {
 
     public boolean isNotTrustedDeveloper(Player player) {
         for (String uuid : getDevelopersNotTrusted()) {
-            if (getUUIDFromText(uuid) == player.getUniqueId()) {
+            if (getUUIDFromText(uuid).equals(player.getUniqueId())) {
                 return true;
             }
         }
@@ -152,7 +149,7 @@ public class PlanetPlayers {
 
     public boolean isNotTrustedBuilder(Player player) {
         for (String uuid : getBuildersNotTrusted()) {
-            if (getUUIDFromText(uuid) == player.getUniqueId()) {
+            if (getUUIDFromText(uuid).equals(player.getUniqueId())) {
                 return true;
             }
         }
@@ -167,7 +164,7 @@ public class PlanetPlayers {
             return true;
         }
         for (String uuid : getBuildersTrusted()) {
-            if (getUUIDFromText(uuid) == player.getUniqueId()) {
+            if (getUUIDFromText(uuid).equals(player.getUniqueId())) {
                 return true;
             }
         }
@@ -176,7 +173,7 @@ public class PlanetPlayers {
 
     public boolean isDeveloperGuest(Player player) {
         for (String uuid : getDevelopersGuests()) {
-            if (getUUIDFromText(uuid) == player.getUniqueId()) {
+            if (getUUIDFromText(uuid).equals(player.getUniqueId())) {
                 return true;
             }
         }
@@ -191,7 +188,7 @@ public class PlanetPlayers {
             return true;
         }
         for (String uuid : getDevelopersTrusted()) {
-            if (getUUIDFromText(uuid) == player.getUniqueId()) {
+            if (getUUIDFromText(uuid).equals(player.getUniqueId())) {
                 return true;
             }
         }
@@ -203,7 +200,7 @@ public class PlanetPlayers {
             return false;
         }
         for (String uuid : getDevelopersNotTrusted()) {
-            if (getUUIDFromText(uuid) == player.getUniqueId()) {
+            if (getUUIDFromText(uuid).equals(player.getUniqueId())) {
                 return true;
             }
         }
@@ -218,7 +215,7 @@ public class PlanetPlayers {
             return true;
         }
         for (String uuid : getBuildersTrusted()) {
-            if (getUUIDFromText(uuid) == player.getUniqueId()) {
+            if (getUUIDFromText(uuid).equals(player.getUniqueId())) {
                 return true;
             }
         }
@@ -230,7 +227,7 @@ public class PlanetPlayers {
             return false;
         }
         for (String uuid : getBuildersNotTrusted()) {
-            if (getUUIDFromText(uuid) == player.getUniqueId()) {
+            if (getUUIDFromText(uuid).equals(player.getUniqueId())) {
                 return true;
             }
         }
@@ -325,13 +322,13 @@ public class PlanetPlayers {
         }
         if (!planet.isLoaded()) loadPlayers();
         if (trusted) {
-            developersNotTrusted.removeIf(developer -> developer.equalsIgnoreCase(nickname));
-            developersTrusted.add(nickname);
+            developersNotTrusted.removeIf(developer -> developer.equalsIgnoreCase(uuid));
+            developersTrusted.add(uuid);
         } else {
-            developersTrusted.removeIf(developer -> developer.equalsIgnoreCase(nickname));
-            developersNotTrusted.add(nickname);
+            developersTrusted.removeIf(developer -> developer.equalsIgnoreCase(uuid));
+            developersNotTrusted.add(uuid);
         }
-        developersGuests.removeIf(developer -> developer.equalsIgnoreCase(nickname));
+        developersGuests.removeIf(developer -> developer.equalsIgnoreCase(uuid));
         planet.getConfiguration().set("players.developers.guests", developersGuests);
         planet.getConfiguration().set("players.developers.not-trusted", developersNotTrusted);
         planet.getConfiguration().set("players.developers.trusted", developersTrusted);
@@ -484,11 +481,11 @@ public class PlanetPlayers {
     }
 
     public String getBuilders() {
-        return String.join(", ", planet.getWorldPlayers().getAllBuilders());
+        return String.join(", ", planet.getWorldPlayers().getAllBuilders().stream().map(uuid -> Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName() ).toList());
     }
 
     public String getDevelopers() {
-        return String.join(", ", planet.getWorldPlayers().getAllDevelopers());
+        return String.join(", ", planet.getWorldPlayers().getAllDevelopers().stream().map(uuid -> Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName() ).toList());
     }
 
     public boolean isBanned(String nickname) {

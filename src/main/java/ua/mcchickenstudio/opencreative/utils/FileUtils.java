@@ -125,6 +125,7 @@ public final class FileUtils {
         config.set("players.whitelist", new ArrayList<String>());
         config.set("players.blacklist", new ArrayList<String>());
         config.set("flags", new HashMap<String, Integer>());
+        config.set("config-version", OpenCreative.getPlanetConfigVersion());
     }
 
     /**

@@ -18,7 +18,6 @@
 
 package ua.mcchickenstudio.opencreative.coding.blocks.conditions.playerconditions.state;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;
@@ -43,8 +42,8 @@ public final class IsLikedWorldCondition extends PlayerCondition {
         //FIXME: Use liked players in planet.getWorldPlayers() instead of loading files
         List<String> likedPlayers = FileUtils.getPlayersFromPlanetList(getPlanet(), Planet.PlayersType.LIKED);
         String uuid = player.getUniqueId().toString();
-        for (String nickname : likedPlayers) {
-            if (nickname.equals(uuid)) {
+        for (String likedUuid : likedPlayers) {
+            if (likedUuid.equals(uuid)) {
                 return true;
             }
         }
