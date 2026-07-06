@@ -164,10 +164,10 @@ public class DevCommand extends CommandHandler {
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
         if (planet == null) return null;
         if (planet.isOwner(player)) {
-            List<String> list = new ArrayList<>(planet.getWorldPlayers().getAllDevelopers());
+            List<String> list = new ArrayList<>(planet.getWorldPlayers().getAllDevelopers().stream().map(uuid -> Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName() ).toList());
             for (Player planetPlayer : planet.getPlayers()) {
-                if (planet.isOwner(planetPlayer) || list.contains(planetPlayer.getUniqueId().toString())) continue;
-                list.add(planetPlayer.getName()); //FIXME should be names but is uudis
+                if (planet.isOwner(planetPlayer) || list.contains(planetPlayer.getName())) continue;
+                list.add(planetPlayer.getName());
             }
             return list.subList(0, Math.min(10, list.size()));
         }

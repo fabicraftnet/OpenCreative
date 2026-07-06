@@ -622,9 +622,9 @@ public class Planet {
      */
     public void loadInfo() {
         FileConfiguration config = getPlanetConfig(this);
-        if (config.getInt("config-version") != 1)
+        if (config.getInt("config-version") != OpenCreative.getPlanetConfigVersion())
         {
-            // call updater
+
             configUpdate();
             config = getPlanetConfig(this);
         }
@@ -639,10 +639,7 @@ public class Planet {
         } else {
             corrupted = true;
         }
-        if (config.getString("owner") != null)
-        {
-            ownerName = config.getString("owner"); //this should not be done im just lazy TODO
-        }
+        ownerName = Bukkit.getOfflinePlayer(ownerUUID).getName();
 
         if (config.getString("owner-group") != null) {
             ownerGroup = config.getString("owner-group");
@@ -694,7 +691,7 @@ public class Planet {
         if (version < 1) //Replaces nicknames with uuids
         {
             String[] playerList = {"players.unique","players.liked","players.builders.trusted","players.builders.not-trusted",
-                    "players.developers.trusted","players.developers.not-trusted","players.whitelist","players.blacklist"};
+                    "players.developers.trusted","players.developers.not-trusted","players.whitelist","players.blacklist","players.disliked"};
             for (String key:  playerList)
             {
                 List<String> list = config.getStringList(key);

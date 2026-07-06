@@ -31,6 +31,7 @@ import ua.mcchickenstudio.opencreative.settings.groups.LimitType;
 import ua.mcchickenstudio.opencreative.utils.world.WorldUtils;
 
 import java.util.List;
+import java.util.UUID;
 
 import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isDevPlanet;
 
@@ -203,31 +204,31 @@ class Placeholder extends PlaceholderExpansion {
                 return String.valueOf(planet.getLimits().getLastCodingErrorsAmount());
             }
             case "whitelisted_players" -> {
-                return String.join(", ", planet.getWorldPlayers().getWhitelistedPlayers()); //FIXME gives uuids should be names
+                return String.join(", ", planet.getWorldPlayers().getWhitelistedPlayers().stream().map(uuid -> Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName() ).toList());
             }
             case "blacklisted_players", "banned_players" -> {
-                return String.join(", ", planet.getWorldPlayers().getBannedPlayers());
+                return String.join(", ", planet.getWorldPlayers().getBannedPlayers().stream().map(uuid -> Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName() ).toList());
             }
             case "builders" -> {
-                return String.join(", ", planet.getWorldPlayers().getAllBuilders());
+                return String.join(", ", planet.getWorldPlayers().getAllBuilders().stream().map(uuid -> Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName() ).toList());
             }
             case "developers" -> {
-                return String.join(", ", planet.getWorldPlayers().getAllDevelopers());
+                return String.join(", ", planet.getWorldPlayers().getAllDevelopers().stream().map(uuid -> Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName() ).toList());
             }
             case "trusted_developers" -> {
-                return String.join(", ", planet.getWorldPlayers().getDevelopersTrusted());
+                return String.join(", ", planet.getWorldPlayers().getDevelopersTrusted().stream().map(uuid -> Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName() ).toList());
             }
             case "not_trusted_developers" -> {
-                return String.join(", ", planet.getWorldPlayers().getDevelopersNotTrusted());
+                return String.join(", ", planet.getWorldPlayers().getDevelopersNotTrusted().stream().map(uuid -> Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName() ).toList());
             }
             case "guest_developers" -> {
-                return String.join(", ", planet.getWorldPlayers().getDevelopersGuests());
+                return String.join(", ", planet.getWorldPlayers().getDevelopersGuests().stream().map(uuid -> Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName() ).toList());
             }
             case "trusted_builders" -> {
-                return String.join(", ", planet.getWorldPlayers().getBuildersTrusted());
+                return String.join(", ", planet.getWorldPlayers().getBuildersTrusted().stream().map(uuid -> Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName() ).toList());
             }
             case "not_trusted_builders" -> {
-                return String.join(", ", planet.getWorldPlayers().getBuildersNotTrusted()); //FIXME
+                return String.join(", ", planet.getWorldPlayers().getBuildersNotTrusted().stream().map(uuid -> Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName() ).toList());
             }
             case "entities_amount" -> {
                 int entities = planet.getTerritory().getWorld().getEntityCount()
