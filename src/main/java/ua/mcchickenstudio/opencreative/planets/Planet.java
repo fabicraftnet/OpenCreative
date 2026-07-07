@@ -37,6 +37,7 @@ import ua.mcchickenstudio.opencreative.coding.blocks.events.world.other.GamePlay
 import ua.mcchickenstudio.opencreative.coding.variables.WorldVariables;
 import ua.mcchickenstudio.opencreative.commands.experiments.Experiments;
 import ua.mcchickenstudio.opencreative.events.planet.PlanetConnectPlayerEvent;
+import ua.mcchickenstudio.opencreative.utils.FileUtils;
 import ua.mcchickenstudio.opencreative.wanders.Wander;
 import ua.mcchickenstudio.opencreative.listeners.player.ChangedWorld;
 import ua.mcchickenstudio.opencreative.managers.stability.StabilityState;
@@ -624,8 +625,7 @@ public class Planet {
         FileConfiguration config = getPlanetConfig(this);
         if (config.getInt("config-version") != OpenCreative.getPlanetConfigVersion())
         {
-
-            configUpdate();
+            FileUtils.updatePlanetConfig(this);
             config = getPlanetConfig(this);
         }
         String ownerName = "Unknown owner";
@@ -680,31 +680,7 @@ public class Planet {
         this.sharing = sharing;
     }
 
-    /**
-     * Transforms old config data to new format.
-     *
-      */
-    private void configUpdate()
-    {
-        FileConfiguration config = getPlanetConfig(this);
-        int version = config.getInt("config-version");
-        if (version < 1) //Replaces nicknames with uuids
-        {
-            String[] playerList = {"players.unique","players.liked","players.builders.trusted","players.builders.not-trusted",
-                    "players.developers.trusted","players.developers.not-trusted","players.whitelist","players.blacklist","players.disliked"};
-            for (String key:  playerList)
-            {
-                List<String> list = config.getStringList(key);
-                HashSet<String> set = new HashSet<String>();
-                list.forEach(nickname ->{set.add(Bukkit.getOfflinePlayer(nickname).getUniqueId().toString());});
 
-                getConfiguration().set(key, set);
-            }
-            version = 1;
-            getConfiguration().set("config-version", version);
-        }
-
-    }
     /**
      * Returns byte value of flag.
      *

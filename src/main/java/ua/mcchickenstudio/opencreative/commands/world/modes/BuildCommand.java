@@ -122,7 +122,7 @@ public class BuildCommand extends CommandHandler {
                 Sounds.WORLD_MODE_BUILD.play(player);
                 if (planet.getWorldPlayers().canBuild(player)) {
                     Player planetOwner = Bukkit.getPlayer(planet.getOwner());
-                    if (planet.getWorldPlayers().getBuildersNotTrusted().contains(((Player) sender).getUniqueId().toString())) {
+                    if (planet.getWorldPlayers().getBuildersNotTrusted().contains(((Player) sender).getUniqueId())) {
                         if (planetOwner == null) {
                             sender.sendMessage(getLocaleMessage("world.build-mode.cant-build-when-offline"));
                             return;
@@ -154,8 +154,8 @@ public class BuildCommand extends CommandHandler {
             }
             String nickname = args[0];
             Player onlinePlayer = Bukkit.getPlayer(nickname);
-            UUID uuid = Bukkit.getPlayerUniqueId(nickname);
-            if (!planet.getWorldPlayers().getAllBuilders().contains(uuid.toString())) {
+            UUID uuid = Bukkit.getOfflinePlayer(nickname).getUniqueId();
+            if (!planet.getWorldPlayers().getAllBuilders().contains(uuid)) {
                 if (onlinePlayer != null) {
                     nickname = onlinePlayer.getName();
                 }
@@ -165,15 +165,15 @@ public class BuildCommand extends CommandHandler {
                 return;
             }
             /*
-             * Checks if player's name contains in not trusted
+             * Checks if player's uuid is in not trusted
              * or trusted builders.
              */
-            if (planet.getWorldPlayers().getBuildersNotTrusted().contains(uuid.toString())) {
+            if (planet.getWorldPlayers().getBuildersNotTrusted().contains(uuid)) {
                 planet.getWorldPlayers().addBuilder(nickname, true);
                 sender.sendMessage(getLocaleMessage("world.players.builders.trusted").replace("%player%", nickname));
                 return;
             }
-            if (planet.getWorldPlayers().getBuildersTrusted().contains(uuid.toString())) {
+            if (planet.getWorldPlayers().getBuildersTrusted().contains(uuid)) {
                 planet.getWorldPlayers().removeBuilder(nickname);
                 sender.sendMessage(getLocaleMessage("world.players.builders.removed").replace("%player%", nickname));
                 return;
@@ -207,7 +207,7 @@ public class BuildCommand extends CommandHandler {
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
         if (planet == null) return null;
         if (planet.isOwner(player)) {
-            List<String> list = new ArrayList<>(planet.getWorldPlayers().getAllBuilders().stream().map(uuid -> Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName() ).toList());
+            List<String> list = new ArrayList<>(planet.getWorldPlayers().getAllBuilders().stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName() ).toList());
             for (Player planetPlayer : planet.getPlayers()) {
                 if (planet.isOwner(planetPlayer) || list.contains(planetPlayer.getName())) continue;
                 list.add(planetPlayer.getName());

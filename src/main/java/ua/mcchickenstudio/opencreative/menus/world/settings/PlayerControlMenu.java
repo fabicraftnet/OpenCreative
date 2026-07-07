@@ -41,6 +41,7 @@ import ua.mcchickenstudio.opencreative.utils.PlayerConfirmation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
@@ -54,7 +55,7 @@ import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.isEntityInDevPla
 public final class PlayerControlMenu extends AbstractMenu implements WorldMenu {
 
     private final String nickname;
-    private final String uuid;
+    private final UUID uuid;
     private final Planet planet;
     private final List<ParameterButton> buttons = new ArrayList<>();
 
@@ -72,7 +73,7 @@ public final class PlayerControlMenu extends AbstractMenu implements WorldMenu {
         super(4, MessageUtils.getLocaleMessage("menus.player-control.title", false)
                 .replace("%name%", substring(nickname, 20)));
         this.nickname = nickname;
-        this.uuid = Bukkit.getOfflinePlayer(nickname).getUniqueId().toString();
+        this.uuid = Bukkit.getOfflinePlayer(nickname).getUniqueId();
         this.planet = planet;
     }
 

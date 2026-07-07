@@ -350,6 +350,30 @@ public final class FileUtils {
     }
 
     /**
+     * Transforms old config data to new format.
+     */
+    public static void updatePlanetConfig(Planet planet)
+    {
+        FileConfiguration config = getPlanetConfig(planet);
+        int version = config.getInt("config-version");
+        if (version < 1) //Replaces player nicknames with uuids for better identification
+        {
+            String[] playerList = {"players.unique","players.liked","players.builders.trusted","players.builders.not-trusted",
+                    "players.developers.trusted","players.developers.not-trusted","players.whitelist","players.blacklist","players.disliked"};
+            for (String key:  playerList)
+            {
+                List<String> list = config.getStringList(key);
+                HashSet<String> set = new HashSet<String>();
+                list.forEach(nickname ->{set.add(Bukkit.getOfflinePlayer(nickname).getUniqueId().toString());});
+
+                planet.getConfiguration().set(key, set);
+            }
+            version = 1;
+            planet.getConfiguration().set("config-version", version);
+        }
+        // version 2 updater here if needed
+    }
+    /**
      * Returns planet's settings.yml file.
      **/
     public static File getPlanetConfigFile(Planet planet) {
