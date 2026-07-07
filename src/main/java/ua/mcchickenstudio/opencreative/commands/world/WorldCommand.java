@@ -440,9 +440,9 @@ public class WorldCommand extends CommandHandler {
             }
         } else if (args.length == 2) {
             if (List.of("unban", "unblacklist").contains(args[0].toLowerCase())) {
-                tabCompleter.addAll(planet.getWorldPlayers().getBannedPlayers().stream().filter(p -> p.startsWith(args[1])).toList());
+                tabCompleter.addAll(planet.getWorldPlayers().getBannedPlayers().stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName()).filter(p -> p.startsWith(args[1])).toList());
             } else if (List.of("unwhite", "unwhitelist").contains(args[0].toLowerCase())) {
-                tabCompleter.addAll(planet.getWorldPlayers().getWhitelistedPlayers().stream().filter(p -> p.startsWith(args[1])).toList());
+                tabCompleter.addAll(planet.getWorldPlayers().getWhitelistedPlayers().stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName()).filter(p -> p.startsWith(args[1])).toList());
             } else if (List.of("ban", "blacklist", "kick", "whitelist", "white").contains(args[0].toLowerCase())) {
                 if (args[0].equalsIgnoreCase("kick")) tabCompleter.add("*");
                 tabCompleter.addAll(planet.getPlayers().stream().filter(p -> !planet.isOwner(p) && p.getName().startsWith(args[1])).map(Player::getName).toList());

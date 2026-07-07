@@ -204,31 +204,31 @@ class Placeholder extends PlaceholderExpansion {
                 return String.valueOf(planet.getLimits().getLastCodingErrorsAmount());
             }
             case "whitelisted_players" -> {
-                return String.join(", ", planet.getWorldPlayers().getWhitelistedPlayers().stream().map(uuid -> Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName() ).toList());
+                return String.join(", ", planet.getWorldPlayers().getWhitelistedPlayers().stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName() ).toList());
             }
             case "blacklisted_players", "banned_players" -> {
-                return String.join(", ", planet.getWorldPlayers().getBannedPlayers().stream().map(uuid -> Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName() ).toList());
+                return String.join(", ", planet.getWorldPlayers().getBannedPlayers().stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName() ).toList());
             }
             case "builders" -> {
-                return String.join(", ", planet.getWorldPlayers().getAllBuilders().stream().map(uuid -> Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName() ).toList());
+                return String.join(", ", planet.getWorldPlayers().getAllBuilders().stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName() ).toList());
             }
             case "developers" -> {
-                return String.join(", ", planet.getWorldPlayers().getAllDevelopers().stream().map(uuid -> Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName() ).toList());
+                return String.join(", ", planet.getWorldPlayers().getAllDevelopers().stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName() ).toList());
             }
             case "trusted_developers" -> {
-                return String.join(", ", planet.getWorldPlayers().getDevelopersTrusted().stream().map(uuid -> Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName() ).toList());
+                return String.join(", ", planet.getWorldPlayers().getDevelopersTrusted().stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName() ).toList());
             }
             case "not_trusted_developers" -> {
-                return String.join(", ", planet.getWorldPlayers().getDevelopersNotTrusted().stream().map(uuid -> Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName() ).toList());
+                return String.join(", ", planet.getWorldPlayers().getDevelopersNotTrusted().stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName() ).toList());
             }
             case "guest_developers" -> {
-                return String.join(", ", planet.getWorldPlayers().getDevelopersGuests().stream().map(uuid -> Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName() ).toList());
+                return String.join(", ", planet.getWorldPlayers().getDevelopersGuests().stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName() ).toList());
             }
             case "trusted_builders" -> {
-                return String.join(", ", planet.getWorldPlayers().getBuildersTrusted().stream().map(uuid -> Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName() ).toList());
+                return String.join(", ", planet.getWorldPlayers().getBuildersTrusted().stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName() ).toList());
             }
             case "not_trusted_builders" -> {
-                return String.join(", ", planet.getWorldPlayers().getBuildersNotTrusted().stream().map(uuid -> Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName() ).toList());
+                return String.join(", ", planet.getWorldPlayers().getBuildersNotTrusted().stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName() ).toList());
             }
             case "entities_amount" -> {
                 int entities = planet.getTerritory().getWorld().getEntityCount()
