@@ -41,8 +41,9 @@ public final class IsLikedWorldCondition extends PlayerCondition {
     public boolean checkPlayer(@NotNull Player player) {
         //FIXME: Use liked players in planet.getWorldPlayers() instead of loading files
         List<String> likedPlayers = FileUtils.getPlayersFromPlanetList(getPlanet(), Planet.PlayersType.LIKED);
-        for (String nickname : likedPlayers) {
-            if (nickname.equalsIgnoreCase(player.getName())) {
+        String uuid = player.getUniqueId().toString();
+        for (String likedUuid : likedPlayers) {
+            if (likedUuid.equals(uuid)) {
                 return true;
             }
         }
