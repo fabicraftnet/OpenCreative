@@ -42,7 +42,7 @@ public final class AttackKnockbackValue extends NumberEventValue {
         if (!(entity instanceof Attributable attributable)) {
             return null;
         }
-        AttributeInstance attribute = attributable.getAttribute(Attribute.GENERIC_ATTACK_KNOCKBACK);
+        AttributeInstance attribute = attributable.getAttribute(Attribute.ATTACK_KNOCKBACK);
         if (attribute == null) {
             return null;
         }

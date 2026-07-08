@@ -50,9 +50,9 @@ public class PlanetExperiments {
                 WorldBorder border = Bukkit.createWorldBorder();
                 border.setSize(player.getWorld().getWorldBorder().getSize());
                 if ("green".equalsIgnoreCase(args[1])) {
-                    border.setSize(border.getSize() + 0.1, 3600);
+                    border.changeSize(border.getSize() + 0.1, 3600 * 20);
                 } else if ("red".equalsIgnoreCase(args[1])) {
-                    border.setSize(border.getSize() - 0.1, 3600);
+                    border.changeSize(border.getSize() - 0.1, 3600 * 20);
                 }
                 player.setWorldBorder(border);
             }

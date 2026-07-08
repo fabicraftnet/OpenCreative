@@ -42,7 +42,7 @@ public final class ExplosionKnockbackResistanceValue extends NumberEventValue {
         if (!(entity instanceof Attributable attributable)) {
             return null;
         }
-        AttributeInstance attribute = attributable.getAttribute(Attribute.GENERIC_EXPLOSION_KNOCKBACK_RESISTANCE);
+        AttributeInstance attribute = attributable.getAttribute(Attribute.EXPLOSION_KNOCKBACK_RESISTANCE);
         if (attribute == null) {
             return null;
         }

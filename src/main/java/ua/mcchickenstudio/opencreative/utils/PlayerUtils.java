@@ -177,15 +177,15 @@ public final class PlayerUtils {
         player.setAI(true);
         player.setNoPhysics(false);
         player.setVisualFire(false);
-        AttributeInstance movementSpeed = player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
+        AttributeInstance movementSpeed = player.getAttribute(Attribute.MOVEMENT_SPEED);
         if (movementSpeed != null) movementSpeed.setBaseValue(0.1f);
 
-        AttributeInstance scale = player.getAttribute(Attribute.GENERIC_SCALE);
+        AttributeInstance scale = player.getAttribute(Attribute.SCALE);
         if (scale != null) {
             scale.setBaseValue(1);
         }
 
-        AttributeInstance stepHeight = player.getAttribute(Attribute.GENERIC_STEP_HEIGHT);
+        AttributeInstance stepHeight = player.getAttribute(Attribute.STEP_HEIGHT);
         if (stepHeight != null) stepHeight.setBaseValue(0.6f);
     }
 
@@ -302,7 +302,7 @@ public final class PlayerUtils {
      */
     public static Location getLobbyLocation() {
         World world = getLobbyWorld();
-        world.setGameRule(GameRule.DO_LIMITED_CRAFTING, true);
+        world.setGameRule(GameRules.LIMITED_CRAFTING, true);
         ConfigurationSection data = OpenCreative.getPlugin().getConfig().getConfigurationSection("lobby.spawn");
         if (data == null) {
             return world.getSpawnLocation();

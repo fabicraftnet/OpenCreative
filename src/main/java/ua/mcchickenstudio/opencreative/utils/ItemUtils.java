@@ -234,10 +234,10 @@ public final class ItemUtils {
                 ItemFlag.HIDE_DYE,
                 ItemFlag.HIDE_PLACED_ON,
                 ItemFlag.HIDE_STORED_ENCHANTS,
-                ItemFlag.HIDE_ITEM_SPECIFICS
+                ItemFlag.HIDE_ADDITIONAL_TOOLTIP
         );
         if (!meta.hasAttributeModifiers()) {
-            meta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier(new NamespacedKey(OpenCreative.getPlugin(), "hide_attributes"), 0.0d, AttributeModifier.Operation.ADD_NUMBER));
+            meta.addAttributeModifier(Attribute.ARMOR, new AttributeModifier(new NamespacedKey(OpenCreative.getPlugin(), "hide_attributes"), 0.0d, AttributeModifier.Operation.ADD_NUMBER));
         }
         itemStack.setItemMeta(meta);
         return itemStack;
@@ -602,7 +602,7 @@ public final class ItemUtils {
                     return item;
                 }
                 for (Attribute attribute : attributes) {
-                    if (attribute != Attribute.GENERIC_ARMOR) {
+                    if (attribute != Attribute.ARMOR) {
                         meta.removeAttributeModifier(attribute);
                         sendDebug("[ITEMS] Cleared attributes");
                     }

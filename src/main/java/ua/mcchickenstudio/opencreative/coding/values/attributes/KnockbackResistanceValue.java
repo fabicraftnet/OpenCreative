@@ -42,7 +42,7 @@ public final class KnockbackResistanceValue extends NumberEventValue {
         if (!(entity instanceof Attributable attributable)) {
             return null;
         }
-        AttributeInstance attribute = attributable.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE);
+        AttributeInstance attribute = attributable.getAttribute(Attribute.KNOCKBACK_RESISTANCE);
         if (attribute == null) {
             return null;
         }

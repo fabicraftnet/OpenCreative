@@ -161,8 +161,7 @@ public class PlanetTerritory {
 
             WorldGenerator worldGenerator = WorldGenerators.getInstance().getById(generator);
             WorldCreator creator = new WorldCreator(planet.getWorldName())
-                    .environment(planet.getTerritory().getEnvironment())
-                    .keepSpawnLoaded(TriState.FALSE);
+                    .environment(planet.getTerritory().getEnvironment());
             if (worldGenerator != null) {
                 worldGenerator.modifyWorldCreator(creator, biome);
             }
@@ -178,10 +177,11 @@ public class PlanetTerritory {
                 Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
                     setWorld(world.getUID());
                     world.setAutoSave(autoSave);
-                    setGameRuleIfExists("spawn_chunk_radius", 1);
-                    setGameRuleIfExists("command_blocks_work", false);
-                    world.setGameRule(GameRule.GLOBAL_SOUND_EVENTS, false);
-                    world.setGameRule(GameRule.DO_LIMITED_CRAFTING, true);
+                    //setGameRuleIfExists("spawn_chunk_radius", 1);
+                    //setGameRuleIfExists("command_blocks_work", false);
+                    world.setGameRule(GameRules.COMMAND_BLOCKS_WORK, false);
+                    world.setGameRule(GameRules.GLOBAL_SOUND_EVENTS, false);
+                    world.setGameRule(GameRules.LIMITED_CRAFTING, true);
                     if (world.getEnvironment() == World.Environment.THE_END) {
                         if (world.getEnderDragonBattle() != null) {
                             world.getEnderDragonBattle().setPreviouslyKilled(true);
@@ -196,7 +196,7 @@ public class PlanetTerritory {
                         }, 10L);
                     }
                     planet.setLastActivityTime(System.currentTimeMillis());
-                    world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+                    world.setGameRule(GameRules.SHOW_ADVANCEMENT_MESSAGES, false);
                     world.getWorldBorder().setSize(worldSize);
                     long endTime = System.currentTimeMillis();
                     OpenCreative.getPlugin().getLogger().info("Planet " + planet.getId() + " loaded in " + (endTime - startTime) + " ms");
@@ -459,7 +459,6 @@ public class PlanetTerritory {
         generator.modifyWorldCreator(worldCreator, biome);
         planet.getVariables().load();
 
-        worldCreator.keepSpawnLoaded(TriState.FALSE);
         OpenCreative.getWorldManager().createWorld(worldCreator, planet).thenAccept(world -> {
             if (world == null) {
                 future.completeExceptionally(new NullPointerException("Created world is null"));
@@ -467,21 +466,21 @@ public class PlanetTerritory {
             }
             Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
                 world.setAutoSave(true);
-                setGameRuleIfExists("spawn_chunk_radius", 1);
+                //setGameRuleIfExists("spawn_chunk_radius", 1);
                 world.getWorldBorder().setSize(getWorldSize());
 
-                world.setGameRule(GameRule.DO_MOB_LOOT, true);
-                world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
-                world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-                world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-                world.setGameRule(GameRule.KEEP_INVENTORY, false);
-                world.setGameRule(GameRule.MOB_GRIEFING, true);
-                world.setGameRule(GameRule.NATURAL_REGENERATION, true);
-                world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, false);
-                world.setGameRule(GameRule.DO_FIRE_TICK, true);
-                world.setGameRule(GameRule.SHOW_DEATH_MESSAGES, false);
-                world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-                world.setGameRule(GameRule.GLOBAL_SOUND_EVENTS, false);
+                world.setGameRule(GameRules.MOB_DROPS, true);
+                world.setGameRule(GameRules.SPAWN_MOBS, false);
+                world.setGameRule(GameRules.ADVANCE_TIME, false);
+                world.setGameRule(GameRules.ADVANCE_WEATHER, false);
+                world.setGameRule(GameRules.KEEP_INVENTORY, false);
+                world.setGameRule(GameRules.MOB_GRIEFING, true);
+                world.setGameRule(GameRules.NATURAL_HEALTH_REGENERATION, true);
+                world.setGameRule(GameRules.IMMEDIATE_RESPAWN, false);
+                world.setGameRule(GameRules.FIRE_SPREAD_RADIUS_AROUND_PLAYER, 0);
+                world.setGameRule(GameRules.SHOW_DEATH_MESSAGES, false);
+                world.setGameRule(GameRules.SHOW_ADVANCEMENT_MESSAGES, false);
+                world.setGameRule(GameRules.GLOBAL_SOUND_EVENTS, false);
 
                 world.setTime(0);
                 for (Entity entity : world.getEntities()) {
@@ -544,11 +543,11 @@ public class PlanetTerritory {
         }
         switch (planet.getFlagValue(PlanetFlags.PlanetFlag.WORLD_BORDERS)) {
             case 1 -> border.setSize(border.getSize()); // Default
-            case 2 -> border.setSize(border.getSize() + 0.001, 3600); // Green
+            case 2 -> border.changeSize(border.getSize() + 0.001, 3600 * 20); // Green
             case 3 -> {
                 border.setSize(border.getSize() + 0.1);
                 player.setWorldBorder(border);
-                border.setSize(border.getSize() - 0.1, 3600); // Red
+                border.changeSize(border.getSize() - 0.1, 3600 * 20); // Red
             }
             case 4 -> border.setSize(border.getMaxSize()); // Not visible
         }

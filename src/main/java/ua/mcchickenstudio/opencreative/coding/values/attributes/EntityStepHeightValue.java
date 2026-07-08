@@ -42,7 +42,7 @@ public final class EntityStepHeightValue extends NumberEventValue {
         if (!(entity instanceof Attributable attributable)) {
             return null;
         }
-        AttributeInstance attribute = attributable.getAttribute(Attribute.GENERIC_STEP_HEIGHT);
+        AttributeInstance attribute = attributable.getAttribute(Attribute.STEP_HEIGHT);
         if (attribute == null) {
             return null;
         }

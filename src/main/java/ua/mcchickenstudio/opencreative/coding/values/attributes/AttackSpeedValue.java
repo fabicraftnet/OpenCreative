@@ -42,7 +42,7 @@ public final class AttackSpeedValue extends NumberEventValue {
         if (!(entity instanceof Attributable attributable)) {
             return null;
         }
-        AttributeInstance attribute = attributable.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
+        AttributeInstance attribute = attributable.getAttribute(Attribute.ATTACK_SPEED);
         if (attribute == null) {
             return null;
         }

@@ -42,7 +42,7 @@ public final class LivingMaxHealthValue extends NumberEventValue {
         if (!(entity instanceof LivingEntity living)) {
             return null;
         }
-        AttributeInstance attribute = living.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        AttributeInstance attribute = living.getAttribute(Attribute.MAX_HEALTH);
         if (attribute == null) {
             return null;
         }

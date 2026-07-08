@@ -42,7 +42,7 @@ public final class SetScaleAction extends EntityAction {
         }
         boolean add = getArguments().getBoolean("add", false, this);
         double scale = getArguments().getDouble("scale", 1.0d, this);
-        AttributeInstance instance = livingEntity.getAttribute(Attribute.GENERIC_SCALE);
+        AttributeInstance instance = livingEntity.getAttribute(Attribute.SCALE);
         if (instance == null) return;
         if (add) scale += instance.getBaseValue();
         instance.setBaseValue(scale);

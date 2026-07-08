@@ -42,12 +42,12 @@ public final class EntitySetWalkSpeedAction extends EntityAction {
         boolean add = getArguments().getBoolean("add", false, this);
         double speed = getArguments().getFloat("speed", 0.6f, this);
         if (add) {
-            speed = livingEntity.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue() + speed;
+            speed = livingEntity.getAttribute(Attribute.MOVEMENT_SPEED).getValue() + speed;
         }
         if (speed > 1 || speed < -1) {
             speed = 0.6f;
         }
-        livingEntity.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(speed);
+        livingEntity.getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(speed);
     }
 
     @Override

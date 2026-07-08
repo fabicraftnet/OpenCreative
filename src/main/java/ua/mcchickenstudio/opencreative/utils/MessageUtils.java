@@ -498,7 +498,7 @@ public final class MessageUtils {
     public static List<String> getLocaleItemDescription(String descriptionID) {
         List<String> originalDescription = getLocalization().getStringList(descriptionID);
         List<String> parsedDescription = new ArrayList<>();
-        if (originalDescription.isEmpty()) {
+        if (!getLocalization().contains(descriptionID)) {
             if (OpenCreative.getSettings().shouldLogNotFoundMessages())
                 ErrorUtils.sendWarningErrorMessage("Not found item description " + descriptionID);
             parsedDescription.add("§6Not found item description");

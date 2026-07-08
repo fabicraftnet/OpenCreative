@@ -21,6 +21,7 @@ package ua.mcchickenstudio.opencreative.menus.world.settings;
 import net.kyori.adventure.title.Title;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
+import org.bukkit.GameRules;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -79,7 +80,7 @@ public final class WorldSettingsMenu extends AbstractMenu implements WorldMenu {
         this.player = player;
         worldIcon = getPlanetIcon();
         access = new ParameterButton(planet.getSharing().name().toLowerCase(), List.of("public", "private"), "access", "menus.world-settings", "menus.world-settings.items.change-sharing", List.of(Material.SPRUCE_DOOR, Material.IRON_DOOR));
-        Boolean isTimeChanging = planet.getTerritory().getWorld().getGameRuleValue(GameRule.DO_DAYLIGHT_CYCLE);
+        Boolean isTimeChanging = planet.getTerritory().getWorld().getGameRuleValue(GameRules.ADVANCE_WEATHER);
         long currentTime = planet.getTerritory().getWorld().getTime();
         boolean isNight = currentTime >= 15000L && currentTime <= 23000;
         boolean isEvening = currentTime >= 12500 && currentTime < 15000;
@@ -244,19 +245,19 @@ public final class WorldSettingsMenu extends AbstractMenu implements WorldMenu {
             setItem(event.getRawSlot(), time.getItem());
             if (time.getCurrentValue().equals(1)) {
                 planet.getTerritory().getWorld().setTime(1000L);
-                planet.getTerritory().getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+                planet.getTerritory().getWorld().setGameRule(GameRules.ADVANCE_WEATHER, false);
                 planet.setFlagValue(PlanetFlags.PlanetFlag.DAY_CYCLE, (byte) 1);
             } else if (time.getCurrentValue().equals(2)) {
                 planet.getTerritory().getWorld().setTime(12500L);
-                planet.getTerritory().getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+                planet.getTerritory().getWorld().setGameRule(GameRules.ADVANCE_WEATHER, false);
                 planet.setFlagValue(PlanetFlags.PlanetFlag.DAY_CYCLE, (byte) 2);
             } else if (time.getCurrentValue().equals(3)) {
                 planet.getTerritory().getWorld().setTime(15000L);
-                planet.getTerritory().getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+                planet.getTerritory().getWorld().setGameRule(GameRules.ADVANCE_WEATHER, false);
                 planet.setFlagValue(PlanetFlags.PlanetFlag.DAY_CYCLE, (byte) 3);
             } else {
                 planet.getTerritory().getWorld().setTime(1000L);
-                planet.getTerritory().getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
+                planet.getTerritory().getWorld().setGameRule(GameRules.ADVANCE_WEATHER, true);
                 planet.setFlagValue(PlanetFlags.PlanetFlag.DAY_CYCLE, (byte) 4);
             }
         } else if (itemEquals(currentItem, autoSave.getItem())) {

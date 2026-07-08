@@ -19,6 +19,7 @@
 package ua.mcchickenstudio.opencreative.planets;
 
 import org.bukkit.GameRule;
+import org.bukkit.GameRules;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -78,21 +79,21 @@ public class PlanetFlags {
     public enum PlanetFlag {
 
         PLAYER_DAMAGE("player-damage", Material.TOTEM_OF_UNDYING, (byte) 1, (byte) 5),
-        DAY_CYCLE("day-cycle", Material.CLOCK, (byte) 1, (byte) 4, GameRule.DO_DAYLIGHT_CYCLE),
+        DAY_CYCLE("day-cycle", Material.CLOCK, (byte) 1, (byte) 4, GameRules.ADVANCE_TIME),
         JOIN_MESSAGES("join-messages", Material.OAK_SIGN, (byte) 1, (byte) 2),
-        FIRE_SPREAD("fire-spread", Material.CAMPFIRE, (byte) 1, (byte) 2, GameRule.DO_FIRE_TICK),
-        WEATHER("weather", Material.WATER_BUCKET, (byte) 1, (byte) 3, GameRule.DO_WEATHER_CYCLE),
+        FIRE_SPREAD("fire-spread", Material.CAMPFIRE, (byte) 1, (byte) 2, GameRules.FIRE_SPREAD_RADIUS_AROUND_PLAYER),
+        WEATHER("weather", Material.WATER_BUCKET, (byte) 1, (byte) 3, GameRules.ADVANCE_WEATHER),
         BLOCK_INTERACT("block-interact", Material.CHEST, (byte) 1, (byte) 5),
         MOB_INTERACT("mob-interact", Material.VILLAGER_SPAWN_EGG, (byte) 1, (byte) 3),
-        MOB_LOOT("mob-loot", Material.FEATHER, (byte) 1, (byte) 2, GameRule.DO_MOB_LOOT),
-        MOB_SPAWN("mob-spawn", Material.PIG_SPAWN_EGG, (byte) 1, (byte) 5, GameRule.DO_MOB_SPAWNING),
-        NATURAL_REGENERATION("natural-regeneration", Material.POTION, (byte) 1, (byte) 2, GameRule.NATURAL_REGENERATION),
+        MOB_LOOT("mob-loot", Material.FEATHER, (byte) 1, (byte) 2, GameRules.MOB_DROPS),
+        MOB_SPAWN("mob-spawn", Material.PIG_SPAWN_EGG, (byte) 1, (byte) 5, GameRules.SPAWN_MOBS),
+        NATURAL_REGENERATION("natural-regeneration", Material.POTION, (byte) 1, (byte) 2, GameRules.NATURAL_HEALTH_REGENERATION),
         BLOCK_CHANGING("block-changing", Material.ICE, (byte) 1, (byte) 2),
-        BLOCK_EXPLOSION("block-explosion", Material.TNT, (byte) 1, (byte) 2, GameRule.MOB_GRIEFING),
+        BLOCK_EXPLOSION("block-explosion", Material.TNT, (byte) 1, (byte) 2, GameRules.MOB_GRIEFING),
         LIKE_MESSAGES("like-messages", Material.KNOWLEDGE_BOOK, (byte) 1, (byte) 2),
         DEATH_MESSAGES("death-messages", Material.WITHER_SKELETON_SKULL, (byte) 1, (byte) 2),
-        KEEP_INVENTORY("keep-inventory", Material.CHEST_MINECART, (byte) 1, (byte) 2, GameRule.KEEP_INVENTORY),
-        IMMEDIATE_RESPAWN("immediate-respawn", Material.SKELETON_SKULL, (byte) 1, (byte) 2, GameRule.DO_IMMEDIATE_RESPAWN),
+        KEEP_INVENTORY("keep-inventory", Material.CHEST_MINECART, (byte) 1, (byte) 2, GameRules.KEEP_INVENTORY),
+        IMMEDIATE_RESPAWN("immediate-respawn", Material.SKELETON_SKULL, (byte) 1, (byte) 2, GameRules.IMMEDIATE_RESPAWN),
         LOCATOR_BAR("locator-bar", Material.RECOVERY_COMPASS, (byte) 1, (byte) 2),
         WORLD_BORDERS("world-borders", Material.LIGHT_BLUE_STAINED_GLASS, (byte) 1, (byte) 4);
 

@@ -42,7 +42,7 @@ public final class ArmorPointsValue extends NumberEventValue {
         if (!(entity instanceof Attributable attributable)) {
             return null;
         }
-        AttributeInstance attribute = attributable.getAttribute(Attribute.GENERIC_ARMOR);
+        AttributeInstance attribute = attributable.getAttribute(Attribute.ARMOR);
         if (attribute == null) {
             return null;
         }

@@ -19,6 +19,7 @@
 package ua.mcchickenstudio.opencreative.menus.world.settings;
 
 import org.bukkit.GameRule;
+import org.bukkit.GameRules;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -68,11 +69,11 @@ public final class WorldSettingsFlagsMenu extends AbstractMenu {
     public static RadioButton getMobLootFlagButton(Planet planet) {
         List<Runnable> choicesActions = new ArrayList<>();
         choicesActions.add(() -> {
-            planet.getTerritory().getWorld().setGameRule(GameRule.DO_MOB_LOOT, true);
+            planet.getTerritory().getWorld().setGameRule(GameRules.MOB_DROPS, true);
             planet.setFlagValue(PlanetFlags.PlanetFlag.MOB_LOOT, (byte) 1);
         });
         choicesActions.add(() -> {
-            planet.getTerritory().getWorld().setGameRule(GameRule.DO_MOB_LOOT, false);
+            planet.getTerritory().getWorld().setGameRule(GameRules.MOB_DROPS, false);
             planet.setFlagValue(PlanetFlags.PlanetFlag.MOB_LOOT, (byte) 2);
         });
         return new RadioButton(Material.FEATHER, MessageUtils.getLocaleItemName("menus.world-settings-flags.items.mob-loot.name"), MessageUtils.getLocaleItemDescription("menus.world-settings-flags.items.mob-loot.lore"), planet.getFlagValue(PlanetFlags.PlanetFlag.MOB_LOOT), 2, choicesActions, "menus.world-settings-flags.items.mob-loot.choices", "menus.world-settings-flags");
@@ -81,11 +82,11 @@ public final class WorldSettingsFlagsMenu extends AbstractMenu {
     public static RadioButton getKeepInventoryFlagButton(Planet planet) {
         List<Runnable> choicesActions = new ArrayList<>();
         choicesActions.add(() -> {
-            planet.getTerritory().getWorld().setGameRule(GameRule.KEEP_INVENTORY, false);
+            planet.getTerritory().getWorld().setGameRule(GameRules.KEEP_INVENTORY, false);
             planet.setFlagValue(PlanetFlags.PlanetFlag.KEEP_INVENTORY, (byte) 1);
         });
         choicesActions.add(() -> {
-            planet.getTerritory().getWorld().setGameRule(GameRule.KEEP_INVENTORY, true);
+            planet.getTerritory().getWorld().setGameRule(GameRules.KEEP_INVENTORY, true);
             planet.setFlagValue(PlanetFlags.PlanetFlag.KEEP_INVENTORY, (byte) 2);
         });
         return new RadioButton(Material.CHEST_MINECART, MessageUtils.getLocaleItemName("menus.world-settings-flags.items.keep-inventory.name"), MessageUtils.getLocaleItemDescription("menus.world-settings-flags.items.keep-inventory.lore"), planet.getFlagValue(PlanetFlags.PlanetFlag.KEEP_INVENTORY), 2, choicesActions, "menus.world-settings-flags.items.keep-inventory.choices", "menus.world-settings-flags");
@@ -94,11 +95,11 @@ public final class WorldSettingsFlagsMenu extends AbstractMenu {
     public static RadioButton getNaturalRegenerationFlagButton(Planet planet) {
         List<Runnable> choicesActions = new ArrayList<>();
         choicesActions.add(() -> {
-            planet.getTerritory().getWorld().setGameRule(GameRule.NATURAL_REGENERATION, true);
+            planet.getTerritory().getWorld().setGameRule(GameRules.NATURAL_HEALTH_REGENERATION, true);
             planet.setFlagValue(PlanetFlags.PlanetFlag.NATURAL_REGENERATION, (byte) 1);
         });
         choicesActions.add(() -> {
-            planet.getTerritory().getWorld().setGameRule(GameRule.NATURAL_REGENERATION, false);
+            planet.getTerritory().getWorld().setGameRule(GameRules.NATURAL_HEALTH_REGENERATION, false);
             planet.setFlagValue(PlanetFlags.PlanetFlag.NATURAL_REGENERATION, (byte) 2);
         });
         return new RadioButton(Material.POTION, MessageUtils.getLocaleItemName("menus.world-settings-flags.items.natural-regeneration.name"), MessageUtils.getLocaleItemDescription("menus.world-settings-flags.items.natural-regeneration.lore"), planet.getFlagValue(PlanetFlags.PlanetFlag.NATURAL_REGENERATION), 2, choicesActions, "menus.world-settings-flags.items.natural-regeneration.choices", "menus.world-settings-flags");
@@ -114,11 +115,11 @@ public final class WorldSettingsFlagsMenu extends AbstractMenu {
     public static RadioButton getImmediateRespawnFlagButton(Planet planet) {
         List<Runnable> choicesActions = new ArrayList<>();
         choicesActions.add(() -> {
-            planet.getTerritory().getWorld().setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, false);
+            planet.getTerritory().getWorld().setGameRule(GameRules.IMMEDIATE_RESPAWN, false);
             planet.setFlagValue(PlanetFlags.PlanetFlag.IMMEDIATE_RESPAWN, (byte) 1);
         });
         choicesActions.add(() -> {
-            planet.getTerritory().getWorld().setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+            planet.getTerritory().getWorld().setGameRule(GameRules.IMMEDIATE_RESPAWN, true);
             planet.setFlagValue(PlanetFlags.PlanetFlag.IMMEDIATE_RESPAWN, (byte) 2);
         });
         return new RadioButton(Material.SKELETON_SKULL, MessageUtils.getLocaleItemName("menus.world-settings-flags.items.immediate-respawn.name"), MessageUtils.getLocaleItemDescription("menus.world-settings-flags.items.immediate-respawn.lore"), planet.getFlagValue(PlanetFlags.PlanetFlag.IMMEDIATE_RESPAWN), 2, choicesActions, "menus.world-settings-flags.items.immediate-respawn.choices", "menus.world-settings-flags");
@@ -127,11 +128,11 @@ public final class WorldSettingsFlagsMenu extends AbstractMenu {
     public static RadioButton getLocatorBarButton(Planet planet) {
         List<Runnable> choicesActions = new ArrayList<>();
         choicesActions.add(() -> {
-            planet.getTerritory().setGameRuleIfExists("locator_bar", true);
+            planet.getTerritory().getWorld().setGameRule(GameRules.LOCATOR_BAR, true);
             planet.setFlagValue(PlanetFlags.PlanetFlag.LOCATOR_BAR, (byte) 1);
         });
         choicesActions.add(() -> {
-            planet.getTerritory().setGameRuleIfExists("locator_bar", false);
+            planet.getTerritory().getWorld().setGameRule(GameRules.LOCATOR_BAR, false);
             planet.setFlagValue(PlanetFlags.PlanetFlag.LOCATOR_BAR, (byte) 2);
         });
         return new RadioButton(Material.ENDER_EYE, MessageUtils.getLocaleItemName("menus.world-settings-flags.items.locator-bar.name"),
@@ -156,23 +157,23 @@ public final class WorldSettingsFlagsMenu extends AbstractMenu {
     public static RadioButton getMobSpawnFlagButton(Planet planet) {
         List<Runnable> choicesActions = new ArrayList<>();
         choicesActions.add(() -> {
-            planet.getTerritory().getWorld().setGameRule(GameRule.DO_MOB_SPAWNING, false);
+            planet.getTerritory().getWorld().setGameRule(GameRules.SPAWN_MOBS, false);
             planet.setFlagValue(PlanetFlags.PlanetFlag.MOB_SPAWN, (byte) 1);
         });
         choicesActions.add(() -> {
-            planet.getTerritory().getWorld().setGameRule(GameRule.DO_MOB_SPAWNING, true);
+            planet.getTerritory().getWorld().setGameRule(GameRules.SPAWN_MOBS, true);
             planet.setFlagValue(PlanetFlags.PlanetFlag.MOB_SPAWN, (byte) 2);
         });
         choicesActions.add(() -> {
-            planet.getTerritory().getWorld().setGameRule(GameRule.DO_MOB_SPAWNING, true);
+            planet.getTerritory().getWorld().setGameRule(GameRules.SPAWN_MOBS, true);
             planet.setFlagValue(PlanetFlags.PlanetFlag.MOB_SPAWN, (byte) 3);
         });
         choicesActions.add(() -> {
-            planet.getTerritory().getWorld().setGameRule(GameRule.DO_MOB_SPAWNING, true);
+            planet.getTerritory().getWorld().setGameRule(GameRules.SPAWN_MOBS, true);
             planet.setFlagValue(PlanetFlags.PlanetFlag.MOB_SPAWN, (byte) 4);
         });
         choicesActions.add(() -> {
-            planet.getTerritory().getWorld().setGameRule(GameRule.DO_MOB_SPAWNING, true);
+            planet.getTerritory().getWorld().setGameRule(GameRules.SPAWN_MOBS, true);
             planet.setFlagValue(PlanetFlags.PlanetFlag.MOB_SPAWN, (byte) 5);
         });
         return new RadioButton(Material.EGG, MessageUtils.getLocaleItemName("menus.world-settings-flags.items.mob-spawn.name"), MessageUtils.getLocaleItemDescription("menus.world-settings-flags.items.mob-spawn.lore"), planet.getFlagValue(PlanetFlags.PlanetFlag.MOB_SPAWN), 5, choicesActions, "menus.world-settings-flags.items.mob-spawn.choices", "menus.world-settings-flags");
@@ -210,11 +211,11 @@ public final class WorldSettingsFlagsMenu extends AbstractMenu {
     public static RadioButton getBlockExplosionFlagButton(Planet planet) {
         List<Runnable> choicesActions = new ArrayList<>();
         choicesActions.add(() -> {
-            planet.getTerritory().getWorld().setGameRule(GameRule.MOB_GRIEFING, true);
+            planet.getTerritory().getWorld().setGameRule(GameRules.MOB_GRIEFING, true);
             planet.setFlagValue(PlanetFlags.PlanetFlag.BLOCK_EXPLOSION, (byte) 1);
         });
         choicesActions.add(() -> {
-            planet.getTerritory().getWorld().setGameRule(GameRule.MOB_GRIEFING, false);
+            planet.getTerritory().getWorld().setGameRule(GameRules.MOB_GRIEFING, false);
             planet.setFlagValue(PlanetFlags.PlanetFlag.BLOCK_EXPLOSION, (byte) 2);
         });
         return new RadioButton(Material.TNT, MessageUtils.getLocaleItemName("menus.world-settings-flags.items.block-explosion.name"), MessageUtils.getLocaleItemDescription("menus.world-settings-flags.items.block-explosion.lore"), planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_EXPLOSION), 2, choicesActions, "menus.world-settings-flags.items.block-explosion.choices", "menus.world-settings-flags");
@@ -223,11 +224,11 @@ public final class WorldSettingsFlagsMenu extends AbstractMenu {
     public static RadioButton FireSpreadButton(Planet planet) {
         List<Runnable> choicesActions = new ArrayList<>();
         choicesActions.add(() -> {
-            planet.getTerritory().getWorld().setGameRule(GameRule.DO_FIRE_TICK, true);
+            planet.getTerritory().getWorld().setGameRule(GameRules.FIRE_SPREAD_RADIUS_AROUND_PLAYER, 128);
             planet.setFlagValue(PlanetFlags.PlanetFlag.FIRE_SPREAD, (byte) 1);
         });
         choicesActions.add(() -> {
-            planet.getTerritory().getWorld().setGameRule(GameRule.DO_FIRE_TICK, false);
+            planet.getTerritory().getWorld().setGameRule(GameRules.FIRE_SPREAD_RADIUS_AROUND_PLAYER, 0);
             planet.setFlagValue(PlanetFlags.PlanetFlag.FIRE_SPREAD, (byte) 2);
         });
         return new RadioButton(Material.CAMPFIRE, MessageUtils.getLocaleItemName("menus.world-settings-flags.items.fire-spread.name"), MessageUtils.getLocaleItemDescription("menus.world-settings-flags.items.fire-spread.lore"), planet.getFlagValue(PlanetFlags.PlanetFlag.FIRE_SPREAD), 2, choicesActions, "menus.world-settings-flags.items.fire-spread.choices", "menus.world-settings-flags");
@@ -252,7 +253,7 @@ public final class WorldSettingsFlagsMenu extends AbstractMenu {
 
     public static RadioButton getWeatherFlagButton(Planet planet) {
         List<Runnable> choicesActions = getRunnables(planet);
-        Boolean isWeatherChanging = planet.getTerritory().getWorld().getGameRuleValue(GameRule.DO_WEATHER_CYCLE);
+        Boolean isWeatherChanging = planet.getTerritory().getWorld().getGameRuleValue(GameRules.ADVANCE_WEATHER);
         int currentValue = (isWeatherChanging != null && isWeatherChanging ? 3 : planet.getTerritory().getWorld().hasStorm() ? 2 : 1);
         return new RadioButton(Material.WATER_BUCKET, MessageUtils.getLocaleItemName("menus.world-settings-flags.items.weather.name"), MessageUtils.getLocaleItemDescription("menus.world-settings-flags.items.weather.lore"), currentValue, 3, choicesActions, "menus.world-settings-flags.items.weather.choices", "menus.world-settings-flags");
     }
@@ -260,18 +261,18 @@ public final class WorldSettingsFlagsMenu extends AbstractMenu {
     private static List<Runnable> getRunnables(Planet planet) {
         List<Runnable> choicesActions = new ArrayList<>();
         choicesActions.add(() -> {
-            planet.getTerritory().getWorld().setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+            planet.getTerritory().getWorld().setGameRule(GameRules.ADVANCE_WEATHER, false);
             planet.getTerritory().getWorld().setStorm(false);
             planet.setFlagValue(PlanetFlags.PlanetFlag.WEATHER, (byte) 1);
         });
         choicesActions.add(() -> {
-            planet.getTerritory().getWorld().setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+            planet.getTerritory().getWorld().setGameRule(GameRules.ADVANCE_WEATHER, false);
             planet.getTerritory().getWorld().setStorm(true);
             planet.setFlagValue(PlanetFlags.PlanetFlag.WEATHER, (byte) 2);
         });
         choicesActions.add(() -> {
             planet.getTerritory().getWorld().setStorm(false);
-            planet.getTerritory().getWorld().setGameRule(GameRule.DO_WEATHER_CYCLE, true);
+            planet.getTerritory().getWorld().setGameRule(GameRules.ADVANCE_WEATHER, true);
             planet.setFlagValue(PlanetFlags.PlanetFlag.WEATHER, (byte) 3);
         });
         return choicesActions;
@@ -300,9 +301,8 @@ public final class WorldSettingsFlagsMenu extends AbstractMenu {
         setItem(25, getNaturalRegenerationFlagButton(planet).getButtonItem());
         setItem(28, getMobLootFlagButton(planet).getButtonItem());
         setItem(29, getWorldBordersButton(planet).getButtonItem());
-        if (GameRule.getByName("locator_bar") != null) {
-            setItem(30, getLocatorBarButton(planet).getButtonItem());
-        }
+        setItem(30, getLocatorBarButton(planet).getButtonItem());
+
     }
 
     @Override

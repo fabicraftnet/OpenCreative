@@ -52,7 +52,7 @@ public final class EntitySetHealthAction extends EntityAction {
         if (add) {
             health = health + livingEntity.getHealth();
         }
-        AttributeInstance maxHealth = livingEntity.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        AttributeInstance maxHealth = livingEntity.getAttribute(Attribute.MAX_HEALTH);
         if (maxHealth != null && health > maxHealth.getValue()) {
             health = maxHealth.getValue();
         }

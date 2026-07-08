@@ -45,7 +45,7 @@ public final class SetHealthAction extends PlayerAction {
         if (add) {
             health = health + player.getHealth();
         }
-        AttributeInstance maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        AttributeInstance maxHealth = player.getAttribute(Attribute.MAX_HEALTH);
         if (maxHealth != null && health > maxHealth.getValue()) {
             health = maxHealth.getValue();
         }

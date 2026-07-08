@@ -41,8 +41,8 @@ public final class SetStepHeightAction extends EntityAction {
         }
         boolean add = getArguments().getBoolean("add", false, this);
         double height = getArguments().getFloat("height", 0.6f, this);
-        if (add) height += livingEntity.getAttribute(Attribute.GENERIC_STEP_HEIGHT).getBaseValue();
-        livingEntity.getAttribute(Attribute.GENERIC_STEP_HEIGHT).setBaseValue(height);
+        if (add) height += livingEntity.getAttribute(Attribute.STEP_HEIGHT).getBaseValue();
+        livingEntity.getAttribute(Attribute.STEP_HEIGHT).setBaseValue(height);
     }
 
     @Override

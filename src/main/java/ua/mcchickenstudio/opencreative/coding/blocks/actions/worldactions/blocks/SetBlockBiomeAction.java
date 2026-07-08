@@ -18,7 +18,12 @@
 
 package ua.mcchickenstudio.opencreative.coding.blocks.actions.worldactions.blocks;
 
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
+import io.papermc.paper.registry.keys.BiomeKeys;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.block.Biome;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;
@@ -40,7 +45,7 @@ public final class SetBlockBiomeAction extends WorldAction {
         String biomeString = getArguments().getText("biome", "plains", this);
         Biome biome;
         try {
-            biome = Biome.valueOf(biomeString.toUpperCase());
+            biome = RegistryAccess.registryAccess().getRegistry(RegistryKey.BIOME).get(NamespacedKey.fromString(biomeString.toLowerCase()));
         } catch (IllegalArgumentException e) {
             biome = Biome.PLAINS;
         }

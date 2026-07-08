@@ -42,7 +42,7 @@ public final class EntityGravityValue extends NumberEventValue {
         if (!(entity instanceof Attributable attributable)) {
             return null;
         }
-        AttributeInstance attribute = attributable.getAttribute(Attribute.GENERIC_GRAVITY);
+        AttributeInstance attribute = attributable.getAttribute(Attribute.GRAVITY);
         if (attribute == null) {
             return null;
         }

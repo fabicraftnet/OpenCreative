@@ -42,7 +42,7 @@ public final class AttackDamageValue extends NumberEventValue {
         if (!(entity instanceof Attributable attributable)) {
             return null;
         }
-        AttributeInstance attribute = attributable.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE);
+        AttributeInstance attribute = attributable.getAttribute(Attribute.ATTACK_DAMAGE);
         if (attribute == null) {
             return null;
         }

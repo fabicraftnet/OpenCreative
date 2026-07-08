@@ -18,9 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.commands.minecraft;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -97,7 +95,7 @@ public class StopSoundCommand extends CommandHandler {
             Sound sound = null;
             SoundCategory category = null;
             try {
-                sound = Sound.valueOf(soundOrCategory);
+                sound = Registry.SOUNDS.get(NamespacedKey.fromString(soundOrCategory));
             } catch (IllegalArgumentException ignored) {
             }
             try {

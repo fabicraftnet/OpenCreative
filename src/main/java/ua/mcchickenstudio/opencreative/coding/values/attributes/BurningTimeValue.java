@@ -42,7 +42,7 @@ public final class BurningTimeValue extends NumberEventValue {
         if (!(entity instanceof Attributable attributable)) {
             return null;
         }
-        AttributeInstance attribute = attributable.getAttribute(Attribute.GENERIC_BURNING_TIME);
+        AttributeInstance attribute = attributable.getAttribute(Attribute.BURNING_TIME);
         if (attribute == null) {
             return null;
         }

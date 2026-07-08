@@ -41,8 +41,8 @@ public final class SetWorldBorderAction extends WorldAction {
         double damage = getArguments().getDouble("damage", 0.2d, this);
         int safeDistance = getArguments().getInt("safe-distance", 5, this);
         WorldBorder border = getWorld().getWorldBorder();
-        border.setSize(Math.min(getPlanet().getTerritory().getWorldSize(), radius), time);
-        border.setWarningTime(warningTime);
+        border.changeSize(Math.min(getPlanet().getTerritory().getWorldSize(), radius), time * 20);
+        border.setWarningTimeTicks(warningTime * 20);
         border.setWarningDistance(warningDistance);
         border.setDamageAmount(damage);
         border.setDamageBuffer(safeDistance);

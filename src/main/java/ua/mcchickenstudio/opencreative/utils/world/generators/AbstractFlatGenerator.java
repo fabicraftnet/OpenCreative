@@ -20,6 +20,7 @@ package ua.mcchickenstudio.opencreative.utils.world.generators;
 
 import org.bukkit.*;
 import org.bukkit.block.Biome;
+import org.bukkit.block.Biome.*;
 import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.LimitedRegion;
@@ -29,6 +30,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+
+
 
 /**
  * <h1>AbstractFlatGenerator</h1>
@@ -128,18 +131,19 @@ public abstract class AbstractFlatGenerator extends WorldGenerator {
             }
 
             public @Nullable TreeType getTreeFromBiome(@NotNull Biome biome) {
-                return switch (biome) {
-                    case PLAINS, TAIGA, WINDSWEPT_FOREST, SNOWY_TAIGA, OLD_GROWTH_SPRUCE_TAIGA -> TreeType.TREE;
-                    case DARK_FOREST -> TreeType.DARK_OAK;
-                    case BIRCH_FOREST -> TreeType.BIRCH;
-                    case JUNGLE -> TreeType.JUNGLE;
-                    case SAVANNA -> TreeType.ACACIA;
-                    case LUSH_CAVES -> TreeType.AZALEA;
-                    case MANGROVE_SWAMP -> TreeType.MANGROVE;
-                    case CHERRY_GROVE -> TreeType.CHERRY;
-                    case MUSHROOM_FIELDS -> TreeType.RED_MUSHROOM;
-                    case SMALL_END_ISLANDS -> TreeType.CHORUS_PLANT;
-                    case ICE_SPIKES, SNOWY_PLAINS -> TreeType.MEGA_PINE;
+                return switch (biome.translationKey().substring(16).toUpperCase()) {
+                    case "PLAINS", "TAIGA", "WINDSWEPT_FOREST", "SNOWY_TAIGA", "OLD_GROWTH_SPRUCE_TAIGA" -> TreeType.TREE;
+                    case "DARK_FOREST" -> TreeType.DARK_OAK;
+                    case "BIRCH_FOREST" -> TreeType.BIRCH;
+                    case "JUNGLE" -> TreeType.JUNGLE;
+                    case "SAVANNA" -> TreeType.ACACIA;
+                    case "LUSH_CAVES" -> TreeType.AZALEA;
+                    case "MANGROVE_SWAMP" -> TreeType.MANGROVE;
+                    case "CHERRY_GROVE" -> TreeType.CHERRY;
+                    case "MUSHROOM_FIELDS" -> TreeType.RED_MUSHROOM;
+                    case "SMALL_END_ISLANDS" -> TreeType.CHORUS_PLANT;
+                    case "ICE_SPIKES", "SNOWY_PLAINS" -> TreeType.MEGA_PINE;
+                    case "PALE_GARDEN" -> TreeType.PALE_OAK;
                     default -> null;
                 };
             }

@@ -18,7 +18,11 @@
 
 package ua.mcchickenstudio.opencreative.utils.world.generators;
 
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.block.Biome;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -113,7 +117,8 @@ public final class CustomFlatGenerator extends AbstractFlatGenerator {
     private @Nullable Biome getBiome(@Nullable String text) {
         if (text == null) return null;
         try {
-            return Biome.valueOf(text);
+            //return Biome.valueOf(text);
+            return RegistryAccess.registryAccess().getRegistry(RegistryKey.BIOME).get(NamespacedKey.fromString(text));
         } catch (Exception ignored) {
             return null;
         }

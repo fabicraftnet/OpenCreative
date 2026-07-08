@@ -42,7 +42,7 @@ public final class EntityScaleValue extends NumberEventValue {
         if (!(entity instanceof Attributable attributable)) {
             return null;
         }
-        AttributeInstance attribute = attributable.getAttribute(Attribute.GENERIC_SCALE);
+        AttributeInstance attribute = attributable.getAttribute(Attribute.SCALE);
         if (attribute == null) {
             return null;
         }

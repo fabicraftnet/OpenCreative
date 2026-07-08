@@ -18,6 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.commands.minecraft;
 
+import net.kyori.adventure.key.Key;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -137,7 +138,7 @@ public class PlaySoundCommand extends CommandHandler {
             }
 
             try {
-                sound = Sound.valueOf(soundString.toUpperCase());
+                sound = Registry.SOUNDS.get(NamespacedKey.fromString(soundString));
             } catch (IllegalArgumentException ignored) {
             }
             volume = Math.clamp(volume, 1, 100);
@@ -170,7 +171,7 @@ public class PlaySoundCommand extends CommandHandler {
             if (args.length == 1) {
                 tabCompleter.addAll(player.getWorld().getPlayers().stream().map(Player::getName).toList());
             } else if (args.length == 2) {
-                tabCompleter.addAll(Registry.SOUNDS.stream().map(sound -> sound.getKey().asMinimalString()).toList());
+                tabCompleter.addAll(Registry.SOUNDS.keyStream().map(Key::asMinimalString).toList());
             } else if (args.length == 3) {
                 tabCompleter.add("100");
                 tabCompleter.add("50");

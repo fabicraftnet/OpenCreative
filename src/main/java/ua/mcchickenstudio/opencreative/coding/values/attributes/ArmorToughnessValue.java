@@ -42,7 +42,7 @@ public final class ArmorToughnessValue extends NumberEventValue {
         if (!(entity instanceof Attributable attributable)) {
             return null;
         }
-        AttributeInstance attribute = attributable.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS);
+        AttributeInstance attribute = attributable.getAttribute(Attribute.ARMOR_TOUGHNESS);
         if (attribute == null) {
             return null;
         }

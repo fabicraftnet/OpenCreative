@@ -57,25 +57,25 @@ public final class FlatGenerator extends WorldGenerator implements EnvironmentCa
             customFlatTerrainBlock = Material.DIRT;
             customFlatSurfaceBlock = Material.GRASS_BLOCK;
         }
-        switch (chunkData.getBiome(0, 0, 0)) {
-            case DESERT -> {
+        switch (chunkData.getBiome(0, 0, 0).translationKey().substring(16).toUpperCase()) {
+            case "DESERT" -> {
                 customFlatTerrainBlock = Material.SANDSTONE;
                 customFlatSurfaceBlock = Material.SAND;
             }
-            case SNOWY_TAIGA -> {
+            case "SNOWY_TAIGA" -> {
                 customFlatTerrainBlock = Material.SNOW_BLOCK;
                 customFlatSurfaceBlock = Material.SNOW_BLOCK;
             }
-            case BASALT_DELTAS -> customFlatTerrainBlock = Material.BASALT;
-            case WARPED_FOREST -> {
+            case "BASALT_DELTAS" -> customFlatTerrainBlock = Material.BASALT;
+            case "WARPED_FOREST" -> {
                 customFlatTerrainBlock = Material.NETHERRACK;
                 customFlatSurfaceBlock = Material.WARPED_NYLIUM;
             }
-            case SOUL_SAND_VALLEY -> {
+            case "SOUL_SAND_VALLEY" -> {
                 customFlatTerrainBlock = Material.SOUL_SOIL;
                 customFlatSurfaceBlock = Material.SOUL_SAND;
             }
-            case CRIMSON_FOREST -> {
+            case "CRIMSON_FOREST" -> {
                 customFlatTerrainBlock = Material.NETHERRACK;
                 customFlatSurfaceBlock = Material.CRIMSON_NYLIUM;
             }
