@@ -19,20 +19,16 @@
 package ua.mcchickenstudio.opencreative.coding.blocks.actions.playeractions.appearance;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
-import net.minecraft.world.item.component.ResolvableProfile;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.profile.PlayerTextures;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.playeractions.PlayerAction;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
-import ua.mcchickenstudio.opencreative.coding.exceptions.UnsupportedEntityException;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
