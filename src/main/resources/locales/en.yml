@@ -8778,6 +8778,26 @@ items:
               magenta: "Magenta"
               pink: "Pink"
               brown: "Brown"
+      entity-set-mannequin-skin:
+        name: "&6Set Mannequin Skin"
+        lore:
+          - "&7Changes mannequin skin using"
+          - "&7a player head."
+          - ""
+          - "&fIn the chest:"
+          - "&c Item &7- Player head"
+          - ""
+          - "&eClick to set action."
+      entity-set-mannequin-description:
+        name: "&6Set Mannequin Description"
+        lore:
+          - "&7Changes mannequin description or"
+          - "&7removes it when no text is given."
+          - ""
+          - "&fIn the chest:"
+          - "&6 Text &7- New description"
+          - ""
+          - "&eClick to set action."
       entity-set-display-teleport-delay:
         name: "&3Display Teleport Duration"
         lore:
@@ -19705,6 +19725,8 @@ blocks:
   entity_set_arrows_in_body: "Arrows in Body"
   entity_set_shield_blocking_delay: "Shield Delay"
   entity_set_bee_stinger_cooldown: "Bee Stinger Cooldown"
+  entity_set_mannequin_skin: "Set Skin"
+  entity_set_mannequin_description: "Set Description"
   entity_set_maximum_no_damage_ticks: "Max No Damage"
   entity_set_glowing: "Set Glowing"
   entity_teleport: "Teleport"

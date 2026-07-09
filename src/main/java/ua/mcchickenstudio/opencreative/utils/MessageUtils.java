@@ -177,7 +177,7 @@ public final class MessageUtils {
         }
         InputStream input = OpenCreative.getPlugin().getResource("locales/" + selectedLang + ".yml");
         if (input == null) {
-            return -1;
+            input = OpenCreative.getPlugin().getResource("locales/" + "en" + ".yml");
         }
         YamlConfiguration resource = YamlConfiguration.loadConfiguration(new InputStreamReader(input, StandardCharsets.UTF_8));
         YamlConfiguration localization = YamlConfiguration.loadConfiguration(file);
