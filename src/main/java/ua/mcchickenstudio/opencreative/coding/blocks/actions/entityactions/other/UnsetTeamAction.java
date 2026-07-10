@@ -35,9 +35,7 @@ public final class UnsetTeamAction extends EntityAction {
 
     @Override
     public void executeEntity(@NotNull Entity entity) {
-        if (!getArguments().pathExists("scoreboard") || !getArguments().pathExists("team")) {
-            return;
-        }
+        arguments.requireArguments(this,"scoreboard", "team");
         String scoreboardName = getArguments().getText("scoreboard", "board", this);
         String teamName = getArguments().getText("team", "team", this);
         Scoreboard scoreboard = getPlanet().getTerritory().getScoreboards().getScoreboard(scoreboardName.toLowerCase());

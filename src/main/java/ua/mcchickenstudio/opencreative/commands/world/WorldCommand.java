@@ -251,7 +251,7 @@ public class WorldCommand extends CommandHandler {
                     sender.sendMessage(getLocaleMessage("too-few-args"));
                     return;
                 }
-                if (planet.isOwner(args[1])) {
+                if (planet.isOwner(Bukkit.getOfflinePlayer(args[1]).getUniqueId())) {
                     sender.sendMessage(getLocaleMessage("same-player"));
                     return;
                 }
@@ -271,7 +271,7 @@ public class WorldCommand extends CommandHandler {
                     sender.sendMessage(getLocaleMessage("too-few-args"));
                     return;
                 }
-                if (planet.isOwner(args[1])) {
+                if (planet.isOwner(Bukkit.getOfflinePlayer(args[1]).getUniqueId())) {
                     sender.sendMessage(getLocaleMessage("same-player"));
                     return;
                 }
@@ -421,7 +421,7 @@ public class WorldCommand extends CommandHandler {
         sender.sendMessage(getLocaleMessage("world.info").replace("%name%", planet.getInformation().getDisplayName())
                 .replace("%id%", String.valueOf(planet.getId())).replace("%creation-time%", getElapsedTime(now, planet.getCreationTime()))
                 .replace("%activity-time%", getElapsedTime(now, planet.getLastActivityTime())).replace("%online%", String.valueOf(planet.getOnline()))
-                .replace("%builders%", planet.getWorldPlayers().getBuilders()).replace("%coders%", planet.getWorldPlayers().getDevelopers()).replace("%owner%", planet.getOwner())
+                .replace("%builders%", planet.getWorldPlayers().getBuilders()).replace("%coders%", planet.getWorldPlayers().getDevelopers()).replace("%owner%", planet.getOwnerName())
                 .replace("%sharing%", planet.getSharing().getName()).replace("%mode%", planet.getMode().getName()).replace("%description%", planet.getInformation().getDescription()));
     }
 
@@ -440,9 +440,9 @@ public class WorldCommand extends CommandHandler {
             }
         } else if (args.length == 2) {
             if (List.of("unban", "unblacklist").contains(args[0].toLowerCase())) {
-                tabCompleter.addAll(planet.getWorldPlayers().getBannedPlayers().stream().filter(p -> p.startsWith(args[1])).toList());
+                tabCompleter.addAll(planet.getWorldPlayers().getBannedPlayers().stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName()).filter(p -> p.startsWith(args[1])).toList());
             } else if (List.of("unwhite", "unwhitelist").contains(args[0].toLowerCase())) {
-                tabCompleter.addAll(planet.getWorldPlayers().getWhitelistedPlayers().stream().filter(p -> p.startsWith(args[1])).toList());
+                tabCompleter.addAll(planet.getWorldPlayers().getWhitelistedPlayers().stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName()).filter(p -> p.startsWith(args[1])).toList());
             } else if (List.of("ban", "blacklist", "kick", "whitelist", "white").contains(args[0].toLowerCase())) {
                 if (args[0].equalsIgnoreCase("kick")) tabCompleter.add("*");
                 tabCompleter.addAll(planet.getPlayers().stream().filter(p -> !planet.isOwner(p) && p.getName().startsWith(args[1])).map(Player::getName).toList());

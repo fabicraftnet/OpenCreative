@@ -449,6 +449,9 @@ coding-warning:
   changing-blocks-limit:
     text: "&7Too many blocks modified &6%count%&7/%limit% in a short time. &3[?]"
     hover: "&fMost likely, too many blocks were selected. Reduce the distance between locations or split block operations over several seconds."
+  checking-blocks-limit:
+    text: "&7Too many blocks &6%count%&7/%limit% were checked in a short period of time. &3[?]"
+    hover: "&fMost likely, too many blocks were selected. Reduce the distance between locations or split block operations over several seconds."
   opening-inventories-limit:
     text: "&7Inventories are being opened too frequently &6%count%&7/%limit% in a short time. &3[?]"
     hover: "&fReduce the number of menu openings or add a delay, then check whether the player is on cooldown before opening the inventory.\n&7This is necessary to allow the player to exit the game properly."
@@ -3151,7 +3154,6 @@ items:
           - "&7armor stands, and paintings."
           - " "
           - "&eClick to set event."
-
     actions:
       entity-set-ai:
         name: "&cSet mob AI"
@@ -7567,39 +7569,33 @@ items:
       world-get-block-state:
         name: "&bGet Block State"
         lore:
-          - "&7Gets the blocks state"
-          - "&7at the specified locations."
+          - "&7Stores the block state"
+          - "&7data in a variable."
           - ""
           - "&fIn the chest:"
-          - "&e Variable &7- To store the results"
+          - "&e Variable &7- To save"
           - "&f Location &7- Block location"
           - ""
           - "&eClick to set the action."
       world-set-block-state:
         name: "&3Set Block State"
         lore:
-          - "&7Sets the blocks state"
-          - "&7at the specified locations."
+          - "&7Sets the block state"
+          - "&7using the data from text."
           - ""
           - "&fIn the chest:"
-          - "&f Location &7- Block location"
-          - "&6 Text &7- Block state"
+          - "&f Locations &7- Block locations"
+          - "&6 Text &7- Block state data"
           - ""
           - "&eClick to set the action."
-        arguments:
-          water:
-            name: "&9Waterlogging"
+        placeholders:
+          state:
+            name: "&6Block State"
             lore:
-              - "&7If yes, the slab will be"
-              - "&7in water and it will be more"
-              - "&7resistant to explosions."
-              - ""
-              - "&fOptions:"
-              - "%1%"
-              - "%2%"
-            choices:
-              true: "Yes, keep it waterlogged"
-              false: "No, remove the water"
+              - "&7Place text here that"
+              - "&7contains the block state data."
+              - " "
+              - "&fExamples: &6waterlogged=true&f, &6facing=east"
       var-clone-list:
         name: "&6Clone List"
         lore:
@@ -8468,28 +8464,31 @@ items:
       player-set-skin:
         name: "&6Set Skin"
         lore:
-          - "&7Changes player skin using"
-          - "&7a player head or resets"
-          - "&7skin if no head is provided."
+          - "&7Changes the player's skin"
+          - "&7using a player head, or resets"
+          - "&7it if the chest is empty."
           - ""
           - "&fIn the chest:"
-          - "&c Item &7- Player head"
+          - "&c Item &7- Player Head"
           - ""
-          - "&eClick to set action."
+          - "&eClick to set the action."
+        placeholders:
+          skin:
+            name: "&6Player Head"
       player-set-cape:
         name: "&6Set Cape"
         lore:
-          - "&7Changes player cape using"
-          - "&7a cape texture hash"
-          - "&7i.e. the last part of a texture url"
-          - "&7'textures.minecraft.net/texture/&n&e[HASH]&r&f'"
+          - "&7Changes the player's cape"
+          - "&7using a texture hash, or resets"
+          - "&7it if the chest is empty."
           - ""
           - "&fIn the chest:"
           - "&6 Text &7- Texture hash"
           - ""
-          - "&7 Cape is removed when no text is given."
-          - ""
-          - "&eClick to set action."
+          - "&eClick to set the action."
+        placeholders:
+          skin:
+            name: "&6Cape Texture Hash"
       player-send-sign-change:
         name: "&6Change Sign Line"
         lore:
@@ -9128,15 +9127,24 @@ items:
           - " "
           - "&eClick to set the action."
       entity-set-display-block-state:
-        name: "&aSet Block Display State"
+        name: "&aDisplay Block State"
         lore:
-          - "&7Sets the block state of the"
-          - "&7block inside a block display."
+          - "&7Sets the display entity's"
+          - "&7block state using the data"
+          - "&7provided in the text."
           - ""
           - "&fIn the chest:"
-          - "&6 Text &7- Block state"
-          - " "
+          - "&6 Text &7- Block state data"
+          - ""
           - "&eClick to set the action."
+        placeholders:
+          state:
+            name: "&6Block State"
+            lore:
+              - "&7Place text here that"
+              - "&7contains the block state data."
+              - " "
+              - "&fExamples: &6waterlogged=true&f, &6facing=east"
       player-set-walk-speed:
         name: "&eSet Walk Speed"
         lore:
@@ -12922,10 +12930,11 @@ items:
           - " "
           - "&eClick to set the condition."
       if-entity-is-display:
-        name: "&6Is a display entity"
+        name: "&6Is Display Entity"
         lore:
-          - "&7Checks if the entity"
-          - "&7is a display entity."
+          - "&7Checks whether the entity"
+          - "&7is a text, block, or item"
+          - "&7display entity."
           - " "
           - "&eClick to set the condition."
       if-entity-is-dead:
@@ -19719,6 +19728,8 @@ blocks:
   player_set_time: "Set time"
   player_set_weather: "Set weather"
   player_set_resource_pack: "Set resource pack"
+  player_set_skin: "Set Skin"
+  player_set_cape: "Set Cape"
   player_send_sign_change: "Change sign text"
   player_show_entity: "Show entity"
   player_show_player: "Show player"
@@ -19832,19 +19843,19 @@ blocks:
   entity_set_display_scale: "Display Scale"
   entity_set_display_translation: "Display Offset"
   entity_set_display_rotation: "Display Rotation"
-  entity_set_item: "Display Item"
+  entity_set_display_item: "Display Item"
   entity_set_display_billboard: "Display Type"
   entity_set_text_display_see_through: "See-Through Text"
   entity_set_text_display_shadow: "Text Shadow"
   entity_set_text_display_opacity: "Text Opacity"
   entity_set_text_display_width: "Text Width"
   entity_set_display_brightness: "Display Brightness"
-  entity_set_display_block_state: "Display Block State"
+  entity_set_display_interpolation: "Display Interpolation"
+  entity_set_display_block_state: "Display State"
   entity_set_display_interpolation: "Dis. Interpolation"
   entity_set_display_background: "Display Background"
   entity_set_friction: "Friction"
   entity_set_visual_fire: "Visual Fire"
-  entity_set_villager_recipes: "Village Trades"
   entity_set_parrot_color: "Parrot Color"
   entity_set_fox_sleeping: "Fox Sleeping"
   entity_set_fox_leaping: "Fox Leaping"

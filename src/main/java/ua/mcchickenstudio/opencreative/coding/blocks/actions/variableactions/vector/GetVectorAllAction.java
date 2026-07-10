@@ -16,16 +16,14 @@ public class GetVectorAllAction extends VariableAction {
 
     @Override
     protected void execute() {
-        Vector target = getArguments().getVector("target", new Vector(0,0,0), this);
+        arguments.requireArguments(this, "target");
+        Vector target = getArguments().getVector("target", new Vector(0, 0, 0), this);
         VariableLink x = getArguments().getVariableLink("x", this);
         VariableLink y = getArguments().getVariableLink("y", this);
         VariableLink z = getArguments().getVariableLink("z", this);
-
-        if (getArguments().pathExists("target")) {
-            if (x != null) setVarValue(x, target.getX());
-            if (x != null) setVarValue(y, target.getY());
-            if (x != null) setVarValue(z, target.getZ());
-        }
+        if (x != null) setVarValue(x, target.getX());
+        if (x != null) setVarValue(y, target.getY());
+        if (x != null) setVarValue(z, target.getZ());
     }
 
     @Override

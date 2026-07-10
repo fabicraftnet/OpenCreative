@@ -33,9 +33,7 @@ public final class BossBarColorAction extends WorldAction {
 
     @Override
     protected void execute() {
-        if (!getArguments().pathExists("name")) {
-            return;
-        }
+        arguments.requireArguments(this, "name");
         String name = getArguments().getText("name", "boss", this);
         String colorString = getArguments().getText("color", "purple", this);
         BossBar.Color color = BossBar.Color.PURPLE;

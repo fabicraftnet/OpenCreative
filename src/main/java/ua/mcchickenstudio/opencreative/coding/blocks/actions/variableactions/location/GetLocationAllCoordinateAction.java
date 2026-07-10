@@ -25,6 +25,8 @@ import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.variableactions.VariableAction;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
+import ua.mcchickenstudio.opencreative.coding.exceptions.MissingArgumentException;
+import ua.mcchickenstudio.opencreative.coding.variables.ValueType;
 import ua.mcchickenstudio.opencreative.coding.variables.VariableLink;
 
 public class GetLocationAllCoordinateAction extends VariableAction {
@@ -50,7 +52,7 @@ public class GetLocationAllCoordinateAction extends VariableAction {
             if (yaw != null) setVarValue(yaw, location.getYaw());
         } else {
             if (getArguments().pathExists("x") || getArguments().pathExists("y") || getArguments().pathExists("z") || getArguments().pathExists("pitch") || getArguments().pathExists("yaw")) {
-                throw new IllegalArgumentException("Not found location");
+                throw new MissingArgumentException("location", ValueType.LOCATION);
             }
         }
     }

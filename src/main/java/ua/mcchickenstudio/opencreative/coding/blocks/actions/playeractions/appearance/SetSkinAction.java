@@ -24,14 +24,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
+import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.playeractions.PlayerAction;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
+import ua.mcchickenstudio.opencreative.wanders.Wander;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public final class SetSkinAction extends PlayerAction {
     public SetSkinAction(Executor executor, Target target, int x, Arguments args) {
@@ -40,33 +41,41 @@ public final class SetSkinAction extends PlayerAction {
 
     @Override
     public void executePlayer(@NotNull Player player) {
-        ItemStack item = getArguments().getItem("head", new ItemStack(Material.AIR), this);
-
-
-        if ((item.getItemMeta() instanceof SkullMeta head))
-        {
-            if (head.getPlayerProfile().hasTextures()) {
-                PlayerProfile profile = player.getPlayerProfile();
-                profile.setTextures(head.getPlayerProfile().getTextures());
-                player.setPlayerProfile(profile);
-
-            }
+        if (getPlanet().getLimits().cantOpenMenu(player)) {
+            return;
         }
-        else if (item.getType() == Material.AIR)
-        {
+        Wander wander = OpenCreative.getWander(player);
+        ItemStack item = getArguments().getItem("skin", new ItemStack(Material.AIR), this);
+        if (item.isEmpty()) {
+            // Reset textures
             PlayerProfile profile = player.getPlayerProfile();
-            profile.setTextures(null);
+            profile.setTextures(wander.getJoinTextures());
             CompletableFuture<PlayerProfile> updatedProfile = profile.update();
             try {
                 player.setPlayerProfile(updatedProfile.get());
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            } catch (ExecutionException e) {
-                throw new RuntimeException(e);
+                wander.setTexturesWereChanged(false);
+            } catch (Exception error) {
+                throw new RuntimeException("Failed to reset the skin", error);
+            }
+            return;
+        }
+        if (item.getItemMeta() instanceof SkullMeta head) {
+            PlayerProfile headProfile = head.getPlayerProfile();
+            if (headProfile == null) {
+                return;
+            }
+            if (headProfile.hasTextures()) {
+                PlayerProfile profile = player.getPlayerProfile();
+                profile.setTextures(headProfile.getTextures());
+                CompletableFuture<PlayerProfile> updatedProfile = profile.update();
+                try {
+                    wander.setTexturesWereChanged(true);
+                    player.setPlayerProfile(updatedProfile.get());
+                } catch (Exception error) {
+                    throw new RuntimeException("Failed to change the skin", error);
+                }
             }
         }
-
-
     }
 
     @Override

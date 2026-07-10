@@ -42,9 +42,7 @@ public final class SpawnBlockDisplayAction extends WorldAction {
     @Override
     protected void execute() {
 
-        if (!getArguments().pathExists("block")) {
-            return;
-        }
+        arguments.requireArguments(this, "block");
 
         if (getWorld().getEntities().size() >= getPlanet().getLimits().getEntitiesLimit()) {
             sendCodingDebugLog(getPlanet(), "Too many entities: spawn entity action is cancelled.");

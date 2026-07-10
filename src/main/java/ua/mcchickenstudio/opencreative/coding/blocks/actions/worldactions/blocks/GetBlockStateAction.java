@@ -35,6 +35,10 @@ public final class GetBlockStateAction extends WorldAction {
 
     @Override
     protected void execute() {
+        if (getPlanet().getLimits().cantCheckBlock(this)) {
+            return;
+        }
+
         VariableLink link = getArguments().getVariableLink("variable", this);
         Location location = getArguments().getLocation("location", getPlanet().getTerritory().getSpawnLocation(), this);
 

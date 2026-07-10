@@ -34,15 +34,12 @@ public final class ShowBossBarAction extends PlayerAction {
 
     @Override
     public void executePlayer(@NotNull Player player) {
-        if (getArguments().pathExists("bossbar")) {
-            String name = getArguments().getText("bossbar", " ", this);
-            BossBar bossBar = getPlanet().getTerritory().getBossBars().get(name.toLowerCase());
-            if (bossBar != null) {
-                player.showBossBar(bossBar);
-                return;
-            }
+        arguments.requireArguments(this, "bossbar");
+        String name = getArguments().getText("bossbar", " ", this);
+        BossBar bossBar = getPlanet().getTerritory().getBossBars().get(name.toLowerCase());
+        if (bossBar != null) {
+            player.showBossBar(bossBar);
         }
-        player.activeBossBars().forEach(player::hideBossBar);
     }
 
     @Override

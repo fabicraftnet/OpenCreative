@@ -31,10 +31,10 @@ import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.CodeConfiguration;
 import ua.mcchickenstudio.opencreative.coding.CodeStorage;
 import ua.mcchickenstudio.opencreative.coding.modules.Module;
-import ua.mcchickenstudio.opencreative.wanders.OfflineWander;
 import ua.mcchickenstudio.opencreative.planets.DevPlanet;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.planets.PlanetInfo;
+import ua.mcchickenstudio.opencreative.wanders.OfflineWander;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,7 +43,8 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.*;
+import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCriticalErrorMessage;
+import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendDebug;
 
 /**
  * <h1>FileUtils</h1>
@@ -125,6 +126,7 @@ public final class FileUtils {
         config.set("players.whitelist", new ArrayList<String>());
         config.set("players.blacklist", new ArrayList<String>());
         config.set("flags", new HashMap<String, Integer>());
+        config.set("config-version", OpenCreative.getPlanetConfigVersion());
     }
 
     /**
@@ -233,7 +235,8 @@ public final class FileUtils {
                     int id = -1;
                     try {
                         id = Integer.parseInt(worldName.replace("planet", ""));
-                    } catch (NumberFormatException ignored) {}
+                    } catch (NumberFormatException ignored) {
+                    }
                     if (id == -1) continue;
                     if (shouldLogEveryWorld) {
                         OpenCreative.getPlugin().getLogger().info("Adding world " + id + " to base...");
@@ -257,8 +260,9 @@ public final class FileUtils {
                 }
             }
             OpenCreative.getPlugin().getLogger().info("Loaded " + OpenCreative.getPlanetsManager().getPlanets().size() + " worlds for " + (System.currentTimeMillis() - currentTime) + " ms.");
-            if (!shouldLogEveryWorld) OpenCreative.getPlugin().getLogger().info(" All worlds: " + String.join(", ", OpenCreative.getPlanetsManager().getPlanets()
-                    .stream().map(planet -> String.valueOf(planet.getId())).toList()));
+            if (!shouldLogEveryWorld)
+                OpenCreative.getPlugin().getLogger().info(" All worlds: " + String.join(", ", OpenCreative.getPlanetsManager().getPlanets()
+                        .stream().map(planet -> String.valueOf(planet.getId())).toList()));
             OpenCreative.getPlugin().getLogger().info(" Deprecated worlds: " + deprecatedWorlds);
             OpenCreative.getPlugin().getLogger().info(" Corrupted worlds: " + corruptedWorlds);
         } catch (Exception error) {
@@ -308,8 +312,9 @@ public final class FileUtils {
                 addedModules++;
             }
             OpenCreative.getPlugin().getLogger().info("Loaded " + OpenCreative.getModuleManager().getModules().size() + " modules for " + (System.currentTimeMillis() - currentTime) + " ms.");
-            if (!shouldLogEveryModule) OpenCreative.getPlugin().getLogger().info(" All modules: " + String.join(", ", OpenCreative.getModuleManager().getModules()
-                    .stream().map(module -> String.valueOf(module.getId())).toList()));
+            if (!shouldLogEveryModule)
+                OpenCreative.getPlugin().getLogger().info(" All modules: " + String.join(", ", OpenCreative.getModuleManager().getModules()
+                        .stream().map(module -> String.valueOf(module.getId())).toList()));
         } catch (Exception error) {
             sendCriticalErrorMessage("An error has occurred while loading modules...", error);
         }
@@ -658,77 +663,6 @@ public final class FileUtils {
     }
 
     /**
-     * Sets parameter to Long value in planet's settings.
-     *
-     * @param planet         planet to set.
-     * @param parameterPath  path of parameter in config.
-     * @param parameterValue value.
-     */
-    public static void setPlanetConfigParameter(Planet planet, String parameterPath, long parameterValue) {
-        FileConfiguration planetConfig = getPlanetConfig(planet);
-        File planetConfigFile = getPlanetConfigFile(planet);
-        planetConfig.set(parameterPath, String.valueOf(parameterValue));
-        try {
-            planetConfig.save(planetConfigFile);
-        } catch (IOException error) {
-            sendCriticalErrorMessage("Can't save planet's settings configuration to file.", error);
-        }
-    }
-
-    /**
-     * Removes parameter from planet's config.
-     *
-     * @param planet        planet to set.
-     * @param parameterPath path of parameter in config.
-     */
-    public static void removePlanetConfigParameter(Planet planet, String parameterPath) {
-        FileConfiguration planetConfig = getPlanetConfig(planet);
-        File planetConfigFile = getPlanetConfigFile(planet);
-        planetConfig.set(parameterPath, null);
-        try {
-            planetConfig.save(planetConfigFile);
-        } catch (IOException error) {
-            sendCriticalErrorMessage("Can't save planet's settings configuration to file.", error);
-        }
-    }
-
-    /**
-     * Sets parameter to Int value in planet's settings.
-     *
-     * @param planet         planet to set.
-     * @param parameterPath  path of parameter in config.
-     * @param parameterValue value.
-     */
-    public static void setPlanetConfigParameter(Planet planet, String parameterPath, int parameterValue) {
-        FileConfiguration planetConfig = getPlanetConfig(planet);
-        File planetConfigFile = getPlanetConfigFile(planet);
-        planetConfig.set(parameterPath, parameterValue);
-        try {
-            planetConfig.save(planetConfigFile);
-        } catch (IOException error) {
-            sendCriticalErrorMessage("Can't save planet's settings configuration to file.", error);
-        }
-    }
-
-    /**
-     * Sets parameter to Object value in planet's settings.
-     *
-     * @param planet         planet to set.
-     * @param parameterPath  path of parameter in config.
-     * @param parameterValue value.
-     */
-    public static void setPlanetConfigParameter(Planet planet, String parameterPath, Object parameterValue) {
-        FileConfiguration planetConfig = getPlanetConfig(planet);
-        File planetConfigFile = getPlanetConfigFile(planet);
-        planetConfig.set(parameterPath, parameterValue);
-        try {
-            planetConfig.save(planetConfigFile);
-        } catch (IOException error) {
-            sendCriticalErrorMessage("Can't save planet's settings configuration to file.", error);
-        }
-    }
-
-    /**
      * Sets parameter to Object value in module's settings.
      *
      * @param module         module to set.
@@ -765,75 +699,52 @@ public final class FileUtils {
     }
 
     /**
-     * Sets parameter to List value in planet's settings.
-     *
-     * @param planet         planet to set.
-     * @param parameterPath  path of parameter in config.
-     * @param parameterValue value.
-     */
-    public static void setPlanetConfigParameter(Planet planet, String parameterPath, List<String> parameterValue) {
-        FileConfiguration planetConfig = getPlanetConfig(planet);
-        File planetConfigFile = getPlanetConfigFile(planet);
-        planetConfig.set(parameterPath, parameterValue);
-        try {
-            planetConfig.save(planetConfigFile);
-        } catch (IOException error) {
-            sendCriticalErrorMessage("Can't save planet's settings configuration to file.", error);
-        }
-    }
-
-    /**
-     * Sets parameter to Set value in planet's settings.
-     *
-     * @param planet         planet to set.
-     * @param parameterPath  path of parameter in config.
-     * @param parameterValue value.
-     */
-    public static void setPlanetConfigParameter(Planet planet, String parameterPath, Set<String> parameterValue) {
-        FileConfiguration planetConfig = getPlanetConfig(planet);
-        File planetConfigFile = getPlanetConfigFile(planet);
-        planetConfig.set(parameterPath, new ArrayList<>(parameterValue));
-        try {
-            planetConfig.save(planetConfigFile);
-        } catch (IOException error) {
-            sendCriticalErrorMessage("Can't save planet's settings configuration to file.", error);
-        }
-    }
-
-    /**
-     * Returns a specified list of players nicknames.
+     * Returns a specified list of players uuids.
      *
      * @param planet planet to get list.
      * @param type   type of players list.
-     * @return list of nicknames.
+     * @return list of uuids.
      */
     public static List<String> getPlayersFromPlanetList(Planet planet, Planet.PlayersType type) {
-        return new ArrayList<>(getPlanetConfig(planet).getStringList(type.getPath()));
+        return new ArrayList<>(planet.getConfiguration().getConfig().getStringList(type.getPath()));
     }
 
     /**
-     * Adds player to list, that located in planet's settings.yml file.
+     * Updates planet's configuration.
      *
-     * @param planet   planet to add player.
-     * @param nickname nickname of player.
-     * @param type     id of player list.
-     * @return true - if successfully added, false - if failed.
+     * @param planet planet to update config.
      */
-    public static boolean addPlayerInPlanetList(Planet planet, String nickname, Planet.PlayersType type) {
-        FileConfiguration planetConfig = getPlanetConfig(planet);
-        List<String> playersList = planetConfig.getStringList(type.getPath());
-        for (String player : playersList) {
+    public static @NotNull FileConfiguration updatePlanetConfig(@NotNull Planet planet, @NotNull FileConfiguration config) {
+        int version = config.getInt("config-version", 0);
+        if (version < 1) {
             /*
-             * We will not add player, if list
-             * already contains him.
+             * Version 1.
+             * Changes players names to UUIDs.
              */
-            if (player.equalsIgnoreCase(nickname)) {
-                return false;
+            String[] playerList = {
+                    "players.unique", "players.liked", "players.disliked",
+                    "players.builders.trusted", "players.builders.not-trusted",
+                    "players.developers.trusted", "players.developers.not-trusted",
+                    "players.whitelist", "players.blacklist",
+            };
+            for (String key : playerList) {
+                List<String> list = config.getStringList(key);
+                HashSet<String> set = new HashSet<>();
+                for (String playerName : list) {
+                    OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerName);
+                    set.add(offlinePlayer.getUniqueId().toString());
+                }
+                config.set(key, new ArrayList<>(set));
+            }
+            version = 1;
+            config.set("config-version", version);
+            try {
+                config.save(getPlanetConfigFile(planet));
+            } catch (Exception error) {
+                sendCriticalErrorMessage("Failed to update a planet's settings.yml config.", error);
             }
         }
-        playersList.add(nickname);
-        setPlanetConfigParameter(planet, type.getPath(), playersList);
-        return true;
+        return config;
     }
 
     /**
@@ -897,7 +808,7 @@ public final class FileUtils {
      * @return temporary folder.
      */
     public static File getTempFolder() {
-        return new File(OpenCreative.getPlugin().getDataFolder().getPath() + File.separator + "temp" +  File.separator);
+        return new File(OpenCreative.getPlugin().getDataFolder().getPath() + File.separator + "temp" + File.separator);
     }
 
     /**
