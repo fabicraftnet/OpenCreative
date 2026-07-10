@@ -238,6 +238,13 @@ lobby:
   # It will disable "Set Resource Pack" player action.
   reset-resource-pack: true
 
+  # Resets player's skin and cape when they move between worlds.
+  #
+  # If you have skin changer plugin (SkinsRestorer...)
+  # and skins breaks with actions, set to: false
+  # It will disable "Set Skin" and "Set Cape" player actions.
+  reset-skin: true
+
   # Teleports player to lobby, when they join the server.
   teleport-on-join: true
 
@@ -675,6 +682,7 @@ groups:
         coding-actions-calls: 500 # limit of actions per 3 seconds.
         entities-amount: 50 # limit for spawned entities in world
         modifying-blocks: 5000 # limit for changing blocks with world actions per second
+        checking-blocks: 3000 # limit for checking blocks with world actions per second
         redstone-changes: 100 # limit for redstone operations in world
         repeats-amount: 100 # limit for repeat action per 1 second.
         opening-inventories: 5 # limit for opening inventories per 5 seconds for preventing anti-exit
@@ -755,6 +763,7 @@ groups:
         coding-actions-calls: 500
         entities-amount: 200
         modifying-blocks: 7500
+        checking-blocks: 4000
         redstone-changes: 200
         opening-inventories: 5
         sending-web-requests: 5

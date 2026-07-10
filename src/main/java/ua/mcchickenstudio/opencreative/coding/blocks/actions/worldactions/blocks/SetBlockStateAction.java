@@ -27,6 +27,8 @@ import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.worldactions.WorldAction;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
 
+import java.util.List;
+
 public final class SetBlockStateAction extends WorldAction {
     public SetBlockStateAction(Executor executor, Target target, int x, Arguments args) {
         super(executor, target, x, args);
@@ -34,20 +36,46 @@ public final class SetBlockStateAction extends WorldAction {
 
     @Override
     protected void execute() {
-        String blockState = getArguments().getText("blockstate", "", this);
-        Location location = getArguments().getLocation("location", getPlanet().getTerritory().getSpawnLocation(), this);
 
-        blockState = blockState.replace("\",\"",",");
-        blockState = blockState.replace( "{\"","[");
-        blockState = blockState.replace( "\"}","]");
-        blockState = blockState.replace("\":\"","=");
+        String blockState = getArguments().getText("state", "", this);
+        List<Location> locations = getArguments().getLocationList("locations", this);
+        if (locations.isEmpty()) return;
 
-        String blockData =  "minecraft:"
-                            +location.getBlock().getType().name().toLowerCase()
-                            +blockState;
-        try {
-            location.getBlock().setBlockData(Bukkit.createBlockData(blockData));
-        } catch (Exception IllegalArgumentException) {}
+        if (blockState.isEmpty()) {
+            for (Location location : locations) {
+                if (getPlanet().getLimits().cantModifyBlock(this)) {
+                    return;
+                }
+                location.getBlock().setBlockData(location.getBlock().getType().createBlockData());
+            }
+            return;
+        }
+
+        blockState = blockState
+            .replace("\",\"", ",")
+            .replace("{\"", "[")
+            .replace("\"}", "]")
+            .replace("\":\"", "=")
+            .replace("\"", "")
+            .replace(" ", "");
+
+        StringBuilder builder = new StringBuilder(blockState);
+        if (!blockState.startsWith("[")) {
+            builder.insert(0, "[");
+        }
+        if (!blockState.endsWith("]")) {
+            builder.append("]");
+        }
+
+        for (Location location : locations) {
+            if (getPlanet().getLimits().cantModifyBlock(this)) {
+                return;
+            }
+            builder.insert(0, "minecraft:" + location.getBlock().getType().name().toLowerCase());
+            try {
+                location.getBlock().setBlockData(Bukkit.createBlockData(builder.toString()));
+            } catch (Exception ignored) {}
+        }
     }
 
     @Override

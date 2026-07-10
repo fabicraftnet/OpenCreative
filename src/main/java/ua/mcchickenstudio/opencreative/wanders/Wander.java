@@ -36,11 +36,14 @@
 
 package ua.mcchickenstudio.opencreative.wanders;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.profile.PlayerTextures;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
@@ -57,12 +60,16 @@ public final class Wander extends OfflineWander implements Audience {
 
     private final Player player;
     private final GriefStats griefStats;
+    private final PlayerTextures textures;
+
+    private boolean texturesWereChanged;
     private boolean connectingToPlanet;
 
     public Wander(@NotNull Player player) {
         super(player);
         this.player = player;
         this.griefStats = new GriefStats();
+        this.textures = player.getPlayerProfile().getTextures();
     }
 
     /**
@@ -104,6 +111,36 @@ public final class Wander extends OfflineWander implements Audience {
     @Override
     public void showTitle(@NotNull Title title) {
         player.showTitle(title);
+    }
+
+    /**
+     * Returns player textures from the moment
+     * when player joined the server.
+     *
+     * @return textures of player.
+     */
+    public @NotNull PlayerTextures getJoinTextures() {
+        return textures;
+    }
+
+    /**
+     * Sets whether player textures were changed
+     * by player actions, so it has to be reset or not.
+     *
+     * @param texturesWereChanged true - changed, false - not.
+     */
+    public void setTexturesWereChanged(boolean texturesWereChanged) {
+        this.texturesWereChanged = texturesWereChanged;
+    }
+
+    /**
+     * Checks whether player textures were
+     * changed by player actions.
+     *
+     * @return true - changed, false - not.
+     */
+    public boolean areTexturesChanged() {
+        return texturesWereChanged;
     }
 
     /**

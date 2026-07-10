@@ -21,6 +21,7 @@ package ua.mcchickenstudio.opencreative.listeners.entity;
 import com.destroystokyo.paper.event.entity.*;
 import com.destroystokyo.paper.event.entity.WitchReadyPotionEvent;
 import io.papermc.paper.event.entity.*;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -30,6 +31,7 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.jetbrains.annotations.NotNull;
@@ -296,7 +298,14 @@ public final class EntityStateListener implements Listener {
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(event.getEntity().getWorld());
-        if (planet != null) new EntityDiedEvent(event).callEvent();
+        if (planet != null) {
+            if (!planet.getTerritory().getScript().hasCode()) {
+                if (event.getEntity() instanceof Player player) {
+                    checkEasterEgg(player);
+                }
+            }
+            new EntityDiedEvent(event).callEvent();
+        }
     }
 
     @EventHandler
@@ -420,6 +429,23 @@ public final class EntityStateListener implements Listener {
             new PlayerVehicleExitEvent(player, event).callEvent();
         } else {
             new EntityVehicleExitEvent(event).callEvent();
+        }
+    }
+
+    // Easter Egg! :)
+    private void checkEasterEgg(@NotNull Player player) {
+        if (player.getName().equalsIgnoreCase("pryanikxxx") || player.getName().equalsIgnoreCase("pryanik")) {
+            double chance = 0.25;
+            if (Math.random() < chance) {
+                ItemStack item = new ItemStack(Material.COOKIE);
+                player.getWorld().dropItemNaturally(player.getLocation(), item);
+            }
+        } else if (player.getName().equalsIgnoreCase("russelbuck")) {
+            double chance = 0.25;
+            if (Math.random() < chance) {
+                ItemStack item = new ItemStack(Material.SWEET_BERRIES);
+                player.getWorld().dropItemNaturally(player.getLocation(), item);
+            }
         }
     }
 

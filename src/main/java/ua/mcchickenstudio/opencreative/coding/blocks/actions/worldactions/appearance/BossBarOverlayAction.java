@@ -33,9 +33,7 @@ public final class BossBarOverlayAction extends WorldAction {
 
     @Override
     protected void execute() {
-        if (!getArguments().pathExists("name")) {
-            return;
-        }
+        arguments.requireArguments(this, "name");
         String name = getArguments().getText("name", "boss", this);
         String overlayString = getArguments().getText("overlay", "progress", this);
         BossBar.Overlay overlay = BossBar.Overlay.PROGRESS;

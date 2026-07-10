@@ -24,8 +24,7 @@ public final class RepeatOnCircleAction extends RepeatAction {
 
     @Override
     public boolean checkCanContinue() {
-        if (!arguments.pathExists("consumer") || !arguments.pathExists("radius") || !arguments.pathExists("points"))
-            return false;
+        arguments.requireArguments(this, "consumer", "radius", "points");
 
         final int index = super.arguments.getInt("index", 0, this);
         final VariableLink consumer = arguments.getVariableLink("consumer", this);

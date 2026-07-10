@@ -235,7 +235,7 @@ public enum ActionType implements CodingBlockType {
     PLAYER_HIDE_ENTITY(ActionCategory.PLAYER_ACTION, MenusCategory.APPEARANCE, HideEntityAction.class, Material.SKELETON_SKULL, new ArgumentSlot("entity", ValueType.TEXT)),
     PLAYER_SHOW_PLAYER(ActionCategory.PLAYER_ACTION, MenusCategory.APPEARANCE, ShowPlayerAction.class, Material.PLAYER_HEAD, new ArgumentSlot("player", ValueType.TEXT)),
     PLAYER_HIDE_PLAYER(ActionCategory.PLAYER_ACTION, MenusCategory.APPEARANCE, HidePlayerAction.class, Material.WITHER_SKELETON_SKULL, new ArgumentSlot("player", ValueType.TEXT)),
-    PLAYER_SET_SKIN(ActionCategory.PLAYER_ACTION, MenusCategory.APPEARANCE, SetSkinAction.class, Material.DIAMOND_CHESTPLATE, new ArgumentSlot("head", ValueType.ITEM)),
+    PLAYER_SET_SKIN(ActionCategory.PLAYER_ACTION, MenusCategory.APPEARANCE, SetSkinAction.class, Material.DIAMOND_CHESTPLATE, new ArgumentSlot("skin", ValueType.ITEM)),
     PLAYER_SET_CAPE(ActionCategory.PLAYER_ACTION, MenusCategory.APPEARANCE, SetCapeAction.class, Material.RED_BANNER, new ArgumentSlot("cape", ValueType.TEXT)),
 
     /**
@@ -438,7 +438,7 @@ public enum ActionType implements CodingBlockType {
     WORLD_SET_SIGN_GLOWING_TEXT(ActionCategory.WORLD_ACTION, MenusCategory.BLOCKS, SetSignGlowingTextAction.class, Material.GLOW_INK_SAC, new ArgumentSlot("locations", ValueType.LOCATION, (byte) 18), new ParameterSlot("side", Arrays.asList("front", "back"), Material.OAK_SIGN, Material.WARPED_SIGN), new ParameterSlot("glowing", true, Material.GLOW_INK_SAC, Material.INK_SAC)),
     WORLD_SET_BLOCK_BIOME(ActionCategory.WORLD_ACTION, MenusCategory.BLOCKS, SetBlockBiomeAction.class, Material.MYCELIUM, new ArgumentSlot("locations", ValueType.LOCATION, (byte) 18), new ArgumentSlot("biome", ValueType.TEXT)),
     WORLD_GET_BLOCK_STATE(ActionCategory.WORLD_ACTION, MenusCategory.BLOCKS, GetBlockStateAction.class, Material.STICKY_PISTON, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("location", ValueType.LOCATION)),
-    WORLD_SET_BLOCK_STATE(ActionCategory.WORLD_ACTION, MenusCategory.BLOCKS, SetBlockStateAction.class, Material.PISTON, new ArgumentSlot("location", ValueType.LOCATION), new ArgumentSlot("blockstate", ValueType.TEXT)),
+    WORLD_SET_BLOCK_STATE(ActionCategory.WORLD_ACTION, MenusCategory.BLOCKS, SetBlockStateAction.class, Material.PISTON, new ArgumentSlot("locations", ValueType.LOCATION, (byte) 18), new ArgumentSlot("state", ValueType.TEXT)),
 
     /**
      * <h1>Variable Actions.</h1>
@@ -1151,6 +1151,16 @@ public enum ActionType implements CodingBlockType {
         }
     }
 
+    public @Nullable ArgumentSlot getArgumentSlotByPath(@NotNull String path) {
+        if (layout == null) return null;
+        for (ArgumentSlot slot : layout) {
+            if (slot.getPath().equalsIgnoreCase(path)) {
+                return slot;
+            }
+        }
+        return null;
+    }
+
     public ArgumentSlot[] getArgumentsSlots() {
         return layout;
     }
@@ -1175,6 +1185,11 @@ public enum ActionType implements CodingBlockType {
         }
         if (this == PLAYER_SET_VIEW_DISTANCE || this == PLAYER_SET_SIMULATION_DISTANCE) {
             if (!OpenCreative.getSettings().getLobbySettings().shouldResetViewDistance()) {
+                return true;
+            }
+        }
+        if (this == PLAYER_SET_SKIN || this == PLAYER_SET_CAPE) {
+            if (!OpenCreative.getSettings().getLobbySettings().shouldResetSkin()) {
                 return true;
             }
         }

@@ -56,6 +56,15 @@ public class CodeScript {
     }
 
     /**
+     * Checks whether script has any executor.
+     *
+     * @return true - script has a code, false - not.
+     */
+    public boolean hasCode() {
+        return executors.getExecutorsAmount() > 0;
+    }
+
+    /**
      * Loads code from codeScript.yml file.
      */
     public @NotNull CompletableFuture<Boolean> loadCode() {

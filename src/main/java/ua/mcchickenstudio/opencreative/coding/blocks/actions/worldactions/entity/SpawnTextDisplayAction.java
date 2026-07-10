@@ -41,9 +41,7 @@ public final class SpawnTextDisplayAction extends WorldAction {
     @Override
     protected void execute() {
 
-        if (!getArguments().pathExists("text")) {
-            return;
-        }
+        arguments.requireArguments(this,"text");
 
         if (getWorld().getEntities().size() >= getPlanet().getLimits().getEntitiesLimit()) {
             sendCodingDebugLog(getPlanet(), "Too many entities: spawn entity action is cancelled.");

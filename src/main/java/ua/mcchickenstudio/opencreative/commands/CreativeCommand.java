@@ -1414,7 +1414,7 @@ public class CreativeCommand extends CommandHandler {
     }
 
     public void handleUpdateCommand(@NotNull CommandSender sender) {
-        if (!sender.hasPermission("opencreative.update")) {
+        if (!sender.hasPermission("opencreative.updates.check")) {
             sender.sendMessage(getLocaleMessage("no-perms"));
             return;
         }

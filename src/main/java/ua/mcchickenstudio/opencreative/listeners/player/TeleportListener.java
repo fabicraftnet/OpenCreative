@@ -41,15 +41,15 @@ public final class TeleportListener implements Listener {
     public void onTeleport(PlayerTeleportEvent event) {
         if (event.getCause() == PlayerTeleportEvent.TeleportCause.END_PORTAL
                 || event.getCause() == PlayerTeleportEvent.TeleportCause.END_GATEWAY
-                || event.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL
-        ) {
+                || event.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL) {
             if (!isPlanet(event.getTo().getWorld())) {
                 event.setCancelled(true);
             }
         }
         if (!event.getFrom().getWorld().equals(event.getTo().getWorld())) {
             switch (event.getCause()) {
-                case UNKNOWN, PLUGIN, COMMAND -> {}
+                case UNKNOWN, PLUGIN, COMMAND -> {
+                }
                 default -> {
                     event.setCancelled(true);
                     return;

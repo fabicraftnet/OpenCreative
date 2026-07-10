@@ -28,9 +28,13 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Chicken;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -289,13 +293,36 @@ public final class TestificationExperiment extends Experiment {
                 OpenCreative.getPlugin().getLogger().warning("Pausing thread for " + seconds + " seconds.");
                 Thread.sleep(seconds * 1000L);
             } catch (Exception ignored) {}
+        } else if (args[0].equalsIgnoreCase("entities")) {
+            int amount = 70;
+            if (args.length > 1) {
+                try {
+                    amount = Integer.parseInt(args[1]);
+                } catch (Exception ignored) {}
+            }
+            if (!(sender instanceof Player player)) {
+                return;
+            }
+            int before = player.getWorld().getEntitiesByClasses(Chicken.class).size();
+            Random random = new Random();
+            int radius = 10;
+            for (int i = 0; i < amount; i++) {
+                double offsetX = (random.nextDouble() * 2 - 1) * radius;
+                double offsetZ = (random.nextDouble() * 2 - 1) * radius;
+                int x = (int) (player.getLocation().getX() + offsetX);
+                int z = (int) (player.getLocation().getZ() + offsetZ);
+                int y = player.getLocation().getBlockY();
+                player.getWorld().spawnEntity(new Location(player.getWorld(), x, y, z), EntityType.CHICKEN);
+            }
+            int after = player.getWorld().getEntitiesByClasses(Chicken.class).size();
+            player.sendMessage("tried to spawn " + amount + " mobs. spawned: " + (after - before));
         }
     }
 
     @Override
     public @Nullable List<String> tabCommand(@NotNull CommandSender sender, @NotNull String[] args) {
         if (args.length == 0) {
-            return List.of("debug", "translation", "item", "map", "variables", "script");
+            return List.of("debug", "translation", "item", "map", "variables", "script", "thread", "entities");
         }
         if (args.length == 1) {
             return List.of("1", "2", "3", "4");

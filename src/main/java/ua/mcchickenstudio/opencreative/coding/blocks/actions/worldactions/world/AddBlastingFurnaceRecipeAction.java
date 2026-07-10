@@ -41,9 +41,7 @@ public final class AddBlastingFurnaceRecipeAction extends WorldAction {
     @Override
     protected void execute() {
 
-        if (!getArguments().pathExists("item") || !getArguments().pathExists("result")) {
-            return;
-        }
+        arguments.requireArguments(this, "item", "result");
 
         int total = getPlanet().getTerritory().getRecipes().getAmount();
         if (total > getPlanet().getLimits().getRecipesLimit()) {

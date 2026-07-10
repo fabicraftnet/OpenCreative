@@ -20,8 +20,7 @@ public final class SpawnParticlesCircleAction extends WorldAction {
 
     @Override
     protected void execute() {
-        if (!arguments.pathExists("radius") || !arguments.pathExists("points") || !arguments.pathExists("particle"))
-            return;
+        arguments.requireArguments(this, "radius", "points", "particle");
 
         final Location center = arguments.getLocation("center", getPlanet().getTerritory().getSpawnLocation(), this);
         final double radius = arguments.getDouble("radius", 0d, this);

@@ -19,25 +19,19 @@
 package ua.mcchickenstudio.opencreative.coding.blocks.actions.playeractions.appearance;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.profile.PlayerTextures;
 import org.jetbrains.annotations.NotNull;
+import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.playeractions.PlayerAction;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
 import ua.mcchickenstudio.opencreative.coding.exceptions.TooLongTextException;
+import ua.mcchickenstudio.opencreative.wanders.Wander;
 
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public final class SetCapeAction extends PlayerAction {
     public SetCapeAction(Executor executor, Target target, int x, Arguments args) {
@@ -46,30 +40,34 @@ public final class SetCapeAction extends PlayerAction {
 
     @Override
     public void executePlayer(@NotNull Player player) {
+        if (getPlanet().getLimits().cantOpenMenu(player)) {
+            return;
+        }
 
+        Wander wander = OpenCreative.getWander(player);
         String cape = getArguments().getText("cape", "", this);
         if (cape.length() > 128) {
             throw new TooLongTextException(128);
         }
 
         PlayerTextures skin = player.getPlayerProfile().getTextures();
-        if (cape.isEmpty())
-        {
-             skin.setCape(null);
-        }
-        else
-        {
+        if (cape.isEmpty()) {
+            skin.setCape(null);
+        } else {
             try {
-                skin.setCape(new URI("http://textures.minecraft.net/texture/"+cape).toURL());
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
-            } catch (URISyntaxException e) {
-                throw new RuntimeException(e);
+                skin.setCape(new URI("http://textures.minecraft.net/texture/" + cape).toURL());
+            } catch (Exception error) {
+                throw new RuntimeException(error);
             }
         }
         PlayerProfile profile = player.getPlayerProfile();
         profile.setTextures(skin);
-        player.setPlayerProfile(profile);
+        try {
+            wander.setTexturesWereChanged(true);
+            player.setPlayerProfile(profile.update().get());
+        } catch (Exception error) {
+            throw new RuntimeException(error);
+        }
     }
 
     @Override

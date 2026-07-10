@@ -51,6 +51,7 @@ public final class LobbySettings {
     private boolean disableExplosions = true;
     private boolean resetViewDistance = true;
     private boolean resetResourcePack = true;
+    private boolean resetSkin = true;
     private boolean teleportOnJoin = true;
 
     /**
@@ -80,6 +81,7 @@ public final class LobbySettings {
 
         resetViewDistance = section.getBoolean("reset-view-distance", true);
         resetResourcePack = section.getBoolean("reset-resource-pack", true);
+        resetSkin = section.getBoolean("reset-skin", true);
         teleportOnJoin = section.getBoolean("teleport-on-join", true);
         if (HookUtils.isPluginEnabled("ItemsAdder")) {
             resetResourcePack = false;
@@ -222,6 +224,19 @@ public final class LobbySettings {
      */
     public boolean shouldResetResourcePack() {
         return resetResourcePack;
+    }
+
+
+    /**
+     * Checks whether player's skin will be reset
+     * on entering lobby or changing worlds.
+     *
+     * @return true - reset skin and cape,
+     * false - don't reset, but disable
+     * "Set Skin", "Set Cape" player actions.
+     */
+    public boolean shouldResetSkin() {
+        return resetSkin;
     }
 
     /**
