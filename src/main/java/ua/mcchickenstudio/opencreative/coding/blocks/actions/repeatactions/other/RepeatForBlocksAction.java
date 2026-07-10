@@ -27,6 +27,7 @@ import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.repeatactions.RepeatAction;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
+import ua.mcchickenstudio.opencreative.coding.exceptions.MissingArgumentException;
 import ua.mcchickenstudio.opencreative.coding.variables.ValueType;
 import ua.mcchickenstudio.opencreative.coding.variables.VariableLink;
 
@@ -42,9 +43,10 @@ public final class RepeatForBlocksAction extends RepeatAction {
     public boolean checkCanContinue() {
 
         if (getWorld() == null) return false;
+        arguments.requireArguments(this, "first", "second");
         VariableLink link = getArguments().getVariableLink("variable", this);
-        if (!getArguments().pathExists("first") || !getArguments().pathExists("second") || link == null) {
-            return false;
+        if (link == null) {
+            throw new MissingArgumentException("variable", ValueType.VARIABLE);
         }
 
         Location first = getArguments().getLocation("first", getPlanet().getTerritory().getSpawnLocation(), this);

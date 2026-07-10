@@ -43,7 +43,7 @@ public final class WorldsPickerMenu extends WorldsBrowserMenu {
                 FileUtils.copyFilesToDirectory(FileUtils.getDevPlanetFolder(downloadablePlanet.getDevPlanet()), new File(Bukkit.getWorldContainer().getPath() + File.separator + "planets" + File.separator + "planet" + id + "dev"));
             }
             Planet newPlanet = new Planet(id);
-            FileUtils.setPlanetConfigParameter(newPlanet, "creation-time", System.currentTimeMillis());
+            newPlanet.getConfiguration().set("creation-time", System.currentTimeMillis());
             newPlanet.setOwner(player.getName());
             newPlanet.getInformation().setCustomID(String.valueOf(id));
             newPlanet.getInformation().setDownloadable(false);

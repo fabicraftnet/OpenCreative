@@ -91,9 +91,8 @@ public final class JoinListener implements Listener {
                                     " OpenCreative+ software.").color(NamedTextColor.GRAY)));
                 }
             }.runTaskLater(OpenCreative.getPlugin(), 40L);
-        } else if (Experiments.isEnabled("wanders")) {
-            OpenCreative.getPlugin().registerWander(event.getPlayer());
         }
+        OpenCreative.getPlugin().registerWander(event.getPlayer());
     }
 
     /**

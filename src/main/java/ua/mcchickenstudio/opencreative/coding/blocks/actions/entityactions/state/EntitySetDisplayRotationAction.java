@@ -41,30 +41,32 @@ public final class EntitySetDisplayRotationAction extends EntityAction {
             throw new UnsupportedEntityException(Display.class, entity);
         }
         boolean add = getArguments().getBoolean("add", false, this);
+        boolean side = getArguments().getBoolean("side", false, this);
         float x = 0;
         float y = 0;
         float z = 0;
         if (getArguments().pathExists("x")) {
-            x = (float) Math.toRadians(getArguments().getFloat("x", x, this));
+            x = (float) Math.toRadians(getArguments().getFloat("x", x, this))/2;
         }
         if (getArguments().pathExists("y")) {
-            y = (float) Math.toRadians(getArguments().getFloat("y", y, this));
+            y = (float) Math.toRadians(getArguments().getFloat("y", y, this))/2;
         }
         if (getArguments().pathExists("z")) {
-            z = (float) Math.toRadians(getArguments().getFloat("z", z, this));
+            z = (float) Math.toRadians(getArguments().getFloat("z", z, this))/2;
         }
-        Quaternionf quaternionf = add ? display.getTransformation().getLeftRotation() : new Quaternionf(0,0,0,1).rotationXYZ(x,y,z);
+        Quaternionf oldRotation = side ? display.getTransformation().getRightRotation() : display.getTransformation().getLeftRotation();
+        Quaternionf quaternionf = add ? oldRotation : new Quaternionf(0,0,0,1).rotationXYZ(x,y,z);
         quaternionf = quaternionf.rotateXYZ(x,y,z);
         display.setTransformation(new Transformation(
                 display.getTransformation().getTranslation(),
-                quaternionf,
+                (side ? display.getTransformation().getLeftRotation() : quaternionf),
                 display.getTransformation().getScale(),
-                display.getTransformation().getRightRotation()
+                (side ? quaternionf : display.getTransformation().getRightRotation())
         ));
     }
 
     @Override
     public @NotNull ActionType getActionType() {
-        return ActionType.ENTITY_SET_DISPLAY_TRANSLATION;
+        return ActionType.ENTITY_SET_DISPLAY_ROTATION;
     }
 }

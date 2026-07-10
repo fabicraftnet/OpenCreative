@@ -91,7 +91,7 @@ public class PlanetTerritory {
      */
     public void resetWorldSize() {
         int worldSize = planet.getGroup().getWorldSize();
-        FileUtils.removePlanetConfigParameter(planet, "size");
+        planet.getConfiguration().remove("size");
         if (this.worldSize == worldSize) return;
         this.worldSize = worldSize;
         if (getWorld() != null) {
@@ -319,7 +319,7 @@ public class PlanetTerritory {
             }
             planet.getConfiguration().set("changed-code-columns", changesString);
         } else {
-            FileUtils.removePlanetConfigParameter(planet, "changed-code-columns");
+            planet.getConfiguration().remove("changed-code-columns");
         }
         planet.getConfiguration().set("environment", planet.getTerritory().getEnvironment().name());
         planet.getVariables().save();
@@ -674,7 +674,7 @@ public class PlanetTerritory {
     public void setGenerator(@Nullable WorldGenerator generator) {
         if (generator == null) {
             this.generator = "";
-            removePlanetConfigParameter(planet, "generator");
+            planet.getConfiguration().remove("generator");
             return;
         }
         this.generator = generator.getID();

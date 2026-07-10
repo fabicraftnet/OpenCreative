@@ -34,9 +34,7 @@ public final class ScoreboardResetScoreAction extends WorldAction {
 
     @Override
     protected void execute() {
-        if (!getArguments().pathExists("name") || !getArguments().pathExists("object")) {
-            return;
-        }
+        arguments.requireArguments(this, "name", "object");
         String name = getArguments().getText("name", "board", this);
         String object = getArguments().getText("object", "object", this);
         Scoreboard scoreboard = getPlanet().getTerritory().getScoreboards().getScoreboard(name.toLowerCase());

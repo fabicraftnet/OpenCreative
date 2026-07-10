@@ -401,6 +401,7 @@ coding-error:
   numberformatexception: "A number was expected, but the item did not contain one. Check the items in the chest for this action."
   toolongtextexception: "Too long text was tried to write to variable. Please substring it with variable action Substring text. "
   collectionwithcollectionexception: "Tried to store a list as element of list. Use Merge Lists action instead."
+  toomanyopenedmenusexception: "Opened too many menus for %player%. Please add cooldown between opening menus."
   toomanyrepeatsexception: "Too many repeats at once! Please add control action Wait to the end of repeat before closing piston."
   nottrustedlinkexception: "Site %link% is not trusted by server. Please contact server admins."
   illegalargumentexception: "An incorrect value was found in the chest. You might have specified a negative number, or a variable returned an incorrect value, or something couldn't be retrieved from the value. Check the chest's contents!"
@@ -455,6 +456,9 @@ coding-warning:
     hover: "&fYou need to reduce the number of modified data items."
   changing-blocks-limit:
     text: "&7Too many blocks modified &6%count%&7/%limit% in a short time. &3[?]"
+    hover: "&fMost likely, too many blocks were selected. Reduce the distance between locations or split block operations over several seconds."
+  checking-blocks-limit:
+    text: "&7Too many blocks &6%count%&7/%limit% were checked in a short period of time. &3[?]"
     hover: "&fMost likely, too many blocks were selected. Reduce the distance between locations or split block operations over several seconds."
   opening-inventories-limit:
     text: "&7Inventories are being opened too frequently &6%count%&7/%limit% in a short time. &3[?]"
@@ -2665,6 +2669,18 @@ items:
         lore:
           - "&7This happens when an entity is removed"
           - "&7by code or despawns in chunks."
+          - " "
+          - "&eClick to set the event."
+      entity-vehicle-damage:
+        name: "&6Vehicle damaged"
+        lore:
+          - "&7This happens when a vehicle is damaged."
+          - " "
+          - "&eClick to set the event."
+      entity-vehicle-destroy:
+        name: "&cVehicle destroyed"
+        lore:
+          - "&7This happens when a vehicle is destroyed."
           - " "
           - "&eClick to set the event."
       entity-mounted:
@@ -5928,6 +5944,16 @@ items:
           - "&6 Name &7- Display name"
           - " "
           - "&eClick to set the action."
+      world-spawn-vehicle:
+        name: "&eSpawn vehicle"
+        lore:
+          - "&7Spawns a vehicle in the world."
+          - " "
+          - "&fIn the chest:"
+          - "&f Location &7- Where to spawn"
+          - "&c Item &7- Vehicle item"
+          - " "
+          - "&eClick to set the action."
       world-spawn-text-display:
         name: "&6Spawn Text Display"
         lore:
@@ -7548,20 +7574,36 @@ items:
           - "&3 Parameter &7- Side"
           - ""
           - "&eClick to set the action."
-        arguments:
-          water:
-            name: "&9Waterlogging"
+      world-get-block-state:
+        name: "&bGet Block State"
+        lore:
+          - "&7Stores the block state"
+          - "&7data in a variable."
+          - ""
+          - "&fIn the chest:"
+          - "&e Variable &7- To save"
+          - "&f Location &7- Block location"
+          - ""
+          - "&eClick to set the action."
+      world-set-block-state:
+        name: "&3Set Block State"
+        lore:
+          - "&7Sets the block state"
+          - "&7using the data from text."
+          - ""
+          - "&fIn the chest:"
+          - "&f Locations &7- Block locations"
+          - "&6 Text &7- Block state data"
+          - ""
+          - "&eClick to set the action."
+        placeholders:
+          state:
+            name: "&6Block State"
             lore:
-              - "&7If yes, the slab will be"
-              - "&7in water and it will be more"
-              - "&7resistant to explosions."
-              - ""
-              - "&fOptions:"
-              - "%1%"
-              - "%2%"
-            choices:
-              true: "Yes, keep it waterlogged"
-              false: "No, remove the water"
+              - "&7Place text here that"
+              - "&7contains the block state data."
+              - " "
+              - "&fExamples: &6waterlogged=true&f, &6facing=east"
       var-clone-list:
         name: "&6Clone List"
         lore:
@@ -8427,6 +8469,34 @@ items:
             name: "&6Download link"
           prompt:
             name: "&6Text to be shown"
+      player-set-skin:
+        name: "&6Set Skin"
+        lore:
+          - "&7Changes the player's skin"
+          - "&7using a player head, or resets"
+          - "&7it if the chest is empty."
+          - ""
+          - "&fIn the chest:"
+          - "&c Item &7- Player Head"
+          - ""
+          - "&eClick to set the action."
+        placeholders:
+          skin:
+            name: "&6Player Head"
+      player-set-cape:
+        name: "&6Set Cape"
+        lore:
+          - "&7Changes the player's cape"
+          - "&7using a texture hash, or resets"
+          - "&7it if the chest is empty."
+          - ""
+          - "&fIn the chest:"
+          - "&6 Text &7- Texture hash"
+          - ""
+          - "&eClick to set the action."
+        placeholders:
+          skin:
+            name: "&6Cape Texture Hash"
       player-send-sign-change:
         name: "&6Change Sign Line"
         lore:
@@ -8836,6 +8906,17 @@ items:
           - "&6 Text &7- New text."
           - " "
           - "&eClick to set the action."
+      entity-set-display-background:
+        name: "&fSet Display Background"
+        lore:
+          - "&7Sets the background color"
+          - "&7of a text display with a"
+          - "&7ARGB hex color code."
+          - ""
+          - "&fIn the chest:"
+          - "&6 Text &7- Hex color"
+          - " "
+          - "&eClick to set the action."
       entity-set-display-scale:
         name: "&fScale Display"
         lore:
@@ -8910,7 +8991,8 @@ items:
           - "&a Number &7- Angle Y"
           - "&a Number &7- Angle Z"
           - "&3 Parameter &7- Add or set"
-          - "&7 the value"
+          - "&3 Parameter &7- Left or right."
+          - "&7 Right can deform shape."
           - " "
           - "&eClick to set the action."
         arguments:
@@ -8929,13 +9011,26 @@ items:
             choices:
               false: "Set"
               true: "Add"
-      entity-set-item:
+          side:
+            name: "&fLeft or Right"
+            lore:
+              - "&7Select order of transformation."
+              - "&7Right is applied after scaling"
+              - "&7enabling model deformation."
+              - " "
+              - "&eClick to change."
+              - " "
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              false: "Left"
+              true: "Right"
+      entity-set-display-item:
         name: "&6Set Display Item"
         lore:
-          - "&7Sets a new item for arrow,"
-          - "&7item entity, display entity,"
-          - "&7item frame, thrown potion,"
-          - "&7or dropped item."
+          - "&7Sets a new item for the"
+          - "&7item display entity."
           - ""
           - "&fIn the chest:"
           - "&c Item &7- New item"
@@ -9059,6 +9154,25 @@ items:
           - "&a Number &7- Interpolation duration (ticks)"
           - " "
           - "&eClick to set the action."
+      entity-set-display-block-state:
+        name: "&aDisplay Block State"
+        lore:
+          - "&7Sets the display entity's"
+          - "&7block state using the data"
+          - "&7provided in the text."
+          - ""
+          - "&fIn the chest:"
+          - "&6 Text &7- Block state data"
+          - ""
+          - "&eClick to set the action."
+        placeholders:
+          state:
+            name: "&6Block State"
+            lore:
+              - "&7Place text here that"
+              - "&7contains the block state data."
+              - " "
+              - "&fExamples: &6waterlogged=true&f, &6facing=east"
       player-set-walk-speed:
         name: "&eSet Walk Speed"
         lore:
@@ -12841,6 +12955,14 @@ items:
           - ""
           - "&7Includes: Ender Dragon, Ghast,"
           - "&7Phantom, Shulker, Slime, Hoglin."
+          - " "
+          - "&eClick to set the condition."
+      if-entity-is-display:
+        name: "&6Is Display Entity"
+        lore:
+          - "&7Checks whether the entity"
+          - "&7is a text, block, or item"
+          - "&7display entity."
           - " "
           - "&eClick to set the condition."
       if-entity-is-dead:
@@ -19559,6 +19681,8 @@ blocks:
   entity_mounted: "Mounted a mob"
   entity_dismounted: "Dismounted a mob"
   entity_removed: "Entity removed"
+  entity_vehicle_damage: "vehicle damaged"
+  entity_vehicle_destroy: "vehicle damaged"
   entity_born: "Born"
   entity_exploded: "Exploded"
   entity_get_damaged: "Took damage"
@@ -19632,6 +19756,8 @@ blocks:
   player_set_time: "Set time"
   player_set_weather: "Set weather"
   player_set_resource_pack: "Set resource pack"
+  player_set_skin: "Set Skin"
+  player_set_cape: "Set Cape"
   player_send_sign_change: "Change sign text"
   player_show_entity: "Show entity"
   player_show_player: "Show player"
@@ -19747,17 +19873,19 @@ blocks:
   entity_set_display_scale: "Display Scale"
   entity_set_display_translation: "Display Offset"
   entity_set_display_rotation: "Display Rotation"
-  entity_set_item: "Display Item"
+  entity_set_display_item: "Display Item"
   entity_set_display_billboard: "Display Type"
   entity_set_text_display_see_through: "See-Through Text"
   entity_set_text_display_shadow: "Text Shadow"
   entity_set_text_display_opacity: "Text Opacity"
   entity_set_text_display_width: "Text Width"
   entity_set_display_brightness: "Display Brightness"
+  entity_set_display_interpolation: "Display Interpolation"
+  entity_set_display_block_state: "Display State"
   entity_set_display_interpolation: "Dis. Interpolation"
+  entity_set_display_background: "Display Background"
   entity_set_friction: "Friction"
   entity_set_visual_fire: "Visual Fire"
-  entity_set_villager_recipes: "Village Trades"
   entity_set_parrot_color: "Parrot Color"
   entity_set_fox_sleeping: "Fox Sleeping"
   entity_set_fox_leaping: "Fox Leaping"
@@ -19946,11 +20074,14 @@ blocks:
   world_set_time: "World time"
   world_set_weather: "World weather"
   world_spawn_entity: "Spawn entity"
+  world_spawn_vehicle: "Spawn vehicle"
   world_spawn_particle: "Spawn particle"
   world_copy_blocks: "Copy blocks"
   world_strike_lightning: "Summon lightning"
   world_create_explosion: "Create explosion"
   world_set_block_type: "Set block"
+  world_get_block_state: "Get state"
+  world_set_block_state: "Set state"
   world_set_blocks_area_type: "Block region"
   world_destroy_block: "Destroy block"
   world_switch_to_build_mode: "&4Shut down"
@@ -20095,6 +20226,7 @@ blocks:
   if_entity_is_creature: "Is Creature"
   if_entity_is_monster: "Is Monster"
   if_entity_is_enemy: "Is Enemy"
+  if_entity_is_display: "Is Display"
   if_entity_is_in_team: "In Team"
   if_entity_is_dead: "Dead"
   if_entity_is_underwater: "Underwater"

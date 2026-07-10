@@ -33,9 +33,7 @@ public final class BossBarProgressAction extends WorldAction {
 
     @Override
     protected void execute() {
-        if (!getArguments().pathExists("name")) {
-            return;
-        }
+        arguments.requireArguments(this, "name");
         String name = getArguments().getText("name", "boss", this);
         float progress = getArguments().getFloat("progress", 100.0f, this) / 100;
         BossBar bossBar = getPlanet().getTerritory().getBossBars().get(name.toLowerCase());

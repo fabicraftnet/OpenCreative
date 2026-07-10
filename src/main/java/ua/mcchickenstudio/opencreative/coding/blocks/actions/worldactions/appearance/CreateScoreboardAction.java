@@ -40,9 +40,7 @@ public final class CreateScoreboardAction extends WorldAction {
 
     @Override
     protected void execute() {
-        if (!getArguments().pathExists("name")) {
-            return;
-        }
+        arguments.requireArguments(this, "name");
         String name = getArguments().getText("name", "board", this);
         Component displayName = getArguments().getComponent("display-name", Component.text("Scoreboard"), this);
         try {

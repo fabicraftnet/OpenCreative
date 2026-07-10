@@ -36,9 +36,7 @@ public final class CreateBossBarAction extends WorldAction {
 
     @Override
     protected void execute() {
-        if (!getArguments().pathExists("name")) {
-            return;
-        }
+        arguments.requireArguments(this, "name");
         String name = getArguments().getText("name", "boss", this);
         Component displayName = getArguments().getComponent("display-name", Component.text(" "), this);
         float progress = getArguments().getFloat("progress", 100.0f, this) / 100;

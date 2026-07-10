@@ -18,6 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.utils;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
 import net.kyori.adventure.resource.ResourcePackInfo;
 import net.kyori.adventure.resource.ResourcePackRequest;
 import net.kyori.adventure.text.Component;
@@ -47,10 +48,12 @@ import ua.mcchickenstudio.opencreative.settings.Sounds;
 import ua.mcchickenstudio.opencreative.settings.items.ItemsGroup;
 import ua.mcchickenstudio.opencreative.utils.async.AsyncScheduler;
 import ua.mcchickenstudio.opencreative.utils.hooks.HookUtils;
+import ua.mcchickenstudio.opencreative.wanders.Wander;
 
 import java.net.URI;
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendPlayerErrorMessage;
@@ -113,6 +116,7 @@ public final class PlayerUtils {
                 player.undiscoverRecipe(recipe);
             }
         }
+        resetSkin(player);
         resetAttributes(player);
         player.resetPlayerTime();
         player.resetPlayerWeather();
@@ -203,6 +207,27 @@ public final class PlayerUtils {
             player.activeBossBars().forEach(player::hideBossBar);
         } catch (Exception ignored) {
         }
+    }
+
+    /**
+     * Resets skin of player.
+     *
+     * @param player player to change skin.
+     */
+    public static void resetSkin(Player player) {
+        if (!OpenCreative.getSettings().getLobbySettings().shouldResetSkin()) {
+            return;
+        }
+        Wander wander = OpenCreative.getWander(player);
+        if (!wander.areTexturesChanged()) {
+            return;
+        }
+        PlayerProfile profile = player.getPlayerProfile();
+        profile.setTextures(wander.getJoinTextures());
+        CompletableFuture<PlayerProfile> updatedProfile = profile.update();
+        try {
+            player.setPlayerProfile(updatedProfile.get());
+        } catch (Exception ignored) {}
     }
 
     /**

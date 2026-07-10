@@ -179,7 +179,7 @@ public final class Executors {
                 new EntityDroppedItemExecutor(), new EntityPickedUpItemExecutor(), new EntityItemMergedExecutor(),
                 new EntityItemDespawnedExecutor(), new EntityExplodedExecutor(), new EntityDamagedItemExecutor(),
                 new EntityPiglinBarteredExecutor(), new EntityInteractedBlockExecutor(), new EntityTurtleLaysEggExecutor(),
-                new EntityFireworkExplodedExecutor());
+                new EntityFireworkExplodedExecutor(), new EntityVehicleDamageExecutor(), new EntityVehicleDestroyExecutor());
         registerExecutor(new EntityGetDamagedExecutor(), new EntityDiedExecutor(), new EntityShotBowExecutor(),
                 new EntityWitchThrownPotionExecutor(), new EntityWitchConsumedPotionExecutor(),
                 new EntityLoadedCrossbowExecutor(), new EntityCombustedByEntityExecutor(), new EntityCombustedByBlockExecutor(),
