@@ -1660,10 +1660,12 @@ public class CreativeCommand extends CommandHandler {
                     return;
                 }
                 sender.sendMessage(getLocaleMessage("creative.corrupted-worlds.set-owner").replace("%player%", args[3]));
-                if (foundPlanet.getCreationTime() == 0)
-                    setPlanetConfigParameter(foundPlanet, "creation-time", System.currentTimeMillis());
-                if (foundPlanet.getLastActivityTime() == 0)
-                    setPlanetConfigParameter(foundPlanet, "last-activity-time", System.currentTimeMillis());
+                if (foundPlanet.getCreationTime() == 0) {
+                    foundPlanet.getConfiguration().set("creation-time", System.currentTimeMillis());
+                }
+                if (foundPlanet.getLastActivityTime() == 0) {
+                    foundPlanet.getConfiguration().set("last-activity-time", System.currentTimeMillis());
+                }
                 foundPlanet.setOwner(args[3]);
                 OpenCreative.getPlanetsManager().unregisterPlanet(foundPlanet);
                 Planet planet = new Planet(foundPlanet.getId());

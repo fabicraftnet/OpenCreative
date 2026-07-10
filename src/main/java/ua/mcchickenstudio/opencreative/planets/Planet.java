@@ -25,6 +25,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -622,24 +623,38 @@ public class Planet {
      * sharing, corrupted state, creation time, last activity time.
      */
     public void loadInfo() {
-        FileConfiguration config = getPlanetConfig(this);
-        if (config.getInt("config-version") != OpenCreative.getPlanetConfigVersion())
-        {
-            FileUtils.updatePlanetConfig(this);
-            config = getPlanetConfig(this);
-        }
+        FileConfiguration config = updatePlanetConfig(this, getPlanetConfig(this));
+
         String ownerName = "Unknown owner";
-        UUID ownerUUID = null;
+        UUID ownerUUID = new UUID(0L, 0L);
         String ownerGroup = "default";
         Mode mode = Mode.BUILD;
         Sharing sharing = Sharing.PRIVATE;
-
-        if (config.getString("owner-uuid") != null) {
-            ownerUUID = UUID.fromString(config.getString("owner-uuid"));
-        } else {
-            corrupted = true;
+        try {
+            ownerUUID = UUID.fromString(config.getString("owner-uuid", ""));
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(ownerUUID);
+            if (offlinePlayer.hasPlayedBefore()) {
+                ownerName = offlinePlayer.getName();
+            } else {
+                ownerName = config.getString("owner", "");
+                if (ownerName.isEmpty()) {
+                    corrupted = true;
+                }
+            }
+        } catch (Exception ignored) {
+            if (!config.contains("owner")) {
+                corrupted = true;
+            } else {
+                ownerName = config.getString("owner", "Unknown owner");
+                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(ownerName);
+                if (offlinePlayer.hasPlayedBefore()) {
+                    ownerUUID = offlinePlayer.getUniqueId();
+                    setPlanetConfigParameter(this, "owner-uuid", ownerUUID.toString());
+                } else {
+                    corrupted = true;
+                }
+            }
         }
-        ownerName = Bukkit.getOfflinePlayer(ownerUUID).getName();
 
         if (config.getString("owner-group") != null) {
             ownerGroup = config.getString("owner-group");
@@ -883,7 +898,7 @@ public class Planet {
             PlanetPlayer planetPlayer = getWorldPlayers().getPlanetPlayer(player);
             player.clearTitle();
             territory.showBorders(player);
-            if (!getPlayersFromPlanetList(this, PlayersType.UNIQUE).contains(player.getUniqueId().toString())) {
+            if (!worldPlayers.getUniquePlayers().contains(player.getUniqueId())) {
                 if (Experiments.isEnabled("wanders") && !isOwner(player)) {
                     Wander wander = OpenCreative.getWander(player);
                     wander.setVisits(wander.getVisits() + 1);
@@ -891,7 +906,7 @@ public class Planet {
                 /*
                  * When player joins connects to the world for first time.
                  */
-                addPlayerInPlanetList(this, player.getName(), PlayersType.UNIQUE);
+                worldPlayers.addUnique(player.getUniqueId());
                 info.setUniques(info.getUniques() + 1);
                 if (this.isOwner(player)) {
                     /*

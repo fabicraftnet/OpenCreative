@@ -35,6 +35,7 @@ import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.convertTime;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
 
 /**
  * <h1>DislikeCommand</h1>
@@ -64,16 +65,12 @@ public class DislikeCommand extends CommandHandler {
                         convertTime(unlockTime)));
                 return;
             }
-            if (FileUtils.getPlayersFromPlanetList(planet, Planet.PlayersType.LIKED).contains(((Player) sender).getUniqueId().toString())) {
-                sender.sendMessage(MessageUtils.getLocaleMessage("world.already-rated"));
-            } else if (FileUtils.getPlayersFromPlanetList(planet, Planet.PlayersType.DISLIKED).contains(((Player) sender).getUniqueId().toString())) {
-                sender.sendMessage(MessageUtils.getLocaleMessage("world.already-rated"));
+            if (planet.getWorldPlayers().hasLiked(player.getUniqueId()) || !planet.getWorldPlayers().addDislike(player.getUniqueId())) {
+                sender.sendMessage(getLocaleMessage("world.already-rated"));
             } else {
-                if (FileUtils.addPlayerInPlanetList(planet, sender.getName(), Planet.PlayersType.DISLIKED)) {
-                    planet.getInformation().setPlanetReputation(planet.getInformation().getReputation() - 1);
-                    Sounds.WORLD_DISLIKED.play(player);
-                    sender.sendMessage(MessageUtils.getPlayerLocaleMessage("world.disliked", player));
-                }
+                planet.getInformation().setPlanetReputation(planet.getInformation().getReputation() - 1);
+                Sounds.WORLD_DISLIKED.play(player);
+                sender.sendMessage(MessageUtils.getPlayerLocaleMessage("world.disliked", player));
             }
         }
     }

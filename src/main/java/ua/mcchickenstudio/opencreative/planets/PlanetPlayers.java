@@ -20,6 +20,7 @@ package ua.mcchickenstudio.opencreative.planets;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +30,7 @@ import ua.mcchickenstudio.opencreative.coding.blocks.events.player.world.QuitEve
 import ua.mcchickenstudio.opencreative.settings.Sounds;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.*;
@@ -99,15 +101,25 @@ public class PlanetPlayers {
         clear();
         FileConfiguration config = planet.getConfiguration().getConfig();
 
-        buildersTrusted.addAll(config.getStringList("players.builders.trusted").stream().map(UUID::fromString).toList());
-        developersTrusted.addAll(config.getStringList("players.developers.trusted").stream().map(UUID::fromString).toList());
+        buildersTrusted.addAll(loadUUIDList(config, "players.builders.trusted"));
+        developersTrusted.addAll(loadUUIDList(config, "players.developers.trusted"));
 
-        buildersNotTrusted.addAll(config.getStringList("players.builders.not-trusted").stream().map(UUID::fromString).toList());
-        developersNotTrusted.addAll(config.getStringList("players.developers.not-trusted").stream().map(UUID::fromString).toList());
+        buildersNotTrusted.addAll(loadUUIDList(config, "players.builders.not-trusted"));
+        developersNotTrusted.addAll(loadUUIDList(config, "players.developers.not-trusted"));
 
-        developersGuests.addAll(config.getStringList("players.developers.guests").stream().map(UUID::fromString).toList());
-        bannedPlayers.addAll(config.getStringList("players.blacklist").stream().map(UUID::fromString).toList());
-        whitelistedPlayers.addAll(config.getStringList("players.whitelist").stream().map(UUID::fromString).toList());
+        developersGuests.addAll(loadUUIDList(config, "players.developers.guests"));
+        bannedPlayers.addAll(loadUUIDList(config, "players.blacklist"));
+        whitelistedPlayers.addAll(loadUUIDList(config, "players.whitelist"));
+    }
+
+    private @NotNull Set<UUID> loadUUIDList(@NotNull FileConfiguration config, @NotNull String path) {
+        Set<UUID> uuids = new HashSet<>();
+        for (String uuidString : config.getStringList(path)) {
+            try {
+                uuids.add(UUID.fromString(uuidString));
+            } catch (Exception ignored) {}
+        }
+        return uuids;
     }
 
     public Set<UUID> getAllBuilders() {
@@ -447,45 +459,132 @@ public class PlanetPlayers {
 
     public Set<UUID> getBuildersTrusted() {
         if (!planet.isLoaded()) {
-            return new HashSet<>(planet.getConfiguration().getConfig().getStringList("players.builders.trusted").stream().map(UUID::fromString).toList());
+            return loadUUIDList(planet.getConfiguration().getConfig(), "players.builders.trusted");
         }
         return new HashSet<>(buildersTrusted);
     }
 
     public Set<UUID> getBuildersNotTrusted() {
         if (!planet.isLoaded()) {
-            return new HashSet<>(planet.getConfiguration().getConfig().getStringList("players.builders.not-trusted").stream().map(UUID::fromString).toList());
+            return loadUUIDList(planet.getConfiguration().getConfig(), "players.builders.not-trusted");
         }
         return new HashSet<>(buildersNotTrusted);
     }
 
     public Set<UUID> getDevelopersGuests() {
         if (!planet.isLoaded()) {
-            return new HashSet<>(planet.getConfiguration().getConfig().getStringList("players.developers.guests").stream().map(UUID::fromString).toList());
+            return loadUUIDList(planet.getConfiguration().getConfig(), "players.developers.guests");
         }
         return new HashSet<>(developersGuests);
     }
 
     public Set<UUID> getDevelopersTrusted() {
         if (!planet.isLoaded()) {
-            return new HashSet<>(planet.getConfiguration().getConfig().getStringList("players.developers.trusted").stream().map(UUID::fromString).toList());
+            return loadUUIDList(planet.getConfiguration().getConfig(), "players.developers.trusted");
         }
         return new HashSet<>(developersTrusted);
     }
 
     public Set<UUID> getDevelopersNotTrusted() {
         if (!planet.isLoaded()) {
-            return new HashSet<>(planet.getConfiguration().getConfig().getStringList("players.developers.not-trusted").stream().map(UUID::fromString).toList());
+            return loadUUIDList(planet.getConfiguration().getConfig(), "players.developers.not-trusted");
         }
         return new HashSet<>(developersNotTrusted);
     }
 
     public String getBuilders() {
-        return String.join(", ", planet.getWorldPlayers().getAllBuilders().stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName() ).toList());
+        return planet.getWorldPlayers().getAllBuilders().stream()
+                .map(uuid -> {
+                    String name = Bukkit.getOfflinePlayer(uuid).getName();
+                    return name != null ? name : "Unknown (" + uuid + ")";
+                })
+                .collect(Collectors.joining(", "));
     }
 
     public String getDevelopers() {
-        return String.join(", ", planet.getWorldPlayers().getAllDevelopers().stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName() ).toList());
+        return planet.getWorldPlayers().getAllDevelopers().stream()
+                .map(uuid -> {
+                    String name = Bukkit.getOfflinePlayer(uuid).getName();
+                    return name != null ? name : "Unknown (" + uuid + ")";
+                })
+                .collect(Collectors.joining(", "));
+    }
+
+    public Set<UUID> getBannedPlayers() {
+        if (!planet.isLoaded()) {
+            return loadUUIDList(planet.getConfiguration().getConfig(), "players.blacklist");
+        }
+        return bannedPlayers;
+    }
+
+    public boolean addUnique(@NotNull UUID uuid) {
+        List<String> uniques = planet.getConfiguration().getConfig().getStringList("players.unique");
+        String uuidString = uuid.toString();
+        for (String likedUUID : uniques) {
+            if (likedUUID.equals(uuidString)) {
+                return false;
+            }
+        }
+        uniques.add(uuid.toString());
+        planet.getConfiguration().getConfig().set("players.unique", uniques);
+        return true;
+    }
+
+    public boolean addLike(@NotNull UUID uuid) {
+        List<String> likes = planet.getConfiguration().getConfig().getStringList("players.liked");
+        String uuidString = uuid.toString();
+        for (String likedUUID : likes) {
+            if (likedUUID.equals(uuidString)) {
+                return false;
+            }
+        }
+        likes.add(uuid.toString());
+        planet.getConfiguration().getConfig().set("players.liked", likes);
+        return true;
+    }
+
+    public boolean addDislike(@NotNull UUID uuid) {
+        List<String> likes = planet.getConfiguration().getConfig().getStringList("players.disliked");
+        String uuidString = uuid.toString();
+        for (String likedUUID : likes) {
+            if (likedUUID.equals(uuidString)) {
+                return false;
+            }
+        }
+        likes.add(uuid.toString());
+        planet.getConfiguration().getConfig().set("players.disliked", likes);
+        return true;
+    }
+
+    public Set<UUID> getUniquePlayers() {
+        return loadUUIDList(planet.getConfiguration().getConfig(), "players.unique");
+    }
+
+    public Set<UUID> getLikedPlayers() {
+        return loadUUIDList(planet.getConfiguration().getConfig(), "players.liked");
+    }
+
+    public Set<UUID> getDislikedPlayers() {
+        return loadUUIDList(planet.getConfiguration().getConfig(), "players.disliked");
+    }
+
+    public boolean hasLiked(@NotNull UUID uuid) {
+        return getLikedPlayers().contains(uuid);
+    }
+
+    public boolean hasDisliked(@NotNull UUID uuid) {
+        return getDislikedPlayers().contains(uuid);
+    }
+
+    public boolean hasRated(@NotNull UUID uuid) {
+        return hasLiked(uuid) || hasDisliked(uuid);
+    }
+
+    public Set<UUID> getWhitelistedPlayers() {
+        if (!planet.isLoaded()) {
+            return loadUUIDList(planet.getConfiguration().getConfig(), "players.whitelist");
+        }
+        return whitelistedPlayers;
     }
 
     public boolean isBanned(String nickname) {
@@ -506,20 +605,6 @@ public class PlanetPlayers {
             }
         }
         return false;
-    }
-
-    public Set<UUID> getBannedPlayers() {
-        if (!planet.isLoaded()) {
-            return new HashSet<>(planet.getConfiguration().getConfig().getStringList("players.blacklist").stream().map(UUID::fromString).toList());
-        }
-        return bannedPlayers;
-    }
-
-    public Set<UUID> getWhitelistedPlayers() {
-        if (!planet.isLoaded()) {
-            return new HashSet<>(planet.getConfiguration().getConfig().getStringList("players.whitelist").stream().map(UUID::fromString).toList());
-        }
-        return whitelistedPlayers;
     }
 
     public void purgeData() {

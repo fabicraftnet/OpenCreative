@@ -579,11 +579,14 @@ public final class OpenCreative extends JavaPlugin {
     }
 
     /**
-     * Gets version of the current planet config format.
+     * Returns version of the current planet's config format.
      *
-     * @return config version number.
+     * @return planet's config version number.
      */
-    public  static @NotNull int getPlanetConfigVersion() { return planetConfigVersion;}
+    public static int getPlanetConfigVersion() {
+        return planetConfigVersion;
+    }
+
     /**
      * Checks if it's Christmas on plugin launch.
      *
