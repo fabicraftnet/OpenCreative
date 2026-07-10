@@ -167,7 +167,7 @@ public class CreativeCommand extends CommandHandler {
                 sender.sendMessage(getLocaleMessage("world.info").replace("%name%", planet.getInformation().getDisplayName())
                         .replace("%id%", String.valueOf(planet.getId())).replace("%creation-time%", getElapsedTime(now, planet.getCreationTime()))
                         .replace("%activity-time%", getElapsedTime(now, planet.getLastActivityTime())).replace("%online%", String.valueOf(planet.getOnline()))
-                        .replace("%builders%", planet.getWorldPlayers().getBuilders()).replace("%coders%", planet.getWorldPlayers().getDevelopers()).replace("%owner%", planet.getOwner())
+                        .replace("%builders%", planet.getWorldPlayers().getBuilders()).replace("%coders%", planet.getWorldPlayers().getDevelopers()).replace("%owner%", planet.getOwnerName())
                         .replace("%sharing%", planet.getSharing().getName()).replace("%mode%", planet.getMode().getName()).replace("%description%", planet.getInformation().getDescription()));
             }
             case "groups" -> handleGroupsCommand(sender, args);
@@ -285,7 +285,7 @@ public class CreativeCommand extends CommandHandler {
                 } else {
                     newOwner = Bukkit.getOfflinePlayer(ownerNameOrUUID);
                 }
-                if (planet.isOwner(newOwner.getName())) {
+                if (planet.isOwner(newOwner.getUniqueId())) {
                     sender.sendMessage(getPlayerLocaleMessage("world.already-owner", newOwner)
                             .replace("%id%", id)
                             .replace("%uuid%", newOwner.getUniqueId().toString()));
@@ -1702,7 +1702,7 @@ public class CreativeCommand extends CommandHandler {
             for (Planet planet : deprecatedWorlds) {
                 sender.sendMessage(Component.text(worldMessage
                         .replace("%id%", String.valueOf(planet.getId()))
-                        .replace("%owner%", planet.getOwner())
+                        .replace("%owner%", planet.getOwnerName())
                         .replace("%created%", getElapsedTime(currentTime, planet.getCreationTime()))
                         .replace("%seen%", getElapsedTime(currentTime, Bukkit.getOfflinePlayer(planet.getOwner()).getLastSeen())
                         )).clickEvent(ClickEvent.runCommand("/oc delete " + planet.getId()))

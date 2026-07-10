@@ -125,6 +125,7 @@ public final class FileUtils {
         config.set("players.whitelist", new ArrayList<String>());
         config.set("players.blacklist", new ArrayList<String>());
         config.set("flags", new HashMap<String, Integer>());
+        config.set("config-version", OpenCreative.getPlanetConfigVersion());
     }
 
     /**
@@ -348,6 +349,30 @@ public final class FileUtils {
         return YamlConfiguration.loadConfiguration(file);
     }
 
+    /**
+     * Transforms old config data to new format.
+     */
+    public static void updatePlanetConfig(Planet planet)
+    {
+        FileConfiguration config = getPlanetConfig(planet);
+        int version = config.getInt("config-version");
+        if (version < 1) //Replaces player nicknames with uuids for better identification
+        {
+            String[] playerList = {"players.unique","players.liked","players.builders.trusted","players.builders.not-trusted",
+                    "players.developers.trusted","players.developers.not-trusted","players.whitelist","players.blacklist","players.disliked"};
+            for (String key:  playerList)
+            {
+                List<String> list = config.getStringList(key);
+                HashSet<String> set = new HashSet<String>();
+                list.forEach(nickname ->{set.add(Bukkit.getOfflinePlayer(nickname).getUniqueId().toString());});
+
+                planet.getConfiguration().set(key, set);
+            }
+            version = 1;
+            planet.getConfiguration().set("config-version", version);
+        }
+        // version 2 updater here if needed
+    }
     /**
      * Returns planet's settings.yml file.
      **/
@@ -801,11 +826,11 @@ public final class FileUtils {
     }
 
     /**
-     * Returns a specified list of players nicknames.
+     * Returns a specified list of players uuids.
      *
      * @param planet planet to get list.
      * @param type   type of players list.
-     * @return list of nicknames.
+     * @return list of uuids.
      */
     public static List<String> getPlayersFromPlanetList(Planet planet, Planet.PlayersType type) {
         return new ArrayList<>(getPlanetConfig(planet).getStringList(type.getPath()));
@@ -822,16 +847,17 @@ public final class FileUtils {
     public static boolean addPlayerInPlanetList(Planet planet, String nickname, Planet.PlayersType type) {
         FileConfiguration planetConfig = getPlanetConfig(planet);
         List<String> playersList = planetConfig.getStringList(type.getPath());
+        String uuid = Bukkit.getPlayerUniqueId(nickname).toString();
         for (String player : playersList) {
             /*
              * We will not add player, if list
              * already contains him.
              */
-            if (player.equalsIgnoreCase(nickname)) {
+            if (player.equals(uuid)) {
                 return false;
             }
         }
-        playersList.add(nickname);
+        playersList.add(uuid);
         setPlanetConfigParameter(planet, type.getPath(), playersList);
         return true;
     }

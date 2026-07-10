@@ -96,6 +96,7 @@ public final class OpenCreative extends JavaPlugin {
     private static final String version = "6.0.0 Pre-release 3";
     private static final String codename = "Well, it's possible";
 
+    private static final int planetConfigVersion = 1;
     /**
      * Plugin load operations.
      *
@@ -577,6 +578,12 @@ public final class OpenCreative extends JavaPlugin {
         return codename;
     }
 
+    /**
+     * Gets version of the current planet config format.
+     *
+     * @return config version number.
+     */
+    public  static @NotNull int getPlanetConfigVersion() { return planetConfigVersion;}
     /**
      * Checks if it's Christmas on plugin launch.
      *

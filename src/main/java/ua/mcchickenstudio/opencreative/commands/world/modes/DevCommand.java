@@ -32,6 +32,7 @@ import ua.mcchickenstudio.opencreative.utils.CooldownUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
@@ -109,26 +110,27 @@ public class DevCommand extends CommandHandler {
                 return;
             }
             String nickname = args[0];
+            UUID uuid = Bukkit.getOfflinePlayer(nickname).getUniqueId();
             Player onlinePlayer = Bukkit.getPlayer(nickname);
-            if (!planet.getWorldPlayers().getAllDevelopers().contains(nickname)) {
+            if (!planet.getWorldPlayers().getAllDevelopers().contains(uuid)) {
                 if (onlinePlayer != null) {
                     nickname = onlinePlayer.getName();
                 }
             }
-            if (planet.isOwner(nickname)) {
+            if (planet.isOwner(uuid)) {
                 sender.sendMessage(getLocaleMessage("same-player"));
                 return;
             }
             /*
-             * Checks if player's name contains in not trusted
+             * Checks if player's uuid is in not trusted
              * or trusted developers.
              */
-            if (planet.getWorldPlayers().getDevelopersNotTrusted().contains(nickname)) {
+            if (planet.getWorldPlayers().getDevelopersNotTrusted().contains(uuid)) {
                 planet.getWorldPlayers().addDeveloper(nickname, true);
                 sender.sendMessage(getLocaleMessage("world.players.developers.trusted").replace("%player%", nickname));
                 return;
             }
-            if (planet.getWorldPlayers().getDevelopersTrusted().contains(nickname)) {
+            if (planet.getWorldPlayers().getDevelopersTrusted().contains(uuid)) {
                 planet.getWorldPlayers().removeDeveloper(nickname);
                 sender.sendMessage(getLocaleMessage("world.players.developers.removed").replace("%player%", nickname));
                 return;
@@ -162,7 +164,7 @@ public class DevCommand extends CommandHandler {
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
         if (planet == null) return null;
         if (planet.isOwner(player)) {
-            List<String> list = new ArrayList<>(planet.getWorldPlayers().getAllDevelopers());
+            List<String> list = new ArrayList<>(planet.getWorldPlayers().getAllDevelopers().stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName() ).toList());
             for (Player planetPlayer : planet.getPlayers()) {
                 if (planet.isOwner(planetPlayer) || list.contains(planetPlayer.getName())) continue;
                 list.add(planetPlayer.getName());
