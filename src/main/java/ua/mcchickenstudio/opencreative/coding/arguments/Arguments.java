@@ -33,6 +33,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Action;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
+import ua.mcchickenstudio.opencreative.coding.exceptions.MissingArgumentException;
+import ua.mcchickenstudio.opencreative.coding.menus.layouts.ArgumentSlot;
 import ua.mcchickenstudio.opencreative.coding.variables.EventValueLink;
 import ua.mcchickenstudio.opencreative.coding.variables.ValueType;
 import ua.mcchickenstudio.opencreative.coding.variables.VariableLink;
@@ -1054,6 +1056,25 @@ public class Arguments {
     public void removeArgumentValue(@NotNull String... paths) {
         for (String path : paths) {
             argumentList.removeIf(it -> path.equals(it.path));
+        }
+    }
+
+    /**
+     * Checks whether specified argument exists by path.
+     * If not - throws a missing argument exception.
+     *
+     * @param paths paths to check.
+     * @throws MissingArgumentException if argument is not specified.
+     */
+    public void requireArguments(@NotNull Action action, @NotNull String... paths) throws MissingArgumentException {
+        for (String path : paths) {
+            if (!pathExists(path)) {
+                ArgumentSlot slot = action.getActionType().getArgumentSlotByPath(path);
+                if (slot != null) {
+                    throw new MissingArgumentException(path, slot.getVarType());
+                }
+                throw new MissingArgumentException(path);
+            }
         }
     }
 

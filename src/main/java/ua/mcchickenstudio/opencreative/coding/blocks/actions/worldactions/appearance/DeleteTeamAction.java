@@ -34,9 +34,7 @@ public final class DeleteTeamAction extends WorldAction {
 
     @Override
     protected void execute() {
-        if (!getArguments().pathExists("scoreboard") || !getArguments().pathExists("team")) {
-            return;
-        }
+        arguments.requireArguments(this, "scoreboard", "team");
         String scoreboardName = getArguments().getText("scoreboard", "board", this);
         String teamName = getArguments().getText("team", "team", this);
         Scoreboard scoreboard = getPlanet().getTerritory().getScoreboards().getScoreboard(scoreboardName.toLowerCase());

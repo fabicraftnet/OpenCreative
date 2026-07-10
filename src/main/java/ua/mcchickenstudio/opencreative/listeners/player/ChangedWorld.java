@@ -143,14 +143,14 @@ public final class ChangedWorld implements Listener {
                         List<String> notTrustedBuilders = FileUtils.getPlayersFromPlanetList(oldPlanet, Planet.PlayersType.BUILDERS_NOT_TRUSTED);
                         for (Player p : oldPlanet.getPlayers()) {
                             if (oldPlanet.getMode() == Planet.Mode.BUILD) {
-                                if (notTrustedBuilders.contains(p.getName())) {
+                                if (notTrustedBuilders.contains(p.getUniqueId().toString())) {
                                     p.setGameMode(GameMode.ADVENTURE);
                                     p.sendMessage(getLocaleMessage("world.build-mode.cant-build-when-offline"));
                                     clearWorldModePermissions(p);
                                 }
                             }
                             if (OpenCreative.getPlanetsManager().getDevPlanet(p) != null) {
-                                if (notTrustedDevelopers.contains(p.getName())) {
+                                if (notTrustedDevelopers.contains(p.getUniqueId().toString())) {
                                     p.setGameMode(GameMode.ADVENTURE);
                                     p.sendMessage(getLocaleMessage("world.dev-mode.cant-dev-when-offline"));
                                 }

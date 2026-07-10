@@ -26,8 +26,6 @@ import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
 import ua.mcchickenstudio.opencreative.coding.blocks.conditions.playerconditions.PlayerCondition;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
-import ua.mcchickenstudio.opencreative.planets.Planet;
-import ua.mcchickenstudio.opencreative.utils.FileUtils;
 
 import java.util.List;
 
@@ -40,13 +38,7 @@ public final class IsLikedWorldCondition extends PlayerCondition {
     @Override
     public boolean checkPlayer(@NotNull Player player) {
         //FIXME: Use liked players in planet.getWorldPlayers() instead of loading files
-        List<String> likedPlayers = FileUtils.getPlayersFromPlanetList(getPlanet(), Planet.PlayersType.LIKED);
-        for (String nickname : likedPlayers) {
-            if (nickname.equalsIgnoreCase(player.getName())) {
-                return true;
-            }
-        }
-        return false;
+        return getPlanet().getWorldPlayers().hasLiked(player.getUniqueId());
     }
 
     @Override

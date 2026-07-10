@@ -37,9 +37,7 @@ public final class AddMerchantRecipeAction extends WorldAction {
 
     @Override
     public void execute() {
-        if (!getArguments().pathExists("result")) {
-            return;
-        }
+        arguments.requireArguments(this, "result");
 
         String name = getArguments().getText("name", "custom", this);
         ItemStack first = getArguments().getItem("first", new ItemStack(Material.EMERALD), this);
