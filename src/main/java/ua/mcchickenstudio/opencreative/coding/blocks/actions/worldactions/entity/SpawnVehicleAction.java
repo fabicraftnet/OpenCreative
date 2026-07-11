@@ -37,7 +37,7 @@ import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCodingDebugLo
 
 public final class SpawnVehicleAction extends WorldAction {
 
-    private Boolean usingBoatTypes;
+
     public SpawnVehicleAction(Executor executor, Target target, int x, Arguments args) {
         super(executor, target, x, args);
     }
@@ -50,46 +50,22 @@ public final class SpawnVehicleAction extends WorldAction {
         }
         @NotNull ItemStack item = getArguments().getItem("type", new ItemStack(Material.MINECART), this);
         String name = item.getType().toString().toUpperCase();
-        boolean chestBoat = false;
-        EntityType type;
-        if (usingBoatTypes()&&name.contains("BOAT"))
-        {
-            //1.21.1 boats
-            chestBoat = (name.contains("CHEST"));
-            type = EntityType.BOAT;
-        }
-        else
-        {
-            type = EntityType.valueOf(name);
-        }
+
+
+        EntityType type = EntityType.valueOf(name);
+
 
         if (! Vehicle.class.isAssignableFrom(type.getEntityClass()) ){
             throw new IllegalArgumentException("Item " + type.name() + " is not a vehicle.");
         }
         for (Location location : getArguments().getLocationList("locations", this)) {
             Entity spawnedEntity;
-             if (usingBoatTypes()&&name.contains("BOAT")){
-                 //1.21.1 boats
-                 if (chestBoat) spawnedEntity = getPlanet().getTerritory().getWorld().spawn(location, ChestBoat.class, boat -> boat.setBoatType(Boat.Type.valueOf(name.split("_")[0])));
-                 else spawnedEntity = getPlanet().getTerritory().getWorld().spawn(location, Boat.class, boat -> boat.setBoatType(Boat.Type.valueOf(name.split("_")[0])));
-             } else {
-                spawnedEntity = getPlanet().getTerritory().getWorld().spawnEntity(location, type);
-             }
+
+            spawnedEntity = getPlanet().getTerritory().getWorld().spawnEntity(location, type);
             setLastSpawnedEntity(spawnedEntity);
         }
     }
 
-    public  boolean usingBoatTypes() {
-        if (usingBoatTypes == null) {
-            try {
-                Class.forName("org.bukkit.entity.boat.AcaciaBoat");
-                usingBoatTypes = false;
-            } catch (Exception ignored) {
-                usingBoatTypes = true;
-            }
-        }
-        return usingBoatTypes;
-    }
 
 
     @Override
