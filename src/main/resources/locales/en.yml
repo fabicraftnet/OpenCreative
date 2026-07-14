@@ -192,6 +192,40 @@ environment:
   platform:
     claimed: "%prefix%Created a &6new platform &ffor coding, now you can place coding blocks here too!"
     limit: "%prefix%&cYou reached a limit of %amount% platforms, you can't create new coding platforms anymore :("
+  scoreboards:
+    list:
+      empty: "%prefix%There are &cno scoreboards &fin this world..\n &fTo create one, use the world action: &aCreate Scoreboard&f."
+      amount: "%prefix%There are &6%amount% &fscoreboards in this world."
+      scoreboard: " &6%id% &f- %name%&f"
+    created: "%prefix%&fCreated scoreboard &a%id%&f. It will be removed when the world is unloaded.\n &fYou can also create scoreboards with code: &bPlayer Join &f> &cWorld Action &c(&aCreate Scoreboard&c)&f."
+    renamed: "%prefix%&fRenamed scoreboard &6%id%&f to: &f%name%"
+    removed: "%prefix%Removed scoreboard &c%id%&f."
+    not-found: "%prefix%&cScoreboard %id% does not exist.. O_o"
+    already-exists: "%prefix%&cScoreboard %id% already exists.. O_о"
+    limit: "%prefix%&cFailed to create scoreboard: the limit has been reached."
+  bossbars:
+    list:
+      empty: "%prefix%There are &cno boss bars &fin this world..\n &fTo create one, use the world action: &aCreate Boss Bar&f."
+      amount: "%prefix%There are &6%amount% &fboss bars in this world."
+      bossbar: " &6%id% &f- %name%&f"
+    created: "%prefix%&fCreated boss bar &a%id%&f. It will be removed when the world is unloaded.\n &fYou can also create boss bars with code: &bPlayer Join &f> &cWorld Action &c(&aCreate Boss Bar&c)&f."
+    renamed: "%prefix%&fRenamed boss bar &6%id%&f to: &f%name%"
+    removed: "%prefix%Removed boss bar &c%id%&f."
+    set-progress: "%prefix%&fSet boss bar &6%id%&f progress to: &a%progress%"
+    not-found: "%prefix%&cBoss bar %id% does not exist.. O_o"
+    limit: "%prefix%&cFailed to create boss bar: the limit has been reached."
+  recipes:
+    list:
+      empty: "%prefix%There are &cno recipes &fin this world..\n &fTo create one, use the world action: &aCreate Recipe&f."
+      amount: "%prefix%There are &6%amount% &frecipes in this world."
+      recipe: " &6%id% &f- &7%type%"
+    types:
+      merchant: "&aVillager"
+      crafting: "&6Crafting Table"
+      furnace: "&3Furnace"
+      campfire: "&eCampfire"
+    removed: "%prefix%Removed recipe &c%id%&f."
+    not-found: "%prefix%&cRecipe %id% does not exist.. O_o"
   hints:
     cycle: "&aNumber &f- Time in ticks, &6Text&f - Name"
     function: "&fClick with &6Text&f in hand to rename"
