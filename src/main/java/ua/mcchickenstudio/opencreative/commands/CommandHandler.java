@@ -18,6 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -25,7 +26,10 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import ua.mcchickenstudio.opencreative.planets.Planet;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCriticalErrorMessage;
@@ -79,6 +83,66 @@ public abstract class CommandHandler implements CommandExecutor, TabCompleter {
         List<String> tabCompleter = onTab(sender, command, alias, args);
         if (tabCompleter == null) return null;
         return tabCompleter.stream().filter(s -> s.toLowerCase().startsWith(args[args.length - 1].toLowerCase())).toList();
+    }
+
+    /**
+     * Returns list with nicknames of online players
+     * in build planet's world for tab completion.
+     *
+     * @return list of players nicknames.
+     */
+    protected final @NotNull List<String> planetBuildPlayersCompletion(@NotNull Planet planet) {
+        List<String> tabCompletion = new ArrayList<>();
+        if (!planet.isLoaded()) {
+            return tabCompletion;
+        }
+        for (Player player : planet.getWorld().getPlayers()) {
+            tabCompletion.add(player.getName());
+        }
+        return tabCompletion;
+    }
+
+    /**
+     * Returns list with nicknames of online players
+     * in dev planet's world for tab completion.
+     *
+     * @return list of players nicknames.
+     */
+    protected final @NotNull List<String> planetDevPlayersCompletion(@NotNull Planet planet) {
+        List<String> tabCompletion = new ArrayList<>();
+        if (!planet.getDevPlanet().isLoaded()) {
+            return tabCompletion;
+        }
+        for (Player player : planet.getDevPlanet().getWorld().getPlayers()) {
+            tabCompletion.add(player.getName());
+        }
+        return tabCompletion;
+    }
+
+    /**
+     * Returns list with nicknames of online players
+     * in planet for tab completion.
+     *
+     * @return list of players nicknames.
+     */
+    protected final @NotNull List<String> planetPlayersCompletion(@NotNull Planet planet) {
+        List<String> tabCompletion = new ArrayList<>();
+        if (!planet.isLoaded()) {
+            return tabCompletion;
+        }
+        for (Player player : planet.getPlayers()) {
+            tabCompletion.add(player.getName());
+        }
+        return tabCompletion;
+    }
+
+    /**
+     * Returns empty tab completion.
+     *
+     * @return empty tab completion.
+     */
+    protected final @NotNull List<String> noTabCompletion() {
+        return List.of();
     }
 
 }
