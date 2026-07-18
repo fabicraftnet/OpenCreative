@@ -311,7 +311,7 @@ public class CreativeCommand extends CommandHandler {
                 String name = args[1];
                 Player foundPlayer = Bukkit.getPlayer(name);
                 if (foundPlayer == null) {
-                    sender.sendMessage(getLocaleMessage("offline-player"));
+                    sender.sendMessage(getLocaleMessage("not-found-player"));
                     return;
                 }
                 Wander wander = OpenCreative.getWander(foundPlayer);
