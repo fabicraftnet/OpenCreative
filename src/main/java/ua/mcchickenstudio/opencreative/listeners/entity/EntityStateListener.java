@@ -28,9 +28,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
-import org.bukkit.event.vehicle.VehicleEnterEvent;
-import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
-import org.bukkit.event.vehicle.VehicleExitEvent;
+import org.bukkit.event.vehicle.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
@@ -400,6 +398,17 @@ public final class EntityStateListener implements Listener {
     public void onEntityRemoved(EntityRemoveFromWorldEvent event) {
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(event.getEntity().getWorld());
         if (planet != null) new EntityRemovedEvent(event).callEvent();
+    }
+    @EventHandler
+    public void onVehicleDamage(VehicleDamageEvent event) {
+        Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(event.getVehicle().getWorld());
+        if (planet != null) new EntityVehicleDamageEvent(event).callEvent();
+    }
+
+    @EventHandler
+    public  void onVehicleDestroy(VehicleDestroyEvent event) {
+        Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(event.getVehicle().getWorld());
+        if (planet != null) new EntityVehicleDestroyEvent(event).callEvent();
     }
 
     @EventHandler

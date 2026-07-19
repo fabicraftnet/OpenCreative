@@ -7723,6 +7723,29 @@ items:
           - "&7 of the head"
           - " "
           - "&eClick to set the action."
+      var-bundle-add-item:
+        name: "Add Items to Bundle"
+        lore:
+          - "&7Sets the variable to a bundle"
+          - "&7with the added items inside it."
+          - ""
+          - "&fIn the chest:"
+          - "&e Variable &7- Save bundle"
+          - "&c Item &7- Bundle item"
+          - "&c Items &7- Items to add"
+          - " "
+          - "&eClick to set the action."
+      var-bundle-get-items:
+        name: "&Get Items from Bundle"
+        lore:
+          - "&7Sets the variable to a list"
+          - "&7of items inside the bundle."
+          - ""
+          - "&fIn the chest:"
+          - "&e Variable &7- Save items"
+          - "&c Item &7- Bundle item"
+          - " "
+          - "&eClick to set the action."
       world-clear-container:
         name: "&cClear Container"
         lore:
@@ -19972,7 +19995,8 @@ blocks:
   var_get_item_book_owner: "Get Author"
   var_get_item_id: "Get Material"
   var_set_item_skull_owner: "Head Owner"
-
+  var_bundle_add_item: "Add to Bundle"
+  var_bundle_get_items: "Get from Bundle"
   var_remove_item_lore_line: "&cRemove line"
   var_convert_to_json: "Save as JSON"
   var_parse_json: "Parse JSON"
