@@ -33,83 +33,75 @@ loadbefore:
 commands:
   creative:
     description: 'Shows OpenCreative+ information.'
-    aliases: [coding, creativecoding, скуфешму, creative, oc]
+    aliases: [coding, creativecoding, creative, oc]
   edit:
     description: 'Edits item in hand.'
-    aliases: [увше, itemedit, edititem]
+    aliases: [itemedit, edititem]
   locate:
     description: 'Locates player`s current world.'
-    aliases: [дщсфеу, find, аштв]
+    aliases: [find]
   chat:
     description: 'Sends message to all players.'
-    aliases: [cc, сс]
+    aliases: [cc]
   build:
     description: 'Changes world`s mode to build.'
-    aliases: [игшдв]
   dev:
     description: 'Connects to developer world.'
-    aliases: [develop, code, вум, d]
+    aliases: [develop, code, d]
   play:
     description: 'Changes world`s mode to play.'
-    aliases: [start, здфн, ыефке, run, кгт]
+    aliases: [start, run]
   join:
     description: 'Joins world by specified id.'
-    aliases: [ощшт, id, j, о]
+    aliases: [id, j]
   ad:
     description: 'Advertises world to all players.'
-    aliases: [фв]
   like:
     description: 'Marks current world as liked.'
-    aliases: [дшлу, vote, v, l]
+    aliases: [vote, v, l]
   dislike:
     description: 'Marks current world as disliked.'
-    aliases: [вшыдшлу, вшідшлу, dis]
+    aliases: [dis]
   spawn:
     description: 'Teleports to spawn.'
-    aliases: [спавн, ізфцт, ызфцт, hub, lobby, s, ы, і]
+    aliases: [hub, lobby, s]
   menu:
     description: 'Opens worlds browser menu.'
-    aliases: [меню, games, worlds, ьутг, minigames, g, п]
+    aliases: [games, worlds, minigames, g]
   ownworlds:
     description: 'Opens own worlds browser menu.'
-    aliases: [myworlds, mygames, owngames, ьнцщкдвы, ьнпфьуы, ьнпфьуі, ьнцщкдві, щцтцщкдві, щцтцщкдвы]
+    aliases: [myworlds, mygames, owngames]
   world:
     description: 'Opens world`s settings menu.'
-    aliases: [settings, game, іуеештпі, ыуеештпы, setting, цщкдв]
+    aliases: [settings, game]
   environment:
     description: 'Opens environment`s settings menu.'
-    aliases: [env, утм, утмшкщтьуте, editor, увшещк]
+    aliases: [env, editor]
   value:
     description: 'Gives coding value item to player.'
     aliases: [text, number, num, boolean, bool, location, loc,
               vector, eventvalue, gamevalue, worldvalue, variable, var]
   gamemode:
     description: 'Changes current player`s gamemode.'
-    aliases: [gm, гм, пь, пфьуьщву]
+    aliases: [gm]
   give:
     description: 'Gives specified item to player.'
-    aliases: [пшму]
   teleport:
     description: 'Teleports to specified location.'
-    aliases: [tp, еудузщке, ез]
+    aliases: [tp]
   playsound:
     description: 'Plays specified sound.'
-    aliases: [здфніщгтв, здфныщгтв]
   stopsound:
     description: 'Stops specified sound.'
-    aliases: [ыещзыщгтв, іещзіщгтв]
   weather:
     description: 'Changes current world`s weather.'
-    aliases: [цуферук]
   time:
     description: 'Sets current world`s time.'
-    aliases: [ешьу]
   module:
     description: 'Opens module`s browser menu.'
-    aliases: [modules, ьщвгдуы, ьщвгдуі, ьщвгду]
+    aliases: [modules]
   jointo:
     description: 'Connects player to specified one'
-    aliases: [ощштещ]
 #  favorite:
 #    description: 'Adds world to favorites list'
 #    aliases: [fav, афм, афмщкшеу, favourite]

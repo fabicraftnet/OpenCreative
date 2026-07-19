@@ -19717,7 +19717,7 @@ blocks:
   entity_dismounted: "Dismounted a mob"
   entity_removed: "Entity removed"
   entity_vehicle_damage: "vehicle damaged"
-  entity_vehicle_destroy: "vehicle damaged"
+  entity_vehicle_destroy: "vehicle destroyed"
   entity_born: "Born"
   entity_exploded: "Exploded"
   entity_get_damaged: "Took damage"
