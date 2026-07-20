@@ -109,6 +109,7 @@ public abstract class WorldEvent {
         if (isDevPlanet(getWorld())) return false;
         if (!getPlanet().isLoaded()) return false;
         if (getPlanet().getMode() != Planet.Mode.PLAYING) return false;
+        if (!getPlanet().getTerritory().getScript().hasCode()) return false;
         if (!getSelection().isEmpty()) {
             for (Entity entity : getSelection()) {
                 if (!entity.getWorld().equals(getPlanet().getWorld())) {

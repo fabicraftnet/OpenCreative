@@ -37,6 +37,9 @@ public final class GetSignLineAction extends WorldAction {
 
     @Override
     protected void execute() {
+        if (getPlanet().getLimits().cantCheckBlock(this)) {
+            return;
+        }
         VariableLink variable = getArguments().getVariableLink("variable", this);
         Location location = getArguments().getLocation("location", getPlanet().getTerritory().getSpawnLocation(), this);
         int number = getArguments().getInt("number", 1, this);

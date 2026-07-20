@@ -37,9 +37,7 @@ public final class SetBlocksAreaTypeAction extends WorldAction {
 
     @Override
     protected void execute() {
-        if (!getArguments().pathExists("first") || !getArguments().pathExists("second")) {
-            return;
-        }
+        arguments.requireArguments(this, "first", "second");
         Location firstLocation = getArguments().getLocation("first", getPlanet().getTerritory().getSpawnLocation(), this);
         Location secondLocation = getArguments().getLocation("second", getPlanet().getTerritory().getSpawnLocation(), this);
         Material type = getArguments().getBlockMaterial("type", Material.AIR, this);

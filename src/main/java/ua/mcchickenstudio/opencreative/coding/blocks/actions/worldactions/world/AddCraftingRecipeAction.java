@@ -31,6 +31,8 @@ import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.worldactions.WorldAction;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
+import ua.mcchickenstudio.opencreative.coding.exceptions.MissingArgumentException;
+import ua.mcchickenstudio.opencreative.coding.variables.ValueType;
 
 import java.util.*;
 
@@ -44,13 +46,11 @@ public final class AddCraftingRecipeAction extends WorldAction {
     @Override
     protected void execute() {
 
-        if (!getArguments().pathExists("result")) {
-            return;
-        }
+        arguments.requireArguments(this,  "result");
 
         List<ItemStack> items = getArguments().getItemList("items", this);
         if (items.isEmpty()) {
-            return;
+            throw new MissingArgumentException("items", ValueType.ITEM);
         }
 
         int total = getPlanet().getTerritory().getRecipes().getAmount();

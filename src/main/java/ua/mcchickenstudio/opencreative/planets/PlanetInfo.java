@@ -189,7 +189,7 @@ public class PlanetInfo {
      */
     public void resetCustomID() {
         this.customID = String.valueOf(planet.getId());
-        removePlanetConfigParameter(planet, "customID");
+        planet.getConfiguration().remove("customID");
     }
 
     /**

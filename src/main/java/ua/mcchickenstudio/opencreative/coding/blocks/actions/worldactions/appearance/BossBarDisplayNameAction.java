@@ -34,9 +34,7 @@ public final class BossBarDisplayNameAction extends WorldAction {
 
     @Override
     protected void execute() {
-        if (!getArguments().pathExists("name")) {
-            return;
-        }
+        arguments.requireArguments(this, "name");
         String name = getArguments().getText("name", "boss", this);
         Component displayName = getArguments().getComponent("display-name", Component.text(" "), this);
         BossBar bossBar = getPlanet().getTerritory().getBossBars().get(name.toLowerCase());

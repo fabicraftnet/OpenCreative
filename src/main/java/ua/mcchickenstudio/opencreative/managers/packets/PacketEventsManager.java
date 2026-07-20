@@ -267,6 +267,7 @@ public final class PacketEventsManager implements PacketManager, Toggleable, Sig
 
             NBTList<NBTString> newLines = new NBTList<>(NBTType.STRING);
             int lineNumber = 1;
+            boolean isFunctionOrMethod = false;
             for (String line : lines) {
                 if (line.isEmpty()) {
                     newLines.addTag(new NBTString(""));
@@ -277,13 +278,16 @@ public final class PacketEventsManager implements PacketManager, Toggleable, Sig
                     newLines.addTag(new NBTString(line));
                     continue;
                 }
-                if (lineNumber == 3 && (line.equals("function") || line.equals("method"))) {
-                    // Skips translating function named function, or method called method
+                if (lineNumber == 3 && isFunctionOrMethod) {
+                    // Skips translating function and method
                     newLines.addTag(new NBTString(line));
                     continue;
                 }
                 String text = getLocaleMessage("blocks." + line, false);
                 if (text.startsWith("blocks.")) {
+                    if (line.equals("function") || line.equals("method")) {
+                        isFunctionOrMethod = true;
+                    }
                     newLines.addTag(new NBTString(line));
                     continue;
                 }

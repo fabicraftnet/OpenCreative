@@ -38,9 +38,7 @@ public final class SetScoreNumberStyleAction extends WorldAction {
 
     @Override
     protected void execute() {
-        if (!getArguments().pathExists("scoreboards")) {
-            return;
-        }
+        arguments.requireArguments(this, "scoreboards");
         Component style = getArguments().getComponent("style", Component.empty(), this);
         List<String> scoreboards = getArguments().getTextList("scoreboards", this);
         for (String name : scoreboards) {

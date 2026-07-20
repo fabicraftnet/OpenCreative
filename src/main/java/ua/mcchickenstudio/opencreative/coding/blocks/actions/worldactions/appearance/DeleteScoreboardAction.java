@@ -34,9 +34,7 @@ public final class DeleteScoreboardAction extends WorldAction {
 
     @Override
     protected void execute() {
-        if (!getArguments().pathExists("scoreboards")) {
-            return;
-        }
+        arguments.requireArguments(this, "scoreboards");
         List<String> scoreboards = getArguments().getTextList("scoreboards", this);
         for (String name : scoreboards) {
             getPlanet().getTerritory().getScoreboards().unregisterScoreboard(name.toLowerCase());

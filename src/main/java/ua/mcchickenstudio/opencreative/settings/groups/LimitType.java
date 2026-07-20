@@ -40,6 +40,7 @@ public enum LimitType {
     TARGETS_CHANGES("changing-targets", 500, 100),
     REPEATS_AMOUNT("repeats-amount", 100, 10),
     MODIFYING_BLOCKS("modifying-blocks", 5000),
+    CHECKING_BLOCKS("checking-blocks", 3000),
     BUILDERS_AMOUNT("builders-amount", 10),
     DEVELOPERS_AMOUNT("developers-amount", 10),
     BLACKLISTED_AMOUNT("blacklisted-amount", 10),

@@ -35,9 +35,7 @@ public final class ScoreboardSetDisplayNameAction extends WorldAction {
 
     @Override
     protected void execute() {
-        if (!getArguments().pathExists("name") || !getArguments().pathExists("display-name")) {
-            return;
-        }
+        arguments.requireArguments(this, "name", "display-name");
         String name = getArguments().getText("name", "board", this);
         Component displayName = getArguments().getComponent("display-name", Component.text("Scoreboard"), this);
         Scoreboard scoreboard = getPlanet().getTerritory().getScoreboards().getScoreboard(name.toLowerCase());

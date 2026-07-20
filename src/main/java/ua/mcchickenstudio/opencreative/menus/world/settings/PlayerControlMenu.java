@@ -41,6 +41,7 @@ import ua.mcchickenstudio.opencreative.utils.PlayerConfirmation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
@@ -54,6 +55,7 @@ import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.isEntityInDevPla
 public final class PlayerControlMenu extends AbstractMenu implements WorldMenu {
 
     private final String nickname;
+    private final UUID uuid;
     private final Planet planet;
     private final List<ParameterButton> buttons = new ArrayList<>();
 
@@ -71,6 +73,7 @@ public final class PlayerControlMenu extends AbstractMenu implements WorldMenu {
         super(4, MessageUtils.getLocaleMessage("menus.player-control.title", false)
                 .replace("%name%", substring(nickname, 20)));
         this.nickname = nickname;
+        this.uuid = Bukkit.getOfflinePlayer(nickname).getUniqueId();
         this.planet = planet;
     }
 
@@ -128,25 +131,25 @@ public final class PlayerControlMenu extends AbstractMenu implements WorldMenu {
     }
 
     private String getBuildPermission() {
-        if (planet.getWorldPlayers().getBuildersTrusted().contains(nickname)) {
+        if (planet.getWorldPlayers().getBuildersTrusted().contains(uuid)) {
             return "trusted";
-        } else if (planet.getWorldPlayers().getBuildersNotTrusted().contains(nickname)) {
+        } else if (planet.getWorldPlayers().getBuildersNotTrusted().contains(uuid)) {
             return "not-trusted";
         } else return "none";
     }
 
     private String getDevPermission() {
-        if (planet.getWorldPlayers().getBuildersTrusted().contains(nickname)) {
+        if (planet.getWorldPlayers().getBuildersTrusted().contains(uuid)) {
             return "trusted";
-        } else if (planet.getWorldPlayers().getBuildersNotTrusted().contains(nickname)) {
+        } else if (planet.getWorldPlayers().getBuildersNotTrusted().contains(uuid)) {
             return "not-trusted";
-        } else if (planet.getWorldPlayers().getDevelopersGuests().contains(nickname)) {
+        } else if (planet.getWorldPlayers().getDevelopersGuests().contains(uuid)) {
             return "guest";
         } else return "none";
     }
 
     private boolean isWhitelisted() {
-        return planet.getWorldPlayers().getWhitelistedPlayers().contains(nickname);
+        return planet.getWorldPlayers().getWhitelistedPlayers().contains(uuid);
     }
 
     private boolean isBanned() {

@@ -39,6 +39,7 @@ import ua.mcchickenstudio.opencreative.utils.PlayerUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
@@ -46,7 +47,7 @@ import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessag
 /**
  * This class represents a menu, that displays list of players in world.
  */
-public final class PlayersBrowserMenu extends ListBrowserMenu<String> implements WorldMenu {
+public final class PlayersBrowserMenu extends ListBrowserMenu<UUID> implements WorldMenu {
 
     private final Planet planet;
     private final List<ParameterButton> buttons = new ArrayList<>();
@@ -61,16 +62,17 @@ public final class PlayersBrowserMenu extends ListBrowserMenu<String> implements
     }
 
     @Override
-    protected ItemStack getElementIcon(String object) {
-        if (object instanceof String player) {
+    protected ItemStack getElementIcon(UUID object) {
+        if (object instanceof UUID player) {
             return createPlayerItem(player);
         }
         return null;
     }
 
-    private ItemStack createPlayerItem(String nickname) {
+    private ItemStack createPlayerItem(UUID uuid) {
 
-        Player player = Bukkit.getPlayerExact(nickname);
+        Player player = Bukkit.getPlayer(uuid);
+        String nickname = Bukkit.getOfflinePlayer(uuid).getName();
         String statusKey;
         if (planet.getWorldPlayers().isBanned(nickname)) {
             statusKey = "banned";
@@ -86,7 +88,24 @@ public final class PlayersBrowserMenu extends ListBrowserMenu<String> implements
             return item;
         }
         if (meta instanceof SkullMeta skullMeta) {
-            PlayerProfile profile = Bukkit.createProfile(nickname);
+            PlayerProfile profile;
+            if (nickname != null)
+            {
+                profile = Bukkit.createProfile(nickname);
+            }
+            else
+            {
+                //this should only happen when planet config has players that have never played on the server
+                profile = Bukkit.createProfile(uuid);
+
+                if (profile.complete()) {
+                    nickname = profile.getName();
+                }
+                else {
+                    nickname = "No name found";
+                }
+            }
+
             skullMeta.setPlayerProfile(profile);
             item.setItemMeta(skullMeta);
         }
@@ -96,18 +115,18 @@ public final class PlayersBrowserMenu extends ListBrowserMenu<String> implements
         String devKey;
         if (player != null && planet.getWorldPlayers().isDeveloperGuest(player)) {
             devKey = "guest";
-        } else if (planet.getWorldPlayers().getDevelopersTrusted().contains(nickname)) {
+        } else if (planet.getWorldPlayers().getDevelopersTrusted().contains(uuid)) {
             devKey = "trusted";
-        } else if (planet.getWorldPlayers().getDevelopersNotTrusted().contains(nickname)) {
+        } else if (planet.getWorldPlayers().getDevelopersNotTrusted().contains(uuid)) {
             devKey = "not-trusted";
         } else {
             devKey = "none";
         }
 
         String buildKey;
-        if (planet.getWorldPlayers().getBuildersTrusted().contains(nickname)) {
+        if (planet.getWorldPlayers().getBuildersTrusted().contains(uuid)) {
             buildKey = "trusted";
-        } else if (planet.getWorldPlayers().getBuildersNotTrusted().contains(nickname)) {
+        } else if (planet.getWorldPlayers().getBuildersNotTrusted().contains(uuid)) {
             buildKey = "not-trusted";
         } else {
             buildKey = "none";
@@ -162,20 +181,20 @@ public final class PlayersBrowserMenu extends ListBrowserMenu<String> implements
                     button.next();
                     elements.clear();
                     switch (button.getCurrentChoice()) {
-                        case 2 -> elements.addAll(filterList(getElements(), nickname -> {
-                            Player player = Bukkit.getPlayerExact(nickname);
+                        case 2 -> elements.addAll(filterList(getElements(), uuid -> {
+                            Player player = Bukkit.getPlayer(uuid);
                             return player != null && planet.getPlayers().contains(player);
                         }));
                         case 3 ->
-                                elements.addAll(filterList(getElements(), nickname -> planet.getWorldPlayers().getAllBuilders().contains(nickname)));
+                                elements.addAll(filterList(getElements(), uuid -> planet.getWorldPlayers().getAllBuilders().contains(uuid)));
                         case 4 ->
-                                elements.addAll(filterList(getElements(), nickname -> planet.getWorldPlayers().getAllDevelopers().contains(nickname)));
+                                elements.addAll(filterList(getElements(), uuid -> planet.getWorldPlayers().getAllDevelopers().contains(uuid)));
                         case 5 ->
-                                elements.addAll(filterList(getElements(), nickname -> planet.getWorldPlayers().getWhitelistedPlayers().contains(nickname)));
+                                elements.addAll(filterList(getElements(), uuid -> planet.getWorldPlayers().getWhitelistedPlayers().contains(uuid)));
                         case 6 ->
-                                elements.addAll(filterList(getElements(), nickname -> planet.getWorldPlayers().isBanned(nickname)));
-                        case 7 -> elements.addAll(filterList(getElements(), nickname -> {
-                            Player player = Bukkit.getPlayerExact(nickname);
+                                elements.addAll(filterList(getElements(), uuid -> planet.getWorldPlayers().getBannedPlayers().contains(uuid)));
+                        case 7 -> elements.addAll(filterList(getElements(), uuid -> {
+                            Player player = Bukkit.getPlayer(uuid);
                             return player == null || !planet.getPlayers().contains(player);
                         }));
                         default -> elements.addAll(planet.getWorldPlayers().getAllPlayersFromConfig());
@@ -192,8 +211,8 @@ public final class PlayersBrowserMenu extends ListBrowserMenu<String> implements
             new WorldSettingsMenu(planet, getPlayer()).open(getPlayer());
         } else if (itemEquals(item, KICK_ALL)) {
             if (elements.isEmpty()) return;
-            for (String nickname : new ArrayList<>(elements)) {
-                Player playerToKick = Bukkit.getPlayerExact(nickname);
+            for (UUID uuid : new ArrayList<>(elements)) {
+                Player playerToKick = Bukkit.getPlayer(uuid);
                 if (playerToKick != null && playerToKick.getWorld().equals(planet.getWorld())) {
                     planet.getWorldPlayers().kickPlayer(playerToKick);
                 }
@@ -273,7 +292,7 @@ public final class PlayersBrowserMenu extends ListBrowserMenu<String> implements
     }
 
     @Override
-    public List<String> getElements() {
+    public List<UUID> getElements() {
         if (!planet.isLoaded()) {
             return List.of();
         }

@@ -55,6 +55,7 @@ public class PlanetLimits {
     private final Map<UUID, Deque<Long>> lastPlayerMenuOpens = new HashMap<>();
     private final Map<UUID, Deque<Long>> lastPlayerInventoryLoads = new HashMap<>();
 
+    private int lastCheckedBlocksAmount;
     private int lastModifiedBlocksAmount;
     private int lastModifiedTargetsAmount;
     private int lastListElementsChangesAmount;
@@ -84,6 +85,15 @@ public class PlanetLimits {
      */
     public int getModifyingBlocksLimit() {
         return planet.getGroup().getLimit(LimitType.MODIFYING_BLOCKS).calculateLimit(planet.getInformation().getAsyncOnline());
+    }
+
+    /**
+     * Returns checking blocks limit.
+     *
+     * @return limit of checking blocks.
+     */
+    public int getCheckingBlocksLimit() {
+        return planet.getGroup().getLimit(LimitType.CHECKING_BLOCKS).calculateLimit(planet.getInformation().getAsyncOnline());
     }
 
     /**
@@ -623,6 +633,29 @@ public class PlanetLimits {
         return false;
     }
 
+    /**
+     * Checks whether block cannot be checked for getting
+     * type or specific data because of reaching the limit.
+     *
+     * @param action action, that wants to get block's data.
+     * @return true - cannot change block, action should stop; false - can.
+     */
+    public boolean cantCheckBlock(@NotNull Action action) {
+        if (lastModifiedBlocksAmount >= getCheckingBlocksLimit()) {
+            PlanetRunnable planetRunnable = new PlanetRunnable(planet) {
+                @Override
+                public void execute() {
+                    lastCheckedBlocksAmount = 0;
+                }
+            };
+            planet.getTerritory().scheduleAsyncRunnable(planetRunnable, 20L);
+            sendPlanetLimitWarningMessage(action, "checking-blocks",
+                    lastCheckedBlocksAmount, getCheckingBlocksLimit());
+            return true;
+        }
+        lastCheckedBlocksAmount++;
+        return false;
+    }
 
     /**
      * Checks whether block cannot be placed, destroyed or modified,

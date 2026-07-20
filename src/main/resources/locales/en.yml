@@ -214,6 +214,40 @@ environment:
   platform:
     claimed: "%prefix%Created a &6new platform &ffor coding, now you can place coding blocks here too!"
     limit: "%prefix%&cYou reached a limit of %amount% platforms, you can't create new coding platforms anymore :("
+  scoreboards:
+    list:
+      empty: "%prefix%There are &cno scoreboards &fin this world..\n &fTo create one, use the world action: &aCreate Scoreboard&f."
+      amount: "%prefix%There are &6%amount% &fscoreboards in this world."
+      scoreboard: " &6%id% &f- %name%&f"
+    created: "%prefix%&fCreated scoreboard &a%id%&f. It will be removed when the world is unloaded.\n &fYou can also create scoreboards with code: &bPlayer Join &f> &cWorld Action &c(&aCreate Scoreboard&c)&f."
+    renamed: "%prefix%&fRenamed scoreboard &6%id%&f to: &f%name%"
+    removed: "%prefix%Removed scoreboard &c%id%&f."
+    not-found: "%prefix%&cScoreboard %id% does not exist.. O_o"
+    already-exists: "%prefix%&cScoreboard %id% already exists.. O_о"
+    limit: "%prefix%&cFailed to create scoreboard: the limit has been reached."
+  bossbars:
+    list:
+      empty: "%prefix%There are &cno boss bars &fin this world..\n &fTo create one, use the world action: &aCreate Boss Bar&f."
+      amount: "%prefix%There are &6%amount% &fboss bars in this world."
+      bossbar: " &6%id% &f- %name%&f"
+    created: "%prefix%&fCreated boss bar &a%id%&f. It will be removed when the world is unloaded.\n &fYou can also create boss bars with code: &bPlayer Join &f> &cWorld Action &c(&aCreate Boss Bar&c)&f."
+    renamed: "%prefix%&fRenamed boss bar &6%id%&f to: &f%name%"
+    removed: "%prefix%Removed boss bar &c%id%&f."
+    set-progress: "%prefix%&fSet boss bar &6%id%&f progress to: &a%progress%"
+    not-found: "%prefix%&cBoss bar %id% does not exist.. O_o"
+    limit: "%prefix%&cFailed to create boss bar: the limit has been reached."
+  recipes:
+    list:
+      empty: "%prefix%There are &cno recipes &fin this world..\n &fTo create one, use the world action: &aCreate Recipe&f."
+      amount: "%prefix%There are &6%amount% &frecipes in this world."
+      recipe: " &6%id% &f- &7%type%"
+    types:
+      merchant: "&aVillager"
+      crafting: "&6Crafting Table"
+      furnace: "&3Furnace"
+      campfire: "&eCampfire"
+    removed: "%prefix%Removed recipe &c%id%&f."
+    not-found: "%prefix%&cRecipe %id% does not exist.. O_o"
   hints:
     cycle: "&aNumber &f- Time in ticks, &6Text&f - Name"
     function: "&fClick with &6Text&f in hand to rename"
@@ -455,6 +489,9 @@ coding-warning:
     hover: "&fYou need to reduce the number of modified data items."
   changing-blocks-limit:
     text: "&7Too many blocks modified &6%count%&7/%limit% in a short time. &3[?]"
+    hover: "&fMost likely, too many blocks were selected. Reduce the distance between locations or split block operations over several seconds."
+  checking-blocks-limit:
+    text: "&7Too many blocks &6%count%&7/%limit% were checked in a short period of time. &3[?]"
     hover: "&fMost likely, too many blocks were selected. Reduce the distance between locations or split block operations over several seconds."
   opening-inventories-limit:
     text: "&7Inventories are being opened too frequently &6%count%&7/%limit% in a short time. &3[?]"
@@ -7548,20 +7585,36 @@ items:
           - "&3 Parameter &7- Side"
           - ""
           - "&eClick to set the action."
-        arguments:
-          water:
-            name: "&9Waterlogging"
+      world-get-block-state:
+        name: "&bGet Block State"
+        lore:
+          - "&7Stores the block state"
+          - "&7data in a variable."
+          - ""
+          - "&fIn the chest:"
+          - "&e Variable &7- To save"
+          - "&f Location &7- Block location"
+          - ""
+          - "&eClick to set the action."
+      world-set-block-state:
+        name: "&3Set Block State"
+        lore:
+          - "&7Sets the block state"
+          - "&7using the data from text."
+          - ""
+          - "&fIn the chest:"
+          - "&f Locations &7- Block locations"
+          - "&6 Text &7- Block state data"
+          - ""
+          - "&eClick to set the action."
+        placeholders:
+          state:
+            name: "&6Block State"
             lore:
-              - "&7If yes, the slab will be"
-              - "&7in water and it will be more"
-              - "&7resistant to explosions."
-              - ""
-              - "&fOptions:"
-              - "%1%"
-              - "%2%"
-            choices:
-              true: "Yes, keep it waterlogged"
-              false: "No, remove the water"
+              - "&7Place text here that"
+              - "&7contains the block state data."
+              - " "
+              - "&fExamples: &6waterlogged=true&f, &6facing=east"
       var-clone-list:
         name: "&6Clone List"
         lore:
@@ -8427,6 +8480,34 @@ items:
             name: "&6Download link"
           prompt:
             name: "&6Text to be shown"
+      player-set-skin:
+        name: "&6Set Skin"
+        lore:
+          - "&7Changes the player's skin"
+          - "&7using a player head, or resets"
+          - "&7it if the chest is empty."
+          - ""
+          - "&fIn the chest:"
+          - "&c Item &7- Player Head"
+          - ""
+          - "&eClick to set the action."
+        placeholders:
+          skin:
+            name: "&6Player Head"
+      player-set-cape:
+        name: "&6Set Cape"
+        lore:
+          - "&7Changes the player's cape"
+          - "&7using a texture hash, or resets"
+          - "&7it if the chest is empty."
+          - ""
+          - "&fIn the chest:"
+          - "&6 Text &7- Texture hash"
+          - ""
+          - "&eClick to set the action."
+        placeholders:
+          skin:
+            name: "&6Cape Texture Hash"
       player-send-sign-change:
         name: "&6Change Sign Line"
         lore:
@@ -9039,6 +9120,25 @@ items:
           - "&a Number &7- Interpolation duration (ticks)"
           - " "
           - "&eClick to set the action."
+      entity-set-display-block-state:
+        name: "&aDisplay Block State"
+        lore:
+          - "&7Sets the display entity's"
+          - "&7block state using the data"
+          - "&7provided in the text."
+          - ""
+          - "&fIn the chest:"
+          - "&6 Text &7- Block state data"
+          - ""
+          - "&eClick to set the action."
+        placeholders:
+          state:
+            name: "&6Block State"
+            lore:
+              - "&7Place text here that"
+              - "&7contains the block state data."
+              - " "
+              - "&fExamples: &6waterlogged=true&f, &6facing=east"
       player-set-walk-speed:
         name: "&eSet Walk Speed"
         lore:
@@ -12821,6 +12921,14 @@ items:
           - ""
           - "&7Includes: Ender Dragon, Ghast,"
           - "&7Phantom, Shulker, Slime, Hoglin."
+          - " "
+          - "&eClick to set the condition."
+      if-entity-is-display:
+        name: "&6Is Display Entity"
+        lore:
+          - "&7Checks whether the entity"
+          - "&7is a text, block, or item"
+          - "&7display entity."
           - " "
           - "&eClick to set the condition."
       if-entity-is-dead:
@@ -19612,6 +19720,8 @@ blocks:
   player_set_time: "Set time"
   player_set_weather: "Set weather"
   player_set_resource_pack: "Set resource pack"
+  player_set_skin: "Set Skin"
+  player_set_cape: "Set Cape"
   player_send_sign_change: "Change sign text"
   player_show_entity: "Show entity"
   player_show_player: "Show player"
@@ -19732,6 +19842,7 @@ blocks:
   entity_set_text_display_opacity: "Text Opacity"
   entity_set_text_display_width: "Text Width"
   entity_set_display_brightness: "Display Brightness"
+  entity_set_display_block_state: "Display State"
   entity_set_display_interpolation: "Dis. Interpolation"
   entity_set_friction: "Friction"
   entity_set_visual_fire: "Visual Fire"
@@ -19929,6 +20040,8 @@ blocks:
   world_strike_lightning: "Summon lightning"
   world_create_explosion: "Create explosion"
   world_set_block_type: "Set block"
+  world_get_block_state: "Get state"
+  world_set_block_state: "Set state"
   world_set_blocks_area_type: "Block region"
   world_destroy_block: "Destroy block"
   world_switch_to_build_mode: "&4Shut down"
@@ -20073,6 +20186,7 @@ blocks:
   if_entity_is_creature: "Is Creature"
   if_entity_is_monster: "Is Monster"
   if_entity_is_enemy: "Is Enemy"
+  if_entity_is_display: "Is Display"
   if_entity_is_in_team: "In Team"
   if_entity_is_dead: "Dead"
   if_entity_is_underwater: "Underwater"
