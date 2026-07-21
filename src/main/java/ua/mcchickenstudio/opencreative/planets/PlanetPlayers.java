@@ -20,7 +20,6 @@ package ua.mcchickenstudio.opencreative.planets;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -117,7 +116,8 @@ public class PlanetPlayers {
         for (String uuidString : config.getStringList(path)) {
             try {
                 uuids.add(UUID.fromString(uuidString));
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
         return uuids;
     }
@@ -264,8 +264,8 @@ public class PlanetPlayers {
         if (!planet.isLoaded()) loadPlayers();
         buildersNotTrusted.removeIf(builder -> builder.equals(uuid));
         buildersTrusted.removeIf(builder -> builder.equals(uuid));
-        planet.getConfiguration().set("players.builders.not-trusted", buildersNotTrusted);
-        planet.getConfiguration().set("players.builders.trusted", buildersTrusted);
+        savePlayersToConfig("players.builders.not-trusted", buildersNotTrusted);
+        savePlayersToConfig("players.builders.trusted", buildersTrusted);
     }
 
     public void removeDeveloper(String nickname) {
@@ -290,8 +290,8 @@ public class PlanetPlayers {
         if (!planet.isLoaded()) loadPlayers();
         developersNotTrusted.removeIf(developer -> developer.equals(uuid));
         developersTrusted.removeIf(developer -> developer.equals(uuid));
-        planet.getConfiguration().set("players.developers.not-trusted", developersNotTrusted);
-        planet.getConfiguration().set("players.developers.trusted", developersTrusted);
+        savePlayersToConfig("players.developers.not-trusted", developersNotTrusted);
+        savePlayersToConfig("players.developers.trusted", developersTrusted);
     }
 
     public void addDeveloperGuest(String nickname) {
@@ -309,9 +309,9 @@ public class PlanetPlayers {
         developersGuests.add(uuid);
         developersNotTrusted.removeIf(developer -> developer.equals(uuid));
         developersTrusted.removeIf(developer -> developer.equals(uuid));
-        planet.getConfiguration().set("players.developers.guests", developersGuests);
-        planet.getConfiguration().set("players.developers.not-trusted", developersNotTrusted);
-        planet.getConfiguration().set("players.developers.trusted", developersTrusted);
+        savePlayersToConfig("players.developers.guests", developersGuests);
+        savePlayersToConfig("players.developers.not-trusted", developersNotTrusted);
+        savePlayersToConfig("players.developers.trusted", developersTrusted);
     }
 
     public void addDeveloper(String nickname, boolean trusted) {
@@ -341,9 +341,9 @@ public class PlanetPlayers {
             developersNotTrusted.add(uuid);
         }
         developersGuests.removeIf(developer -> developer.equals(uuid));
-        planet.getConfiguration().set("players.developers.guests", developersGuests);
-        planet.getConfiguration().set("players.developers.not-trusted", developersNotTrusted);
-        planet.getConfiguration().set("players.developers.trusted", developersTrusted);
+        savePlayersToConfig("players.developers.guests", developersGuests);
+        savePlayersToConfig("players.developers.not-trusted", developersNotTrusted);
+        savePlayersToConfig("players.developers.trusted", developersTrusted);
     }
 
 
@@ -373,8 +373,8 @@ public class PlanetPlayers {
             buildersTrusted.removeIf(builder -> builder.equals(uuid));
             buildersNotTrusted.add(uuid);
         }
-        planet.getConfiguration().set("players.builders.not-trusted", buildersNotTrusted);
-        planet.getConfiguration().set("players.builders.trusted", buildersTrusted);
+        savePlayersToConfig("players.builders.not-trusted", buildersNotTrusted);
+        savePlayersToConfig("players.builders.trusted", buildersTrusted);
         if (!planet.isLoaded()) clear();
     }
 
@@ -382,7 +382,7 @@ public class PlanetPlayers {
         if (!planet.isLoaded()) loadPlayers();
         UUID uuid = Bukkit.getOfflinePlayer(nickname).getUniqueId();
         this.bannedPlayers.remove(uuid);
-        planet.getConfiguration().set("players.blacklist", bannedPlayers);
+        savePlayersToConfig("players.blacklist", bannedPlayers);
         if (!planet.isLoaded()) clear();
     }
 
@@ -390,7 +390,7 @@ public class PlanetPlayers {
         if (!planet.isLoaded()) loadPlayers();
         UUID uuid = Bukkit.getOfflinePlayer(nickname).getUniqueId();
         this.whitelistedPlayers.removeIf(whitelisted -> whitelisted.equals(uuid));
-        planet.getConfiguration().set("players.whitelist", whitelistedPlayers);
+        savePlayersToConfig("players.whitelist", whitelistedPlayers);
         if (!planet.isLoaded()) clear();
     }
 
@@ -409,7 +409,7 @@ public class PlanetPlayers {
         }
         if (!planet.isLoaded()) loadPlayers();
         bannedPlayers.add(uuid);
-        planet.getConfiguration().set("players.blacklist", bannedPlayers);
+        savePlayersToConfig("players.blacklist", bannedPlayers);
         if (!planet.isLoaded()) clear();
     }
 
@@ -427,7 +427,7 @@ public class PlanetPlayers {
         }
         if (!planet.isLoaded()) loadPlayers();
         whitelistedPlayers.add(uuid);
-        planet.getConfiguration().set("players.whitelist", whitelistedPlayers);
+        savePlayersToConfig("players.whitelist", whitelistedPlayers);
         if (!planet.isLoaded()) clear();
     }
 
@@ -526,7 +526,7 @@ public class PlanetPlayers {
             }
         }
         uniques.add(uuid.toString());
-        planet.getConfiguration().getConfig().set("players.unique", uniques);
+        planet.getConfiguration().set("players.unique", uniques);
         return true;
     }
 
@@ -539,7 +539,7 @@ public class PlanetPlayers {
             }
         }
         likes.add(uuid.toString());
-        planet.getConfiguration().getConfig().set("players.liked", likes);
+        planet.getConfiguration().set("players.liked", likes);
         return true;
     }
 
@@ -552,7 +552,7 @@ public class PlanetPlayers {
             }
         }
         likes.add(uuid.toString());
-        planet.getConfiguration().getConfig().set("players.disliked", likes);
+        planet.getConfiguration().set("players.disliked", likes);
         return true;
     }
 
@@ -605,6 +605,18 @@ public class PlanetPlayers {
             }
         }
         return false;
+    }
+
+    public @NotNull List<String> uuidsToStringList(@NotNull Set<UUID> uuids) {
+        List<String> list = new ArrayList<>();
+        for (UUID uuid : uuids) {
+            list.add(uuid.toString());
+        }
+        return list;
+    }
+
+    public void savePlayersToConfig(@NotNull String path, @NotNull Set<UUID> uuids) {
+        planet.getConfiguration().set(path, uuidsToStringList(uuids));
     }
 
     public void purgeData() {
