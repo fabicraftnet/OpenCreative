@@ -43,6 +43,7 @@ public final class BundleAddItemAction extends VariableAction {
             for (ItemStack i : getArguments().getItemList("items", this)) {
                 bundleMeta.addItem(i);
             }
+            bundle.setItemMeta(bundleMeta);
         }
 
         setVarValue(link, bundle);

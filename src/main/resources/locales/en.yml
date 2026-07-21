@@ -7724,7 +7724,7 @@ items:
           - " "
           - "&eClick to set the action."
       var-bundle-add-item:
-        name: "Add Items to Bundle"
+        name: "&6Add Items to Bundle"
         lore:
           - "&7Sets the variable to a bundle"
           - "&7with the added items inside it."
@@ -7736,7 +7736,7 @@ items:
           - " "
           - "&eClick to set the action."
       var-bundle-get-items:
-        name: "&Get Items from Bundle"
+        name: "&6Get Items from Bundle"
         lore:
           - "&7Sets the variable to a list"
           - "&7of items inside the bundle."
@@ -19720,7 +19720,7 @@ blocks:
   entity_dismounted: "Dismounted a mob"
   entity_removed: "Entity removed"
   entity_vehicle_damage: "vehicle damaged"
-  entity_vehicle_destroy: "vehicle damaged"
+  entity_vehicle_destroy: "vehicle destroyed"
   entity_born: "Born"
   entity_exploded: "Exploded"
   entity_get_damaged: "Took damage"
