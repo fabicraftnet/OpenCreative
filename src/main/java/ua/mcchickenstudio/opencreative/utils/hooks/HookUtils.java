@@ -27,6 +27,9 @@ import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.managers.blocks.BlocksManager;
 import ua.mcchickenstudio.opencreative.managers.blocks.VanillaBlocksManager;
 import ua.mcchickenstudio.opencreative.managers.blocks.WorldEditManager;
+import ua.mcchickenstudio.opencreative.managers.chat.CarbonChat;
+import ua.mcchickenstudio.opencreative.managers.chat.ChatManager;
+import ua.mcchickenstudio.opencreative.managers.chat.VanillaChat;
 import ua.mcchickenstudio.opencreative.managers.disguises.DisabledDisguises;
 import ua.mcchickenstudio.opencreative.managers.disguises.DisguiseManager;
 import ua.mcchickenstudio.opencreative.managers.disguises.LibsDisguises;
@@ -45,6 +48,7 @@ public final class HookUtils {
     public static boolean isVaultEnabled = false;
     public static boolean isLibsDisguisesEnabled = false;
     public static boolean isWorldEditEnabled = false;
+    public static boolean isCarbonChatEnabled = false;
 
     /**
      * Load hooks into other plugins for working with them. For example: Creative+ can hook into PlaceholderAPI.
@@ -56,6 +60,7 @@ public final class HookUtils {
         isVaultEnabled = isPluginEnabled("Vault");
         isWorldEditEnabled = isPluginEnabled("WorldEdit");
         isLibsDisguisesEnabled = isPluginEnabled("LibsDisguises");
+        isCarbonChatEnabled = isPluginEnabled("CarbonChat");
         OpenCreative.getPlugin().getLogger().info((isPlaceholderAPIEnabled ? "Successfully integrated to PlaceholderAPI: Added placeholders." : "Didn't detect PlaceholderAPI."));
         OpenCreative.getPlugin().getLogger().info((isLibsDisguisesEnabled ? "Successfully integrated to LibsDisguises: Added morph actions." : "Didn't detect LibsDisguises, disguise actions will be not available."));
         OpenCreative.getPlugin().getLogger().info((isWorldEditEnabled ? "Successfully integrated to WorldEdit: Added out-of-borders limit." : "Didn't detect WorldEdit."));
@@ -119,4 +124,13 @@ public final class HookUtils {
             return new DisabledDisguises();
         }
     }
+    public static ChatManager getChatManager() {
+        if(isCarbonChatEnabled)
+        {
+            return  new CarbonChat();
+        } else {
+            return  new VanillaChat();
+        }
+    }
+
 }

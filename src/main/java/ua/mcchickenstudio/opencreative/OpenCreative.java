@@ -37,6 +37,7 @@ import ua.mcchickenstudio.opencreative.commands.world.*;
 import ua.mcchickenstudio.opencreative.commands.world.modes.*;
 import ua.mcchickenstudio.opencreative.commands.world.reputation.*;
 import ua.mcchickenstudio.opencreative.managers.Managers;
+import ua.mcchickenstudio.opencreative.managers.chat.ChatManager;
 import ua.mcchickenstudio.opencreative.managers.worlds.VanillaWorldManager;
 import ua.mcchickenstudio.opencreative.managers.worlds.WorldManager;
 import ua.mcchickenstudio.opencreative.wanders.OfflineWander;
@@ -232,10 +233,11 @@ public final class OpenCreative extends JavaPlugin {
         managers.register(PacketManager.class, HookUtils.getPacketManager());
         managers.register(BlocksManager.class, HookUtils.getBlocks());
         managers.register(DisguiseManager.class, HookUtils.getDisguises());
+        managers.register(ChatManager.class, HookUtils.getChatManager());
         managers.start(CodingPrompter.class, StabilityManager.class, DownloadManager.class,
                 Economy.class, Updater.class, BlocksManager.class, HintManager.class,
                 DisguiseManager.class, PacketManager.class, PhysicsManager.class,
-                WorldManager.class);
+                WorldManager.class, ChatManager.class);
     }
 
     /**
@@ -246,7 +248,7 @@ public final class OpenCreative extends JavaPlugin {
                 DownloadManager.class, Economy.class, StabilityManager.class,
                 BlocksManager.class, PacketManager.class, DisguiseManager.class,
                 CodingPrompter.class, Updater.class, HintManager.class,
-                WorldManager.class);
+                WorldManager.class, ChatManager.class);
     }
 
     /**
@@ -365,7 +367,7 @@ public final class OpenCreative extends JavaPlugin {
                 ChangedWorld.class, EntitySpawnListener.class, EntityDamageListener.class,
                 JoinListener.class, QuitListener.class, RespawnListener.class,
                 DeathListener.class, TeleportListener.class, MoveListener.class,
-                ChatListener.class, InteractListener.class, DropItemListener.class,
+                InteractListener.class, DropItemListener.class,
                 PlaceBlockListener.class, DestroyBlockListener.class, BucketListener.class,
                 ClickListener.class, RedstoneListener.class, BlockChangeListener.class,
                 Menus.class, GameModeListener.class, EntityStateListener.class,
@@ -463,6 +465,15 @@ public final class OpenCreative extends JavaPlugin {
         return getPlugin().managers.get(DisguiseManager.class);
     }
 
+    /**
+     * Gets chat manager that interfaces with
+     * current chat plugin.
+     *
+     * @return chat manager.
+     */
+    public static ChatManager getChatManager() {
+        return getPlugin().managers.get(ChatManager.class);
+    }
     /**
      * Gets module manager, that creates
      * or deletes modules.

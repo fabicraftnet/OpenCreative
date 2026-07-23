@@ -31,7 +31,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -43,6 +42,7 @@ import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.player.world.ChatEvent;
 import ua.mcchickenstudio.opencreative.coding.modules.Module;
 import ua.mcchickenstudio.opencreative.events.player.WorldChatEvent;
+import ua.mcchickenstudio.opencreative.managers.chat.ChatManager;
 import ua.mcchickenstudio.opencreative.settings.filters.Filter;
 import ua.mcchickenstudio.opencreative.settings.filters.FilterResult;
 import ua.mcchickenstudio.opencreative.wanders.Wander;
@@ -66,7 +66,7 @@ import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.*;
 
-public final class ChatListener implements Listener {
+public final class ChatListener{
 
     private static List<String> splitDescription(String input, int maxLength) {
         List<String> setDescriptionWords = new ArrayList<>();
@@ -111,6 +111,7 @@ public final class ChatListener implements Listener {
         }
         return setDescriptionWords;
     }
+    private static ChatManager manager;
 
     private static void sendLocalChatForSpying(@NotNull Player player, @NotNull String message, @Nullable Planet planet) {
         Set<Player> playersWithEnabledSpying = getPlayersWithEnabledSpying();
@@ -140,20 +141,20 @@ public final class ChatListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onChat(AsyncChatEvent event) {
-        String serialized = PlainTextComponentSerializer.plainText().serialize(event.message());
+    public static void onChat(Object event) {
+        manager = OpenCreative.getChatManager();
+        String serialized = PlainTextComponentSerializer.plainText().serialize(manager.getMessage(event));
         FilterResult result = Filter.getInstance().checkContent(serialized, Filter.Context.CHAT);
         if (result.rule() != null) {
             serialized = result.filteredMessage();
-            result.rule().onViolation(event.getPlayer(), result);
+            result.rule().onViolation(manager.getPlayer(event), result);
         }
         String message = serialized;
         try {
-            Player player = event.getPlayer();
+            Player player = manager.getPlayer(event);
             boolean shouldHandleWorldChat = OpenCreative.getSettings().shouldHandleWorldChat();
             if (shouldHandleWorldChat && message.startsWith("!")) {
-                if (event.isCancelled()) return;
+                if (manager.isCancelled(event)) return;
                 String creativeChatCommand;
                 if (message.equals("!")) {
                     creativeChatCommand = "cc";
@@ -161,16 +162,16 @@ public final class ChatListener implements Listener {
                     creativeChatCommand = "cc " + message.replaceFirst("!", "");
                 }
                 Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> player.performCommand(creativeChatCommand));
-                event.setCancelled(true);
+                manager.setCancelled(event,true);
                 return;
             }
             checkDevItems(player, message, event);
             boolean hadConfirmation = checkConfirmation(player, message, event);
-            if (event.isCancelled()) {
+            if (manager.isCancelled(event)) {
                 return;
             }
             if (getCooldown(player, CooldownUtils.CooldownType.WORLD_CHAT) > 0) {
-                event.setCancelled(true);
+                manager.setCancelled(event,true);
                 player.sendMessage(getLocaleMessage("world.chat-cooldown").replace("%cooldown%", String.valueOf(getCooldown(player, CooldownUtils.CooldownType.WORLD_CHAT))));
                 return;
             }
@@ -187,17 +188,17 @@ public final class ChatListener implements Listener {
 
             if (!shouldHandleWorldChat) {
                 Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
-                    ChatEvent chatEvent = new ChatEvent(event.getPlayer(), message);
+                    ChatEvent chatEvent = new ChatEvent(manager.getPlayer(event), message);
                     chatEvent.callEvent();
                 });
                 return;
             }
-            event.setCancelled(true);
+            manager.setCancelled(event,true);
 
             Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
                 creativeEvent.callEvent();
                 if (creativeEvent.isCancelled()) return;
-                Component finalMessage = creativeEvent.getFormattedMessage();
+                Component finalMessage = manager.render(event);
                 if (planet != null) {
                     DevPlanet devPlanet = OpenCreative.getPlanetsManager().getDevPlanet(player);
                     if (devPlanet != null) {
@@ -214,7 +215,7 @@ public final class ChatListener implements Listener {
                         OpenCreative.getPlugin().getLogger().info("[WORLD-CHAT: " + planet.getId() + "dev] " + player.getName() + ": " + message);
                     } else {
                         // If player in build world
-                        ChatEvent chatEvent = new ChatEvent(event.getPlayer(), message);
+                        ChatEvent chatEvent = new ChatEvent(manager.getPlayer(event), message);
                         chatEvent.callEvent();
                         if (chatEvent.isCancelled()) {
                             sendLocalChatForSpying(player, message, planet);
@@ -244,12 +245,12 @@ public final class ChatListener implements Listener {
                 }
             }, 1L);
         } catch (Exception error) {
-            event.setCancelled(true);
-            sendPlayerErrorMessage(event.getPlayer(), "Can't handle chat message: " + message, error);
+            manager.setCancelled(event,true);
+            sendPlayerErrorMessage(manager.getPlayer(event), "Can't handle chat message: " + message, error);
         }
     }
 
-    private void checkDevItems(Player player, String message, AsyncChatEvent event) {
+    private static void checkDevItems(Player player, String message, Object event) {
         if (isEntityInDevPlanet(player)) {
             ItemStack itemInHand = player.getInventory().getItemInMainHand();
             if (itemInHand.getType() == Material.BOOK) {
@@ -270,7 +271,7 @@ public final class ChatListener implements Listener {
                 ));
                 player.swingMainHand();
                 if (OpenCreative.getSettings().getCodingSettings().isCancelChatOnValueSet()) {
-                    event.setCancelled(true);
+                    manager.setCancelled(event,true);
                 }
             } else if (itemInHand.getType() == Material.SLIME_BALL) {
                 String numberString = ChatColor.stripColor(message);
@@ -297,7 +298,7 @@ public final class ChatListener implements Listener {
                 ));
                 player.swingMainHand();
                 if (OpenCreative.getSettings().getCodingSettings().isCancelChatOnValueSet()) {
-                    event.setCancelled(true);
+                    manager.setCancelled(event,true);
                 }
             } else if (itemInHand.getType() == Material.MAGMA_CREAM) {
                 StringBuilder newValue = new StringBuilder(ChatColor.stripColor(message));
@@ -322,7 +323,7 @@ public final class ChatListener implements Listener {
                 ));
                 player.swingMainHand();
                 if (OpenCreative.getSettings().getCodingSettings().isCancelChatOnValueSet()) {
-                    event.setCancelled(true);
+                    manager.setCancelled(event,true);
                 }
             } else if (itemInHand.getType() == Material.BLACK_DYE) {
                 int[] rgbColor = parseRGB(message);
@@ -343,7 +344,7 @@ public final class ChatListener implements Listener {
                 player.getInventory().setItemInMainHand(itemInHand);
                 player.swingMainHand();
                 if (OpenCreative.getSettings().getCodingSettings().isCancelChatOnValueSet()) {
-                    event.setCancelled(true);
+                    manager.setCancelled(event,true);
                 }
             } else if (itemInHand.getType() == Material.POTION || itemInHand.getType() == Material.LINGERING_POTION || itemInHand.getType() == Material.SPLASH_POTION) {
                 if (!(itemInHand.getItemMeta() instanceof PotionMeta oldMeta)) {
@@ -404,7 +405,7 @@ public final class ChatListener implements Listener {
                 Sounds.DEV_POTION_SET.play(player);
                 itemInHand.setItemMeta(newMeta);
                 if (OpenCreative.getSettings().getCodingSettings().isCancelChatOnValueSet()) {
-                    event.setCancelled(true);
+                    manager.setCancelled(event,true);
                 }
             } else if (itemInHand.getType() == Material.PRISMARINE_SHARD) {
                 ItemMeta meta = itemInHand.getItemMeta();
@@ -447,7 +448,7 @@ public final class ChatListener implements Listener {
                 Sounds.DEV_VECTOR_SET.play(player);
                 player.swingMainHand();
                 if (OpenCreative.getSettings().getCodingSettings().isCancelChatOnValueSet()) {
-                    event.setCancelled(true);
+                    manager.setCancelled(event,true);
                 }
             }
         }
@@ -461,9 +462,9 @@ public final class ChatListener implements Listener {
      * @param event chat event.
      * @return true - player had confirmation, false - no confirmation.
      */
-    private boolean checkConfirmation(@NotNull Player player,
-                                      @NotNull String input,
-                                      @NotNull AsyncChatEvent event) {
+    private static boolean checkConfirmation(@NotNull Player player,
+                                             @NotNull String input,
+                                             @NotNull Object event) {
         if (!PlayerConfirmation.hasConfirmation(player)) return false;
         PlayerConfirmation confirm = PlayerConfirmation.getConfirmation(player);
         Object data = PlayerConfirmation.getConfirmationData(player);
@@ -472,7 +473,7 @@ public final class ChatListener implements Listener {
         PlayerConfirmation.clearConfirmations(player);
         if (confirm == null) return false;
         if (OpenCreative.getSettings().shouldCancelChatOnConfirmation()) {
-            event.setCancelled(true);
+            manager.setCancelled(event,true);
         }
         switch (confirm) {
             case WORLD_NAME_CHANGE -> {
