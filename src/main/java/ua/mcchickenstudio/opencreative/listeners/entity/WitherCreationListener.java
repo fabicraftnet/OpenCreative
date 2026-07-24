@@ -32,7 +32,7 @@ import ua.mcchickenstudio.opencreative.wanders.Wander;
 
 import java.util.*;
 
-public class WitherCreationListener implements Listener {
+public final class WitherCreationListener implements Listener {
 
     private final Map<WitherKey, UUID> recentSkullPlacers = new HashMap<>();
 
