@@ -702,7 +702,7 @@ public class Planet {
      * @param flag flag to get value.
      * @return value of flag.
      */
-    public byte getFlagValue(PlanetFlags.PlanetFlag flag) {
+    public byte getFlagValue(@NotNull PlanetFlags.PlanetFlag flag) {
         return territory.getFlags().getFlagValue(flag);
     }
 
@@ -712,7 +712,7 @@ public class Planet {
      * @param flag  flag to set value.
      * @param value new value.
      */
-    public void setFlagValue(PlanetFlags.PlanetFlag flag, byte value) {
+    public void setFlagValue(@NotNull PlanetFlags.PlanetFlag flag, byte value) {
         territory.getFlags().setFlag(flag, value);
     }
 

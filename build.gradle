@@ -74,6 +74,9 @@ dependencies {
     // File operations
     implementation "commons-io:commons-io:2.16.1"
 
+    // MySQL database
+    implementation 'com.mysql:mysql-connector-j:8.4.0'
+
     // FastAsyncWorldEdit
     compileOnly "com.fastasyncworldedit:FastAsyncWorldEdit-Core:2.11.0"
     compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Bukkit:2.11.0") {
