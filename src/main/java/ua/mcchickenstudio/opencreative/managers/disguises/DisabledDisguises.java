@@ -38,6 +38,9 @@ public final class DisabledDisguises implements DisguiseManager {
     public void disguiseAsBlock(@NotNull Entity entity, @NotNull Material material) {}
 
     @Override
+    public void disguiseAsExistingEntity(@NotNull Entity entity, @NotNull Entity entity2) {}
+
+    @Override
     public void clearDisguises(@NotNull Entity entity) {}
 
     @Override

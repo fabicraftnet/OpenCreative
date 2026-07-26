@@ -3450,6 +3450,16 @@ items:
           - "&c Item &7- Mob spawn egg"
           - " "
           - "&eClick to set the action."
+      entity-disguise-as-clone:
+        name: "&cDisguise as Clone"
+        lore:
+          - "&7This will disguise mob as"
+          - "&7a clone of an existing mob."
+          - " "
+          - "&fIn the chest:"
+          - "&6 Text &7- Entity UUID"
+          - " "
+          - "&eClick to set the action."
       entity-disguise-as-block:
         name: "&2Disguise as Block"
         lore:
@@ -3514,6 +3524,40 @@ items:
             choices:
               false: "Set"
               true: "Add"
+      entity-set-pose:
+        name: "&dSet pose of entity"
+        lore:
+          - "&7Makes entity change pose."
+          - " "
+          - "&fIn the chest:"
+          - "&6 Text &7- Pose"
+          - "&3 Option &7- Fixed or adaptive"
+          - " "
+          - "&eClick to set action."
+        placeholders:
+          pose:
+            name: "&aPose"
+            lore:
+              - "&7All poses. Some poses are mob specific."
+              - "&7CROAKING, DIGGING, DYING, EMERGING, FALL_FLYING"
+              - "&7INHALING, LONG_JUMPING, ROARING, SHOOTING, SITTING"
+              - "&7SLEEPING, SLIDING, SNEAKING, SNIFFING, SPIN_ATTACK"
+              - "&7STANDING,SWIMMING, USING_TONGUE"
+        arguments:
+          fixed:
+            name: "&fFixed or Adaptive"
+            lore:
+              - "&7Adaptive pose will change naturally"
+              - "&7Fixed will only change by code action"
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              false: "Adaptive"
+              true: "Fixed"
       entity-set-armor:
         name: "&5Equip Armor"
         lore:
@@ -19858,10 +19902,12 @@ blocks:
   entity_disguise_as_player: "Player disguise"
   entity_disguise_as_entity: "Mob disguise"
   entity_disguise_as_block: "Block disguise"
+  entity_disguise_as_clone: "Clone disguise"
   entity_clear_disguise: "Clear disguise"
   entity_set_step_height: "Step height"
   entity_set_scale: "Set scale"
   entity_set_target: "Set target"
+  entity_set_pose: "Set pose"
   entity_path_move_to_location: "Path location"
   entity_set_armor_stand_pose: "Stand Pose"
   entity_set_velocity: "Set Velocity"

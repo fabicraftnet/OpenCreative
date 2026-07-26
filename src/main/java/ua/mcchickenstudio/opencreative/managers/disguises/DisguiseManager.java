@@ -58,6 +58,14 @@ public interface DisguiseManager extends Manager, Toggleable {
     void disguiseAsBlock(@NotNull Entity entity, @NotNull Material material);
 
     /**
+     * Disguises entity as an existing entity.
+     *
+     * @param entity entity to disguise.
+     * @param entity2 entity to disguise as.
+     */
+    void  disguiseAsExistingEntity(@NotNull Entity entity, @NotNull Entity entity2);
+
+    /**
      * Sets new display name for current disguise
      * of entity. If entity doesn't have disguise,
      * it should be ignored.
