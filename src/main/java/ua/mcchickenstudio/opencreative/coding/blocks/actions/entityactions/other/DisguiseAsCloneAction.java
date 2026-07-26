@@ -16,41 +16,41 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ua.mcchickenstudio.opencreative.coding.blocks.actions.variableactions.item;
+package ua.mcchickenstudio.opencreative.coding.blocks.actions.entityactions.other;
 
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BundleMeta;
+import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
+import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
-import ua.mcchickenstudio.opencreative.coding.blocks.actions.variableactions.VariableAction;
+import ua.mcchickenstudio.opencreative.coding.blocks.actions.entityactions.EntityAction;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
-import ua.mcchickenstudio.opencreative.coding.variables.VariableLink;
 
-public final class BundleAddItemAction extends VariableAction {
-    public BundleAddItemAction(Executor executor, Target target, int x, Arguments args) {
+import java.util.UUID;
+
+import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCodingDebugLog;
+
+public final class DisguiseAsCloneAction extends EntityAction {
+    public DisguiseAsCloneAction(Executor executor, Target target, int x, Arguments args) {
         super(executor, target, x, args);
     }
 
     @Override
-    protected void execute() {
-        VariableLink link = getArguments().getVariableLink("variable", this);
-        ItemStack bundle = getArguments().getItem("bundle", getArguments().getItem("variable", new ItemStack(Material.APPLE, 1), this), this);
-        if (bundle.getItemMeta() instanceof BundleMeta bundleMeta)
-        {
-            for (ItemStack i : getArguments().getItemList("items", this)) {
-                bundleMeta.addItem(i);
-            }
-            bundle.setItemMeta(bundleMeta);
+    public void executeEntity(@NotNull Entity entity) {
+        String uuid = getArguments().getText("uuid", "", this);
+        if (!OpenCreative.getDisguiseManager().isWorking()) {
+            sendCodingDebugLog(getPlanet(), "Disguise Manager is not available.");
+            return;
         }
-
-        setVarValue(link, bundle);
+        Entity entity2 = entity.getWorld().getEntity(UUID.fromString(uuid));
+        if (entity2 != null) {
+            OpenCreative.getDisguiseManager().disguiseAsExistingEntity(entity,entity2);
+        }
     }
 
     @Override
     public @NotNull ActionType getActionType() {
-        return ActionType.VAR_BUNDLE_ADD_ITEM;
+        return ActionType.ENTITY_DISGUISE_AS_CLONE;
     }
 }

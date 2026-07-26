@@ -730,6 +730,7 @@ public enum ActionType implements CodingBlockType {
     ENTITY_DISGUISE_AS_PLAYER(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_APPEARANCE, DisguiseAsPlayerAction.class, Material.PLAYER_HEAD, new ArgumentSlot("name", ValueType.TEXT), new ArgumentSlot("skin", ValueType.TEXT)),
     ENTITY_DISGUISE_AS_BLOCK(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_APPEARANCE, DisguiseAsBlockAction.class, Material.GRASS_BLOCK, new ArgumentSlot("block", ValueType.ITEM)),
     ENTITY_DISGUISE_AS_ENTITY(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_APPEARANCE, DisguiseAsEntityAction.class, Material.PIGLIN_HEAD, new ArgumentSlot("type", ValueType.ITEM)),
+    ENTITY_DISGUISE_AS_CLONE(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_APPEARANCE, DisguiseAsCloneAction.class, Material.GLASS_BOTTLE, new ArgumentSlot("uuid", ValueType.TEXT)),
     ENTITY_CLEAR_DISGUISE(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_APPEARANCE, ClearDisguiseAction.class, Material.MILK_BUCKET),
 
     ENTITY_SET_ARMOR_STAND_POSE(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_APPEARANCE, SetArmorStandPoseAction.class, Material.ARMOR_STAND, new ArgumentSlot("x", ValueType.NUMBER), new ArgumentSlot("y", ValueType.NUMBER), new ArgumentSlot("z", ValueType.NUMBER)),
@@ -751,6 +752,7 @@ public enum ActionType implements CodingBlockType {
     ENTITY_SET_DOG_COLLAR_COLOR(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_APPEARANCE, EntitySetDogCollarColorAction.class, Material.WOLF_SPAWN_EGG, new ParameterSlot("color", List.of("white", "light-gray", "gray", "black", "red", "orange", "yellow", "lime", "green", "light-blue", "cyan", "blue", "purple", "magenta", "pink", "brown"), Material.WHITE_DYE, Material.LIGHT_GRAY_DYE, Material.GRAY_DYE, Material.BLACK_DYE, Material.RED_DYE, Material.ORANGE_DYE, Material.YELLOW_DYE, Material.LIME_DYE, Material.GREEN_DYE, Material.LIGHT_BLUE_DYE, Material.CYAN_DYE, Material.BLUE_DYE, Material.PURPLE_DYE, Material.MAGENTA_DYE, Material.PINK_DYE, Material.BROWN_DYE)),
     ENTITY_SET_PIGLIN_DANCING(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_APPEARANCE, EntitySetPiglinDancingAction.class, Material.PIGLIN_HEAD, new ParameterSlot("boolean"), new ArgumentSlot("time", ValueType.NUMBER)),
     ENTITY_SET_CELEBRATING(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_APPEARANCE, EntitySetPillagerCelebratingAction.class, Material.PILLAGER_SPAWN_EGG, new ParameterSlot("boolean")),
+    ENTITY_SET_POSE(ActionCategory.ENTITY_ACTION,MenusCategory.ENTITY_APPEARANCE, SetPoseAction.class, Material.LIGHT_GRAY_BED, new ArgumentSlot("pose", ValueType.TEXT), new ParameterSlot("fixed")),
     ENTITY_SET_MANNEQUIN_SKIN(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_APPEARANCE, SetMannequinSkinAction.class, Material.DIAMOND_CHESTPLATE, new ArgumentSlot("head",ValueType.ITEM)),
     ENTITY_SET_MANNEQUIN_DESCRIPTION(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_APPEARANCE, SetMannequinDescriptionAction.class, Material.NAME_TAG, new ArgumentSlot("text",ValueType.TEXT)),
 

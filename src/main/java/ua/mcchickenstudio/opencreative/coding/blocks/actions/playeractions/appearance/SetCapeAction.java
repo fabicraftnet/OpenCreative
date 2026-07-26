@@ -19,6 +19,10 @@
 package ua.mcchickenstudio.opencreative.coding.blocks.actions.playeractions.appearance;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
+import com.google.gson.*;
+import jdk.jshell.execution.Util;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.profile.PlayerTextures;
 import org.jetbrains.annotations.NotNull;
@@ -32,6 +36,7 @@ import ua.mcchickenstudio.opencreative.coding.exceptions.TooLongTextException;
 import ua.mcchickenstudio.opencreative.wanders.Wander;
 
 import java.net.URI;
+import java.util.List;
 
 public final class SetCapeAction extends PlayerAction {
     public SetCapeAction(Executor executor, Target target, int x, Arguments args) {
@@ -49,22 +54,27 @@ public final class SetCapeAction extends PlayerAction {
         if (cape.length() > 128) {
             throw new TooLongTextException(128);
         }
-
-        PlayerTextures skin = player.getPlayerProfile().getTextures();
+        String capeUrl;
         if (cape.isEmpty()) {
-            skin.setCape(null);
+            capeUrl =  "";
         } else {
-            try {
-                skin.setCape(new URI("http://textures.minecraft.net/texture/" + cape).toURL());
-            } catch (Exception error) {
-                throw new RuntimeException(error);
-            }
+            capeUrl = "http://textures.minecraft.net/texture/"+cape;
         }
         PlayerProfile profile = player.getPlayerProfile();
-        profile.setTextures(skin);
+        // this is a mess
+        String textures = new String(java.util.Base64.getDecoder().decode(profile.getProperties().stream().findFirst().get().getValue()));
+        Bukkit.getLogger().info(textures);
+        JsonElement texturesJson = JsonParser.parseString(textures);
+        JsonObject object = texturesJson.getAsJsonObject();
+        object.getAsJsonObject("textures").getAsJsonObject("CAPE").addProperty("url",capeUrl);
+        Gson gson = new Gson();
+        textures = gson.toJson(object);
+
+        textures = java.util.Base64.getEncoder().encodeToString(textures.getBytes());
+        profile.setProperty(new ProfileProperty("textures",textures));
         try {
             wander.setTexturesWereChanged(true);
-            player.setPlayerProfile(profile.update().get());
+            player.setPlayerProfile(profile);
         } catch (Exception error) {
             throw new RuntimeException(error);
         }

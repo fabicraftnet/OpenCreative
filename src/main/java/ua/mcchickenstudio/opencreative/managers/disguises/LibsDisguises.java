@@ -25,9 +25,11 @@ import me.libraryaddict.disguise.disguisetypes.watchers.MannequinWatcher;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.utils.hooks.HookUtils;
 import java.util.Optional;
+import java.util.UUID;
 
 public final class LibsDisguises implements DisguiseManager {
 
@@ -78,6 +80,20 @@ public final class LibsDisguises implements DisguiseManager {
     public void disguiseAsBlock(@NotNull Entity entity, @NotNull Material material) {
         MiscDisguise disguise = new MiscDisguise(DisguiseType.FALLING_BLOCK, material);
         disguise.setEntity(entity);
+        disguise.setNotifyBar(DisguiseConfig.NotifyBar.NONE);
+        disguise.startDisguise();
+    }
+    @Override
+    public void  disguiseAsExistingEntity(@NotNull Entity entity, @NotNull Entity entity2)
+    {
+        if (entity2 instanceof Player player)
+        {
+            // for if mannequins are preferred
+            disguiseAsPlayer(entity, player.getName(), player.getName());
+            return;
+        }
+       Disguise disguise = DisguiseAPI.constructDisguise(entity2);
+       disguise.setEntity(entity);
         disguise.setNotifyBar(DisguiseConfig.NotifyBar.NONE);
         disguise.startDisguise();
     }

@@ -16,41 +16,40 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ua.mcchickenstudio.opencreative.coding.blocks.actions.variableactions.item;
+package ua.mcchickenstudio.opencreative.coding.blocks.actions.entityactions.other;
 
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BundleMeta;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Pose;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.arguments.Arguments;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionType;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
-import ua.mcchickenstudio.opencreative.coding.blocks.actions.variableactions.VariableAction;
+import ua.mcchickenstudio.opencreative.coding.blocks.actions.entityactions.EntityAction;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
-import ua.mcchickenstudio.opencreative.coding.variables.VariableLink;
+import ua.mcchickenstudio.opencreative.coding.exceptions.UnsupportedEntityException;
 
-public final class BundleAddItemAction extends VariableAction {
-    public BundleAddItemAction(Executor executor, Target target, int x, Arguments args) {
+public final class SetPoseAction extends EntityAction {
+    public SetPoseAction(Executor executor, Target target, int x, Arguments args) {
         super(executor, target, x, args);
     }
 
     @Override
-    protected void execute() {
-        VariableLink link = getArguments().getVariableLink("variable", this);
-        ItemStack bundle = getArguments().getItem("bundle", getArguments().getItem("variable", new ItemStack(Material.APPLE, 1), this), this);
-        if (bundle.getItemMeta() instanceof BundleMeta bundleMeta)
-        {
-            for (ItemStack i : getArguments().getItemList("items", this)) {
-                bundleMeta.addItem(i);
-            }
-            bundle.setItemMeta(bundleMeta);
+    public void executeEntity(@NotNull Entity entity) {
+        if (!(entity instanceof LivingEntity livingEntity)) {
+            throw new UnsupportedEntityException(LivingEntity.class, entity);
         }
+        boolean fixed = getArguments().getBoolean("fixed", false, this);
+        String poseStr = getArguments().getText("pose", "standing", this);
+        Pose pose = Pose.valueOf(poseStr.toUpperCase());
 
-        setVarValue(link, bundle);
+        entity.setPose(pose ,fixed);
     }
 
     @Override
     public @NotNull ActionType getActionType() {
-        return ActionType.VAR_BUNDLE_ADD_ITEM;
+        return ActionType.ENTITY_SET_POSE;
     }
 }

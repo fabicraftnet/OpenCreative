@@ -19,6 +19,8 @@
 package ua.mcchickenstudio.opencreative.coding.blocks.actions.playeractions.appearance;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -32,6 +34,7 @@ import ua.mcchickenstudio.opencreative.coding.blocks.actions.playeractions.Playe
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executor;
 import ua.mcchickenstudio.opencreative.wanders.Wander;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public final class SetSkinAction extends PlayerAction {
@@ -50,10 +53,9 @@ public final class SetSkinAction extends PlayerAction {
             // Reset textures
             PlayerProfile profile = player.getPlayerProfile();
             profile.setTextures(wander.getJoinTextures());
-            CompletableFuture<PlayerProfile> updatedProfile = profile.update();
             try {
-                player.setPlayerProfile(updatedProfile.get());
                 wander.setTexturesWereChanged(false);
+                player.setPlayerProfile(profile);
             } catch (Exception error) {
                 throw new RuntimeException("Failed to reset the skin", error);
             }
@@ -64,13 +66,12 @@ public final class SetSkinAction extends PlayerAction {
             if (headProfile == null) {
                 return;
             }
-            if (headProfile.hasTextures()) {
+            if (headProfile.getTextures().isSigned()) {
                 PlayerProfile profile = player.getPlayerProfile();
-                profile.setTextures(headProfile.getTextures());
-                CompletableFuture<PlayerProfile> updatedProfile = profile.update();
+                profile.setProperties(headProfile.getProperties());
                 try {
                     wander.setTexturesWereChanged(true);
-                    player.setPlayerProfile(updatedProfile.get());
+                    player.setPlayerProfile(profile);
                 } catch (Exception error) {
                     throw new RuntimeException("Failed to change the skin", error);
                 }
