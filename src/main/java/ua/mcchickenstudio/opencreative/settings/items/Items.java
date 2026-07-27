@@ -28,6 +28,10 @@ import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionCategory;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.ExecutorCategory;
 import ua.mcchickenstudio.opencreative.utils.ItemUtils;
 
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
+
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.createItem;
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.setPersistentData;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getBookPages;
@@ -206,7 +210,11 @@ public enum Items {
         String path = "items." + group + "." + name().toLowerCase().replace("_", "-");
         ItemStack item = createItem(material, 1, path);
         if (item.getItemMeta() instanceof BookMeta bookMeta) {
-            bookMeta.pages(getBookPages(player, path + ".pages"));
+            // 26.2+ Content: pages method is broken for kyori adventure
+            try {
+                Method method = BookMeta.class.getMethod("pages", List.class);
+                method.invoke(bookMeta, getBookPages(player, path + ".pages"));
+            } catch (Exception ignored) {}
             item.setItemMeta(bookMeta);
         }
         if (persistentData != null) {

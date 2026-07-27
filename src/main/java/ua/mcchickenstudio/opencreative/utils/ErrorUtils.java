@@ -582,9 +582,9 @@ public final class ErrorUtils {
      * @param errorMessage description of critical error.
      * @param error        exception, that has occurred.
      */
-    public static void sendDebugError(String errorMessage, Exception error) {
+    public static void sendDebugError(String errorMessage, Throwable error) {
         if (OpenCreative.getSettings().isDebug()) {
-            OpenCreative.getPlugin().getLogger().severe("CRITICAL ERROR has occurred: " + errorMessage + " " + parseException(error, false));
+            OpenCreative.getPlugin().getLogger().severe("Oops! Debug error has occurred :(\n " + errorMessage + " " + parseException(error, false));
         }
     }
 

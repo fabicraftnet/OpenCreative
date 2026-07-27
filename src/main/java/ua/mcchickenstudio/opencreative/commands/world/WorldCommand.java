@@ -22,6 +22,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.title.Title;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -161,22 +162,32 @@ public class WorldCommand extends CommandHandler {
                     sender.sendMessage(getLocaleMessage("too-few-args"));
                     return;
                 }
+                int limit = planet.getLimits().getWhitelistedLimit();
+                if (planet.getWorldPlayers().getWhitelistedPlayers().size() > limit) {
+                    sender.sendMessage(getLocaleMessage("world.players.white-list.limit").replace("%limit%", String.valueOf(limit)));
+                    return;
+                }
                 Player playerToWhitelist = Bukkit.getPlayer(args[1]);
-                if (playerToWhitelist == null || !planet.getPlayers().contains(playerToWhitelist)) {
-                    sender.sendMessage(getLocaleMessage("not-found-player"));
+                if (playerToWhitelist == null) {
+                    OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(args[1]);
+                    if (!offlinePlayer.hasPlayedBefore()) {
+                        sender.sendMessage(getLocaleMessage("never-played"));
+                        return;
+                    }
+                    if (offlinePlayer.getUniqueId().equals(player.getUniqueId())) {
+                        sender.sendMessage(getLocaleMessage("same-player"));
+                        return;
+                    }
+                    sender.sendMessage(getPlayerLocaleMessage("world.players.white-list.added", offlinePlayer));
+                    planet.getWorldPlayers().banPlayer(offlinePlayer.getName());
                     return;
                 }
                 if (planet.isOwner(playerToWhitelist)) {
                     sender.sendMessage(getLocaleMessage("same-player"));
                     return;
                 }
-                int limit = planet.getLimits().getWhitelistedLimit();
-                if (planet.getWorldPlayers().getWhitelistedPlayers().size() > limit) {
-                    sender.sendMessage(getLocaleMessage("world.players.white-list.limit").replace("%limit%", String.valueOf(limit)));
-                    return;
-                }
                 sender.sendMessage(getPlayerLocaleMessage("world.players.white-list.added", playerToWhitelist));
-                planet.getWorldPlayers().whitelistPlayer(args[1]);
+                planet.getWorldPlayers().whitelistPlayer(playerToWhitelist.getName());
             }
             case "ban", "block", "blacklist" -> {
                 if (!planet.isOwner(player)) {
@@ -187,18 +198,28 @@ public class WorldCommand extends CommandHandler {
                     sender.sendMessage(getLocaleMessage("too-few-args"));
                     return;
                 }
+                int limit = planet.getLimits().getBlacklistedLimit();
+                if (planet.getWorldPlayers().getBannedPlayers().size() > limit) {
+                    sender.sendMessage(getLocaleMessage("world.players.black-list.limit").replace("%limit%", String.valueOf(limit)));
+                    return;
+                }
                 Player playerToBan = Bukkit.getPlayer(args[1]);
-                if (playerToBan == null || !planet.getPlayers().contains(playerToBan)) {
-                    sender.sendMessage(getLocaleMessage("not-found-player"));
+                if (playerToBan == null) {
+                    OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(args[1]);
+                    if (!offlinePlayer.hasPlayedBefore()) {
+                        sender.sendMessage(getLocaleMessage("never-played"));
+                        return;
+                    }
+                    if (offlinePlayer.getUniqueId().equals(player.getUniqueId())) {
+                        sender.sendMessage(getLocaleMessage("same-player"));
+                        return;
+                    }
+                    sender.sendMessage(getPlayerLocaleMessage("world.players.black-list.added", offlinePlayer));
+                    planet.getWorldPlayers().banPlayer(offlinePlayer.getName());
                     return;
                 }
                 if (planet.isOwner(playerToBan)) {
                     sender.sendMessage(getLocaleMessage("same-player"));
-                    return;
-                }
-                int limit = planet.getLimits().getBlacklistedLimit();
-                if (planet.getWorldPlayers().getBannedPlayers().size() > limit) {
-                    sender.sendMessage(getLocaleMessage("world.players.black-list.limit").replace("%limit%", String.valueOf(limit)));
                     return;
                 }
                 if (playerToBan.hasPermission("opencreative.world.ban.bypass")) {
@@ -206,7 +227,7 @@ public class WorldCommand extends CommandHandler {
                     return;
                 }
                 sender.sendMessage(getPlayerLocaleMessage("world.players.black-list.added", playerToBan));
-                planet.getWorldPlayers().banPlayer(args[1]);
+                planet.getWorldPlayers().banPlayer(playerToBan.getName());
             }
             case "kick" -> {
                 if (!planet.isOwner(player)) {

@@ -101,7 +101,6 @@ public class DevPlanet {
      */
     public DevPlanet(@NotNull Planet planet) {
         this.planet = planet;
-        loadInformation();
     }
 
     /**
@@ -147,7 +146,7 @@ public class DevPlanet {
      * Loads settings of developer planet.
      */
     private void loadInformation() {
-        FileConfiguration config = getPlanetConfig(planet);
+        FileConfiguration config = planet.getConfiguration().getConfig();
         try {
             containerMaterial = Material.getMaterial(config.getString("dev.container", "CHEST"));
             if (containerMaterial == null || !containerMaterial.isBlock()) {
@@ -191,6 +190,7 @@ public class DevPlanet {
                 return;
             }
             Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
+                loadInformation();
                 List<String> savedChanges = planet.getConfiguration().getConfig().getStringList("changed-code-columns");
                 if (!savedChanges.isEmpty()) {
                     for (String saved : savedChanges) {

@@ -32,6 +32,9 @@ public final class GriefStats {
     private int tntPlacementsAmount;
     private int destroyedHangingsAmount;
     private int destroyedCodingBlocksAmount;
+    private int creepersSummonsAmount;
+    private int withersSummonsAmount;
+    private int dragonsSummonsAmount;
 
     /**
      * Adds amount of destroyed blocks.
@@ -78,6 +81,33 @@ public final class GriefStats {
         this.tntPlacementsAmount += amount;
     }
 
+    /**
+     * Adds amount of creeper summons.
+     *
+     * @param amount amount of summoned creepers.
+     */
+    public void addCreeperSummonsAmount(int amount) {
+        this.creepersSummonsAmount += amount;
+    }
+
+    /**
+     * Adds amount of summoned withers.
+     *
+     * @param amount amount of summoned withers.
+     */
+    public void addWithersSummonsAmount(int amount) {
+        this.withersSummonsAmount += amount;
+    }
+
+    /**
+     * Adds amount of summoned ender dragons.
+     *
+     * @param amount amount of summoned ender dragons.
+     */
+    public void addDragonsSummonsAmount(int amount) {
+        this.dragonsSummonsAmount += amount;
+    }
+
     public int getDestroyedBlocksAmount() {
         return destroyedBlocksAmount;
     }
@@ -100,7 +130,8 @@ public final class GriefStats {
 
     public boolean isSuspicious() {
         return lavaPlacementsAmount >= 10 || destroyedHangingsAmount >= 10 || tntPlacementsAmount >= 3
-                || destroyedBlocksAmount >= 20 || destroyedCodingBlocksAmount >= 2;
+                || destroyedBlocksAmount >= 20 || destroyedCodingBlocksAmount >= 2 || creepersSummonsAmount >= 3
+                || withersSummonsAmount >= 1 || dragonsSummonsAmount >= 1;
     }
 
     public @NotNull String getAsString() {
@@ -109,6 +140,9 @@ public final class GriefStats {
         if (tntPlacementsAmount >= 1) builder.append("placed tnt x").append(tntPlacementsAmount).append(", ");
         if (destroyedBlocksAmount >= 1) builder.append("destroyed blocks x").append(destroyedBlocksAmount).append(", ");
         if (destroyedCodingBlocksAmount >= 1) builder.append("destroyed coding blocks x").append(destroyedCodingBlocksAmount).append(", ");
+        if (creepersSummonsAmount >= 1) builder.append("summoned creepers x").append(creepersSummonsAmount).append(", ");
+        if (withersSummonsAmount >= 1) builder.append("summoned withers x").append(withersSummonsAmount).append(", ");
+        if (dragonsSummonsAmount >= 1) builder.append("summoned ender dragons x").append(dragonsSummonsAmount).append(", ");
         if (destroyedHangingsAmount >= 1)
             builder.append("removed hangings x").append(destroyedHangingsAmount).append(", ");
         if (!builder.isEmpty()) {
@@ -126,6 +160,9 @@ public final class GriefStats {
         lavaPlacementsAmount = 0;
         tntPlacementsAmount = 0;
         destroyedHangingsAmount = 0;
+        creepersSummonsAmount = 0;
+        withersSummonsAmount = 0;
+        dragonsSummonsAmount = 0;
     }
 
 }
