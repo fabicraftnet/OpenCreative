@@ -25,8 +25,7 @@ import org.bukkit.event.world.WorldUnloadEvent;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 
-import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isDevPlanet;
-import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isPlanet;
+import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.*;
 
 /**
  * <h1>WorldListener</h1>

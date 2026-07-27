@@ -18,7 +18,21 @@
 
 package ua.mcchickenstudio.opencreative.utils.world;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.network.Filterable;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ItemContainerContents;
+import net.minecraft.world.item.component.WritableBookContent;
+import net.minecraft.world.item.component.WrittenBookContent;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import org.bukkit.*;
+import org.bukkit.craftbukkit.CraftChunk;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -29,9 +43,9 @@ import ua.mcchickenstudio.opencreative.utils.FileUtils;
 import ua.mcchickenstudio.opencreative.utils.PlayerUtils;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+
+import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendDebugError;
 
 /**
  * <h1>WorldUtils</h1>
@@ -70,13 +84,7 @@ public final class WorldUtils {
                 Color color = Color.fromRGB(random.nextInt(256), random.nextInt(256), random.nextInt(256));
                 Color fadeColor = Color.fromRGB(random.nextInt(256), random.nextInt(256), random.nextInt(256));
                 FireworkEffect.Type type = FireworkEffect.Type.values()[random.nextInt(FireworkEffect.Type.values().length)];
-                FireworkEffect effect = FireworkEffect.builder()
-                        .flicker(true)
-                        .withColor(color)
-                        .withFade(fadeColor)
-                        .with(type)
-                        .trail(true)
-                        .build();
+                FireworkEffect effect = FireworkEffect.builder().flicker(true).withColor(color).withFade(fadeColor).with(type).trail(true).build();
                 Location location = player.getLocation();
                 location.add(randomOffsetX, 1, randomOffsetZ);
                 if (!location.getBlock().isPassable()) {
@@ -283,6 +291,172 @@ public final class WorldUtils {
      */
     public static boolean isLobbyWorld(@NotNull World world) {
         return world.equals(PlayerUtils.getLobbyWorld());
+    }
+
+    /**
+     * Checks and destroys bad containers, that store
+     * too many books in one chunk, in a world.
+     *
+     * @param world                world to check bad containers.
+     * @param symbolsPerChunkLimit maximum amount of symbols in books per chunk.
+     */
+    public static void checkBadContainersInWorld(@NotNull World world, long symbolsPerChunkLimit) {
+        try {
+            int destroyedShulkers = 0;
+            int destroyedContainers = 0;
+            long totalSymbolsAmount = 0L;
+
+            for (Chunk loadedChunk : world.getLoadedChunks()) {
+
+                long chunkSymbols = 0L;
+                List<BlockEntity> containersInChunk = new ArrayList<>();
+
+                // NMS! using chunks
+                ChunkAccess chunk = ((CraftChunk) loadedChunk).getHandle(ChunkStatus.FULL);
+                Map<BlockPos, BlockEntity> blockEntities = new HashMap<>(chunk.blockEntities);
+
+                for (BlockEntity blockEntity : blockEntities.values()) {
+                    if (blockEntity instanceof RandomizableContainerBlockEntity holder) {
+                        containersInChunk.add(blockEntity);
+                        for (ItemStack item : holder.getContents()) {
+                            chunkSymbols += getItemAllPagesLength(item);
+                        }
+                    }
+                }
+
+                if (chunkSymbols >= symbolsPerChunkLimit) {
+                    totalSymbolsAmount += chunkSymbols;
+
+                    for (BlockEntity blockEntity : containersInChunk) {
+                        BlockPos position = blockEntity.getBlockPos();
+
+                        if (blockEntity.getType() == BlockEntityType.SHULKER_BOX) {
+                            destroyedShulkers++;
+                        } else {
+                            destroyedContainers++;
+                        }
+
+                        world.setBlockData(new Location(world, position.getX(), position.getY(), position.getZ()), Material.AIR.createBlockData());
+                    }
+                }
+            }
+
+            if (destroyedContainers > 0 || destroyedShulkers > 0) {
+                OpenCreative.getPlugin().getLogger().warning("[HEAVY: " + getPlanetIdFromName(world)
+                        + "] Removed heavy " + (destroyedContainers == 0 ? "" : destroyedContainers
+                        + " containers" + (destroyedShulkers == 0 ? " " : ", ")) + (destroyedShulkers == 0 ? "" : destroyedShulkers + " shulkers ") + "containing " + totalSymbolsAmount + " symbols in books.");
+            }
+        } catch (NoSuchMethodError error) {
+            sendDebugError("Failed to check bad containers in world. NMS seems like to be broken on this " + Bukkit.getMinecraftVersion()
+                    + " version", error);
+        } catch (Exception error) {
+            sendDebugError("Failed to check bad containers in world on this " + Bukkit.getMinecraftVersion() + " version.", error);
+        }
+    }
+
+    /**
+     * Checks and destroys bad containers, that store
+     * too many books in one chunk, in a world.
+     *
+     * @param loadedChunk          chunk to check bad containers.
+     * @param symbolsPerChunkLimit maximum amount of symbols in books per chunk.
+     */
+    public static void checkBadContainersInChunk(@NotNull Chunk loadedChunk, long symbolsPerChunkLimit) {
+        try {
+            int destroyedShulkers = 0;
+            int destroyedContainers = 0;
+            long totalSymbolsAmount = 0L;
+
+
+            long chunkSymbols = 0L;
+            List<BlockEntity> containersInChunk = new ArrayList<>();
+
+            // NMS! using chunks
+            ChunkAccess chunk = ((CraftChunk) loadedChunk).getHandle(ChunkStatus.FULL);
+            Map<BlockPos, BlockEntity> blockEntities = new HashMap<>(chunk.blockEntities);
+
+            for (BlockEntity blockEntity : blockEntities.values()) {
+                if (blockEntity instanceof RandomizableContainerBlockEntity holder) {
+                    containersInChunk.add(blockEntity);
+                    for (ItemStack item : holder.getContents()) {
+                        chunkSymbols += getItemAllPagesLength(item);
+                    }
+                }
+            }
+
+            if (chunkSymbols >= symbolsPerChunkLimit) {
+                totalSymbolsAmount += chunkSymbols;
+
+                for (BlockEntity blockEntity : containersInChunk) {
+                    BlockPos position = blockEntity.getBlockPos();
+
+                    if (blockEntity.getType() == BlockEntityType.SHULKER_BOX) {
+                        destroyedShulkers++;
+                    } else {
+                        destroyedContainers++;
+                    }
+
+                    loadedChunk.getWorld().setBlockData(new Location(loadedChunk.getWorld(), position.getX(), position.getY(), position.getZ()), Material.AIR.createBlockData());
+                }
+            }
+
+            if (destroyedContainers > 0 || destroyedShulkers > 0) {
+                OpenCreative.getPlugin().getLogger().warning("[HEAVY: " + getPlanetIdFromName(loadedChunk.getWorld())
+                        + "] Removed heavy " + (destroyedContainers == 0 ? "" : destroyedContainers
+                        + " containers" + (destroyedShulkers == 0 ? " " : ", ")) + (destroyedShulkers == 0 ? "" : destroyedShulkers + " shulkers ") + "containing " + totalSymbolsAmount + " symbols in books.");
+            }
+        } catch (NoSuchMethodError error) {
+            sendDebugError("Failed to check bad containers in world. NMS seems like to be broken on this " + Bukkit.getMinecraftVersion()
+                    + " version", error);
+        } catch (Exception error) {
+            sendDebugError("Failed to check bad containers in world on this " + Bukkit.getMinecraftVersion() + " version.", error);
+        }
+    }
+
+    /**
+     * Returns length of all pages of item if it's a book,
+     * or if it's a container it will return length of all pages
+     * in nested books.
+     *
+     * @param item item to check.
+     * @return all pages symbols amount, or 0 - if it's not a book, or container.
+     */
+    private static long getItemAllPagesLength(@NotNull ItemStack item) {
+        if (item.isEmpty()) return 0L;
+        long count = getBookPagesLength(item);
+        ItemContainerContents contents = item.get(DataComponents.CONTAINER);
+        if (contents != null) {
+            for (ItemStack subItem : contents.nonEmptyItems()) {
+                count += getItemAllPagesLength(subItem);
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Returns length of all pages in book.
+     *
+     * @param item book with pages.
+     * @return all pages symbols amount, or 0 - if item is not a book.
+     */
+    private static long getBookPagesLength(@NotNull ItemStack item) {
+        long symbolsAmount = 0L;
+        if (item.is(Items.WRITABLE_BOOK)) {
+            WritableBookContent content = item.get(DataComponents.WRITABLE_BOOK_CONTENT);
+            if (content != null) {
+                for (Filterable<String> page : content.pages()) {
+                    symbolsAmount += page.raw().length();
+                }
+            }
+        } else if (item.is(Items.WRITTEN_BOOK)) {
+            WrittenBookContent content = item.get(DataComponents.WRITTEN_BOOK_CONTENT);
+            if (content != null) {
+                for (var page : content.pages()) {
+                    symbolsAmount += page.raw().getString().length();
+                }
+            }
+        }
+        return symbolsAmount;
     }
 
     /**
