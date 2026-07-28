@@ -53,8 +53,7 @@ import java.util.*;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendDebug;
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendDebugError;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleItemDescription;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleItemName;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 
 /**
  * <h1>ItemUtils</h1>
@@ -177,7 +176,9 @@ public final class ItemUtils {
         if (!material.isItem()) material = Material.REDSTONE;
         ItemStack itemStack = createItem(material, amount);
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.displayName(getLocaleItemName(localizationPath + ".name"));
+        if ((getLocaleItemNameString(localizationPath + ".name").isEmpty()))
+        { itemMeta.displayName(Component.text(" "));}
+        else itemMeta.displayName(getLocaleItemName(localizationPath + ".name"));
         itemMeta.lore(getLocaleItemDescription(localizationPath + ".lore"));
         itemStack.setItemMeta(itemMeta);
         return itemStack;

@@ -173,8 +173,7 @@ public final class ErrorUtils {
     public static void sendPlayerErrorMessage(Player player, String errorMessage, Exception error) {
         if (OpenCreative.getSettings().shouldLogWarnings())
             OpenCreative.getPlugin().getLogger().warning("An player error has occurred for " + player.getName() + ": " + errorMessage + " " + parseException(error, false));
-        Component message = Component
-                .text(getLocaleMessageString("player-error", true).replace("%error%", errorMessage))
+        Component message = toComponent(getLocaleMessageString("player-error", true).replace("%error%", errorMessage))
                 .hoverEvent(HoverEvent.showText(Component.text(parseException(error, true))));
         player.sendMessage(message);
         Sounds.PLAYER_ERROR.play(player);

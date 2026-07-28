@@ -114,7 +114,7 @@ public class RadioButton {
             }
         }
 
-        buttonItemMeta.lore();
+        buttonItemMeta.lore(lore);
         buttonItem.setItemMeta(buttonItemMeta);
     }
 

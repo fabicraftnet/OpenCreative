@@ -120,8 +120,8 @@ public final class Moduler implements ModuleManager {
             return;
         }
         configuration.set("owner", owner.getUniqueId().toString());
-        configuration.set("name", MessageUtils.getPlayerLocaleMessage("modules.default-name", owner));
-        configuration.set("description", MessageUtils.getPlayerLocaleMessage("modules.default-description", owner));
+        configuration.set("name", MessageUtils.getPlayerLocaleMessageString("modules.default-name", owner));
+        configuration.set("description", MessageUtils.getPlayerLocaleMessageString("modules.default-description", owner));
         configuration.set("icon", Material.CHEST.name());
         configuration.set("creation-time", System.currentTimeMillis());
         try {

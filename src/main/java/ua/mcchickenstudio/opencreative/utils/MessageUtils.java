@@ -494,7 +494,7 @@ public final class MessageUtils {
                 return messageID;
             }
         } else {
-            return ChatColor.translateAlternateColorCodes('&', originalMessage.replace("%prefix%", getPrefix()).replace("%branding%", getBranding()).replace("%cc-prefix%", getCreativeChatPrefix()));
+            return originalMessage.replace("%prefix%", getPrefix()).replace("%branding%", getBranding()).replace("%cc-prefix%", getCreativeChatPrefix());
         }
     }
     public static Component getLocaleMessage(String messageID, boolean returnDetailedError) {
@@ -615,16 +615,16 @@ public final class MessageUtils {
         elapsedTimeInHours %= 24;
 
         if (elapsedTimeInDays > 0)
-            elapsedTime = elapsedTime.concat(elapsedTimeInDays + " " + getLocaleMessage("time.days", false) + " ");
+            elapsedTime = elapsedTime.concat(elapsedTimeInDays + " " + getLocaleMessageString("time.days", false) + " ");
         if (elapsedTimeInHours > 0)
-            elapsedTime = elapsedTime.concat(elapsedTimeInHours + " " + getLocaleMessage("time.hours", false) + " ");
+            elapsedTime = elapsedTime.concat(elapsedTimeInHours + " " + getLocaleMessageString("time.hours", false) + " ");
         if (elapsedTimeInMinutes > 0)
-            elapsedTime = elapsedTime.concat(elapsedTimeInMinutes + " " + getLocaleMessage("time.minutes", false) + " ");
+            elapsedTime = elapsedTime.concat(elapsedTimeInMinutes + " " + getLocaleMessageString("time.minutes", false) + " ");
         if (elapsedTimeInSeconds > 0)
-            elapsedTime = elapsedTime.concat(elapsedTimeInSeconds + " " + getLocaleMessage("time.seconds", false) + " ");
+            elapsedTime = elapsedTime.concat(elapsedTimeInSeconds + " " + getLocaleMessageString("time.seconds", false) + " ");
         if ((currentTime - oldTime) < 1000) elapsedTime = getLocaleMessage("time.less-second", false) + " ";
 
-        return elapsedTime + getLocaleMessage("time.ago", false);
+        return elapsedTime + getLocaleMessageString("time.ago", false);
 
     }
 
@@ -655,11 +655,11 @@ public final class MessageUtils {
         minutes %= 60;
         hours %= 24;
 
-        if (days > 0) convertedTime = convertedTime.concat(days + " " + getLocaleMessage("time.days", false) + " ");
-        if (hours > 0) convertedTime = convertedTime.concat(hours + " " + getLocaleMessage("time.hours", false) + " ");
+        if (days > 0) convertedTime = convertedTime.concat(days + " " + getLocaleMessageString("time.days", false) + " ");
+        if (hours > 0) convertedTime = convertedTime.concat(hours + " " + getLocaleMessageString("time.hours", false) + " ");
         if (minutes > 0)
-            convertedTime = convertedTime.concat(minutes + " " + getLocaleMessage("time.minutes", false) + " ");
-        if (seconds > 0) convertedTime = convertedTime.concat(seconds + " " + getLocaleMessage("time.seconds", false));
+            convertedTime = convertedTime.concat(minutes + " " + getLocaleMessageString("time.minutes", false) + " ");
+        if (seconds > 0) convertedTime = convertedTime.concat(seconds + " " + getLocaleMessageString("time.seconds", false));
         if (duration < 1000) convertedTime = getLocaleMessageString("time.less-second", false);
         if (duration < 0) convertedTime = "∞";
 
@@ -769,7 +769,7 @@ public final class MessageUtils {
                         .replacement(toComponent(planetReputation)).build())
                 .replaceText(TextReplacementConfig.builder()
                         .match("%planetLastTime%")
-                        .replacement(getElapsedTime(System.currentTimeMillis(), planet.getLastActivityTime())).build())
+                        .replacement(toComponent(getElapsedTime(System.currentTimeMillis(), planet.getLastActivityTime())) ).build())
                 .replaceText(TextReplacementConfig.builder()
                         .match("%planetCreationTime%")
                         .replacement(getElapsedTime(System.currentTimeMillis(), planet.getCreationTime())).build());
@@ -797,7 +797,7 @@ public final class MessageUtils {
     }
     public static Component parseModuleLines(Module module, Component component) {
         //anather dumb fix. its so dumb that im not gonna fix that typo
-        return MiniMessage.miniMessage().deserialize(parseModuleLines(module,MiniMessage.miniMessage().serialize(component)));
+        return toComponent(parseModuleLines(module,MiniMessage.miniMessage().serialize(component)));
     }
 
     /**
