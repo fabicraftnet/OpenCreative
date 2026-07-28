@@ -22,6 +22,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.network.Filterable;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.component.WritableBookContent;
@@ -426,8 +427,8 @@ public final class WorldUtils {
         long count = getBookPagesLength(item);
         ItemContainerContents contents = item.get(DataComponents.CONTAINER);
         if (contents != null) {
-            for (ItemStack subItem : contents.nonEmptyItems()) {
-                count += getItemAllPagesLength(subItem);
+            for (ItemStackTemplate subItem : contents.nonEmptyItems()) {
+                count += getItemAllPagesLength(subItem.create());
             }
         }
         return count;

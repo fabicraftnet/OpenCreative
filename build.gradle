@@ -24,7 +24,7 @@ plugins {
     id "java"
     id "com.gradleup.shadow" version "9.0.0"
     id "maven-publish"
-    //id "io.papermc.paperweight.userdev" version "2.0.0-beta.21" // If you don't want to use paperweight, remove this line.
+    id "io.papermc.paperweight.userdev" version "2.0.0-beta.21" // If you don't want to use paperweight, remove this line.
 }
 
 java {
@@ -62,7 +62,8 @@ repositories {
 
 dependencies {
     // The main part of plugin: Paper 1.21.1!
-    compileOnly 'io.papermc.paper:paper-api:26.1.2.build.+'
+    paperweight.paperDevBundle("26.1.2.build.+")
+    //compileOnly 'io.papermc.paper:paper-api:26.1.2.build.+'
     // If you don't need paperweight, replace it with that -> compileOnly 'io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT'
 
     // Source: https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
@@ -85,7 +86,9 @@ dependencies {
     compileOnly "com.fastasyncworldedit:FastAsyncWorldEdit-Core:2.11.0"
     compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Bukkit:2.11.0") {
         exclude group: "*", module: "FastAsyncWorldEdit-Core"
+        exclude group: "*", module: "lz4-java"
     }
+
 
     // Addon: PlaceholderAPI support
     compileOnly "me.clip:placeholderapi:2.11.5"
