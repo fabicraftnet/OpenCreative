@@ -41,6 +41,7 @@ import ua.mcchickenstudio.opencreative.coding.variables.VariableLink;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.utils.BlockUtils;
 import ua.mcchickenstudio.opencreative.utils.DyeColorEnum;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -848,6 +849,7 @@ public class Arguments {
     }
 
     public Component textToComponent(String text) {
+        /*
         try {
             if (text.contains("§")) {
                 return LegacyComponentSerializer.legacySection().deserialize(text);
@@ -861,7 +863,8 @@ public class Arguments {
             }
         } catch (Exception ignored) {
         }
-        return Component.text(text);
+        return Component.text(text);*/
+        return MessageUtils.toComponent(text);
     }
 
     /**

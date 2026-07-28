@@ -8477,7 +8477,138 @@ items:
             choices:
               true: "Let all players see it"
               false: "Let only selected players see it"
-
+      world-spawn-mannequin:
+        name: "&aSpawn Mannequin"
+        lore:
+          - "&7This will create a new mannequin"
+          - "&7and it will appear in the world."
+          - ""
+          - "&fIn the chest:"
+          - "&f Location &7- Where to spawn"
+          - "&7 the mannequin"
+          - "&c Item &7- Player head"
+          - "&6 Text &7- Mob name"
+          - "&6 Text &7- Description"
+          - "&3 Option &7- Show name"
+          - "&3 Option &7- Gravity"
+          - "&3 Option &7- Glowing"
+          - "&3 Option &7- Invisible"
+          - "&3 Option &7- Invulnerable"
+          - "&3 Option &7- Visible to all"
+          - ""
+          - "&eClick to set the action."
+        placeholders:
+          head:
+            name: "&cPlayer head"
+            lore:
+              - "&7A player head with a skin"
+              - "&7to apply to the mannequin."
+          name:
+            name: "&6Name"
+            lore:
+              - "&7Put a book here with the text"
+              - "&7that will be set as the mob's name."
+          description:
+            name: "&6Description"
+            lore:
+              - "&7Put a book here with the text"
+              - "&7that will be set as the description."
+        arguments:
+          gravity:
+            name: "&eGravity"
+            lore:
+              - ""
+              - "&7With no gravity, the mob will"
+              - "&7float in the air."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              true: "Follow the laws of physics"
+              false: "Leave it floating"
+          glowing:
+            name: "&fGlowing"
+            lore:
+              - ""
+              - "&7When glowing, the mob will"
+              - "&7have a glow and can be seen"
+              - "&7through walls."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              true: "Let it glow"
+              false: "Do not glow"
+          show-name:
+            name: "&eShow Name Always"
+            lore:
+              - ""
+              - "&7With this option, you won't need"
+              - "&7to hover to see the mob's name."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              true: "Show without hovering"
+              false: "Show on hover"
+          invisible:
+            name: "&9Invisible"
+            lore:
+              - ""
+              - "&7With invisibility, you won't be"
+              - "&7able to see the mob, but it can"
+              - "&7still see you!"
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              true: "Let it be invisible"
+              false: "Let it be visible"
+          invulnerable:
+            name: "&cMob Invulnerability"
+            lore:
+              - ""
+              - "&7With invulnerability, the mob"
+              - "&7can't take damage, but you can"
+              - "&7still throw it into the void."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              true: "Let it be invulnerable"
+              false: "Leave it vulnerable to damage"
+          visible-for-all:
+            name: "&aVisible to All Players"
+            lore:
+              - ""
+              - "&7Normally, mobs are visible"
+              - "&7to all players, but if you need"
+              - "&7personal mobs only visible to one,"
+              - "&7this option is for you."
+              - ""
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              true: "Let all players see it"
+              false: "Let only selected players see it"
       world-set-weather:
         name: "&9Set World Weather"
         lore:
@@ -8959,6 +9090,116 @@ items:
           - "&c Item &7- Player head"
           - ""
           - "&eClick to set action."
+        placeholders:
+          item:
+            name: "&7Player head"
+            lore:
+              - "&7A player head with a skin"
+              - "&7to apply to the mannequin."
+          cape:
+            name: "&7Cape"
+            lore:
+              - "&7A capes texture hash"
+        arguments:
+          model:
+            name: "&6Model"
+            lore:
+              - "&7 The model shape for the skin."
+              - "&7 default leaves it unchanged."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+              - "%3%"
+            choices:
+              default: "default"
+              classic: "classic"
+              slim: "slim"
+          head:
+            name: "&6Hat"
+            lore:
+              - "&7 The outer layer of the skin."
+              - "&7 default leaves it unchanged."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+              - "%3%"
+            choices:
+              default: "default"
+              on: "on"
+              off: "off"
+          body:
+            name: "&6Jacket"
+            lore:
+              - "&7 The outer layer of the skin."
+              - "&7 default leaves it unchanged."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+              - "%3%"
+            choices:
+              default: "default"
+              on: "on"
+              off: "off"
+          leftarm:
+            name: "&6Left sleeve"
+            lore:
+              - "&7 The outer layer of the skin."
+              - "&7 default leaves it unchanged."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+              - "%3%"
+            choices:
+              default: "default"
+              on: "on"
+              off: "off"
+          rightarm:
+            name: "&6Right sleeve"
+            lore:
+              - "&7 The outer layer of the skin."
+              - "&7 default leaves it unchanged."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+              - "%3%"
+            choices:
+              default: "default"
+              on: "on"
+              off: "off"
+          leftleg:
+            name: "&6Left leg"
+            lore:
+              - "&7 The outer layer of the skin."
+              - "&7 default leaves it unchanged."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+              - "%3%"
+            choices:
+              default: "default"
+              on: "on"
+              off: "off"
+          rightleg:
+            name: "&6Right leg"
+            lore:
+              - "&7 The outer layer of the skin."
+              - "&7 default leaves it unchanged."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+              - "%3%"
+            choices:
+              default: "default"
+              on: "on"
+              off: "off"
+
       entity-set-mannequin-description:
         name: "&6Set Mannequin Description"
         lore:

@@ -58,7 +58,7 @@ public final class BlockUtils {
         if (line < 1 || line > 4) return false;
         if (!(block.getState() instanceof Sign sign)) return false;
         SignSide side = sign.getSide(Side.FRONT);
-        side.line(line - 1, Component.text(text));
+        side.line(line - 1, MessageUtils.toComponent(text));
         sign.update();
         return true;
     }
@@ -92,7 +92,7 @@ public final class BlockUtils {
         Block block = location.getBlock();
         if (!(block.getState() instanceof Sign sign)) return;
         List<Component> newLines = sign.getSide(Side.FRONT).lines();
-        newLines.set(lineNumber - 1, Component.text(newLine));
+        newLines.set(lineNumber - 1,  MessageUtils.toComponent(newLine));
         new BukkitRunnable() {
             @Override
             public void run() {

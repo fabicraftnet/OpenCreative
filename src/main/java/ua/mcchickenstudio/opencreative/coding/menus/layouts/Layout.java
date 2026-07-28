@@ -19,6 +19,7 @@
 package ua.mcchickenstudio.opencreative.coding.menus.layouts;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.Style;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -39,6 +40,7 @@ import ua.mcchickenstudio.opencreative.menus.AbstractMenu;
 import ua.mcchickenstudio.opencreative.menus.buttons.ParameterButton;
 import ua.mcchickenstudio.opencreative.planets.DevPlanet;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -78,7 +80,7 @@ public abstract class Layout extends AbstractMenu {
      * @param containerBlock container block.
      */
     public Layout(int rows, @NotNull ActionType actionType, @NotNull Block containerBlock) {
-        super(rows, Component.text(ChatColor.stripColor(actionType.getLocaleName())));
+        super(rows, MessageUtils.toComponent((actionType.getLocaleName())));
         this.actionType = actionType;
         this.containerBlock = containerBlock;
         this.requiredSlots = actionType.getArgumentsSlots();

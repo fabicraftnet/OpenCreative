@@ -18,11 +18,13 @@
 
 package ua.mcchickenstudio.opencreative.listeners.player;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.*;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Powerable;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -46,6 +48,7 @@ import java.util.Set;
 
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.copySignData;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleComponent;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.toComponent;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.isEntityInLobby;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.translateBlockSign;
 
@@ -76,13 +79,14 @@ public final class PlaceBlockListener implements Listener {
         wallSign.setType(signMaterial);
 
         Sign sign = (Sign) wallSign.getState();
-        sign.setLine(1, signText);
+        sign.getSide(Side.FRONT).line(1, toComponent(signText));
         if (block.getType() == Material.OXIDIZED_COPPER) {
-            sign.setLine(2, "20");
+            sign.getSide(Side.FRONT).line(2, Component.text("20"));
         }
         if (block.getType() == Material.PURPUR_BLOCK) {
-            sign.setLine(1, "");
-            sign.setLine(3, "selection_set");
+
+            sign.getSide(Side.FRONT).line(1, Component.text(""));
+            sign.getSide(Side.FRONT).line(3, Component.text("selection_set"));
         }
         sign.update();
 

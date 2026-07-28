@@ -421,6 +421,9 @@ public enum ActionType implements CodingBlockType {
     WORLD_SPAWN_PARTICLES_LINE(ActionCategory.WORLD_ACTION, MenusCategory.ENTITY, SpawnParticlesLineAction.class, Material.BREEZE_ROD, new ArgumentSlot("first", ValueType.LOCATION), new ArgumentSlot("second", ValueType.LOCATION), new ArgumentSlot("particle", ValueType.PARTICLE), new ArgumentSlot("count", ValueType.NUMBER), new ArgumentSlot("offset-x", ValueType.NUMBER), new ArgumentSlot("offset-y", ValueType.NUMBER), new ArgumentSlot("offset-z", ValueType.NUMBER)),
     WORLD_SPAWN_PARTICLES_CIRCLE(ActionCategory.WORLD_ACTION, MenusCategory.ENTITY, SpawnParticlesCircleAction.class, Material.ENDER_EYE, new ArgumentSlot("center", ValueType.LOCATION), new ArgumentSlot("radius", ValueType.NUMBER), new ArgumentSlot("points", ValueType.NUMBER), new ArgumentSlot("normal", ValueType.VECTOR), new ArgumentSlot("particle", ValueType.PARTICLE)),
     WORLD_SPAWN_VEHICLE(ActionCategory.WORLD_ACTION, MenusCategory.ENTITY, SpawnVehicleAction.class, Material.MINECART, new ArgumentSlot("locations", ValueType.LOCATION, (byte) 9), new ArgumentSlot("type", ValueType.ITEM)),
+    WORLD_SPAWN_MANNEQUIN(ActionCategory.WORLD_ACTION, MenusCategory.ENTITY, SpawnMannequinAction.class, Material.ARMOR_STAND, new ArgumentSlot("locations", ValueType.LOCATION, (byte) 9), new ArgumentSlot("head", ValueType.ITEM)
+            , new ArgumentSlot("name", ValueType.TEXT)
+            , new ArgumentSlot("description", ValueType.TEXT), new ParameterSlot("show-name", true, Material.NAME_TAG, Material.STRING), new ParameterSlot("gravity", true, Material.SAND, Material.COBWEB), new ParameterSlot("glowing", Material.GLASS, Material.WHITE_STAINED_GLASS), new ParameterSlot("invisible", Material.POTION, Material.GLASS_BOTTLE), new ParameterSlot("invulnerable", Material.REDSTONE, Material.TOTEM_OF_UNDYING), new ParameterSlot("visible-for-all", true, Material.GRASS_BLOCK, Material.GRAY_STAINED_GLASS)),
 
 
     WORLD_COPY_BLOCKS(ActionCategory.WORLD_ACTION, MenusCategory.BLOCKS, CopyBlocksAction.class, Material.NETHERITE_SCRAP, new ArgumentSlot("first", ValueType.LOCATION), new ArgumentSlot("second", ValueType.LOCATION), new ArgumentSlot("from", ValueType.LOCATION), new ArgumentSlot("where", ValueType.LOCATION)),
@@ -753,7 +756,14 @@ public enum ActionType implements CodingBlockType {
     ENTITY_SET_PIGLIN_DANCING(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_APPEARANCE, EntitySetPiglinDancingAction.class, Material.PIGLIN_HEAD, new ParameterSlot("boolean"), new ArgumentSlot("time", ValueType.NUMBER)),
     ENTITY_SET_CELEBRATING(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_APPEARANCE, EntitySetPillagerCelebratingAction.class, Material.PILLAGER_SPAWN_EGG, new ParameterSlot("boolean")),
     ENTITY_SET_POSE(ActionCategory.ENTITY_ACTION,MenusCategory.ENTITY_APPEARANCE, SetPoseAction.class, Material.LIGHT_GRAY_BED, new ArgumentSlot("pose", ValueType.TEXT), new ParameterSlot("fixed")),
-    ENTITY_SET_MANNEQUIN_SKIN(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_APPEARANCE, SetMannequinSkinAction.class, Material.DIAMOND_CHESTPLATE, new ArgumentSlot("head",ValueType.ITEM)),
+    ENTITY_SET_MANNEQUIN_SKIN(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_APPEARANCE, SetMannequinSkinAction.class, Material.DIAMOND_CHESTPLATE, new ArgumentSlot("item",ValueType.ITEM), new ArgumentSlot("cape", ValueType.TEXT)
+            , new ParameterSlot("model", List.of("default","classic","slim"),Material.NETHERITE_BLOCK,Material.SANDSTONE,Material.SANDSTONE_WALL),
+            new ParameterSlot("head", List.of("default","on","off"), Material.NETHERITE_HELMET, Material.IRON_HELMET, Material.CHAINMAIL_HELMET)
+            , new ParameterSlot("body", List.of("default","on","off"), Material.NETHERITE_CHESTPLATE, Material.IRON_CHESTPLATE, Material.CHAINMAIL_CHESTPLATE)
+            , new ParameterSlot("leftarm", List.of("default","on","off"),Material.NETHERITE_HOE, Material.IRON_HOE, Material.STONE_HOE)
+            , new ParameterSlot("rightarm", List.of("default","on","off"), Material.NETHERITE_SHOVEL, Material.IRON_SHOVEL, Material.STONE_SHOVEL)
+            , new ParameterSlot("leftleg", List.of("default","on","off"), Material.NETHERITE_BOOTS, Material.IRON_BOOTS, Material.CHAINMAIL_BOOTS)
+            , new ParameterSlot("rightleg", List.of("default","on","off"), Material.NETHERITE_BOOTS, Material.IRON_BOOTS, Material.CHAINMAIL_BOOTS)),
     ENTITY_SET_MANNEQUIN_DESCRIPTION(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_APPEARANCE, SetMannequinDescriptionAction.class, Material.NAME_TAG, new ArgumentSlot("text",ValueType.TEXT)),
 
     ENTITY_SET_CUSTOM_NAME(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_PARAMS, EntitySetNameAction.class, Material.NAME_TAG, new ArgumentSlot("name", ValueType.TEXT, (byte) 18)),

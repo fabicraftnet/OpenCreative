@@ -570,7 +570,7 @@ public final class PlayerUtils {
                 if (content.isEmpty()) {
                     newLines.add(Component.text(""));
                 } else if (!messageExists(path)) {
-                    newLines.add(Component.text(content));
+                    newLines.add(toComponent(content));
                 } else {
                     newLines.add(getLocaleMessage(path, false));
                 }
@@ -602,7 +602,7 @@ public final class PlayerUtils {
             if (content.isEmpty()) {
                 newLines.add(Component.text(" "));
             } else if (!messageExists(path)) {
-                newLines.add(Component.text(content));
+                newLines.add(toComponent(content));
             } else {
                 newLines.add(getLocaleMessage(path, false));
             }

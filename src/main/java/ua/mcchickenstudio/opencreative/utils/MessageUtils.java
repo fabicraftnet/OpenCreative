@@ -179,7 +179,7 @@ public final class MessageUtils {
         }
         InputStream input = OpenCreative.getPlugin().getResource("locales/" + selectedLang + ".yml");
         if (input == null) {
-            return -1;
+            input = OpenCreative.getPlugin().getResource("locales/en.yml");
         }
         YamlConfiguration resource = YamlConfiguration.loadConfiguration(new InputStreamReader(input, StandardCharsets.UTF_8));
         YamlConfiguration localization = YamlConfiguration.loadConfiguration(file);
@@ -496,7 +496,7 @@ public final class MessageUtils {
                 return messageID;
             }
         } else {
-            return originalMessage.replace("%prefix%", getPrefix()).replace("%branding%", getBranding()).replace("%cc-prefix%", getCreativeChatPrefix());
+            return ChatColor.translateAlternateColorCodes('&', originalMessage.replace("%prefix%", getPrefix()).replace("%branding%", getBranding()).replace("%cc-prefix%", getCreativeChatPrefix()));
         }
     }
     public static Component getLocaleMessage(String messageID, boolean returnDetailedError) {

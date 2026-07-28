@@ -20,9 +20,13 @@ package ua.mcchickenstudio.opencreative.listeners.player;
 
 import com.destroystokyo.paper.event.player.PlayerStartSpectatingEntityEvent;
 import com.destroystokyo.paper.event.player.PlayerStopSpectatingEntityEvent;
+import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.event.player.PlayerFlowerPotManipulateEvent;
 import io.papermc.paper.event.player.PlayerItemFrameChangeEvent;
 import io.papermc.paper.event.player.PlayerNameEntityEvent;
+import io.papermc.paper.registry.data.dialog.DialogBase;
+import io.papermc.paper.registry.data.dialog.input.DialogInput;
+import io.papermc.paper.registry.data.dialog.type.DialogType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -75,6 +79,7 @@ import ua.mcchickenstudio.opencreative.coding.menus.variables.ParticlesMenu;
 import ua.mcchickenstudio.opencreative.coding.menus.variables.PotionsMenu;
 import ua.mcchickenstudio.opencreative.coding.menus.variables.VariablesMenu;
 import ua.mcchickenstudio.opencreative.coding.variables.VariableLink;
+import ua.mcchickenstudio.opencreative.dialog.DialogDev;
 import ua.mcchickenstudio.opencreative.menus.AbstractMenu;
 import ua.mcchickenstudio.opencreative.menus.Menus;
 import ua.mcchickenstudio.opencreative.menus.world.browsers.OwnWorldsBrowserMenu;
@@ -93,6 +98,7 @@ import ua.mcchickenstudio.opencreative.utils.ItemUtils;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.listeners.player.ChangedWorld.*;
 import static ua.mcchickenstudio.opencreative.listeners.player.PlaceBlockListener.move;
@@ -106,6 +112,8 @@ import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.*;
 
 public final class InteractListener implements Listener {
 
+    private boolean usingDialog = true;
+    private DialogDev dialogs = new DialogDev();
     private static VariableLink.VariableType getVariableType(ItemMeta meta) {
         char colorCode = 'c';
         String itemName = meta.getDisplayName();
@@ -184,14 +192,14 @@ public final class InteractListener implements Listener {
             return;
         }
         switch (currentItem.getType()) {
-            case BOOK -> handleBookClick(event, player, currentItem);
-            case SLIME_BALL -> handleSlimeBallClick(event, player, currentItem);
-            case BLACK_DYE -> handleDyeClick(event, player, currentItem);
+            case BOOK -> handleBookClick(event, player, currentItem); //TODO: dialog
+            case SLIME_BALL -> handleSlimeBallClick(event, player, currentItem); //TODO: dialog
+            case BLACK_DYE -> handleDyeClick(event, player, currentItem); //what?
             case FEATHER -> handleFeatherInteraction(event, player, currentItem);
             case CLOCK -> handleClockInteraction(event, player, currentItem);
-            case MAGMA_CREAM -> handleMagmaCreamInteraction(event, player, currentItem);
-            case PAPER -> handlePaperInteraction(event, player, currentItem);
-            case PRISMARINE_SHARD -> handlePrismarineShardClick(event, player, currentItem);
+            case MAGMA_CREAM -> handleMagmaCreamInteraction(event, player, currentItem); //TODO: dialog
+            case PAPER -> handlePaperInteraction(event, player, currentItem); //TODO: dialog maybe?
+            case PRISMARINE_SHARD -> handlePrismarineShardClick(event, player, currentItem); //TODO: dialog
             case NAME_TAG -> {
                 event.setCancelled(true);
                 if (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK)
@@ -563,10 +571,16 @@ public final class InteractListener implements Listener {
                 return;
             }
             Component displayName = meta.displayName();
-            if (displayName != null) {
-                player.sendMessage(displayName.hoverEvent(HoverEvent.showText((getLocaleMessage("world.dev-mode.click-to-copy")))).clickEvent(ClickEvent.suggestCommand(meta.getDisplayName().replace("§", "&"))));
-                setPersistentData(currentItem, getCodingValueKey(), "TEXT");
-                player.swingMainHand();
+            if (usingDialog)
+            {
+                player.showDialog(dialogs.textValue(event,player,currentItem));
+            }
+            else {
+                if (displayName != null) {
+                    player.sendMessage(displayName.hoverEvent(HoverEvent.showText((getLocaleMessage("world.dev-mode.click-to-copy")))).clickEvent(ClickEvent.suggestCommand(meta.getDisplayName().replace("§", "&"))));
+                    setPersistentData(currentItem, getCodingValueKey(), "TEXT");
+                    player.swingMainHand();
+                }
             }
         }
     }
@@ -725,7 +739,7 @@ public final class InteractListener implements Listener {
         VariableLink.VariableType type = getVariableType(meta);
         meta.setDisplayName(type.getColor() + ChatColor.stripColor(meta.getDisplayName()));
         player.showTitle(Title.title(
-                meta.displayName(), Component.text(type.getLocalized()),
+                meta.displayName(), toComponent(type.getLocalized()),
                 Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(2), Duration.ofSeconds(1))
         ));
         currentItem.setItemMeta(meta);
@@ -733,7 +747,7 @@ public final class InteractListener implements Listener {
         setPersistentData(currentItem, getCodingVariableTypeKey(), type.name());
         Sounds.DEV_VARIABLE_CHANGE.play(player);
         player.swingMainHand();
-        player.sendMessage(Component.text(meta.getDisplayName())
+        player.sendMessage(toComponent(meta.getDisplayName())
                 .clickEvent(ClickEvent.suggestCommand(ChatColor.stripColor(meta.getDisplayName()))));
     }
 
