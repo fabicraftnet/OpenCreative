@@ -34,6 +34,7 @@ import java.util.concurrent.CompletableFuture;
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.FileUtils.getPlanetScriptFile;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 /**
  * <h1>CodeScript</h1>
@@ -70,12 +71,12 @@ public class CodeScript {
     public @NotNull CompletableFuture<Boolean> loadCode() {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
-            sendCodingDebugLog(planet, getLocaleMessage("coding-debug.loading-code", false));
+            sendCodingDebugLog(planet, getLocaleMessageString("coding-debug.loading-code", false));
             File scriptFile = getPlanetScriptFile(planet);
             long totalSize = ua.mcchickenstudio.opencreative.utils.FileUtils.getFileSize(scriptFile);
             long limit = planet.getGroup().getScriptSizeLimit() * 1024L * 1024L;
             if (totalSize > limit) {
-                sendPlanetErrorMessage(planet, getLocaleMessage("world.script-size-limit")
+                sendPlanetErrorMessage(planet, getLocaleMessageString("world.script-size-limit",true)
                         .replace("%amount%", FileUtils.byteCountToDisplaySize(totalSize))
                         .replace("%limit%", String.valueOf(planet.getGroup().getScriptSizeLimit())));
                 sendCodingDebugLog(planet, "Script File is too large to load :(");
@@ -113,14 +114,14 @@ public class CodeScript {
     public boolean saveCode() {
         long time = System.currentTimeMillis();
         OpenCreative.getPlugin().getLogger().info("Saving code in planet " + planet.getId() + "...");
-        sendCodingDebugLog(planet, getLocaleMessage("coding-debug.saving-code", false));
+        sendCodingDebugLog(planet, getLocaleMessageString("coding-debug.saving-code", false));
         try {
             scriptConfig.saveToFile(getPlanetScriptFile(planet));
             if (OpenCreative.getSettings().getCodingSettings().shouldSaveScriptsHistory()) {
                 copyToHistoryFolder(time);
             }
             OpenCreative.getPlugin().getLogger().info("Saved code in planet " + planet.getId() + " in " + (System.currentTimeMillis() - time) + " ms.");
-            sendCodingDebugLog(planet, getLocaleMessage("coding-debug.saved-code", false)
+            sendCodingDebugLog(planet, getLocaleMessageString("coding-debug.saved-code", false)
                     .replace("%time%", String.valueOf(Math.floor((System.currentTimeMillis() - time) / 10.0) / 100.0)));
             return true;
         } catch (Exception error) {

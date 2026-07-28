@@ -44,6 +44,7 @@ import java.util.zip.ZipOutputStream;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 /**
  * <h1>Downloader</h1>
@@ -225,7 +226,7 @@ public final class Downloader implements DownloadManager {
                              @NotNull DownloadSession session,
                              @NotNull File archive,
                              @NotNull HttpExchange exchange) throws IOException {
-        String fileName = getLocaleMessage("world.downloader.archive")
+        String fileName = getLocaleMessageString("world.downloader.archive")
                 .replace("%id%", String.valueOf(session.getPlanetID())) + ".zip";
 
         String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8)
@@ -282,10 +283,10 @@ public final class Downloader implements DownloadManager {
             String folderDisplayName;
             if (folder.getName().startsWith("planet")) {
                 if (folder.getName().endsWith("dev")) {
-                    folderDisplayName = getLocaleMessage("world.downloader.dev-folder")
+                    folderDisplayName = getLocaleMessageString("world.downloader.dev-folder")
                             .replace("%id%", String.valueOf(planetID));
                 } else {
-                    folderDisplayName = getLocaleMessage("world.downloader.build-folder")
+                    folderDisplayName = getLocaleMessageString("world.downloader.build-folder")
                             .replace("%id%", String.valueOf(planetID));
                 }
             } else {

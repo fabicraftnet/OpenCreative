@@ -40,7 +40,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 
 public final class WorldsCompassMenu extends AbstractMenu {
 
@@ -118,15 +118,15 @@ public final class WorldsCompassMenu extends AbstractMenu {
             player.updateInventory();
             String searchQuery = request == PlayerConfirmation.FIND_PLANETS_BY_NAME ? "world-name" : request == PlayerConfirmation.FIND_PLANETS_BY_ID ? "id" : "owner";
             player.showTitle(Title.title(
-                    Component.text(
-                            getLocaleMessage("menus.all-worlds.items.search.title")
-                                    .replace("%search%", getLocaleMessage("menus.all-worlds.items.search." + searchQuery))),
-                    Component.text(
-                            getLocaleMessage("menus.all-worlds.items.search.subtitle")
-                                    .replace("%search%", getLocaleMessage("menus.all-worlds.items.search." + searchQuery))),
+                    toComponent(
+                            getLocaleMessageString("menus.all-worlds.items.search.title")
+                                    .replace("%search%", getLocaleMessageString("menus.all-worlds.items.search." + searchQuery))),
+                    toComponent(
+                            getLocaleMessageString("menus.all-worlds.items.search.subtitle")
+                                    .replace("%search%", getLocaleMessageString("menus.all-worlds.items.search." + searchQuery))),
                     Title.Times.times(Duration.ofMillis(750), Duration.ofSeconds(20), Duration.ofMillis(750))
             ));
-            player.sendMessage(MessageUtils.getPlayerLocaleMessage("menus.all-worlds.items.search.usage", player).replace("%search%", getLocaleMessage("menus.all-worlds.items.search." + searchQuery)));
+            player.sendMessage(toComponent(MessageUtils.getPlayerLocaleMessageString("menus.all-worlds.items.search.usage", player).replace("%search%", getLocaleMessageString("menus.all-worlds.items.search." + searchQuery))));
             Sounds.MENU_WORLD_SEARCH.play(player);
             PlayerConfirmation.setConfirmation(player, request);
         } else if (itemEquals(currentItem, ALL_WORLDS)) {

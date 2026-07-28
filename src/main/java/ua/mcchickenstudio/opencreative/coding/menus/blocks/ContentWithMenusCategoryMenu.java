@@ -18,6 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.coding.menus.blocks;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -45,7 +46,7 @@ public abstract class ContentWithMenusCategoryMenu<T> extends ListBrowserMenu<T>
 
     public ContentWithMenusCategoryMenu(@NotNull Player player,
                                         @NotNull String mainCategory,
-                                        @NotNull String title,
+                                        @NotNull Component title,
                                         @NotNull Material stainedPane,
                                         @NotNull MenusCategory defaultCategory) {
         super(player, title, PlacementLayout.BOTTOM_NO_DECORATION, new int[]{45}, new int[]{45, 46, 52, 53});

@@ -41,6 +41,7 @@ import java.util.*;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 /**
  * <h1>Action</h1>
@@ -95,7 +96,7 @@ public abstract class Action implements CodingBlock {
         List<Entity> targets = getTargets();
         if (getPlanet().getLimits().isTooManyActionsAtOnce(targets.size())) {
             getPlanet().getTerritory().getScript().getExecutors().stopCode("actions limit");
-            sendPlanetCodeCriticalErrorMessage(getPlanet(), executor, getLocaleMessage("coding-error.actions-limit", false)
+            sendPlanetCodeCriticalErrorMessage(getPlanet(), executor, getLocaleMessageString("coding-error.actions-limit", false)
                     .replace("%limit%", String.valueOf(getPlanet().getLimits().getCodingActionsCallsLimit())));
             return;
         }

@@ -34,6 +34,7 @@ import java.util.Objects;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCodingDebugExecutor;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 /**
  * <h1>Executor</h1>
@@ -250,7 +251,7 @@ public abstract class Executor implements CodingBlock, ExtensionContent {
      * @return localized name.
      */
     public final @NotNull String getLocaleName() {
-        return getLocaleMessage("items.developer.events." + id.replace("_", "-") + ".name", false);
+        return getLocaleMessageString("items.developer.events." + id.replace("_", "-") + ".name", false);
     }
 
     @Override

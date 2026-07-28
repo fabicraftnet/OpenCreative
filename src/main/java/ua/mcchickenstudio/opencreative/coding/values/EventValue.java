@@ -29,6 +29,7 @@ import ua.mcchickenstudio.opencreative.coding.blocks.actions.ActionsHandler;
 import ua.mcchickenstudio.opencreative.coding.menus.MenusCategory;
 
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 /**
  * <h1>EventValue</h1>
@@ -122,7 +123,7 @@ public abstract class EventValue implements ExtensionContent {
      * @return localized name.
      */
     public @NotNull String getLocaleName() {
-        return getLocaleMessage("menus.developer.event-values.items." + this.getID().replace("_", "-") + ".name", false);
+        return getLocaleMessageString("menus.developer.event-values.items." + this.getID().replace("_", "-") + ".name", false);
     }
 
     @Override

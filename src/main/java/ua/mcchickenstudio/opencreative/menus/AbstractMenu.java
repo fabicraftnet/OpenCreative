@@ -47,9 +47,9 @@ public abstract class AbstractMenu implements InventoryMenu {
     protected final ItemStack DECORATION_PANE_ITEM = createItem(Material.GRAY_STAINED_GLASS_PANE, 1);
     protected Inventory inventory;
     private int rows;
-    private String title;
+    private Component title;
 
-    public AbstractMenu(int rows, String title) {
+    public AbstractMenu(int rows, Component title) {
         this.rows = rows;
         this.title = title;
         this.creationTime = System.currentTimeMillis();
@@ -76,7 +76,7 @@ public abstract class AbstractMenu implements InventoryMenu {
     public @NotNull Inventory getInventory() {
         rows = Math.clamp(1, rows, 6);
         if (inventory == null || inventory.getSize() != rows * 9) {
-            inventory = Bukkit.createInventory(this, rows * 9, Component.text(this.title));
+            inventory = Bukkit.createInventory(this, rows * 9, title);
         }
         return inventory;
     }
@@ -120,7 +120,7 @@ public abstract class AbstractMenu implements InventoryMenu {
         this.rows = rows;
         if (inventory != null && inventory.getSize() != rows * 9) {
             ItemStack[] oldItems = inventory.getContents();
-            inventory = Bukkit.createInventory(this, rows * 9, Component.text(this.title));
+            inventory = Bukkit.createInventory(this, rows * 9, title);
             for (int slot = 0; slot < oldItems.length; slot++) {
                 if (slot >= inventory.getSize()) break;
                 inventory.setItem(slot, oldItems[slot]);
@@ -137,11 +137,11 @@ public abstract class AbstractMenu implements InventoryMenu {
         return 8 - slot;
     }
 
-    public String getTitle() {
+    public Component getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(Component title) {
         this.title = title;
     }
 

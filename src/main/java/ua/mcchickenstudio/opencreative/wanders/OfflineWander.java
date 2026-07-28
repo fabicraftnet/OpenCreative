@@ -51,6 +51,7 @@ import java.util.*;
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendDebugError;
 import static ua.mcchickenstudio.opencreative.utils.FileUtils.getWanderJsonFile;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 /**
  * <h1>OfflineWander</h1>
@@ -569,7 +570,7 @@ public class OfflineWander {
         }
 
         public final @NotNull String getLocaleName() {
-            return getLocaleMessage("profiles.genders." + name().toLowerCase().replace("_", "-"), false);
+            return getLocaleMessageString("profiles.genders." + name().toLowerCase().replace("_", "-"), false);
         }
     }
 

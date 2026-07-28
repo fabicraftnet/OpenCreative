@@ -23,6 +23,7 @@ import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 /**
  * <h1>VariableLink</h1>
@@ -104,7 +105,7 @@ public final class VariableLink {
         }
 
         public String getLocalized() {
-            return getLocaleMessage("items.developer.variable." + name().toLowerCase());
+            return getLocaleMessageString("items.developer.variable." + name().toLowerCase(),true);
         }
     }
 

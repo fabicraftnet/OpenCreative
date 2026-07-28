@@ -29,6 +29,7 @@ import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 /**
  * <h1>MultiAction</h1>
@@ -71,7 +72,7 @@ public abstract class MultiAction extends Action {
         List<Entity> targets = getTargets();
         if (getPlanet().getLimits().isTooManyActionsAtOnce(targets.size())) {
             getPlanet().getTerritory().getScript().getExecutors().stopCode("actions limit");
-            sendPlanetCodeCriticalErrorMessage(getPlanet(), getExecutor(), getLocaleMessage("coding-error.actions-limit", false)
+            sendPlanetCodeCriticalErrorMessage(getPlanet(), getExecutor(), getLocaleMessageString("coding-error.actions-limit", false)
                     .replace("%limit%", String.valueOf(getPlanet().getLimits().getCodingActionsCallsLimit())));
             return;
         }

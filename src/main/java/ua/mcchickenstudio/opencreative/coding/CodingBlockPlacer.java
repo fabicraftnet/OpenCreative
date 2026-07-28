@@ -60,8 +60,7 @@ import static ua.mcchickenstudio.opencreative.listeners.player.PlaceBlockListene
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.setSignLine;
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendDebugError;
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.substring;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 
 /**
  * <h1>CodingBlockPlacer</h1>
@@ -514,8 +513,7 @@ public class CodingBlockPlacer {
                     x = (double) data.getOrDefault("x", 0);
                     y = (double) data.getOrDefault("y", 0);
                     z = (double) data.getOrDefault("z", 0);
-                    setDisplayName(item, ChatColor.translateAlternateColorCodes('&',
-                            "&b" + x + " " + y + " " + z));
+                    setDisplayName(item, toComponent("&b" + x + " " + y + " " + z));
                     setPersistentData(item, getCodingValueKey(), "VECTOR");
                     return item;
                 }
@@ -540,7 +538,7 @@ public class CodingBlockPlacer {
                     if (varType == null) {
                         varType = VariableLink.VariableType.GLOBAL;
                     }
-                    setDisplayName(item, varType.getColor() + varName);
+                    setDisplayName(item, toComponent(varType.getColor() + varName));
                     setPersistentData(item, getCodingValueKey(), "VARIABLE");
                     setPersistentData(item, getCodingVariableTypeKey(), varType.name());
                     return item;
@@ -557,12 +555,12 @@ public class CodingBlockPlacer {
                     }
                     EventValue eventValue = EventValues.getInstance().getById(valueType.toLowerCase());
                     if (eventValue != null) {
-                        setDisplayName(item, eventValue.getLocaleName());
+                        setDisplayName(item, toComponent(eventValue.getLocaleName()));
                     } else {
-                        setDisplayName(item, valueType);
+                        setDisplayName(item, toComponent(valueType));
                     }
-                    addLoreAtBegin(item, getLocaleMessage("menus.developer.event-values.target")
-                            .replace("%target%", target.getLocaleName()));
+                    addLoreAtBegin(item, toComponent( getLocaleMessageString("menus.developer.event-values.target",true)
+                            .replace("%target%", target.getLocaleName()) ) );
                     setPersistentData(item, getCodingValueKey(), "EVENT_VALUE");
                     setPersistentData(item, getCodingVariableTypeKey(), valueType);
                     setPersistentData(item, getCodingTargetTypeKey(), target.name());
@@ -570,23 +568,23 @@ public class CodingBlockPlacer {
                 }
                 case NUMBER -> {
                     if (INT_PATTERN.matcher(stringValue).matches()) {
-                        setDisplayName(item, ChatColor.translateAlternateColorCodes('&',
+                        setDisplayName(item, toComponent(
                                 "&a" + Integer.parseInt(stringValue)));
                     } else if (FLOAT_PATTERN.matcher(stringValue).matches()) {
-                        setDisplayName(item, ChatColor.translateAlternateColorCodes('&',
+                        setDisplayName(item, toComponent(
                                 "&a" + Float.parseFloat(stringValue)));
                     }
                     setPersistentData(item, getCodingValueKey(), "NUMBER");
                     return item;
                 }
                 case TEXT -> {
-                    setDisplayName(item, stringValue);
+                    setDisplayName(item, toComponent(stringValue));
                     setPersistentData(item, getCodingValueKey(), "TEXT");
                     return item;
                 }
                 case BOOLEAN -> {
                     boolean value = Boolean.parseBoolean(stringValue);
-                    setDisplayName(item, ChatColor.translateAlternateColorCodes('&',
+                    setDisplayName(item, toComponent(
                             (value ? "&a" : "&c") + value));
                     setPersistentData(item, getCodingValueKey(), "BOOLEAN");
                     return item;

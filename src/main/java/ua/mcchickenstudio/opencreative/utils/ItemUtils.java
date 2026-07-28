@@ -20,6 +20,7 @@ package ua.mcchickenstudio.opencreative.utils;
 
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TextReplacementConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -141,8 +142,8 @@ public final class ItemUtils {
 
         ItemStack itemStack = clearItemFlags(item.clone());
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(getLocaleItemName(localizationPath + ".name"));
-        itemMeta.setLore(getLocaleItemDescription(localizationPath + ".lore"));
+        itemMeta.displayName(getLocaleItemName(localizationPath + ".name"));
+        itemMeta.lore(getLocaleItemDescription(localizationPath + ".lore"));
         itemStack.setItemMeta(itemMeta);
         setPersistentData(itemStack, getItemTypeKey(), persistentData);
         return itemStack;
@@ -159,8 +160,8 @@ public final class ItemUtils {
         if (!material.isItem()) material = Material.REDSTONE;
         ItemStack itemStack = createItem(material, amount);
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(getLocaleItemName(localizationPath + ".name"));
-        itemMeta.setLore(getLocaleItemDescription(localizationPath + ".lore"));
+        itemMeta.displayName(getLocaleItemName(localizationPath + ".name"));
+        itemMeta.lore(getLocaleItemDescription(localizationPath + ".lore"));
         itemStack.setItemMeta(itemMeta);
         setPersistentData(itemStack, getItemTypeKey(), persistentData);
         return itemStack;
@@ -176,8 +177,8 @@ public final class ItemUtils {
         if (!material.isItem()) material = Material.REDSTONE;
         ItemStack itemStack = createItem(material, amount);
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(getLocaleItemName(localizationPath + ".name"));
-        itemMeta.setLore(getLocaleItemDescription(localizationPath + ".lore"));
+        itemMeta.displayName(getLocaleItemName(localizationPath + ".name"));
+        itemMeta.lore(getLocaleItemDescription(localizationPath + ".lore"));
         itemStack.setItemMeta(itemMeta);
         return itemStack;
 
@@ -190,8 +191,8 @@ public final class ItemUtils {
 
         ItemStack itemStack = clearItemFlags(item.clone());
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(getLocaleItemName(localizationPath + ".name"));
-        itemMeta.setLore(getLocaleItemDescription(localizationPath + ".lore"));
+        itemMeta.displayName(getLocaleItemName(localizationPath + ".name"));
+        itemMeta.lore(getLocaleItemDescription(localizationPath + ".lore"));
         itemStack.setItemMeta(itemMeta);
         return itemStack;
 
@@ -320,51 +321,51 @@ public final class ItemUtils {
         return item;
     }
 
-    public static @NotNull ItemStack setDisplayName(@NotNull ItemStack item, @Nullable String displayName) {
+    public static @NotNull ItemStack setDisplayName(@NotNull ItemStack item, @Nullable Component displayName) {
         if (item.hasItemMeta()) {
             ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName(displayName);
+            meta.displayName(displayName);
             item.setItemMeta(meta);
         }
         return item;
     }
 
-    public static @NotNull ItemStack setLore(@NotNull ItemStack item, @Nullable List<String> lore) {
+    public static @NotNull ItemStack setLore(@NotNull ItemStack item, @Nullable List<Component> lore) {
         if (item.hasItemMeta()) {
             ItemMeta meta = item.getItemMeta();
-            meta.setLore(lore);
+            meta.lore(lore);
             item.setItemMeta(meta);
         }
         return item;
     }
 
     public static @NotNull ItemStack addLoreAtBegin(@NotNull ItemStack item,
-                                                    @NotNull String loreLine) {
-        if (loreLine.isEmpty()) return item;
+                                                    @NotNull Component loreLine) {
+        if ((((TextComponent) loreLine).content().isEmpty())) return item;
         if (item.hasItemMeta()) {
             ItemMeta meta = item.getItemMeta();
-            List<String> lore = new ArrayList<>();
+            List<Component> lore = new ArrayList<>();
             lore.add(loreLine);
             if (meta.hasLore()) {
-                lore.addAll(meta.getLore());
+                lore.addAll(meta.lore());
             }
-            meta.setLore(lore);
+            meta.lore(lore);
             item.setItemMeta(meta);
         }
         return item;
     }
 
     public static @NotNull ItemStack addLoreAtEnd(@NotNull ItemStack item,
-                                                  @NotNull String loreLine) {
-        if (loreLine.isEmpty()) return item;
+                                                  @NotNull Component loreLine) {
+        if ((((TextComponent) loreLine).content().isEmpty())) return item;
         if (item.hasItemMeta()) {
             ItemMeta meta = item.getItemMeta();
-            List<String> lore = new ArrayList<>();
+            List<Component> lore = new ArrayList<>();
             if (meta.hasLore()) {
-                lore = meta.getLore();
+                lore = meta.lore();
             }
             lore.add(loreLine);
-            meta.setLore(lore);
+            meta.lore(lore);
             item.setItemMeta(meta);
         }
         return item;

@@ -39,8 +39,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static ua.mcchickenstudio.opencreative.utils.FileUtils.getModuleConfig;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.parseModuleLines;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 
 /**
  * <h1>Module</h1>
@@ -134,12 +133,12 @@ public class Module {
         CodingBlockPlacer placer = new CodingBlockPlacer(devPlanet);
         CodingBlockPlacer.CodePlacementResult result = placer.placeCodingLines(devPlanet, section);
         if (result.getType() == CodingBlockPlacer.CodePlacementResult.Type.NOT_ENOUGH_SPACE) {
-            player.sendMessage(getLocaleMessage("modules.few-space")
-                    .replace("%required%", String.valueOf(requiredColumns)));
+            player.sendMessage(toComponent(getLocaleMessageString("modules.few-space",true)
+                    .replace("%required%", String.valueOf(requiredColumns))));
             Sounds.DEV_NOT_ALLOWED.play(player);
             return false;
         } else if (result.getType() == CodingBlockPlacer.CodePlacementResult.Type.ERROR) {
-            player.sendMessage(parseModuleLines(this, MessageUtils.getPlayerLocaleMessage("modules.fail", player)));
+            player.sendMessage(toComponent(parseModuleLines(this, MessageUtils.getPlayerLocaleMessageString("modules.fail", player))));
             Sounds.PLAYER_FAIL.play(player);
             for (Location placedExecutor : result.getPlacedColumns()) {
                 devPlanet.addChangedColumn(placedExecutor);
@@ -149,7 +148,7 @@ public class Module {
             Sounds.DEV_MODULE_INSTALLED.play(player);
             for (Player planetPlayer : devPlanet.getPlanet().getPlayers()) {
                 if (devPlanet.getPlanet().getWorldPlayers().canDevelop(planetPlayer)) {
-                    planetPlayer.sendMessage(parseModuleLines(this, MessageUtils.getPlayerLocaleMessage("modules.installed", player)));
+                    planetPlayer.sendMessage(toComponent(parseModuleLines(this, MessageUtils.getPlayerLocaleMessageString("modules.installed", player))));
                 }
             }
             for (Location placedExecutor : result.getPlacedColumns()) {

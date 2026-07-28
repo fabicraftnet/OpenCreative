@@ -171,7 +171,7 @@ public final class ChatListener implements Listener {
             }
             if (getCooldown(player, CooldownUtils.CooldownType.WORLD_CHAT) > 0) {
                 event.setCancelled(true);
-                player.sendMessage(getLocaleMessage("world.chat-cooldown").replace("%cooldown%", String.valueOf(getCooldown(player, CooldownUtils.CooldownType.WORLD_CHAT))));
+                player.sendMessage(toComponent(getLocaleMessageString("world.chat-cooldown").replace("%cooldown%", String.valueOf(getCooldown(player, CooldownUtils.CooldownType.WORLD_CHAT)))));
                 return;
             }
             setCooldown(player, OpenCreative.getSettings().getGroups().getGroup(player).getChatCooldown(), CooldownUtils.CooldownType.WORLD_CHAT);
@@ -265,7 +265,7 @@ public final class ChatListener implements Listener {
                 setPersistentData(itemInHand, getCodingValueKey(), "TEXT");
                 player.getInventory().setItemInMainHand(itemInHand);
                 player.showTitle(Title.title(
-                        toComponent(getLocaleMessage("world.dev-mode.set-variable")), meta.displayName(),
+                        (getLocaleMessage("world.dev-mode.set-variable")), meta.displayName(),
                         Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
                 ));
                 player.swingMainHand();
@@ -280,7 +280,7 @@ public final class ChatListener implements Listener {
                 Double number = parseTicks(numberString);
                 if (number == null) {
                     player.showTitle(Title.title(
-                            Component.empty(), toComponent(getLocaleMessage("world.dev-mode.set-variable-number-error")),
+                            Component.empty(), (getLocaleMessage("world.dev-mode.set-variable-number-error")),
                             Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
                     ));
                     return;
@@ -292,7 +292,7 @@ public final class ChatListener implements Listener {
                 Sounds.DEV_NUMBER_SET.play(player);
                 player.setItemInHand(itemInHand);
                 player.showTitle(Title.title(
-                        toComponent(getLocaleMessage("world.dev-mode.set-variable")), meta.displayName(),
+                        (getLocaleMessage("world.dev-mode.set-variable")), meta.displayName(),
                         Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
                 ));
                 player.swingMainHand();
@@ -317,7 +317,7 @@ public final class ChatListener implements Listener {
                 Sounds.DEV_VARIABLE_SET.play(player);
                 player.getInventory().setItemInMainHand(itemInHand);
                 player.showTitle(Title.title(
-                        toComponent(getLocaleMessage("world.dev-mode.set-variable")), meta.displayName(),
+                        (getLocaleMessage("world.dev-mode.set-variable")), meta.displayName(),
                         Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
                 ));
                 player.swingMainHand();
@@ -336,7 +336,7 @@ public final class ChatListener implements Listener {
                 }
                 setPersistentData(itemInHand, getCodingValueKey(), "COLOR");
                 player.showTitle(Title.title(
-                        toComponent(getLocaleMessage("world.dev-mode.set-variable")), meta.displayName(),
+                        (getLocaleMessage("world.dev-mode.set-variable")), meta.displayName(),
                         Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
                 ));
                 Sounds.DEV_VALUE_SET.play(player);
@@ -398,7 +398,7 @@ public final class ChatListener implements Listener {
                 }
                 newMeta.addCustomEffect(new PotionEffect(effect.getType(), duration, amplifier - 1), true);
                 player.showTitle(Title.title(
-                        Component.empty(), toComponent(getLocaleMessage("world.dev-mode.set-potion").replace("%duration%", convertTime(duration * 50L)).replace("%amplifier%", "" + amplifier)),
+                        Component.empty(), toComponent(getLocaleMessageString("world.dev-mode.set-potion").replace("%duration%", convertTime(duration * 50L)).replace("%amplifier%", "" + amplifier)),
                         Title.Times.times(Duration.ofMillis(750), Duration.ofSeconds(2), Duration.ofMillis(500))
                 ));
                 Sounds.DEV_POTION_SET.play(player);
@@ -441,7 +441,7 @@ public final class ChatListener implements Listener {
                 itemInHand.setItemMeta(meta);
                 setPersistentData(itemInHand, getCodingValueKey(), "VECTOR");
                 player.showTitle(Title.title(
-                        toComponent(getLocaleMessage("world.dev-mode.set-variable")), meta.displayName(),
+                        toComponent(getLocaleMessageString("world.dev-mode.set-variable")), meta.displayName(),
                         Title.Times.times(Duration.ofMillis(750), Duration.ofSeconds(2), Duration.ofMillis(500))
                 ));
                 Sounds.DEV_VECTOR_SET.play(player);
@@ -481,13 +481,13 @@ public final class ChatListener implements Listener {
                 String uncoloredName = ChatColor.stripColor(newName);
                 if (uncoloredName.length() > OpenCreative.getSettings().getRequirements().getWorldNameMaxLength() || uncoloredName.length()
                         < OpenCreative.getSettings().getRequirements().getWorldNameMinLength()) {
-                    player.sendMessage(getLocaleMessage("settings.world-name.error")
+                    player.sendMessage(toComponent(getLocaleMessageString("settings.world-name.error")
                             .replace("%min%", String.valueOf(OpenCreative.getSettings().getRequirements().getWorldNameMinLength()))
-                            .replace("%max%", String.valueOf(OpenCreative.getSettings().getRequirements().getWorldNameMaxLength())));
+                            .replace("%max%", String.valueOf(OpenCreative.getSettings().getRequirements().getWorldNameMaxLength()))));
                     return true;
                 }
                 planet.getInformation().setDisplayName(newName);
-                player.sendMessage(getLocaleMessage("settings.world-name.changed").replace("%name%", newName));
+                player.sendMessage(toComponent(getLocaleMessageString("settings.world-name.changed").replace("%name%", newName)));
                 planet.getInformation().updateIconAsync();
                 OpenCreative.getPlugin().getLogger().info("[WORLD-CHAT: " + planet.getId() + "] " + player.getName() + " renamed world to: " + input);
                 Sounds.WORLD_SETTINGS_NAME_CHANGE.play(player);
@@ -499,9 +499,9 @@ public final class ChatListener implements Listener {
                 if (input.length() > OpenCreative.getSettings().getRequirements().getCustomIdMaxLength()
                         || input.length() < OpenCreative.getSettings().getRequirements().getCustomIdMinLength()
                         || Character.isDigit(input.charAt(0)) || !input.matches(pattern)) {
-                    player.sendMessage(getLocaleMessage("settings.world-id.error")
+                    player.sendMessage(toComponent(getLocaleMessageString("settings.world-id.error")
                             .replace("%min%", String.valueOf(OpenCreative.getSettings().getRequirements().getCustomIdMinLength()))
-                            .replace("%max%", String.valueOf(OpenCreative.getSettings().getRequirements().getCustomIdMaxLength())));
+                            .replace("%max%", String.valueOf(OpenCreative.getSettings().getRequirements().getCustomIdMaxLength()))));
                     return true;
                 }
                 for (Planet searchablePlanet : OpenCreative.getPlanetsManager().getPlanets()) {
@@ -511,7 +511,7 @@ public final class ChatListener implements Listener {
                     }
                 }
                 planet.getInformation().setCustomID(input);
-                player.sendMessage(getLocaleMessage("settings.world-id.changed").replace("%id%", input));
+                player.sendMessage(toComponent(getLocaleMessageString("settings.world-id.changed").replace("%id%", input)));
                 planet.getInformation().updateIconAsync();
                 OpenCreative.getPlugin().getLogger().info("[WORLD-CHAT: " + planet.getId() + "] " + player.getName() + " changed world's ID to: " + input);
                 Sounds.WORLD_SETTINGS_CUSTOM_ID_SET.play(player);
@@ -523,14 +523,14 @@ public final class ChatListener implements Listener {
                 String uncoloredDescription = ChatColor.stripColor(newDescription);
                 if (uncoloredDescription.length() > OpenCreative.getSettings().getRequirements().getWorldDescriptionMaxLength() ||
                         uncoloredDescription.length() < OpenCreative.getSettings().getRequirements().getWorldDescriptionMinLength()) {
-                    player.sendMessage(getLocaleMessage("settings.world-description.error")
+                    player.sendMessage(toComponent(getLocaleMessageString("settings.world-description.error")
                             .replace("%min%", String.valueOf(OpenCreative.getSettings().getRequirements().getWorldDescriptionMinLength()))
-                            .replace("%max%", String.valueOf(OpenCreative.getSettings().getRequirements().getWorldDescriptionMaxLength())));
+                            .replace("%max%", String.valueOf(OpenCreative.getSettings().getRequirements().getWorldDescriptionMaxLength()))));
                     return true;
                 }
                 newDescription = String.join("\\n", splitDescription(newDescription, 39));
                 planet.getInformation().setDescription(newDescription);
-                player.sendMessage(getLocaleMessage("settings.world-description.changed").replace("%description%", newDescription));
+                player.sendMessage(toComponent(getLocaleMessageString("settings.world-description.changed").replace("%description%", newDescription)));
                 planet.getInformation().updateIconAsync();
                 OpenCreative.getPlugin().getLogger().info("[WORLD-CHAT: " + planet.getId() + "] " + player.getName() + " changed world's description to: " + input);
                 Sounds.WORLD_SETTINGS_DESCRIPTION_SET.play(player);
@@ -573,22 +573,22 @@ public final class ChatListener implements Listener {
                     if (input.equals(String.valueOf(planet.getId()))) {
                         Player newOwnerPlayer = Bukkit.getPlayerExact(newOwner);
                         if (newOwnerPlayer == null) {
-                            player.sendMessage(getLocaleMessage("world.players.transfer-ownership.offline").replace("%player%", newOwner));
+                            player.sendMessage(toComponent(getLocaleMessageString(("world.players.transfer-ownership.offline").replace("%player%", newOwner))));
                             return true;
                         }
                         if (!planet.getPlayers().contains(newOwnerPlayer)) {
-                            player.sendMessage(getLocaleMessage("world.players.transfer-ownership.offline").replace("%player%", newOwner));
+                            player.sendMessage(toComponent(getLocaleMessageString(("world.players.transfer-ownership.offline").replace("%player%", newOwner))));
                             return true;
                         }
                         if (OpenCreative.getPlanetsManager().getPlanetsByOwner(newOwnerPlayer).size() >= OpenCreative.getSettings().getGroups().getGroup(newOwnerPlayer).getWorldsLimit()) {
-                            player.sendMessage(getLocaleMessage("world.players.transfer-ownership.limit").replace("%player%", newOwner));
+                            player.sendMessage(toComponent(getLocaleMessageString(("world.players.transfer-ownership.limit").replace("%player%", newOwner))));
                             return true;
                         }
                         OpenCreative.getPlugin().getLogger().info("[WORLD-CHAT: " + planet.getId() + "] " + player.getName() + " wants to transfer world's ownership to: " + input);
                         planet.setChangingOwner(true);
-                        player.sendMessage(getLocaleMessage("world.players.transfer-ownership.awaiting").replace("%player%", newOwner));
-                        newOwnerPlayer.sendMessage(getLocaleMessage("world.players.transfer-ownership.confirm-new")
-                                .replace("%player%", player.getName()).replace("%id%", String.valueOf(planet.getId())));
+                        player.sendMessage(toComponent(getLocaleMessageString(("world.players.transfer-ownership.awaiting").replace("%player%", newOwner))));
+                        newOwnerPlayer.sendMessage(toComponent(getLocaleMessageString("world.players.transfer-ownership.confirm-new")
+                                .replace("%player%", player.getName()).replace("%id%", String.valueOf(planet.getId()))));
                         PlayerConfirmation.setConfirmation(newOwnerPlayer, PlayerConfirmation.GET_OWNERSHIP);
                     } else {
                         player.sendMessage(getLocaleMessage("world.players.transfer-ownership.wrong-id"));
@@ -601,19 +601,19 @@ public final class ChatListener implements Listener {
                     Player oldOwner = Bukkit.getPlayer(planet.getOwner());
                     if (input.equals(String.valueOf(planet.getId()))) {
                         if (oldOwner == null) {
-                            player.sendMessage(getLocaleMessage("world.players.transfer-ownership.offline").replace("%player%", player.getName()));
+                            player.sendMessage(toComponent(getLocaleMessageString(("world.players.transfer-ownership.offline").replace("%player%", player.getName()))));
                             return true;
                         }
                         if (!planet.getPlayers().contains(oldOwner)) {
-                            player.sendMessage(getLocaleMessage("world.players.transfer-ownership.offline").replace("%player%", player.getName()));
+                            player.sendMessage(toComponent(getLocaleMessageString(("world.players.transfer-ownership.offline").replace("%player%", player.getName()))));
                             return true;
                         }
                         if (OpenCreative.getPlanetsManager().getPlanetsByOwner(player).size() >= OpenCreative.getSettings().getGroups().getGroup(player).getWorldsLimit()) {
-                            player.sendMessage(getLocaleMessage("world.players.transfer-ownership.limit").replace("%player%", player.getName()));
+                            player.sendMessage(toComponent(getLocaleMessageString(("world.players.transfer-ownership.limit").replace("%player%", player.getName()))));
                             return true;
                         }
                         OpenCreative.getPlugin().getLogger().info("[WORLD-CHAT: " + planet.getId() + "] " + oldOwner.getName() + " transferred world's ownership to: " + player.getName());
-                        oldOwner.sendMessage(getLocaleMessage("world.players.transfer-ownership.transferred-old").replace("%player%", player.getName()));
+                        oldOwner.sendMessage(toComponent(getLocaleMessageString(("world.players.transfer-ownership.transferred-old").replace("%player%", player.getName()))));
                         player.sendMessage(getLocaleMessage("world.players.transfer-ownership.transferred-new"));
                         planet.setChangingOwner(false);
                         Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
@@ -648,14 +648,14 @@ public final class ChatListener implements Listener {
                 String uncoloredName = ChatColor.stripColor(newName);
                 if (uncoloredName.length() > OpenCreative.getSettings().getRequirements().getModuleNameMaxLength()
                         || uncoloredName.length() < OpenCreative.getSettings().getRequirements().getModuleNameMinLength()) {
-                    player.sendMessage(getLocaleMessage("settings.module-name.error")
+                    player.sendMessage(toComponent(getLocaleMessageString(("settings.module-name.error")
                             .replace("%min%", String.valueOf(OpenCreative.getSettings().getRequirements().getModuleNameMinLength()))
-                            .replace("%max%", String.valueOf(OpenCreative.getSettings().getRequirements().getModuleNameMaxLength())));
+                            .replace("%max%", String.valueOf(OpenCreative.getSettings().getRequirements().getModuleNameMaxLength())))));
                     return true;
                 }
                 OpenCreative.getPlugin().getLogger().info("[WORLD-CHAT: " + WorldUtils.getPlanetIdFromName(player.getWorld()) + "] " + player.getName() + " renamed module " + module.getId() + " to: " + input);
                 module.getInformation().setDisplayName(newName);
-                player.sendMessage(getLocaleMessage("settings.module-name.changed").replace("%name%", newName));
+                player.sendMessage(toComponent(getLocaleMessageString(("settings.module-name.changed").replace("%name%", newName))));
                 Sounds.MODULE_SETTINGS_NAME_SET.play(player);
             }
             case MODULE_DESCRIPTION_CHANGE -> {
@@ -665,15 +665,15 @@ public final class ChatListener implements Listener {
                 String uncoloredDescription = ChatColor.stripColor(newDescription);
                 if (uncoloredDescription.length() > OpenCreative.getSettings().getRequirements().getModuleDescriptionMaxLength() ||
                         uncoloredDescription.length() < OpenCreative.getSettings().getRequirements().getModuleDescriptionMinLength()) {
-                    player.sendMessage(getLocaleMessage("settings.module-description.error")
+                    player.sendMessage(toComponent(getLocaleMessageString(("settings.module-description.error")
                             .replace("%min%", String.valueOf(OpenCreative.getSettings().getRequirements().getModuleDescriptionMinLength()))
-                            .replace("%max%", String.valueOf(OpenCreative.getSettings().getRequirements().getModuleDescriptionMaxLength())));
+                            .replace("%max%", String.valueOf(OpenCreative.getSettings().getRequirements().getModuleDescriptionMaxLength())))));
                     return true;
                 }
                 newDescription = String.join("\\n", splitDescription(newDescription, 39));
                 OpenCreative.getPlugin().getLogger().info("[WORLD-CHAT: " + WorldUtils.getPlanetIdFromName(player.getWorld()) + "] " + player.getName() + " changed module's (" + module.getId() + ") description to: " + input);
                 module.getInformation().setDescription(newDescription);
-                player.sendMessage(getLocaleMessage("settings.module-description.changed").replace("%description%", newDescription));
+                player.sendMessage(toComponent(getLocaleMessageString(("settings.module-description.changed").replace("%description%", newDescription))));
                 Sounds.MODULE_SETTINGS_DESCRIPTION_SET.play(player);
             }
             case PROFILE_DESCRIPTION -> {
@@ -682,15 +682,15 @@ public final class ChatListener implements Listener {
                 String uncoloredDescription = ChatColor.stripColor(newDescription);
                 if (uncoloredDescription.length() > OpenCreative.getSettings().getRequirements().getModuleDescriptionMaxLength() ||
                         uncoloredDescription.length() < OpenCreative.getSettings().getRequirements().getModuleDescriptionMinLength()) {
-                    player.sendMessage(getLocaleMessage("settings.profile-description.error")
+                    player.sendMessage(toComponent(getLocaleMessageString(("settings.profile-description.error")
                             .replace("%min%", String.valueOf(OpenCreative.getSettings().getRequirements().getModuleDescriptionMinLength()))
-                            .replace("%max%", String.valueOf(OpenCreative.getSettings().getRequirements().getModuleDescriptionMaxLength())));
+                            .replace("%max%", String.valueOf(OpenCreative.getSettings().getRequirements().getModuleDescriptionMaxLength())))));
                     return true;
                 }
                 newDescription = String.join("\\n", splitDescription(newDescription, 20));
                 OpenCreative.getPlugin().getLogger().info("[WORLD-CHAT: " + WorldUtils.getPlanetIdFromName(player.getWorld()) + "] " + player.getName() + " changed profile's description to: " + input);
                 wander.setDescription(newDescription);
-                player.sendMessage(getLocaleMessage("settings.profile-description.changed").replace("%description%", newDescription));
+                player.sendMessage(toComponent(getLocaleMessageString(("settings.profile-description.changed").replace("%description%", newDescription))));
                 Sounds.PROFILE_SETTINGS_DESCRIPTION_SET.play(player);
                 return true;
             }
@@ -703,9 +703,9 @@ public final class ChatListener implements Listener {
                     case "discord" -> {
                         input = input.replace("@", "");
                         if (input.length() < 2 || input.length() > 32) {
-                            player.sendMessage(getLocaleMessage("settings.profile-social-discord.error")
+                            player.sendMessage(toComponent(getLocaleMessageString(("settings.profile-social-discord.error")
                                     .replace("%min%", String.valueOf(2))
-                                    .replace("%max%", String.valueOf(32)));
+                                    .replace("%max%", String.valueOf(32)))));
                             Sounds.PLAYER_FAIL.play(player);
                             return true;
                         }
@@ -715,9 +715,9 @@ public final class ChatListener implements Listener {
                         input = input.replace("x.com/", "");
                         input = input.replace("@", "");
                         if (input.length() < 4 || input.length() > 15) {
-                            player.sendMessage(getLocaleMessage("settings.profile-social-twitter.error")
+                            player.sendMessage(toComponent(getLocaleMessageString(("settings.profile-social-twitter.error")
                                     .replace("%min%", String.valueOf(4))
-                                    .replace("%max%", String.valueOf(15)));
+                                    .replace("%max%", String.valueOf(15)))));
                             Sounds.PLAYER_FAIL.play(player);
                             return true;
                         }
@@ -728,9 +728,9 @@ public final class ChatListener implements Listener {
                         input = input.replace("youtube.com/@", "");
                         input = input.replace("@", "");
                         if (input.length() < 3 || input.length() > 24) {
-                            player.sendMessage(getLocaleMessage("settings.profile-social-youtube.error")
+                            player.sendMessage(toComponent(getLocaleMessageString(("settings.profile-social-youtube.error")
                                     .replace("%min%", String.valueOf(3))
-                                    .replace("%max%", String.valueOf(24)));
+                                    .replace("%max%", String.valueOf(24)))));
                             Sounds.PLAYER_FAIL.play(player);
                             return true;
                         }
@@ -739,9 +739,9 @@ public final class ChatListener implements Listener {
                         input = input.replace("t.me/", "");
                         input = input.replace("@", "");
                         if (input.length() < 5 || input.length() > 32) {
-                            player.sendMessage(getLocaleMessage("settings.profile-social-telegram.error")
+                            player.sendMessage(toComponent(getLocaleMessageString(("settings.profile-social-telegram.error")
                                     .replace("%min%", String.valueOf(5))
-                                    .replace("%max%", String.valueOf(32)));
+                                    .replace("%max%", String.valueOf(32)))));
                             Sounds.PLAYER_FAIL.play(player);
                             return true;
                         }
@@ -750,8 +750,8 @@ public final class ChatListener implements Listener {
                         return true;
                     }
                 }
-                player.sendMessage(getLocaleMessage("settings.profile-social-" + social + ".changed")
-                        .replace("%social%", input));
+                player.sendMessage(toComponent(getLocaleMessageString(("settings.profile-social-" + social + ".changed")
+                        .replace("%social%", input))));
                 wander.setLink(social, input);
                 Sounds.PROFILE_SETTINGS_SOCIAL_SET.play(player);
                 return true;

@@ -18,6 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.coding.blocks.actions;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -26,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.getSignLine;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 /**
  * <h1>Target</h1>
@@ -97,6 +99,6 @@ public enum Target {
     }
 
     public @NotNull String getLocaleName() {
-        return getLocaleMessage("menus.developer.selection.targets." + this.name().toLowerCase().replace("_", "-"), false);
+        return getLocaleMessageString("menus.developer.selection.targets." + this.name().toLowerCase().replace("_", "-"), false);
     }
 }

@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 
 /**
  * <h1>GamemodeCommand</h1>
@@ -141,8 +141,8 @@ public class GamemodeCommand extends CommandHandler {
                     }
                 }
                 modePlayer.setGameMode(mode);
-                player.sendMessage(getLocaleMessage("commands.game-mode.changed-player." + mode.name().toLowerCase())
-                        .replace("%player%", modePlayer.getName()));
+                player.sendMessage(toComponent(getLocaleMessageString("commands.game-mode.changed-player." + mode.name().toLowerCase())
+                        .replace("%player%", modePlayer.getName())));
                 modePlayer.sendMessage(getLocaleMessage("commands.game-mode.changed." + mode.name().toLowerCase()));
             } catch (IllegalArgumentException e) {
                 player.sendMessage(getLocaleMessage("commands.game-mode.wrong"));

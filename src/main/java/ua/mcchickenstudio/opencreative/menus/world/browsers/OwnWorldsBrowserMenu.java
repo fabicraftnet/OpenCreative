@@ -18,6 +18,9 @@
 
 package ua.mcchickenstudio.opencreative.menus.world.browsers;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TextReplacementConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -41,8 +44,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.convertTime;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 
 /**
  * This class represents a menu, that displays specified list of worlds.
@@ -71,18 +73,22 @@ public final class OwnWorldsBrowserMenu extends ListBrowserMenu<Planet> {
         ItemStack item = clearItemMeta(planet.getInformation().getIcon().clone());
         ItemMeta meta = item.getItemMeta();
         meta.displayName(planet.getInformation().displayName());
-        List<String> lore = new ArrayList<>();
-        for (String loreLine : MessageUtils.getLocaleItemDescription("menus.own-worlds.items.world.lore")) {
-            if (loreLine.contains("%planetDescription%")) {
+        List<Component> lore = new ArrayList<>();
+        for (Component loreLine : MessageUtils.getLocaleItemDescription("menus.own-worlds.items.world.lore")) {
+            if (((TextComponent)loreLine).content().contains("%planetDescription%")) {
                 String[] newLines = planet.getInformation().getDescription().split("\\\\n");
                 for (String newLine : newLines) {
-                    lore.add(loreLine.replace("%planetDescription%", ChatColor.translateAlternateColorCodes('&', newLine)));
+                    lore.add(
+                            loreLine.replaceText(TextReplacementConfig.builder()
+                                    .match("%planetDescription%")
+                                    .replacement(toComponent(newLine))
+                                    .build()));
                 }
             } else {
                 lore.add(MessageUtils.parsePlanetLines(planet, loreLine));
             }
         }
-        meta.setLore(lore);
+        meta.lore(lore);
         item.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         meta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
         meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
@@ -135,9 +141,9 @@ public final class OwnWorldsBrowserMenu extends ListBrowserMenu<Planet> {
 
                     Sounds.PLAYER_CANCEL.play(getPlayer());
                     getPlayer().closeInventory();
-                    getPlayer().sendMessage(
-                            MessageUtils.getPlayerLocaleMessage("creating-world.not-enough-played", getPlayer())
-                                    .replace("%time%", convertTime(unlockTime))
+                    getPlayer().sendMessage(toComponent(
+                            getPlayerLocaleMessageString("creating-world.not-enough-played", getPlayer())
+                                    .replace("%time%", convertTime(unlockTime)))
                     );
                     return;
                 }

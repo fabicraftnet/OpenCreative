@@ -42,8 +42,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.toComponent;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isLobbyWorld;
 
 public final class DeathListener implements Listener {
@@ -69,7 +68,7 @@ public final class DeathListener implements Listener {
                 new PlayerKilledPlayerEvent(killer, player, event).callEvent();
             }
             player.showTitle(Title.title(
-                    toComponent(getLocaleMessage("deaths.title", false)), Component.text("§7 " + player.getName() + "§f " + translateDeathMessage(player)),
+                    (getLocaleMessage("deaths.title", false)), Component.text("§7 " + player.getName() + "§f " + translateDeathMessage(player)),
                     Title.Times.times(Duration.ofMillis(750), Duration.ofSeconds(2), Duration.ofMillis(500))
             ));
         } else if (isLobbyWorld(event.getPlayer().getWorld())) {
@@ -83,43 +82,43 @@ public final class DeathListener implements Listener {
 
     private String translateDeathMessage(Player player) {
         EntityDamageEvent damageEvent = player.getLastDamageCause();
-        if (damageEvent == null) return getLocaleMessage("deaths.custom");
+        if (damageEvent == null) return getLocaleMessageString("deaths.custom");
         Entity damager = player.getKiller();
         if (damageEvent instanceof EntityDamageByEntityEvent damageByEntityEvent) {
             damager = damageByEntityEvent.getDamager();
         }
         return switch (damageEvent.getCause()) {
-            case BLOCK_EXPLOSION -> getLocaleMessage("deaths.block-explosion");
-            case CONTACT -> getLocaleMessage("deaths.contact");
-            case CRAMMING -> getLocaleMessage("deaths.cramming");
-            case DRAGON_BREATH -> getLocaleMessage("deaths.dragon-breath");
-            case DROWNING -> getLocaleMessage("deaths.drowning");
-            case DRYOUT -> getLocaleMessage("deaths.dryout");
+            case BLOCK_EXPLOSION -> getLocaleMessageString("deaths.block-explosion");
+            case CONTACT -> getLocaleMessageString("deaths.contact");
+            case CRAMMING -> getLocaleMessageString("deaths.cramming");
+            case DRAGON_BREATH -> getLocaleMessageString("deaths.dragon-breath");
+            case DROWNING -> getLocaleMessageString("deaths.drowning");
+            case DRYOUT -> getLocaleMessageString("deaths.dryout");
             case ENTITY_ATTACK ->
-                    getLocaleMessage("deaths.entity-attack").replace("%entity%", (damager == null ? "" : damager.getName().substring(0, Math.min(damager.getName().length(), 30))));
+                    getLocaleMessageString("deaths.entity-attack").replace("%entity%", (damager == null ? "" : damager.getName().substring(0, Math.min(damager.getName().length(), 30))));
             case ENTITY_EXPLOSION ->
-                    getLocaleMessage("deaths.entity-explosion").replace("%entity%", (damager == null ? "" : damager.getName().substring(0, Math.min(damager.getName().length(), 30))));
+                    getLocaleMessageString("deaths.entity-explosion").replace("%entity%", (damager == null ? "" : damager.getName().substring(0, Math.min(damager.getName().length(), 30))));
             case ENTITY_SWEEP_ATTACK ->
-                    getLocaleMessage("deaths.entity-sweep-attack").replace("%entity%", (damager == null ? "" : damager.getName().substring(0, Math.min(damager.getName().length(), 30))));
-            case FALL -> getLocaleMessage("deaths.fall");
-            case FALLING_BLOCK -> getLocaleMessage("deaths.falling-block");
-            case FIRE -> getLocaleMessage("deaths.fire");
-            case FIRE_TICK -> getLocaleMessage("deaths.fire-tick");
-            case FLY_INTO_WALL -> getLocaleMessage("deaths.fly-into-wall");
-            case HOT_FLOOR -> getLocaleMessage("deaths.hot-floor");
-            case LAVA -> getLocaleMessage("deaths.lava");
-            case LIGHTNING -> getLocaleMessage("deaths.lightning");
-            case MAGIC -> getLocaleMessage("deaths.magic");
-            case MELTING -> getLocaleMessage("deaths.melting");
-            case POISON -> getLocaleMessage("deaths.poison");
-            case PROJECTILE -> getLocaleMessage("deaths.projectile");
-            case STARVATION -> getLocaleMessage("deaths.starvation");
-            case SUFFOCATION -> getLocaleMessage("deaths.suffocation");
-            case SUICIDE -> getLocaleMessage("deaths.suicide");
-            case THORNS -> getLocaleMessage("deaths.thorns");
-            case VOID -> getLocaleMessage("deaths.void");
-            case WITHER -> getLocaleMessage("deaths.wither");
-            default -> getLocaleMessage("deaths.custom");
+                    getLocaleMessageString("deaths.entity-sweep-attack").replace("%entity%", (damager == null ? "" : damager.getName().substring(0, Math.min(damager.getName().length(), 30))));
+            case FALL -> getLocaleMessageString("deaths.fall");
+            case FALLING_BLOCK -> getLocaleMessageString("deaths.falling-block");
+            case FIRE -> getLocaleMessageString("deaths.fire");
+            case FIRE_TICK -> getLocaleMessageString("deaths.fire-tick");
+            case FLY_INTO_WALL -> getLocaleMessageString("deaths.fly-into-wall");
+            case HOT_FLOOR -> getLocaleMessageString("deaths.hot-floor");
+            case LAVA -> getLocaleMessageString("deaths.lava");
+            case LIGHTNING -> getLocaleMessageString("deaths.lightning");
+            case MAGIC -> getLocaleMessageString("deaths.magic");
+            case MELTING -> getLocaleMessageString("deaths.melting");
+            case POISON -> getLocaleMessageString("deaths.poison");
+            case PROJECTILE -> getLocaleMessageString("deaths.projectile");
+            case STARVATION -> getLocaleMessageString("deaths.starvation");
+            case SUFFOCATION -> getLocaleMessageString("deaths.suffocation");
+            case SUICIDE -> getLocaleMessageString("deaths.suicide");
+            case THORNS -> getLocaleMessageString("deaths.thorns");
+            case VOID -> getLocaleMessageString("deaths.void");
+            case WITHER -> getLocaleMessageString("deaths.wither");
+            default -> getLocaleMessageString("deaths.custom");
         };
     }
 }

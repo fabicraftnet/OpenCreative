@@ -19,6 +19,9 @@
 package ua.mcchickenstudio.opencreative.indev;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.title.Title;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -77,20 +80,24 @@ public class WanderSettingsMenu extends AbstractMenu {
         if (meta == null) {
             return item;
         }
-        List<String> lore = new ArrayList<>();
+        List<Component> lore = new ArrayList<>();
         OfflinePlayer offlinePlayer = wander.getOfflinePlayer();
-        for (String loreLine : MessageUtils.getLocaleItemDescription("menus.player-profile.items.player.lore")) {
-            if (loreLine.contains("%description%")) {
-                String description = wander.getDescription() == null ? getLocaleMessage("profiles.default-description") : wander.getDescription();
+        for (Component loreLine : MessageUtils.getLocaleItemDescription("menus.player-profile.items.player.lore")) {
+            if (((TextComponent)loreLine).content().contains("%description%")) {
+                String description = wander.getDescription() == null ? getLocaleMessageString("profiles.default-description") : wander.getDescription();
                 String[] newLines = description.split("\\\\n");
                 for (String newLine : newLines) {
-                    lore.add(loreLine.replace("%description%", ChatColor.translateAlternateColorCodes('&', "&f" + newLine)));
+                    lore.add(
+                            loreLine.replaceText(TextReplacementConfig.builder()
+                                    .match("%description%")
+                                    .replacement(toComponent(newLine))
+                                    .build()));
                 }
             } else {
-                lore.add(ChatColor.translateAlternateColorCodes('&', parsePAPI(offlinePlayer, loreLine)));
+                lore.add(parsePAPI(offlinePlayer, loreLine));
             }
         }
-        meta.setLore(lore);
+        meta.lore(lore);
         item.setItemMeta(meta);
         if (meta instanceof SkullMeta skullMeta) {
             PlayerProfile profile = Bukkit.createProfile(nickname);
@@ -126,7 +133,7 @@ public class WanderSettingsMenu extends AbstractMenu {
         switch (getItemType(item)) {
             case "description" -> {
                 player.showTitle(Title.title(
-                        toComponent(getLocaleMessage("settings.profile-description.title")), toComponent(getLocaleMessage("settings.world-description.subtitle")),
+                        (getLocaleMessage("settings.profile-description.title")), (getLocaleMessage("settings.world-description.subtitle")),
                         Title.Times.times(Duration.ofMillis(100), Duration.ofSeconds(30), Duration.ofMillis(130))
                 ));
                 PlayerConfirmation.setConfirmation(player, PlayerConfirmation.PROFILE_DESCRIPTION);
@@ -164,7 +171,7 @@ public class WanderSettingsMenu extends AbstractMenu {
         for (String site : socialSites) {
             String link = wander.getLink(site);
             if (link == null) {
-                link = getLocaleMessage("menus.player-profile.items.social-links.unknown", false);
+                link = getLocaleMessageString("menus.player-profile.items.social-links.unknown", false);
             }
             replacement[index++] = site; // discord
             replacement[index++] = link; // username

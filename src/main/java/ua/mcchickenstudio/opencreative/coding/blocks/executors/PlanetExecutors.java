@@ -46,6 +46,7 @@ import java.util.*;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 /**
  * <h1>PlanetExecutors</h1>
@@ -110,7 +111,7 @@ public class PlanetExecutors {
                 || executor instanceof PlayerRightClickExecutor || executor instanceof PlayerJumpExecutor) {
             if (executor.getLastCalls() >= planet.getLimits().getCodeOperationsLimit()) {
                 planet.getTerritory().getScript().getExecutors().stopCode("operations limit");
-                sendPlanetCodeCriticalErrorMessage(planet, executor, getLocaleMessage("coding-error.operations-limit", false)
+                sendPlanetCodeCriticalErrorMessage(planet, executor, getLocaleMessageString("coding-error.operations-limit", false)
                         .replace("%limit%", String.valueOf(planet.getLimits().getCodeOperationsLimit())));
                 return false;
             }
@@ -129,7 +130,7 @@ public class PlanetExecutors {
         );
         if (depth > limit) {
             planet.getTerritory().getScript().getExecutors().stopCode("operations limit");
-            sendPlanetCodeCriticalErrorMessage(planet, executor, getLocaleMessage("coding-error.operations-limit", false)
+            sendPlanetCodeCriticalErrorMessage(planet, executor, getLocaleMessageString("coding-error.operations-limit", false)
                     .replace("%limit%", String.valueOf(limit)));
             return false;
         }
@@ -179,11 +180,11 @@ public class PlanetExecutors {
             for (Executor executor : executors) {
                 registerExecutor(executor);
             }
-            sendCodingDebugLog(planet, getLocaleMessage("coding-debug.loaded-code", false)
+            sendCodingDebugLog(planet, getLocaleMessageString("coding-debug.loaded-code", false)
                     .replace("%time%", String.valueOf(Math.floor((System.currentTimeMillis() - time) / 10.0) / 100.0)));
             OpenCreative.getPlugin().getLogger().info("Loaded code in planet " + planet.getId() + " in " + (System.currentTimeMillis() - time) + " ms with " + executors.size() + " executors!");
         } else {
-            sendCodingDebugLog(planet, getLocaleMessage("coding-debug.loaded-code", false)
+            sendCodingDebugLog(planet, getLocaleMessageString("coding-debug.loaded-code", false)
                     .replace("%time%", "0"));
             OpenCreative.getPlugin().getLogger().info("Planet " + planet.getId() + " has no code to load.");
         }

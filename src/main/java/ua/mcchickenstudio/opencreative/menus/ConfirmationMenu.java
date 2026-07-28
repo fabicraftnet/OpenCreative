@@ -18,6 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.menus;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -34,11 +35,11 @@ import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
 public final class ConfirmationMenu extends AbstractMenu {
 
     private final Material infoMaterial;
-    private final String infoName;
-    private final List<String> infoLore;
+    private final Component infoName;
+    private final List<Component> infoLore;
     private final BukkitRunnable yesRunnable;
 
-    public ConfirmationMenu(String title, Material infoMaterial, String infoName, List<String> infoLore, BukkitRunnable yesRunnable) {
+    public ConfirmationMenu(Component title, Material infoMaterial, Component infoName, List<Component> infoLore, BukkitRunnable yesRunnable) {
         super(6, title);
         this.infoMaterial = infoMaterial;
         this.infoName = infoName;

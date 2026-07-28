@@ -18,6 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.coding.variables;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -197,14 +198,14 @@ public enum ValueType {
         ItemStack itemStack = createItem(getGlass(), 1);
         ItemMeta meta = itemStack.getItemMeta();
         if (!messageExists(messagePath + ".name")) {
-            meta.setDisplayName(getLocaleItemName("items.developer.placeholders." + this.name().toLowerCase() + ".name"));
+            meta.displayName(getLocaleItemName("items.developer.placeholders." + this.name().toLowerCase() + ".name"));
         } else {
-            meta.setDisplayName(getLocaleItemName(messagePath + ".name"));
+            meta.displayName(getLocaleItemName(messagePath + ".name"));
         }
         if (!messageExists(messagePath + ".lore")) {
-            meta.setLore(getLocaleItemDescription("items.developer.placeholders." + this.name().toLowerCase() + ".lore"));
+            meta.lore(getLocaleItemDescription("items.developer.placeholders." + this.name().toLowerCase() + ".lore"));
         } else {
-            meta.setLore(getLocaleItemDescription(messagePath + ".lore"));
+            meta.lore(getLocaleItemDescription(messagePath + ".lore"));
         }
         itemStack.setItemMeta(meta);
         return itemStack;
@@ -278,7 +279,7 @@ public enum ValueType {
      * @return localized name of value type.
      */
     public @NotNull String getLocaleName() {
-        return getLocaleMessage("environment.values." + name().toLowerCase().replace("_", "-"), false);
+        return getLocaleMessageString("environment.values." + name().toLowerCase().replace("_", "-"), false);
     }
 
 }

@@ -31,6 +31,7 @@ import java.util.List;
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendPlanetCodeCriticalErrorMessage;
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendPlanetCodeErrorMessage;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 /**
  * <h1>RepeatAction</h1>
@@ -67,12 +68,12 @@ public abstract class RepeatAction extends MultiAction {
         } catch (TooManyRepeatsException exception) {
             if (getPlanet().getLimits().isTooManyCodingErrors()) {
                 getPlanet().getTerritory().getScript().getExecutors().stopCode("errors limit");
-                sendPlanetCodeCriticalErrorMessage(getPlanet(), getExecutor(), getLocaleMessage("coding-error.errors-limit", false)
+                sendPlanetCodeCriticalErrorMessage(getPlanet(), getExecutor(), getLocaleMessageString("coding-error.errors-limit", false)
                         .replace("%limit%", String.valueOf(getPlanet().getLimits().getCodingErrorsLimit())));
                 return;
             }
             sendPlanetCodeErrorMessage(getExecutor(), this,
-                    getLocaleMessage("coding-error.toomanyrepeatsexception"), exception);
+                    getLocaleMessageString("coding-error.toomanyrepeatsexception",true), exception);
             return;
         }
         if (internalHandler == null) return;

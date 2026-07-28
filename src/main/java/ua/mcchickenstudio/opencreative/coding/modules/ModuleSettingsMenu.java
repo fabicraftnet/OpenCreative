@@ -18,6 +18,9 @@
 
 package ua.mcchickenstudio.opencreative.coding.modules;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -85,20 +88,24 @@ public final class ModuleSettingsMenu extends AbstractMenu {
     public ItemStack getModuleIcon() {
         ItemStack item = clearItemMeta(module.getInformation().getIcon().clone());
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(MessageUtils.getLocaleItemName("menus.module-settings.items.module.name")
-                .replace("%moduleName%", module.getInformation().getDisplayName()));
-        List<String> lore = new ArrayList<>();
-        for (String loreLine : MessageUtils.getLocaleItemDescription("menus.module-settings.items.module.lore")) {
-            if (loreLine.contains("%moduleDescription%")) {
+        meta.displayName(MessageUtils.toComponent( MessageUtils.getLocaleItemNameString("menus.module-settings.items.module.name")
+                .replace("%moduleName%", module.getInformation().getDisplayName())));
+        List<Component> lore = new ArrayList<>();
+        for (Component loreLine : MessageUtils.getLocaleItemDescription("menus.module-settings.items.module.lore")) {
+            if (((TextComponent)loreLine).content().contains("%moduleDescription%")) {
                 String[] newLines = module.getInformation().getDescription().split("\\\\n");
                 for (String newLine : newLines) {
-                    lore.add(loreLine.replace("%moduleDescription%", ChatColor.translateAlternateColorCodes('&', newLine)));
+                    lore.add(
+                            loreLine.replaceText(TextReplacementConfig.builder()
+                                    .match("%moduleDescription%")
+                                    .replacement(toComponent(newLine))
+                                    .build()));
                 }
             } else {
                 lore.add(MessageUtils.parseModuleLines(module, loreLine));
             }
         }
-        meta.setLore(lore);
+        meta.lore(lore);
         item.setItemMeta(meta);
         clearItemFlags(item);
         return item;
@@ -116,17 +123,17 @@ public final class ModuleSettingsMenu extends AbstractMenu {
         }
         if (itemEquals(currentItem, name)) {
             player.showTitle(Title.title(
-                    toComponent(getLocaleMessage("settings.module-name.title")), toComponent(getLocaleMessage("settings.module-name.subtitle")),
+                    (getLocaleMessage("settings.module-name.title")), (getLocaleMessage("settings.module-name.subtitle")),
                     Title.Times.times(Duration.ofMillis(100), Duration.ofSeconds(30), Duration.ofMillis(130))
             ));
-            player.sendMessage(getLocaleMessage("settings.module-name.usage").replace("%player%", player.getName()));
+            player.sendMessage(toComponent(getLocaleMessageString("settings.module-name.usage").replace("%player%", player.getName())));
             player.closeInventory();
             if (!PlayerConfirmation.hasConfirmation(player)) {
                 PlayerConfirmation.setConfirmation(player, PlayerConfirmation.MODULE_NAME_CHANGE, module.getId());
             }
         } else if (itemEquals(currentItem, description)) {
             player.showTitle(Title.title(
-                    toComponent(getLocaleMessage("settings.module-description.title")), toComponent(getLocaleMessage("settings.module-description.subtitle")),
+                    (getLocaleMessage("settings.module-description.title")), (getLocaleMessage("settings.module-description.subtitle")),
                     Title.Times.times(Duration.ofMillis(100), Duration.ofSeconds(30), Duration.ofMillis(130))
             ));
             player.sendMessage(getLocaleMessage("settings.module-description.usage"));
@@ -177,7 +184,7 @@ public final class ModuleSettingsMenu extends AbstractMenu {
             player.closeInventory();
             Bukkit.getScheduler().scheduleSyncDelayedTask(OpenCreative.getPlugin(),
                     () -> new ConfirmationMenu(
-                            getLocaleMessage("menus.confirmation.delete-module", false).replace("%name%", substring(ChatColor.stripColor(module.getInformation().getDisplayName()), 20)),
+                            toComponent( getLocaleMessageString("menus.confirmation.delete-module", false).replace("%name%", substring(ChatColor.stripColor(module.getInformation().getDisplayName()), 20))),
                             Material.TNT,
                             getLocaleItemName("menus.confirmation.items.delete-module.name"),
                             getLocaleItemDescription("menus.confirmation.items.delete-module.lore"),
@@ -197,8 +204,8 @@ public final class ModuleSettingsMenu extends AbstractMenu {
                                     OpenCreative.getPlugin().getLogger().info("Module " + module.getId() + " is being deleted by module's owner " + player.getName());
                                     OpenCreative.getModuleManager().deleteModule(module);
                                     Bukkit.getServer().getScheduler().runTaskLater(OpenCreative.getPlugin(), () ->
-                                            player.sendMessage(MessageUtils.getLocaleMessage("modules.deleted")
-                                                    .replace("%moduleID%", String.valueOf(module.getId()))), 60);
+                                            player.sendMessage(toComponent(MessageUtils.getLocaleMessageString("modules.deleted")
+                                                    .replace("%moduleID%", String.valueOf(module.getId())))), 60);
                                 }
                             }).open(player), 5L);
         }

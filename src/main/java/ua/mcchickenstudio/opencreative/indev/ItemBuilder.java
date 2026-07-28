@@ -40,8 +40,8 @@ public class ItemBuilder {
 
     public ItemBuilder translate(String path) {
         item.editMeta(meta -> {
-            meta.setDisplayName(getLocaleItemName(path+".name"));
-            meta.setLore(getLocaleItemDescription(path+".lore"));
+            meta.displayName(getLocaleItemName(path+".name"));
+            meta.lore(getLocaleItemDescription(path+".lore"));
         });
         return this;
     }

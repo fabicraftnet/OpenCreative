@@ -35,7 +35,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 
 /**
  * <h1>StopSoundCommand</h1>
@@ -67,7 +67,7 @@ public class StopSoundCommand extends CommandHandler {
             }
             if (args.length == 0) {
                 player.stopAllSounds();
-                sender.sendMessage(getLocaleMessage("commands.stop-sound.stopped-all").replace("%player%", player.getName()));
+                sender.sendMessage(toComponent(getLocaleMessageString("commands.stop-sound.stopped-all").replace("%player%", player.getName())));
                 return;
             }
             Player target = player;
@@ -106,13 +106,13 @@ public class StopSoundCommand extends CommandHandler {
             }
             if (sound != null) {
                 target.stopSound(sound);
-                sender.sendMessage(getLocaleMessage("commands.stop-sound.stopped-sound").replace("%sound%", soundOrCategory).replace("%player%", target.getName()));
+                sender.sendMessage(toComponent(getLocaleMessageString("commands.stop-sound.stopped-sound").replace("%sound%", soundOrCategory).replace("%player%", target.getName())));
             } else if (category != null) {
                 target.stopSound(category);
-                sender.sendMessage(getLocaleMessage("commands.stop-sound.stopped-category").replace("%category%", soundOrCategory).replace("%player%", target.getName()));
+                sender.sendMessage(toComponent(getLocaleMessageString("commands.stop-sound.stopped-category").replace("%category%", soundOrCategory).replace("%player%", target.getName())));
             } else {
                 target.stopAllSounds();
-                sender.sendMessage(getLocaleMessage("commands.stop-sound.stopped-all").replace("%player%", target.getName()));
+                sender.sendMessage(toComponent(getLocaleMessageString("commands.stop-sound.stopped-all").replace("%player%", target.getName())));
             }
         }
     }

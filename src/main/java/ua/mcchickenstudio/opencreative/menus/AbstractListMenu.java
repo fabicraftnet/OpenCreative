@@ -18,6 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.menus;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -44,11 +45,11 @@ public abstract class AbstractListMenu<T> extends AbstractMenu {
     private final int[] elementsSlots;
     private int currentPage = 1;
 
-    public AbstractListMenu(Player player, String title, PlacementLayout layout) {
+    public AbstractListMenu(Player player, Component title, PlacementLayout layout) {
         this(player, title, layout.getElementsSlots(), layout.getCharmsBarSlots(), layout.getDecorationSlots());
     }
 
-    public AbstractListMenu(Player player, String title,
+    public AbstractListMenu(Player player, Component title,
                             int[] elementsSlots, int[] charmsBarSlots,
                             int[] decorationSlots) {
         super(6, title);

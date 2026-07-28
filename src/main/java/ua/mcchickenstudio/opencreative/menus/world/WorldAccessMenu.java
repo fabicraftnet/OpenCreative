@@ -57,7 +57,7 @@ public final class WorldAccessMenu extends AbstractMenu implements WorldMenu {
     private final ItemStack DELETE = createItem(Material.TNT_MINECART, 1, "menus.world-access.items.delete", "delete");
 
     public WorldAccessMenu(Planet planet) {
-        super(4, MessageUtils.getLocaleMessage("menus.world-access.title", false).replace("%name%", substring(ChatColor.stripColor(planet.getInformation().getDisplayName()), 25)));
+        super(4, toComponent(MessageUtils.getLocaleMessageString("menus.world-access.title", false).replace("%name%", substring(ChatColor.stripColor(planet.getInformation().getDisplayName()), 25))));
         this.planet = planet;
     }
 
@@ -164,8 +164,8 @@ public final class WorldAccessMenu extends AbstractMenu implements WorldMenu {
                     double playerBalance = OpenCreative.getEconomy().getBalance(player).doubleValue();
                     double advertisementPrice = OpenCreative.getSettings().getGroups().getGroup(player).getAdvertisementPrice();
                     if (playerBalance < advertisementPrice) {
-                        player.sendMessage(getPlayerLocaleMessage("advertisement.no-money", player)
-                                .replace("%money%", String.valueOf(Math.round(advertisementPrice - playerBalance))));
+                        player.sendMessage(toComponent(getPlayerLocaleMessageString("advertisement.no-money", player)
+                                .replace("%money%", String.valueOf(Math.round(advertisementPrice - playerBalance)))));
                         Sounds.PLAYER_FAIL.play(player);
                         player.setCooldown(item.getType(), OpenCreative.getSettings().getGroups().getGroup(player).getGenericCommandCooldown() * 20);
                         return;
@@ -210,7 +210,7 @@ public final class WorldAccessMenu extends AbstractMenu implements WorldMenu {
                 player.closeInventory();
                 Bukkit.getScheduler().scheduleSyncDelayedTask(OpenCreative.getPlugin(),
                         () -> new ConfirmationMenu(
-                                getLocaleMessage("menus.confirmation.delete-world", false).replace("%name%", substring(ChatColor.stripColor(planet.getInformation().getDisplayName()), 20)),
+                                toComponent(getLocaleMessageString("menus.confirmation.delete-world", false).replace("%name%", substring(ChatColor.stripColor(planet.getInformation().getDisplayName()), 20))),
                                 Material.TNT,
                                 getLocaleItemName("menus.confirmation.items.delete-world.name"),
                                 getLocaleItemDescription("menus.confirmation.items.delete-world.lore"),

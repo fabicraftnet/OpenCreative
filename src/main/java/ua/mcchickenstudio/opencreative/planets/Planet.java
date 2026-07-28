@@ -533,7 +533,7 @@ public class Planet {
                     if (!isEntityInDevPlanet(player)) {
                         if (!ignoreEvents) new QuitEvent(player).callEvent();
                         player.showTitle(Title.title(
-                                toComponent(getLocaleMessage("world.build-mode.title")), toComponent(getLocaleMessage("world.build-mode.subtitle")),
+                                (getLocaleMessage("world.build-mode.title")), (getLocaleMessage("world.build-mode.subtitle")),
                                 Title.Times.times(Duration.ofMillis(100), Duration.ofSeconds(2), Duration.ofMillis(130))
                         ));
                         clearPlayer(player);
@@ -914,7 +914,7 @@ public class Planet {
                      * (after world's creation).
                      */
                     player.showTitle(Title.title(
-                            toComponent(MessageUtils.getPlayerLocaleMessage("creating-world.welcome-title", player)), toComponent(MessageUtils.getPlayerLocaleMessage("creating-world.welcome-subtitle", player)),
+                            (MessageUtils.getPlayerLocaleMessage("creating-world.welcome-title", player)), (MessageUtils.getPlayerLocaleMessage("creating-world.welcome-subtitle", player)),
                             Title.Times.times(Duration.ofMillis(750), Duration.ofSeconds(9), Duration.ofSeconds(2))
                     ));
                     player.sendMessage(getLocaleMessage("creating-world.welcome"));
@@ -1007,7 +1007,7 @@ public class Planet {
         };
 
         public String getName() {
-            return getLocaleMessage("world." + (this == PLAYING ? "play-mode" : "build-mode") + ".name", false);
+            return getLocaleMessageString("world." + (this == PLAYING ? "play-mode" : "build-mode") + ".name", false);
         }
 
         public void onPlayerConnect(Player player, Planet planet) {
@@ -1018,7 +1018,7 @@ public class Planet {
         PUBLIC, PRIVATE, CLOSED;
 
         public String getName() {
-            return getLocaleMessage("world.sharing." + (this == PUBLIC ? "public" : "private"), false);
+            return getLocaleMessageString("world.sharing." + (this == PUBLIC ? "public" : "private"), false);
         }
     }
 

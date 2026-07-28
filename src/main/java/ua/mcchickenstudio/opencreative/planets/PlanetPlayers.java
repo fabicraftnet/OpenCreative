@@ -31,7 +31,7 @@ import ua.mcchickenstudio.opencreative.settings.Sounds;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.*;
 
 /**
@@ -301,7 +301,7 @@ public class PlanetPlayers {
         if (player != null) {
             Planet playerPlanet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
             if (planet.equals(playerPlanet)) {
-                player.sendMessage(getLocaleMessage("world.players.developers.player-guest").replace("%player%", player.getName()));
+                player.sendMessage(toComponent(getLocaleMessageString("world.players.developers.player-guest",true).replace("%player%", player.getName())));
                 Sounds.WORLD_NOW_DEVELOPER_GUEST.play(player);
             }
         }
@@ -322,7 +322,7 @@ public class PlanetPlayers {
             Planet playerPlanet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
             if (planet.equals(playerPlanet)) {
                 if (!trusted) {
-                    player.sendMessage(getLocaleMessage("world.players.developers.player").replace("%player%", player.getName()));
+                    player.sendMessage(toComponent(getLocaleMessageString("world.players.developers.player",true).replace("%player%", player.getName())));
                     Sounds.WORLD_NOW_DEVELOPER.play(player);
                     if (OpenCreative.getPlanetsManager().getDevPlanet(player) != null) {
                         player.setGameMode(GameMode.CREATIVE);
@@ -355,7 +355,7 @@ public class PlanetPlayers {
             Planet playerPlanet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
             if (planet.equals(playerPlanet)) {
                 if (!trusted) {
-                    player.sendMessage(getLocaleMessage("world.players.builders.player").replace("%player%", player.getName()));
+                    player.sendMessage(toComponent(getLocaleMessageString("world.players.builders.player",true).replace("%player%", player.getName())));
                     Sounds.WORLD_NOW_BUILDER.play(player);
                     if (OpenCreative.getPlanetsManager().getDevPlanet(player) == null) {
                         player.setGameMode(GameMode.CREATIVE);
@@ -403,7 +403,7 @@ public class PlanetPlayers {
             Planet playerPlanet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
             if (planet.equals(playerPlanet)) {
                 teleportToLobby(player);
-                player.sendMessage(getLocaleMessage("world.players.black-list.player").replace("%player%", player.getName()));
+                player.sendMessage(toComponent(getLocaleMessageString("world.players.black-list.player",true).replace("%player%", player.getName())));
                 Sounds.WORLD_BANNED.play(player);
             }
         }
@@ -421,7 +421,7 @@ public class PlanetPlayers {
         if (player != null) {
             Planet playerPlanet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
             if (planet.equals(playerPlanet)) {
-                player.sendMessage(getLocaleMessage("world.players.white-list.player").replace("%player%", player.getName()));
+                player.sendMessage(toComponent(getLocaleMessageString("world.players.white-list.player",true).replace("%player%", player.getName())));
                 Sounds.WORLD_WHITELIST_ADDED.play(player);
             }
         }
@@ -437,8 +437,8 @@ public class PlanetPlayers {
             new QuitEvent(player).callEvent();
             removePassengers(player);
             teleportToLobby(player);
-            player.sendMessage(getLocaleMessage("world.players.kick.player")
-                    .replace("%player%", player.getName()));
+            player.sendMessage(toComponent(getLocaleMessageString("world.players.kick.player",true)
+                    .replace("%player%", player.getName())));
             Sounds.WORLD_KICKED.play(player);
         }
     }

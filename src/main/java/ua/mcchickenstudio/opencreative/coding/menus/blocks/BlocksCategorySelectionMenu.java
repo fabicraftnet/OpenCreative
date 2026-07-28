@@ -50,7 +50,7 @@ public final class BlocksCategorySelectionMenu extends MenusCategorySelectionMen
         super(player, category.getItem(),
                 category.getStainedPane(),
                 Executors.getInstance().getCategories(category),
-                ChatColor.stripColor(getLocaleMessage("blocks." + category.name().toLowerCase())),
+                (getLocaleMessage("blocks." + category.name().toLowerCase(),true)),
                 "events", category);
         this.location = location;
     }
@@ -61,7 +61,7 @@ public final class BlocksCategorySelectionMenu extends MenusCategorySelectionMen
         super(player, category.getItem(),
                 category.getStainedPane(),
                 ActionType.getMenusCategories(category),
-                ChatColor.stripColor(getLocaleMessage("blocks." + category.name().toLowerCase())),
+                (getLocaleMessage("blocks." + category.name().toLowerCase(),true)),
                 category.isCondition() ? "conditions" : "actions", category);
         this.location = location;
     }
@@ -73,7 +73,7 @@ public final class BlocksCategorySelectionMenu extends MenusCategorySelectionMen
         super(player, category.getItem(),
                 category.getStainedPane(),
                 ActionType.getMenusCategories(category),
-                ChatColor.stripColor(getLocaleMessage("blocks." + category.name().toLowerCase())),
+                (getLocaleMessage("blocks." + category.name().toLowerCase(),true)),
                 category.isCondition() ? "conditions" : "actions", category);
         this.firstLine = firstLine;
         this.location = location;

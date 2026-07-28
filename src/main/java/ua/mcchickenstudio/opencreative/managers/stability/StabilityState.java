@@ -21,6 +21,7 @@ package ua.mcchickenstudio.opencreative.managers.stability;
 import org.jetbrains.annotations.NotNull;
 
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 public enum StabilityState {
 
@@ -48,7 +49,7 @@ public enum StabilityState {
     }
 
     public @NotNull String getLocalized() {
-        return getLocaleMessage("creative.stability." + name().toLowerCase().replace("_", "-"), false);
+        return getLocaleMessageString("creative.stability." + name().toLowerCase().replace("_", "-"), false);
     }
 
 }

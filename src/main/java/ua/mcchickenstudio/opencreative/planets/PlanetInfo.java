@@ -19,6 +19,7 @@
 package ua.mcchickenstudio.opencreative.planets;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -165,19 +166,23 @@ public class PlanetInfo {
                         .replaceText(TextReplacementConfig.builder()
                                 .match("%planetName%")
                                 .replacement(displayName()).build()));
-        List<String> lore = new ArrayList<>();
-        for (String loreLine : getLocaleItemDescription("menus.all-worlds.items.world.lore")) {
-            if (loreLine.contains("%planetDescription%")) {
+        List<Component> lore = new ArrayList<>();
+        for (Component loreLine : getLocaleItemDescription("menus.all-worlds.items.world.lore")) {
+            if ( ((TextComponent)loreLine).content().contains("%planetDescription%")) {
                 String[] newLines = this.description.split("\\\\n");
                 for (String newLine : newLines) {
-                    lore.add(loreLine.replace("%planetDescription%", ChatColor.translateAlternateColorCodes('&', newLine)));
+                    lore.add(
+                            loreLine.replaceText(TextReplacementConfig.builder()
+                                            .match("%planetDescription%")
+                                            .replacement(toComponent(newLine))
+                                    .build()));
                 }
             } else {
                 lore.add(parsePlanetLines(this.planet, loreLine));
             }
         }
         item.setAmount((Math.max(planet.getOnline(), 1)));
-        meta.setLore(lore);
+        meta.lore(lore);
         item.setItemMeta(meta);
         clearItemFlags(item);
         setPersistentData(item, getItemIdKey(), customID);
@@ -430,7 +435,7 @@ public class PlanetInfo {
         }
 
         public String getLocaleName() {
-            return getLocaleMessage("world.categories." + name().toLowerCase());
+            return getLocaleMessageString("world.categories." + name().toLowerCase(),true);
         }
     }
 }

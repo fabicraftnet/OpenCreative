@@ -92,7 +92,7 @@ public class TextCodingValue extends CodingValue<String> implements ChatEditable
     public @NotNull Object serialize(@NotNull String value, @NotNull Saver type) {
         if (type == Saver.ITEM) {
             ItemStack item = createItem(Material.BOOK, 1, "menus.developer.variables.items.text");
-            setDisplayName(item, value);
+            setDisplayName(item, toComponent(value));
             return item;
         }
         return value;
@@ -107,7 +107,7 @@ public class TextCodingValue extends CodingValue<String> implements ChatEditable
             }
             Component displayName = meta.displayName();
             if (displayName != null) {
-                player.sendMessage(displayName.hoverEvent(HoverEvent.showText(toComponent(getLocaleMessage("world.dev-mode.click-to-copy")))).clickEvent(ClickEvent.suggestCommand(meta.getDisplayName().replace("§","&"))));
+                player.sendMessage(displayName.hoverEvent(HoverEvent.showText(toComponent(getLocaleMessageString("world.dev-mode.click-to-copy")))).clickEvent(ClickEvent.suggestCommand(meta.getDisplayName().replace("§","&"))));
                 setPersistentData(item, getCodingValueKey(),"TEXT");
                 player.swingMainHand();
             }

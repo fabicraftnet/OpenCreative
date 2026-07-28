@@ -219,7 +219,7 @@ public class ActionsHandler {
                 sendErrorMessage(action, error);
                 if (action.getPlanet().getLimits().isTooManyCodingErrors()) {
                     action.getPlanet().getTerritory().getScript().getExecutors().stopCode("errors limit");
-                    sendPlanetCodeCriticalErrorMessage(action.getPlanet(), executor, getLocaleMessage("coding-error.errors-limit", false)
+                    sendPlanetCodeCriticalErrorMessage(action.getPlanet(), executor, getLocaleMessageString("coding-error.errors-limit", false)
                             .replace("%limit%", String.valueOf(action.getPlanet().getLimits().getCodingErrorsLimit())));
                     return;
                 }
@@ -249,7 +249,7 @@ public class ActionsHandler {
         String errorID = unknown ? "unknown" : errorClass.toLowerCase();
         String errorMessage = error.getMessage() == null ? errorClass : error.getMessage();
         errorMessage = errorMessage.replace("ua.mcchickenstudio.opencreative.coding.", "");
-        String localizedMessage = getLocaleMessage("coding-error." + errorID);
+        String localizedMessage = getLocaleMessageString("coding-error." + errorID,true);
         switch (error) {
             case PlayerException exception ->
                     localizedMessage = localizedMessage.replace("%player%", exception.getPlayerName());
@@ -266,13 +266,13 @@ public class ActionsHandler {
                 String localizedCurrent = toKebabCase(exception.getCurrent().getSimpleName()).replace("craft-", "");
 
                 if (messageExists("entities." + localizedRequired)) {
-                    localizedRequired = getLocaleMessage("entities." + localizedRequired);
+                    localizedRequired = getLocaleMessageString("entities." + localizedRequired,true);
                 } else {
                     localizedRequired = localizedRequired.replace("-", "_");
                 }
 
                 if (messageExists("entities." + localizedCurrent)) {
-                    localizedCurrent = getLocaleMessage("entities." + localizedCurrent);
+                    localizedCurrent = getLocaleMessageString("entities." + localizedCurrent,true);
                 } else {
                     localizedCurrent = localizedCurrent.replace("-", "_");
                 }

@@ -35,7 +35,7 @@ import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.isOutOfBorders;
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.clearPlayer;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.removePassengers;
 
@@ -123,8 +123,8 @@ public class TeleportCommand extends CommandHandler {
             } else {
                 player.teleport(teleportToPlayer.getLocation());
             }
-            player.sendMessage(getLocaleMessage("commands.teleport.teleported")
-                    .replace("%player%", teleportToPlayer.getName()));
+            player.sendMessage(toComponent(getLocaleMessageString("commands.teleport.teleported")
+                    .replace("%player%", teleportToPlayer.getName())));
             Sounds.PLAYER_TELEPORT.play(player);
             if (!player.getWorld().equals(teleportToPlayer.getWorld()) && !player.hasPermission("opencreative.teleport.clear-bypass")) {
                 clearPlayer(player);
@@ -161,11 +161,11 @@ public class TeleportCommand extends CommandHandler {
             }
             removePassengers(firstPlayer);
             firstPlayer.teleport(secondPlayer.getLocation());
-            player.sendMessage(getLocaleMessage("commands.teleport.teleported-player")
+            player.sendMessage(toComponent(getLocaleMessageString("commands.teleport.teleported-player")
                     .replace("%first%", firstPlayer.getName())
-                    .replace("%second%", secondPlayer.getName()));
-            firstPlayer.sendMessage(getLocaleMessage("commands.teleport.teleported")
-                    .replace("%player%", secondPlayer.getName()));
+                    .replace("%second%", secondPlayer.getName())));
+            firstPlayer.sendMessage(toComponent(getLocaleMessageString("commands.teleport.teleported")
+                    .replace("%player%", secondPlayer.getName())));
             Sounds.PLAYER_TELEPORT.play(firstPlayer);
             if (!firstPlayer.getWorld().equals(secondPlayer.getWorld()) && !firstPlayer.hasPermission("opencreative.teleport.clear-bypass")) {
                 clearPlayer(firstPlayer);
@@ -193,13 +193,13 @@ public class TeleportCommand extends CommandHandler {
                 if (!isOutOfBorders(newLocation)) {
                     removePassengers(player);
                     player.teleport(newLocation);
-                    player.sendMessage(getLocaleMessage("commands.teleport.teleported-coords")
+                    player.sendMessage(toComponent(getLocaleMessageString("commands.teleport.teleported-coords")
                             .replace("%x%", String.valueOf(Math.round(x)))
                             .replace("%y%", String.valueOf(Math.round(y)))
                             .replace("%z%", String.valueOf(Math.round(z)))
                             .replace("%yaw%", String.valueOf(Math.round(yaw)))
                             .replace("%pitch%", String.valueOf(Math.round(pitch)))
-                    );
+                    ));
                     Sounds.PLAYER_TELEPORT.play(player);
                 } else {
                     sender.sendMessage(getLocaleMessage("commands.teleport.out-of-borders"));

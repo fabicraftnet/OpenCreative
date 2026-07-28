@@ -18,6 +18,9 @@
 
 package ua.mcchickenstudio.opencreative.menus.buttons;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TextReplacementConfig;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -40,7 +43,7 @@ public class RadioButton {
     private int maxChoicesAmount;
     private List<Runnable> choiceActions;
     private ItemStack buttonItem;
-    private List<String> originalLore;
+    private List<Component> originalLore;
     private String turnedPath;
     private String itemLocalePath;
 
@@ -56,7 +59,7 @@ public class RadioButton {
      * @param itemLocalePath   Path of item in localization file
      * @param turnedPath       Path of 'turnedOn' 'turnedOff' messages
      */
-    public RadioButton(Material material, String name, List<String> lore, int currentChoice,
+    public RadioButton(Material material, Component name, List<Component> lore, int currentChoice,
                        int maxChoicesAmount, List<Runnable> choicesActions, String itemLocalePath,
                        String turnedPath) {
         setChoices(currentChoice, maxChoicesAmount, choicesActions);
@@ -74,14 +77,14 @@ public class RadioButton {
         this.choiceActions = choicesActions;
     }
 
-    private void setItemButton(Material material, String name, List<String> lore, String itemLocalePath, String chosenLocalePath) {
+    private void setItemButton(Material material, Component name, List<Component> lore, String itemLocalePath, String chosenLocalePath) {
         this.originalLore = lore;
         this.itemLocalePath = itemLocalePath;
         this.turnedPath = chosenLocalePath;
 
         ItemStack buttonItem = new ItemStack(material, 1);
         ItemMeta buttonItemMeta = buttonItem.getItemMeta();
-        buttonItemMeta.setDisplayName(name);
+        buttonItemMeta.displayName(name);
         buttonItem.setItemMeta(buttonItemMeta);
         this.buttonItem = buttonItem;
         updateItem();
@@ -90,23 +93,28 @@ public class RadioButton {
     public void updateItem() {
 
         ItemMeta buttonItemMeta = buttonItem.getItemMeta();
-        List<String> lore = new ArrayList<>();
+        List<Component> lore = new ArrayList<>();
 
-        String turnedOn = MessageUtils.getLocaleMessage(turnedPath + ".turned-on");
-        String turnedOff = MessageUtils.getLocaleMessage(turnedPath + ".turned-off");
-        String turned;
+        Component turnedOn = MessageUtils.getLocaleMessage(turnedPath + ".turned-on");
+        Component turnedOff = MessageUtils.getLocaleMessage(turnedPath + ".turned-off");
+        Component turned;
 
-        for (String loreLine : originalLore) {
-            if (loreLine.matches("%[0-9]+%")) {
-                int choiceNumber = Integer.parseInt((loreLine.replace("%", "")));
+        for (Component loreLine : originalLore) {
+            if (loreLine instanceof TextComponent loretext){
+            if (loretext.content().matches("%[0-9]+%")) {
+                int choiceNumber = Integer.parseInt(loretext.content().replace("%", ""));
                 if (choiceNumber == currentChoice) turned = turnedOn;
                 else turned = turnedOff;
-                loreLine = loreLine.replace("%" + choiceNumber + "%", turned + MessageUtils.getLocaleMessage(itemLocalePath + "." + choiceNumber, false));
+                //loreLine = loreLine.replace("%" + choiceNumber + "%", turned + MessageUtils.getLocaleMessage(itemLocalePath + "." + choiceNumber, false));
+                loreLine = loreLine.replaceText(TextReplacementConfig.builder()
+                        .replacement(turned.append(MessageUtils.getLocaleMessage(itemLocalePath + "." + choiceNumber, false)))
+                        .match("%" + choiceNumber + "%").build());
             }
             lore.add(loreLine);
+            }
         }
 
-        buttonItemMeta.setLore(lore);
+        buttonItemMeta.lore();
         buttonItem.setItemMeta(buttonItemMeta);
     }
 

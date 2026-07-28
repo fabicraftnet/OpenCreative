@@ -74,6 +74,7 @@ import java.util.Objects;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendPlanetCodeCriticalErrorMessage;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 public abstract class Action6 extends Action implements CodingBlock, ExtensionContent {
 
@@ -143,7 +144,7 @@ public abstract class Action6 extends Action implements CodingBlock, ExtensionCo
         if (planet().getMode() != Planet.Mode.PLAYING) return true;
         if (planet().getLimits().isTooManyActionsAtOnce(count)) {
             planet().getTerritory().getScript().getExecutors().stopCode("actions limit");
-            sendPlanetCodeCriticalErrorMessage(planet(), executor, getLocaleMessage("coding-error.actions-limit", false)
+            sendPlanetCodeCriticalErrorMessage(planet(), executor, getLocaleMessageString("coding-error.actions-limit", false)
                     .replace("%limit%", String.valueOf(planet().getLimits().getCodingActionsCallsLimit())));
             return true;
         }
@@ -202,7 +203,7 @@ public abstract class Action6 extends Action implements CodingBlock, ExtensionCo
      * @return localized name.
      */
     public @NotNull String getLocaleName() {
-        return getLocaleMessage("items.developer.actions." + id.replace("_", "-") + ".name", false);
+        return getLocaleMessageString("items.developer.actions." + id.replace("_", "-") + ".name", false);
     }
 
     @Override

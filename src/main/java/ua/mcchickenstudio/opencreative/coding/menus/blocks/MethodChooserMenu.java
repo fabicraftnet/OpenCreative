@@ -56,7 +56,7 @@ public final class MethodChooserMenu extends ListBrowserMenu<Location> {
     private final Location signLocation;
 
     public MethodChooserMenu(Player player, DevPlanet planet, Location location) {
-        super(player, getLocaleMessage("menus.developer.method-chooser.title"), PlacementLayout.LOCATION_CHOOSER);
+        super(player, getLocaleMessage("menus.developer.method-chooser.title",true), PlacementLayout.LOCATION_CHOOSER);
         this.devPlanet = planet;
         this.signLocation = location;
     }
@@ -126,7 +126,7 @@ public final class MethodChooserMenu extends ListBrowserMenu<Location> {
                 setSignLine(signLocation, 3, name);
                 translateBlockSign(signLocation.getBlock());
                 getPlayer().showTitle(Title.title(
-                        toComponent(getLocaleMessage("menus.developer.method-chooser.chosen")), Component.text(name).color(NamedTextColor.GREEN),
+                        (getLocaleMessage("menus.developer.method-chooser.chosen")), Component.text(name).color(NamedTextColor.GREEN),
                         Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
                 ));
                 Sounds.DEV_SET_METHOD.play(event.getWhoClicked());
