@@ -38,6 +38,7 @@ import java.util.Set;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendPlanetCodeCriticalErrorMessage;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 public abstract class SelectionAction extends Action {
 
@@ -104,7 +105,7 @@ public abstract class SelectionAction extends Action {
         getPlanet().getLimits().setLastModifiedTargetsAmount(getPlanet().getLimits().getLastRedstoneOperationsAmount() + size);
         if (getPlanet().getLimits().getLastModifiedTargetsAmount() > getPlanet().getLimits().getTargetsChangesLimit()) {
             getPlanet().getTerritory().getScript().getExecutors().stopCode("targets changes limit");
-            sendPlanetCodeCriticalErrorMessage(getPlanet(), getExecutor(), getLocaleMessage("coding-error.targets-changes-limit", false)
+            sendPlanetCodeCriticalErrorMessage(getPlanet(), getExecutor(), getLocaleMessageString("coding-error.targets-changes-limit", false)
                     .replace("%limit%", String.valueOf(getPlanet().getLimits().getTargetsChangesLimit())));
             return;
         }

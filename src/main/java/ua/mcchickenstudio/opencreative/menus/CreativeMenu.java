@@ -28,7 +28,7 @@ import ua.mcchickenstudio.opencreative.OpenCreative;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.createItem;
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.getItemType;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 
 public final class CreativeMenu extends AbstractMenu {
 
@@ -47,9 +47,9 @@ public final class CreativeMenu extends AbstractMenu {
     private final ItemStack DEBUG_DISABLE = createItem(Material.SOUL_TORCH, 1, "menus.creative.items.debug-disable", "debug-disable");
 
     public CreativeMenu() {
-        super(6, getLocaleMessage("menus.creative.title", false)
+        super(6, toComponent(getLocaleMessageString("menus.creative.title", false)
                 .replace("%version%", OpenCreative.getVersion())
-                .replace("%codename%", OpenCreative.getCodename()));
+                .replace("%codename%", OpenCreative.getCodename())));
     }
 
     @Override

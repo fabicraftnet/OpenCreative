@@ -18,6 +18,9 @@
 
 package ua.mcchickenstudio.opencreative.menus.buttons;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TextReplacementConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
@@ -43,7 +46,7 @@ public class ParameterButton {
     private final String name;
     private final String turnedPath;
     private final String localizationPath;
-    private final List<String> originalLore;
+    private final List<Component> originalLore;
     private final List<Object> valueList = new ArrayList<>();
     private final List<Material> materialList = new ArrayList<>();
     private Object currentValue;
@@ -91,7 +94,7 @@ public class ParameterButton {
             item.setItemMeta(meta);
         }
         setPersistentData(item, getItemTypeKey(), name);
-        this.originalLore = item.getItemMeta().getLore();
+        this.originalLore = item.getItemMeta().lore();
         updateLore();
     }
 
@@ -134,7 +137,7 @@ public class ParameterButton {
             meta.setLore(notFoundLore);
             item.setItemMeta(meta);
         }
-        this.originalLore = item.getItemMeta().getLore();
+        this.originalLore = item.getItemMeta().lore();
         updateLore();
     }
 
@@ -167,14 +170,14 @@ public class ParameterButton {
     }
 
     public void updateLore() {
-        String turnedOn = MessageUtils.getLocaleMessage(turnedPath + ".turned-on");
-        String turnedOff = MessageUtils.getLocaleMessage(turnedPath + ".turned-off");
-        List<String> newLore = new ArrayList<>();
-        String turned;
-        for (String loreLine : originalLore) {
-            String content = loreLine;
-            if (content.matches("%[0-9]+%")) {
-                int choiceNumber = Integer.parseInt(content.replace("%", ""));
+        Component turnedOn = MessageUtils.getLocaleMessage(turnedPath + ".turned-on",true);
+        Component turnedOff = MessageUtils.getLocaleMessage(turnedPath + ".turned-off",true);
+        List<Component> newLore = new ArrayList<>();
+        Component turned;
+        for (Component loreLine : originalLore) {
+            if (loreLine instanceof TextComponent loretext){
+            if (loretext.content().matches("%[0-9]+%")) {
+                int choiceNumber = Integer.parseInt(loretext.content().replace("%", ""));
                 if (choiceNumber > valueList.size()) continue;
                 if (choiceNumber == currentChoice) {
                     turned = turnedOn;
@@ -183,17 +186,19 @@ public class ParameterButton {
                 }
                 Object value = valueList.get(choiceNumber - 1);
                 String choicePath = localizationPath + ".choices." + (value instanceof Integer i ? (i) : value).toString();
-                String choiceMessage = (value instanceof Integer i ? (i) : value).toString();
+                Component choiceMessage = Component.text((value instanceof Integer i ? (i) : value).toString());
                 if (messageExists(choicePath)) {
                     choiceMessage = getLocaleMessage(choicePath, false);
                 }
-                content = content.replace("%" + choiceNumber + "%", turned + choiceMessage);
+                loreLine = loreLine.replaceText(TextReplacementConfig.builder().replacement(turned.append(choiceMessage)).match("%" + choiceNumber + "%").build());
+                //content = content.replace("%" + choiceNumber + "%", turned + choiceMessage);
             }
-            newLore.add(content);
+            }
+            newLore.add(loreLine);
         }
 
         ItemMeta meta = item.getItemMeta();
-        meta.setLore(newLore);
+        meta.lore(newLore);
         item.setItemMeta(meta);
         fixItem(item);
     }

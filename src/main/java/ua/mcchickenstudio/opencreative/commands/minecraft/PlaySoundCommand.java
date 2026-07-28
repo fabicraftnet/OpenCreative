@@ -35,7 +35,7 @@ import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.settings.Sounds.SOUND_REGEX;
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 
 /**
  * <h1>PlaySoundCommand</h1>
@@ -132,8 +132,8 @@ public class PlaySoundCommand extends CommandHandler {
             }
 
             if (!soundString.matches(SOUND_REGEX)) {
-                player.sendMessage(getLocaleMessage("commands.play-sound.bad-sound")
-                        .replace("%sound%", soundString));
+                player.sendMessage(toComponent(getLocaleMessageString("commands.play-sound.bad-sound")
+                        .replace("%sound%", soundString)));
                 return;
             }
 
@@ -160,7 +160,7 @@ public class PlaySoundCommand extends CommandHandler {
                     target.playSound(location, sound, volume, pitch);
                 }
             }
-            sender.sendMessage(getLocaleMessage("commands.play-sound.played").replace("%sound%", soundString).replace("%volume%", String.valueOf(volume)).replace("%pitch%", String.valueOf(pitch)).replace("%player%", target.getName()));
+            sender.sendMessage(toComponent(getLocaleMessageString("commands.play-sound.played").replace("%sound%", soundString).replace("%volume%", String.valueOf(volume)).replace("%pitch%", String.valueOf(pitch)).replace("%player%", target.getName())));
         }
     }
 

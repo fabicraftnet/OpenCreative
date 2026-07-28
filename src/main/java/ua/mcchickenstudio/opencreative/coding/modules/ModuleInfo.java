@@ -19,6 +19,7 @@
 package ua.mcchickenstudio.opencreative.coding.modules;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -192,19 +193,24 @@ public class ModuleInfo {
                         .replaceText(TextReplacementConfig.builder()
                                 .match("%moduleName%")
                                 .replacement(displayName()).build()));
-        List<String> lore = new ArrayList<>();
-        for (String loreLine : getLocaleItemDescription("menus.modules.items.module.lore")) {
-            if (loreLine.contains("%moduleDescription%")) {
+        List<Component> lore = new ArrayList<>();
+        for (Component loreLine : getLocaleItemDescription("menus.modules.items.module.lore")) {
+            if (((TextComponent)loreLine).content().contains("%moduleDescription%")) {
                 String[] newLines = this.description.split("\\\\n");
                 for (String newLine : newLines) {
-                    lore.add(loreLine.replace("%moduleDescription%", ChatColor.translateAlternateColorCodes('&', newLine)));
+                    lore.add(
+                            loreLine.replaceText(TextReplacementConfig.builder()
+                                    .match("%moduleDescription%")
+                                    .replacement(toComponent(newLine))
+                                    .build()));
+                    //lore.add(loreLine.replace("%moduleDescription%", ChatColor.translateAlternateColorCodes('&', newLine)));
                 }
             } else {
-                lore.add(parseModuleLines(module, loreLine));
+                lore.add(parseModuleLines(module, loreLine)); //FIXME
             }
         }
         item.setAmount(1);
-        meta.setLore(lore);
+        meta.lore(lore);
         item.setItemMeta(meta);
         clearItemFlags(item);
         setPersistentData(item, getItemIdKey(), String.valueOf(module.getId()));

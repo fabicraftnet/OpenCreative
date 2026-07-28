@@ -53,6 +53,7 @@ import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCodingDebugLo
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendPlanetCompileErrorMessage;
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 /**
  * <h1>CodingBlockParser</h1>
@@ -251,13 +252,13 @@ public class CodingBlockParser {
         devPlanet.setCurrentlySavingCode(true);
         long time = System.currentTimeMillis();
         OpenCreative.getPlugin().getLogger().info("Parsing code in planet " + devPlanet.getPlanet().getId() + "...");
-        sendCodingDebugLog(devPlanet.getPlanet(), getLocaleMessage("coding-debug.parsing-code", false));
+        sendCodingDebugLog(devPlanet.getPlanet(), getLocaleMessageString("coding-debug.parsing-code", false));
         CodeScript script = devPlanet.getPlanet().getTerritory().getScript();
         script.clear(false);
         parseExecutors(devPlanet, script.getConfig(), devPlanet.getChangedColumns());
         devPlanet.clearColumnsChanges();
         OpenCreative.getPlugin().getLogger().info("Parsed code in planet " + devPlanet.getPlanet().getId() + " in " + (System.currentTimeMillis() - time) + " ms.");
-        sendCodingDebugLog(devPlanet.getPlanet(), getLocaleMessage("coding-debug.parsed-code", false)
+        sendCodingDebugLog(devPlanet.getPlanet(), getLocaleMessageString("coding-debug.parsed-code", false)
                 .replace("%time%", String.valueOf(Math.floor((System.currentTimeMillis() - time) / 10.0) / 100.0)));
         Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
             if (script.saveCode()) {
@@ -289,13 +290,13 @@ public class CodingBlockParser {
         devPlanet.setCurrentlySavingCode(true);
         long time = System.currentTimeMillis();
         OpenCreative.getPlugin().getLogger().info("Recompiling code in planet " + devPlanet.getPlanet().getId() + "...");
-        sendCodingDebugLog(devPlanet.getPlanet(), getLocaleMessage("coding-debug.parsing-code", false));
+        sendCodingDebugLog(devPlanet.getPlanet(), getLocaleMessageString("coding-debug.parsing-code", false));
         CodeScript script = devPlanet.getPlanet().getTerritory().getScript();
         script.clear(true);
         parseAllExecutors(devPlanet, script.getConfig());
         devPlanet.clearColumnsChanges();
         OpenCreative.getPlugin().getLogger().info("Recompiled code in planet " + devPlanet.getPlanet().getId() + " in " + (System.currentTimeMillis() - time) + " ms.");
-        sendCodingDebugLog(devPlanet.getPlanet(), getLocaleMessage("coding-debug.parsed-code", false)
+        sendCodingDebugLog(devPlanet.getPlanet(), getLocaleMessageString("coding-debug.parsed-code", false)
                 .replace("%time%", String.valueOf(Math.floor((System.currentTimeMillis() - time) / 10.0) / 100.0)));
         Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
             if (script.saveCode()) {
@@ -420,7 +421,7 @@ public class CodingBlockParser {
                                 x = x + 2;
                             }
                         } else {
-                            sendPlanetCompileErrorMessage(devPlanet.getPlanet(), world.getBlockAt(x + 1, y, z), getLocaleMessage("coding-error.bad-piston"));
+                            sendPlanetCompileErrorMessage(devPlanet.getPlanet(), world.getBlockAt(x + 1, y, z), getLocaleMessageString("coding-error.bad-piston",true));
                             isCodeFine = false;
                             continue;
                         }
@@ -520,7 +521,7 @@ public class CodingBlockParser {
     }
 
     private void onArgumentsTooBig(DevPlanet devPlanet, Block block, long argsSize) {
-        sendPlanetCompileErrorMessage(devPlanet.getPlanet(), block, getLocaleMessage("world.script-size-limit")
+        sendPlanetCompileErrorMessage(devPlanet.getPlanet(), block, getLocaleMessageString("world.script-size-limit",true)
                 .replace("%amount%", FileUtils.byteCountToDisplaySize(argsSize))
                 .replace("%limit%", String.valueOf(maxScriptSize / 1024 / 1024)));
     }

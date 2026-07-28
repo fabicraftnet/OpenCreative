@@ -123,13 +123,13 @@ public final class InteractListener implements Listener {
         return type;
     }
 
-    public static String formatLocation(Location location) {
+    public static Component formatLocation(Location location) {
         double x = Math.round(location.getX() * 100.0) / 100.0;
         double y = Math.round(location.getY() * 100.0) / 100.0;
         double z = Math.round(location.getZ() * 100.0) / 100.0;
         float yaw = Math.round(location.getYaw() * 100.0f) / 100.0f;
         float pitch = Math.round(location.getPitch() * 100.0f) / 100.0f;
-        return ChatColor.translateAlternateColorCodes('&', "&a" + x + " " + y + " " + z + " &7" + yaw + " " + pitch);
+        return toComponent("&a" + x + " " + y + " " + z + " &7" + yaw + " " + pitch);
     }
 
     @EventHandler
@@ -536,7 +536,7 @@ public final class InteractListener implements Listener {
             }
             Component displayName = meta.displayName();
             if (displayName != null) {
-                player.sendMessage(displayName.hoverEvent(HoverEvent.showText(toComponent(getLocaleMessage("world.dev-mode.click-to-copy")))).clickEvent(ClickEvent.suggestCommand(ChatColor.stripColor(meta.getDisplayName()))));
+                player.sendMessage(displayName.hoverEvent(HoverEvent.showText((getLocaleMessage("world.dev-mode.click-to-copy")))).clickEvent(ClickEvent.suggestCommand(ChatColor.stripColor(meta.getDisplayName()))));
                 player.swingMainHand();
             }
         }
@@ -550,7 +550,7 @@ public final class InteractListener implements Listener {
             }
             Component displayName = meta.displayName();
             if (displayName != null) {
-                player.sendMessage(displayName.hoverEvent(HoverEvent.showText(toComponent(getLocaleMessage("world.dev-mode.click-to-copy")))).clickEvent(ClickEvent.suggestCommand(ChatColor.stripColor(meta.getDisplayName()))));
+                player.sendMessage(displayName.hoverEvent(HoverEvent.showText((getLocaleMessage("world.dev-mode.click-to-copy")))).clickEvent(ClickEvent.suggestCommand(ChatColor.stripColor(meta.getDisplayName()))));
                 setPersistentData(currentItem, getCodingValueKey(), "NUMBER");
             }
         }
@@ -564,7 +564,7 @@ public final class InteractListener implements Listener {
             }
             Component displayName = meta.displayName();
             if (displayName != null) {
-                player.sendMessage(displayName.hoverEvent(HoverEvent.showText(toComponent(getLocaleMessage("world.dev-mode.click-to-copy")))).clickEvent(ClickEvent.suggestCommand(meta.getDisplayName().replace("§", "&"))));
+                player.sendMessage(displayName.hoverEvent(HoverEvent.showText((getLocaleMessage("world.dev-mode.click-to-copy")))).clickEvent(ClickEvent.suggestCommand(meta.getDisplayName().replace("§", "&"))));
                 setPersistentData(currentItem, getCodingValueKey(), "TEXT");
                 player.swingMainHand();
             }
@@ -590,7 +590,7 @@ public final class InteractListener implements Listener {
             } else {
                 Component displayName = meta.displayName();
                 if (displayName != null) {
-                    player.sendMessage(displayName.hoverEvent(HoverEvent.showText(toComponent(getLocaleMessage("world.dev-mode.click-to-copy")))).clickEvent(ClickEvent.suggestCommand(ChatColor.stripColor(meta.getDisplayName()))));
+                    player.sendMessage(displayName.hoverEvent(HoverEvent.showText((getLocaleMessage("world.dev-mode.click-to-copy")))).clickEvent(ClickEvent.suggestCommand(ChatColor.stripColor(meta.getDisplayName()))));
                     setPersistentData(currentItem, getCodingValueKey(), "VECTOR");
                     player.swingMainHand();
                 }
@@ -633,21 +633,21 @@ public final class InteractListener implements Listener {
             int limit = OpenCreative.getSettings().getGroups().getGroup(player).getLimit(LimitType.SELECTED_LINES_AMOUNT).calculateLimit(1);
             if (locations.contains(location)) {
                 devPlanet.unselectMarkedExecutor(player, location);
-                player.sendActionBar(getLocaleMessage("menus.developer.manipulator.unmarked")
+                player.sendActionBar(toComponent(getLocaleMessageString("menus.developer.manipulator.unmarked")
                         .replace("%amount%", String.valueOf(devPlanet.getMarkedExecutors(player).size()))
-                        .replace("%limit%", String.valueOf(limit)));
+                        .replace("%limit%", String.valueOf(limit))));
                 Sounds.DEV_UNMARK_EXECUTOR.play(player);
             } else {
                 if (locations.size() >= limit) {
-                    player.sendActionBar(getLocaleMessage("menus.developer.manipulator.limit")
-                            .replace("%amount%", String.valueOf(devPlanet.getMarkedExecutors(player).size())));
+                    player.sendActionBar(toComponent(getLocaleMessageString("menus.developer.manipulator.limit")
+                            .replace("%amount%", String.valueOf(devPlanet.getMarkedExecutors(player).size()))));
                     Sounds.DEV_NOT_ALLOWED.play(player);
                     return;
                 }
                 devPlanet.markExecutorAsSelected(player, location);
-                player.sendActionBar(getLocaleMessage("menus.developer.manipulator.marked")
+                player.sendActionBar(toComponent(getLocaleMessageString("menus.developer.manipulator.marked")
                         .replace("%amount%", String.valueOf(devPlanet.getMarkedExecutors(player).size()))
-                        .replace("%limit%", String.valueOf(limit)));
+                        .replace("%limit%", String.valueOf(limit))));
                 Sounds.DEV_MARK_EXECUTOR.play(player);
             }
         } else {
@@ -665,7 +665,7 @@ public final class InteractListener implements Listener {
                 return;
             }
             if (getCooldown(player, CooldownUtils.CooldownType.BLOCKS_DUPLICATION) > 0) {
-                player.sendMessage(getLocaleMessage("cooldown").replace("%cooldown%", String.valueOf(getCooldown(player, CooldownUtils.CooldownType.BLOCKS_DUPLICATION))));
+                player.sendMessage(toComponent(getLocaleMessageString("cooldown").replace("%cooldown%", String.valueOf(getCooldown(player, CooldownUtils.CooldownType.BLOCKS_DUPLICATION)))));
                 return;
             }
             setCooldown(player, OpenCreative.getSettings().getGroups().getGroup(player)
@@ -677,8 +677,8 @@ public final class InteractListener implements Listener {
             if (section == null) return;
             CodingBlockPlacer.CodePlacementResult result = new CodingBlockPlacer(devPlanet).placeCodingLines(devPlanet, section, clickedBlock.getLocation());
             if (result.getType() == CodingBlockPlacer.CodePlacementResult.Type.NOT_ENOUGH_SPACE) {
-                player.sendMessage(getLocaleMessage("environment.duplication.few-space")
-                        .replace("%required%", String.valueOf(markedExecutors.size())));
+                player.sendMessage(toComponent(getLocaleMessageString("environment.duplication.few-space")
+                        .replace("%required%", String.valueOf(markedExecutors.size()))));
                 Sounds.DEV_NOT_ALLOWED.play(player);
             } else if (result.getType() == CodingBlockPlacer.CodePlacementResult.Type.ERROR) {
                 player.sendMessage(getLocaleMessage("environment.duplication.error"));
@@ -752,7 +752,7 @@ public final class InteractListener implements Listener {
         }
         player.setFlying(true);
         player.setFlySpeed(speed);
-        player.sendActionBar(getLocaleMessage("world.dev-mode.changed-fly-speed").replace("%speed%", String.valueOf(currentItem.getAmount())));
+        player.sendActionBar(toComponent(getLocaleMessageString("world.dev-mode.changed-fly-speed").replace("%speed%", String.valueOf(currentItem.getAmount()))));
         Sounds.DEV_FLY_SPEED_CHANGE.play(player);
     }
 
@@ -769,13 +769,13 @@ public final class InteractListener implements Listener {
         if (meta != null && meta.hasDisplayName()) {
             value = meta.getDisplayName().contains("true");
         }
-        String displayName = ChatColor.translateAlternateColorCodes('&', !value ? "&atrue" : "&cfalse");
+        Component displayName = toComponent(!value ? "&atrue" : "&cfalse");
         setDisplayName(currentItem, displayName);
         (!value ? Sounds.DEV_BOOLEAN_TRUE : Sounds.DEV_BOOLEAN_FALSE).play(player);
         player.swingMainHand();
         setPersistentData(currentItem, getCodingValueKey(), "BOOLEAN");
         player.showTitle(Title.title(
-                toComponent(getLocaleMessage("world.dev-mode.set-variable")), Component.text(displayName),
+                (getLocaleMessage("world.dev-mode.set-variable")), displayName,
                 Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
         ));
     }
@@ -794,10 +794,10 @@ public final class InteractListener implements Listener {
             if (clickedBlock != null) {
                 location = clickedBlock.getLocation();
             }
-            String locationString = formatLocation(location);
-            setDisplayName(currentItem, locationString);
+            Component formattedLocation = formatLocation(location);
+            setDisplayName(currentItem, formattedLocation);
             player.showTitle(Title.title(
-                    toComponent(getLocaleMessage("world.dev-mode.set-variable")), Component.text(locationString),
+                    (getLocaleMessage("world.dev-mode.set-variable")), formattedLocation,
                     Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
             ));
             setPersistentData(currentItem, getCodingValueKey(), "LOCATION");

@@ -55,6 +55,7 @@ import java.util.regex.Pattern;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendDebugError;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isDevPlanet;
 
 /**
@@ -283,7 +284,7 @@ public final class PacketEventsManager implements PacketManager, Toggleable, Sig
                     newLines.addTag(new NBTString(line));
                     continue;
                 }
-                String text = getLocaleMessage("blocks." + line, false);
+                String text = getLocaleMessageString("blocks." + line, false);
                 if (text.startsWith("blocks.")) {
                     if (line.equals("function") || line.equals("method")) {
                         isFunctionOrMethod = true;

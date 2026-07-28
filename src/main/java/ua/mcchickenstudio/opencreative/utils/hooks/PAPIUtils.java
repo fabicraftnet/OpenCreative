@@ -20,6 +20,8 @@ package ua.mcchickenstudio.opencreative.utils.hooks;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -39,6 +41,10 @@ public final class PAPIUtils {
 
     public static String parsePlaceholdersAPI(OfflinePlayer offlinePlayer, String string) {
         return PlaceholderAPI.setPlaceholders(offlinePlayer, string);
+    }
+    public static Component parsePlaceholdersAPI(OfflinePlayer offlinePlayer, Component string) {
+        //this is a lazy and dumb fix
+        return MiniMessage.miniMessage().deserialize(parsePlaceholdersAPI(offlinePlayer, MiniMessage.miniMessage().serialize(string)) );
     }
 
     public static void registerPlaceholder() {

@@ -101,7 +101,6 @@ public class DevPlanet {
      */
     public DevPlanet(@NotNull Planet planet) {
         this.planet = planet;
-        loadInformation();
     }
 
     /**
@@ -147,7 +146,7 @@ public class DevPlanet {
      * Loads settings of developer planet.
      */
     private void loadInformation() {
-        FileConfiguration config = getPlanetConfig(planet);
+        FileConfiguration config = planet.getConfiguration().getConfig();
         try {
             containerMaterial = Material.getMaterial(config.getString("dev.container", "CHEST"));
             if (containerMaterial == null || !containerMaterial.isBlock()) {
@@ -191,6 +190,7 @@ public class DevPlanet {
                 return;
             }
             Bukkit.getScheduler().runTaskAsynchronously(OpenCreative.getPlugin(), () -> {
+                loadInformation();
                 List<String> savedChanges = planet.getConfiguration().getConfig().getStringList("changed-code-columns");
                 if (!savedChanges.isEmpty()) {
                     for (String saved : savedChanges) {
@@ -786,7 +786,7 @@ public class DevPlanet {
         }
         wander.setConnectingToPlanet(true);
         player.showTitle(Title.title(
-                toComponent(getLocaleMessage("world.dev-mode.connecting.title")), toComponent(getLocaleMessage("world.dev-mode.connecting.subtitle")),
+                (getLocaleMessage("world.dev-mode.connecting.title")), (getLocaleMessage("world.dev-mode.connecting.subtitle")),
                 Title.Times.times(Duration.ofSeconds(15), Duration.ofSeconds(30), Duration.ofSeconds(10))
         ));
         World previousWorld = player.getWorld();
@@ -888,7 +888,7 @@ public class DevPlanet {
                 Sounds.WORLD_MODE_DEV.play(player);
                 displayWorldBorders();
                 player.showTitle(Title.title(
-                        toComponent(getLocaleMessage("world.dev-mode.title")), toComponent(getLocaleMessage("world.dev-mode.subtitle")),
+                        (getLocaleMessage("world.dev-mode.title")), (getLocaleMessage("world.dev-mode.subtitle")),
                         Title.Times.times(Duration.ofMillis(750), Duration.ofSeconds(2), Duration.ofMillis(750))
                 ));
                 wander.setConnectingToPlanet(false);

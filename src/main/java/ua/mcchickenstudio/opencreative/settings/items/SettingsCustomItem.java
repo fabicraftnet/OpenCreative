@@ -148,8 +148,8 @@ public class SettingsCustomItem implements SettingsItem {
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
             if (translationKey != null) {
-                meta.setDisplayName(getLocaleItemName(translationKey + ".name"));
-                meta.setLore(getLocaleItemDescription(translationKey + ".lore"));
+                meta.displayName(getLocaleItemName(translationKey + ".name"));
+                meta.lore(getLocaleItemDescription(translationKey + ".lore"));
             }
             if (name != null) {
                 meta.displayName(toComponent(name));

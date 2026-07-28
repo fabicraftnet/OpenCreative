@@ -30,6 +30,7 @@ import ua.mcchickenstudio.opencreative.coding.ExtensionContent;
 import java.util.Random;
 
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 /**
  * <h1>WorldGenerator</h1>
@@ -99,7 +100,7 @@ public abstract class WorldGenerator extends ChunkGenerator implements Extension
      * @return localized name.
      */
     public @NotNull String getLocaleName() {
-        return getLocaleMessage("menus.world-creation.items.type.choices." + id, false);
+        return getLocaleMessageString("menus.world-creation.items.type.choices." + id, false);
     }
 
     /**

@@ -42,6 +42,7 @@ import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCodingDebugLo
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendPlanetErrorMessage;
 import static ua.mcchickenstudio.opencreative.utils.FileUtils.getPlanetScriptFile;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 public class CodingScript {
 
@@ -56,12 +57,12 @@ public class CodingScript {
     }
 
     public boolean load() {
-        sendCodingDebugLog(planet, getLocaleMessage("coding-debug.loading-code", false));
+        sendCodingDebugLog(planet, getLocaleMessageString("coding-debug.loading-code", false));
         File scriptFile = getPlanetScriptFile(planet);
         long totalSize = ua.mcchickenstudio.opencreative.utils.FileUtils.getFileSize(scriptFile);
         long limit = planet.getGroup().getScriptSizeLimit() * 1024L * 1024L;
         if (totalSize > limit) {
-            sendPlanetErrorMessage(planet, getLocaleMessage("world.script-size-limit")
+            sendPlanetErrorMessage(planet, getLocaleMessageString("world.script-size-limit")
                     .replace("%amount%", FileUtils.byteCountToDisplaySize(totalSize))
                     .replace("%limit%", String.valueOf(planet.getGroup().getScriptSizeLimit())));
             sendCodingDebugLog(planet, "Script File is too large to load :(");
@@ -100,11 +101,11 @@ public class CodingScript {
             }
             registeredExecutors.clear();
             registeredExecutors.addAll(executors);
-            sendCodingDebugLog(planet, getLocaleMessage("coding-debug.loaded-code", false)
+            sendCodingDebugLog(planet, getLocaleMessageString("coding-debug.loaded-code", false)
                     .replace("%time%", String.valueOf(Math.floor((System.currentTimeMillis() - time) / 10.0) / 100.0)));
             OpenCreative.getPlugin().getLogger().info("Loaded code in planet " + planet.getId() + " in " + (System.currentTimeMillis() - time) + " ms with " + executors.size() + " executors!");
         } else {
-            sendCodingDebugLog(planet, getLocaleMessage("coding-debug.loaded-code", false)
+            sendCodingDebugLog(planet, getLocaleMessageString("coding-debug.loaded-code", false)
                     .replace("%time%", "0"));
             OpenCreative.getPlugin().getLogger().info("Planet " + planet.getId() + " has no code to load.");
         }

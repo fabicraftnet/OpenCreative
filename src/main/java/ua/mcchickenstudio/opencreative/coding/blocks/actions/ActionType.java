@@ -18,6 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.coding.blocks.actions;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -101,8 +102,7 @@ import java.util.*;
 
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.getSignLine;
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.messageExists;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 
 public enum ActionType implements CodingBlockType {
 
@@ -1153,7 +1153,7 @@ public enum ActionType implements CodingBlockType {
     public @NotNull String getLocaleName() {
         String path = "items.developer." + (isCondition() ? "conditions" : "actions") + "." + this.name().toLowerCase().replace("_", "-") + ".name";
         if (messageExists(path)) {
-            return getLocaleMessage(path);
+            return getLocaleMessageString(path);
         } else {
             return this.name().toLowerCase().replace("_", "-");
         }

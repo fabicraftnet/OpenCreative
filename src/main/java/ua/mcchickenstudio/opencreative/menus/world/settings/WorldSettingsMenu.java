@@ -18,6 +18,9 @@
 
 package ua.mcchickenstudio.opencreative.menus.world.settings;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.title.Title;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
@@ -44,8 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.toComponent;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.isEntityInDevPlanet;
 
 public final class WorldSettingsMenu extends AbstractMenu implements WorldMenu {
@@ -123,19 +125,22 @@ public final class WorldSettingsMenu extends AbstractMenu implements WorldMenu {
     public ItemStack getPlanetIcon() {
         ItemStack item = clearItemMeta(planet.getInformation().getIcon().clone());
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(MessageUtils.getLocaleItemName("menus.world-settings.items.world.name").replace("%planetName%", planet.getInformation().getDisplayName()));
-        List<String> lore = new ArrayList<>();
-        for (String loreLine : MessageUtils.getLocaleItemDescription("menus.world-settings.items.world.lore")) {
-            if (loreLine.contains("%planetDescription%")) {
+        meta.displayName(MessageUtils.toComponent( MessageUtils.getLocaleItemNameString("menus.world-settings.items.world.name").replace("%planetName%", planet.getInformation().getDisplayName()) ));
+        List<Component> lore = new ArrayList<>();
+        for (Component loreLine : MessageUtils.getLocaleItemDescription("menus.world-settings.items.world.lore")) {
+            if (((TextComponent)loreLine).content().contains("%planetDescription%")) {
                 String[] newLines = planet.getInformation().getDescription().split("\\\\n");
                 for (String newLine : newLines) {
-                    lore.add(loreLine.replace("%planetDescription%", ChatColor.translateAlternateColorCodes('&', newLine)));
-                }
+                    lore.add(
+                            loreLine.replaceText(TextReplacementConfig.builder()
+                                    .match("%planetDescription%")
+                                    .replacement(toComponent(newLine))
+                                    .build()));                }
             } else {
                 lore.add(MessageUtils.parsePlanetLines(planet, loreLine));
             }
         }
-        meta.setLore(lore);
+        meta.lore(lore);
         item.setItemMeta(meta);
         clearItemFlags(item);
         return item;
@@ -153,17 +158,17 @@ public final class WorldSettingsMenu extends AbstractMenu implements WorldMenu {
         }
         if (itemEquals(currentItem, name)) {
             player.showTitle(Title.title(
-                    toComponent(getLocaleMessage("settings.world-name.title")), toComponent(getLocaleMessage("settings.world-name.subtitle")),
+                    (getLocaleMessage("settings.world-name.title")), (getLocaleMessage("settings.world-name.subtitle")),
                     Title.Times.times(Duration.ofMillis(100), Duration.ofSeconds(30), Duration.ofMillis(130))
             ));
-            player.sendMessage(getLocaleMessage("settings.world-name.usage").replace("%player%", player.getName()));
+            player.sendMessage(toComponent(getLocaleMessageString("settings.world-name.usage").replace("%player%", player.getName())));
             player.closeInventory();
             if (!PlayerConfirmation.hasConfirmation(player)) {
                 PlayerConfirmation.setConfirmation(player, PlayerConfirmation.WORLD_NAME_CHANGE);
             }
         } else if (itemEquals(currentItem, description)) {
             player.showTitle(Title.title(
-                    toComponent(getLocaleMessage("settings.world-description.title")), toComponent(getLocaleMessage("settings.world-description.subtitle")),
+                    (getLocaleMessage("settings.world-description.title")), (getLocaleMessage("settings.world-description.subtitle")),
                     Title.Times.times(Duration.ofMillis(100), Duration.ofSeconds(30), Duration.ofMillis(130))
             ));
             player.sendMessage(getLocaleMessage("settings.world-description.usage"));
@@ -173,10 +178,10 @@ public final class WorldSettingsMenu extends AbstractMenu implements WorldMenu {
             }
         } else if (itemEquals(currentItem, customID)) {
             player.showTitle(Title.title(
-                    toComponent(getLocaleMessage("settings.world-id.title")), toComponent(getLocaleMessage("settings.world-id.subtitle")),
+                    (getLocaleMessage("settings.world-id.title")), (getLocaleMessage("settings.world-id.subtitle")),
                     Title.Times.times(Duration.ofMillis(100), Duration.ofSeconds(30), Duration.ofMillis(130))
             ));
-            player.sendMessage(getLocaleMessage("settings.world-id.usage").replace("%player%", player.getName()));
+            player.sendMessage(toComponent(getLocaleMessageString("settings.world-id.usage").replace("%player%", player.getName())));
             player.closeInventory();
             if (!PlayerConfirmation.hasConfirmation(player)) {
                 PlayerConfirmation.setConfirmation(player, PlayerConfirmation.WORLD_CUSTOM_ID_CHANGE);
@@ -190,7 +195,7 @@ public final class WorldSettingsMenu extends AbstractMenu implements WorldMenu {
             if (event.getClick().isLeftClick()) {
                 planet.getTerritory().setSpawnLocation(player.getLocation());
                 player.showTitle(Title.title(
-                        toComponent(getLocaleMessage("settings.world-spawn.title")), toComponent(getLocaleMessage("settings.world-spawn.subtitle")),
+                        (getLocaleMessage("settings.world-spawn.title")), (getLocaleMessage("settings.world-spawn.subtitle")),
                         Title.Times.times(Duration.ofMillis(100), Duration.ofSeconds(2), Duration.ofMillis(130))
                 ));
                 Sounds.WORLD_SETTINGS_SPAWN_SET.play(player);

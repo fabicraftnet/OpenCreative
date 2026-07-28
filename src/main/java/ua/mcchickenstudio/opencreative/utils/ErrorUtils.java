@@ -157,7 +157,7 @@ public final class ErrorUtils {
      */
     public static void sendPlayerErrorMessage(Player player, String errorMessage) {
         OpenCreative.getPlugin().getLogger().warning("An player error has occurred for " + player.getName() + ": " + errorMessage);
-        player.sendMessage(getLocaleMessage("player-error").replace("%error%", errorMessage));
+        player.sendMessage(toComponent(getLocaleMessageString("player-error",true).replace("%error%", errorMessage)));
         Sounds.PLAYER_ERROR.play(player);
     }
 
@@ -173,8 +173,7 @@ public final class ErrorUtils {
     public static void sendPlayerErrorMessage(Player player, String errorMessage, Exception error) {
         if (OpenCreative.getSettings().shouldLogWarnings())
             OpenCreative.getPlugin().getLogger().warning("An player error has occurred for " + player.getName() + ": " + errorMessage + " " + parseException(error, false));
-        Component message = Component
-                .text(getLocaleMessage("player-error").replace("%error%", errorMessage))
+        Component message = toComponent(getLocaleMessageString("player-error", true).replace("%error%", errorMessage))
                 .hoverEvent(HoverEvent.showText(Component.text(parseException(error, true))));
         player.sendMessage(message);
         Sounds.PLAYER_ERROR.play(player);
@@ -193,7 +192,7 @@ public final class ErrorUtils {
         if (OpenCreative.getSettings().shouldLogWarnings())
             OpenCreative.getPlugin().getLogger().warning("An error has occurred in planet " + planet.getWorldName() + ": " + error);
         for (Player player : planet.getPlayers()) {
-            player.sendMessage(getLocaleMessage("planet-error").replace("%error%", error));
+            player.sendMessage(toComponent(getLocaleMessageString("planet-error", true).replace("%error%", error)));
             Sounds.PLAYER_ERROR.play(player);
         }
     }
@@ -214,7 +213,7 @@ public final class ErrorUtils {
             OpenCreative.getPlugin().getLogger().warning("An error has occurred in planet " + planet.getWorldName() + ": " + errorMessage + " " + parseException(error, false));
         for (Player player : planet.getPlayers()) {
             Component message = Component
-                    .text(getLocaleMessage("planet-error").replace("%error%", errorMessage))
+                    .text(getLocaleMessageString("planet-error", true).replace("%error%", errorMessage))
                     .hoverEvent(HoverEvent.showText(Component.text(parseException(error, true))));
             player.sendMessage(message);
             Sounds.PLAYER_ERROR.play(player);
@@ -325,7 +324,7 @@ public final class ErrorUtils {
         Planet planet = executor.getPlanet();
         for (Player player : planet.getPlayers()) {
             Component message = Component
-                    .text(getLocaleMessage("coding-error.message")
+                    .text(getLocaleMessageString("coding-error.message", true)
                             .replace("%event%", executor.getLocaleName())
                             .replace("%action%", action.getActionType().getLocaleName())
                             .replace("%error%", errorMessage)
@@ -374,7 +373,7 @@ public final class ErrorUtils {
         if (planet == null) return;
         for (Player player : planet.getPlayers()) {
             player.sendMessage(
-                    getLocaleMessage("coding-error.message")
+                    getLocaleMessageString("coding-error.message", true)
                             .replace("%event%", executor.getLocaleName())
                             .replace("%action%", action.getActionType().toString())
                             .replace("%error%", errorMessage)
@@ -401,13 +400,13 @@ public final class ErrorUtils {
         for (Player player : planet.getPlayers()) {
             Sounds.WORLD_CODE_CRITICAL_ERROR.play(player);
             Component message = Component
-                    .text(getLocaleMessage("coding-error.message-event-critical")
+                    .text(getLocaleMessageString("coding-error.message-event-critical",true)
                             .replace("%event%", executor.getLocaleName())
                             .replace("%error%", errorMessage)
                             .replace("%x%", String.valueOf(executor.getX()))
                             .replace("%y%", String.valueOf(executor.getY()))
                             .replace("%z%", String.valueOf(executor.getZ())))
-                    .hoverEvent(HoverEvent.showText(toComponent(getLocaleMessage("coding-error.hover-message"))))
+                    .hoverEvent(HoverEvent.showText(getLocaleMessage("coding-error.hover-message",true)))
                     .clickEvent(ClickEvent.runCommand("/dev " + executor.getX() + " " + executor.getY() + " " + executor.getZ()));
             player.sendMessage(message);
         }
@@ -430,13 +429,13 @@ public final class ErrorUtils {
         if (planet == null) return;
         for (Player player : planet.getPlayers()) {
             Component message = Component
-                    .text(getLocaleMessage("coding-error.message-event")
+                    .text(getLocaleMessageString("coding-error.message-event")
                             .replace("%event%", executor.getLocaleName())
                             .replace("%error%", errorMessage)
                             .replace("%x%", String.valueOf(executor.getX()))
                             .replace("%y%", String.valueOf(executor.getY()))
                             .replace("%z%", String.valueOf(executor.getZ())))
-                    .hoverEvent(HoverEvent.showText(toComponent(getLocaleMessage("coding-error.hover-message"))))
+                    .hoverEvent(HoverEvent.showText(getLocaleMessage("coding-error.hover-message")))
                     .clickEvent(ClickEvent.runCommand("/dev " + executor.getX() + " " + executor.getY() + " " + executor.getZ()));
             player.sendMessage(message);
             Sounds.WORLD_CODE_ERROR.play(player);
@@ -455,12 +454,12 @@ public final class ErrorUtils {
         if (planet == null) return;
         for (Player player : planet.getPlayers()) {
             Component message = Component
-                    .text(getLocaleMessage("coding-error.message-compile")
+                    .text(getLocaleMessageString("coding-error.message-compile")
                             .replace("%error%", errorMessage)
                             .replace("%x%", String.valueOf(block.getX()))
                             .replace("%y%", String.valueOf(block.getY()))
                             .replace("%z%", String.valueOf(block.getZ())))
-                    .hoverEvent(HoverEvent.showText(toComponent(getLocaleMessage("coding-error.hover-message"))))
+                    .hoverEvent(HoverEvent.showText(getLocaleMessage("coding-error.hover-message",true)))
                     .clickEvent(ClickEvent.runCommand("/dev " + block.getX() + " " + block.getY() + " " + block.getZ()));
             player.sendMessage(message);
             Sounds.WORLD_CODE_COMPILE_ERROR.play(player);
@@ -478,7 +477,7 @@ public final class ErrorUtils {
     public static void sendPlanetCompileErrorMessage(Planet planet, List<Block> unknownBlocks) {
         if (planet == null) return;
         for (Player player : planet.getPlayers()) {
-            player.sendMessage(getLocaleMessage("coding-error.unknown-block-detected").replace("%error%", getLocaleMessage("coding-error.unknown-blocks", false)));
+            player.sendMessage(toComponent(getLocaleMessageString("coding-error.unknown-block-detected").replace("%error%", getLocaleMessageString("coding-error.unknown-blocks", false))));
             for (Block block : unknownBlocks) {
                 NamedTextColor color = NamedTextColor.GRAY;
                 String category = "???";
@@ -496,14 +495,14 @@ public final class ErrorUtils {
                 }
 
                 Component blockCoordinatesMessage = Component
-                        .text(getLocaleMessage("coding-error.unknown-block-coords")
+                        .text(getLocaleMessageString("coding-error.unknown-block-coords")
                                 .replace("%x%", String.valueOf(block.getLocation().getX()))
                                 .replace("%y%", String.valueOf(block.getLocation().getY()))
                                 .replace("%z%", String.valueOf(block.getLocation().getZ()))
                                 .replace("%category%", category)
                                 .replace("%type%", type))
                         .color(color)
-                        .hoverEvent(HoverEvent.showText(toComponent(getLocaleMessage("coding-error.hover-message"))))
+                        .hoverEvent(HoverEvent.showText(getLocaleMessage("coding-error.hover-message",true)))
                         .clickEvent(ClickEvent.runCommand("/dev " + block.getLocation().getX() + " " + block.getLocation().getY() + " " + block.getLocation().getZ()));
                 player.sendMessage(blockCoordinatesMessage);
             }
@@ -582,9 +581,9 @@ public final class ErrorUtils {
      * @param errorMessage description of critical error.
      * @param error        exception, that has occurred.
      */
-    public static void sendDebugError(String errorMessage, Exception error) {
+    public static void sendDebugError(String errorMessage, Throwable error) {
         if (OpenCreative.getSettings().isDebug()) {
-            OpenCreative.getPlugin().getLogger().severe("CRITICAL ERROR has occurred: " + errorMessage + " " + parseException(error, false));
+            OpenCreative.getPlugin().getLogger().severe("Oops! Debug error has occurred :(\n " + errorMessage + " " + parseException(error, false));
         }
     }
 
@@ -607,7 +606,7 @@ public final class ErrorUtils {
         Object value = null;
         if (value == null) value = "null";
         for (Player player : planet.getPlayers()) {
-            player.sendMessage(getLocaleMessage("coding-debug.variable-not-found", false).replace("%name%", name).replace("%value%", value.toString()));
+            player.sendMessage(toComponent(getLocaleMessageString("coding-debug.variable-not-found", false).replace("%name%", name).replace("%value%", value.toString())));
         }
     }
 
@@ -626,7 +625,7 @@ public final class ErrorUtils {
     public static void sendCodingNotFoundEventValue(Planet planet, Executor executor, Class<? extends EventValue> clazz) {
         if (planet == null) return;
         EventValue eventValue = EventValues.getInstance().getByClass(clazz);
-        sendPlanetCodeErrorMessage(planet, executor, getLocaleMessage("coding-error.temp-var-not-exists", false)
+        sendPlanetCodeErrorMessage(planet, executor, getLocaleMessageString("coding-error.temp-var-not-exists", false)
                 .replace("%variable%", eventValue != null ? eventValue.getLocaleName() : clazz.getSimpleName()));
     }
 
@@ -644,7 +643,7 @@ public final class ErrorUtils {
     public static void sendCodingDebugLog(Planet planet, String log) {
         if (!planet.isDebug()) return;
         for (Player player : planet.getPlayers()) {
-            player.sendMessage(getLocaleMessage("coding-debug.log", false).replace("%log%", log));
+            player.sendMessage(toComponent(getLocaleMessageString("coding-debug.log", false).replace("%log%", log)));
         }
     }
 
@@ -664,7 +663,7 @@ public final class ErrorUtils {
         if (!planet.isDebug()) return;
         if (value == null) value = "null";
         for (Player player : planet.getPlayers()) {
-            player.sendMessage(getLocaleMessage("coding-debug.variable-found", false).replace("%name%", name).replace("%value%", value.toString()));
+            player.sendMessage(toComponent(getLocaleMessageString("coding-debug.variable-found", false).replace("%name%", name).replace("%value%", value.toString())));
         }
     }
 
@@ -679,8 +678,8 @@ public final class ErrorUtils {
         if (!executor.isDebug()) return;
         if (!planet.isDebug()) return;
         for (Player player : planet.getPlayers()) {
-            player.sendMessage(getLocaleMessage("coding-debug.executor-message", false)
-                    .replace("%type%", executor.getLocaleName()).replace("%x%", String.valueOf(executor.getX())).replace("%y%", String.valueOf(executor.getY())).replace("%z%", String.valueOf(executor.getZ())));
+            player.sendMessage(toComponent(getLocaleMessageString("coding-debug.executor-message", false)
+                    .replace("%type%", executor.getLocaleName()).replace("%x%", String.valueOf(executor.getX())).replace("%y%", String.valueOf(executor.getY())).replace("%z%", String.valueOf(executor.getZ()))));
         }
     }
 
@@ -697,21 +696,21 @@ public final class ErrorUtils {
         Planet planet = action.getExecutor().getPlanet();
         if (!planet.isDebug()) return;
         List<Argument> arguments = action.getArgumentsList();
-        String message = getLocaleMessage("coding-debug.hover." + (action.getActionType().isCondition() ? "condition" : "action"));
+        String message = getLocaleMessageString("coding-debug.hover." + (action.getActionType().isCondition() ? "condition" : "action"),true);
         message = message.replace("%category%", action.getActionCategory().getLocaleName());
         message = message.replace("%type%", action.getActionType().getLocaleName());
         if (action instanceof Condition condition) {
-            message = message.replace("%opposed%", getLocaleMessage("coding-debug.condition.opposed." + condition.isOpposed()));
+            message = message.replace("%opposed%", getLocaleMessageString("coding-debug.condition.opposed." + condition.isOpposed(),true));
         }
         List<String> argumentsString = new ArrayList<>();
         for (Argument arg : arguments) {
-            argumentsString.add(getLocaleMessage("coding-debug.hover.argument")
+            argumentsString.add(getLocaleMessageString("coding-debug.hover.argument",true)
                     .replace("%name%", arg.getPath())
                     .replace("%type%", arg.getType().getLocaleName())
                     .replace("%value%", ValueType.getDisplayShortString(arg.getValue(action))));
         }
         message = message.replace("%arguments%", String.join(" \n", argumentsString));
-        String actionMessage = getLocaleMessage("coding-debug.action-message", false).replace("%type%", action.getActionType().getLocaleName()).replace("%x%", String.valueOf(action.getX())).replace("%y%", String.valueOf(action.getExecutor().getY())).replace("%z%", String.valueOf(action.getExecutor().getZ()));
+        String actionMessage = getLocaleMessageString("coding-debug.action-message", false).replace("%type%", action.getActionType().getLocaleName()).replace("%x%", String.valueOf(action.getX())).replace("%y%", String.valueOf(action.getExecutor().getY())).replace("%z%", String.valueOf(action.getExecutor().getZ()));
         for (Player player : planet.getPlayers()) {
             player.sendMessage(Component.text(actionMessage)
                     .hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(Component.text(message))));

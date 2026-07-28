@@ -26,7 +26,7 @@ import ua.mcchickenstudio.opencreative.settings.groups.Group;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 
 /**
  * <h1>CooldownUtils</h1>
@@ -131,8 +131,8 @@ public final class CooldownUtils {
                                                          @NotNull Group group,
                                                          @NotNull CooldownType type) {
         if (!checkAndSetCooldown(player, group, type)) {
-            player.sendMessage(getLocaleMessage("cooldown")
-                    .replace("%cooldown%", String.valueOf(getCooldown(player, type))));
+            player.sendMessage(toComponent(getLocaleMessageString("cooldown")
+                    .replace("%cooldown%", String.valueOf(getCooldown(player, type)))));
             return false;
         }
         return true;

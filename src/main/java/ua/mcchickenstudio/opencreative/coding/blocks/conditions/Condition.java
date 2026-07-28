@@ -38,6 +38,7 @@ import java.util.List;
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCodingDebugAction;
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCodingDebugLog;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 public abstract class Condition extends Action {
 
@@ -82,7 +83,7 @@ public abstract class Condition extends Action {
             }
         }
         if (getExecutor().isDebug()) {
-            sendCodingDebugLog(getPlanet(), getLocaleMessage("coding-debug.condition.returned-" + check, false).replace("%type%", getActionType().getLocaleName()));
+            sendCodingDebugLog(getPlanet(), getLocaleMessageString("coding-debug.condition.returned-" + check, false).replace("%type%", getActionType().getLocaleName()));
         }
         if (getPlanet().getMode() != Planet.Mode.PLAYING) return;
         if (check ^ isOpposed) {

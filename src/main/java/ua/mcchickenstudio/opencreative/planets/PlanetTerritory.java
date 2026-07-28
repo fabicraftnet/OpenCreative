@@ -51,6 +51,7 @@ import static ua.mcchickenstudio.opencreative.utils.MessageUtils.clearOnceMessag
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.isEntityInDevPlanet;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.teleportToLobby;
+import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.checkBadContainersInChunk;
 
 /**
  * <h1>PlanetTerritory</h1>
@@ -275,6 +276,7 @@ public class PlanetTerritory {
                 }
             }
             if (asyncSaveData) {
+                WorldUtils.checkBadContainersInWorld(world, 300_000L);
                 for (Chunk chunk : world.getLoadedChunks()) {
                     world.unloadChunk(chunk.getX(), chunk.getZ(), autoSave);
                 }

@@ -293,10 +293,10 @@ public final class PlayerUtils {
     private static void handleLobbyTeleport(@NotNull Player player, @NotNull Location location) {
         clearPlayer(player, true, OpenCreative.getSettings().getLobbySettings().shouldResetGameMode(location.getWorld()));
         player.showTitle(Title.title(
-                toComponent(getLocaleMessage("lobby.title")), toComponent(getLocaleMessage("lobby.subtitle")),
+                (getLocaleMessage("lobby.title")), (getLocaleMessage("lobby.subtitle")),
                 Title.Times.times(Duration.ofSeconds(1), Duration.ofSeconds(3), Duration.ofSeconds(1))
         ));
-        player.sendMessage(toComponent(getLocaleMessage("lobby.message")));
+        player.sendMessage(getLocaleMessage("lobby.message"));
         Sounds.LOBBY.play(player);
         Sounds.LOBBY_MUSIC.play(player);
 
@@ -572,7 +572,7 @@ public final class PlayerUtils {
                 } else if (!messageExists(path)) {
                     newLines.add(Component.text(content));
                 } else {
-                    newLines.add(toComponent(getLocaleMessage(path, false)));
+                    newLines.add(getLocaleMessage(path, false));
                 }
             }
             AsyncScheduler.later(() -> {
@@ -604,7 +604,7 @@ public final class PlayerUtils {
             } else if (!messageExists(path)) {
                 newLines.add(Component.text(content));
             } else {
-                newLines.add(toComponent(getLocaleMessage(path, false)));
+                newLines.add(getLocaleMessage(path, false));
             }
         }
         new BukkitRunnable() {

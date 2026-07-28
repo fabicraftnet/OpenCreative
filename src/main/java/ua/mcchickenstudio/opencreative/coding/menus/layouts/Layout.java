@@ -18,6 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.coding.menus.layouts;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -77,7 +78,7 @@ public abstract class Layout extends AbstractMenu {
      * @param containerBlock container block.
      */
     public Layout(int rows, @NotNull ActionType actionType, @NotNull Block containerBlock) {
-        super(rows, ChatColor.stripColor(actionType.getLocaleName()));
+        super(rows, Component.text(ChatColor.stripColor(actionType.getLocaleName())));
         this.actionType = actionType;
         this.containerBlock = containerBlock;
         this.requiredSlots = actionType.getArgumentsSlots();

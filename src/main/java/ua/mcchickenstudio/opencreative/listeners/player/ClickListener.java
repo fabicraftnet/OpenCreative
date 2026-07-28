@@ -47,6 +47,8 @@ import java.util.List;
 import static ua.mcchickenstudio.opencreative.listeners.player.ChangedWorld.addPlayerWithLocation;
 import static ua.mcchickenstudio.opencreative.listeners.player.ChangedWorld.isPlayerWithLocation;
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.isOutOfBorders;
+import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendDebug;
+import static ua.mcchickenstudio.opencreative.utils.ItemUtils.getInsideBadItemsAmount;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.spawnGlowingBlock;
 
@@ -101,9 +103,11 @@ public final class ClickListener implements Listener {
         if (event.isCancelled()) return;
         if (event.getInventory().getLocation() == null) return;
         if (event.getInventory().getHolder(false) instanceof Layout) return;
+        int slot = -1;
         for (ItemStack insideItem : event.getInventory().getContents()) {
+            slot++;
             if (insideItem == null) continue;
-            ItemUtils.fixItem(insideItem);
+            event.getInventory().setItem(slot, ItemUtils.fixItem(insideItem));
         }
     }
 

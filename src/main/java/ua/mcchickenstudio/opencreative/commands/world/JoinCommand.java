@@ -36,6 +36,7 @@ import java.util.Set;
 
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.toComponent;
 
 /**
  * <h1>JoinCommand</h1>
@@ -106,7 +107,7 @@ public class JoinCommand extends CommandHandler {
                 sender.sendMessage(getLocaleMessage("not-found-player"));
                 return;
             }
-            sender.sendMessage(MessageUtils.getPlayerLocaleMessage("commands.join.connecting", player).replace("%id%", args[0]));
+            sender.sendMessage(toComponent(MessageUtils.getPlayerLocaleMessageString("commands.join.connecting", player).replace("%id%", args[0])));
             if (!handlePlayerConnection(player, args[0])) {
                 sender.sendMessage(MessageUtils.getPlayerLocaleMessage("commands.join.failed", player));
             }

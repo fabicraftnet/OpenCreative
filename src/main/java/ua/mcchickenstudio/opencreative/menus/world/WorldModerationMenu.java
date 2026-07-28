@@ -34,6 +34,7 @@ import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 public final class WorldModerationMenu extends AbstractMenu implements WorldMenu {
 
@@ -106,7 +107,7 @@ public final class WorldModerationMenu extends AbstractMenu implements WorldMenu
                     return;
                 }
                 player.setCooldown(item.getType(), 20);
-                planet.getInformation().setDisplayName(getLocaleMessage("creating-world.default-world-name").replace("%player%", planet.getOwnerName()));
+                planet.getInformation().setDisplayName(getLocaleMessageString("creating-world.default-world-name").replace("%player%", planet.getOwnerName()));
                 Sounds.MENU_CLEAR_DATA.play(player);
                 planet.getInformation().updateIcon();
                 fillItems(player);
@@ -117,7 +118,7 @@ public final class WorldModerationMenu extends AbstractMenu implements WorldMenu
                     return;
                 }
                 player.setCooldown(item.getType(), 20);
-                planet.getInformation().setDescription(getLocaleMessage("creating-world.default-world-description").replace("%player%", planet.getOwnerName()));
+                planet.getInformation().setDescription(getLocaleMessageString("creating-world.default-world-description").replace("%player%", planet.getOwnerName()));
                 Sounds.MENU_CLEAR_DATA.play(player);
                 planet.getInformation().updateIcon();
                 fillItems(player);

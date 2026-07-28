@@ -77,12 +77,12 @@ public class LocateCommand extends CommandHandler {
 
     private void sendLocateMessage(CommandSender sender, Player player, Planet planet) {
         String locateMessage = parsePlanetLines(planet, parsePAPI(player,
-                getLocaleMessage("commands.locate.found").replace("%player%", player.getName())));
-        String hoverText = parsePlanetLines(planet, getLocaleMessage("advertisement.hover"));
+                getLocaleMessageString("commands.locate.found").replace("%player%", player.getName())));
+        Component hoverText = parsePlanetLines(planet, getLocaleMessage("advertisement.hover"));
         String clickCommand = "/ad " + planet.getId();
 
         Component messageComponent = toComponent(locateMessage);
-        Component hoverComponent = toComponent(hoverText);
+        Component hoverComponent = (hoverText);
 
         Component message = messageComponent
                 .hoverEvent(HoverEvent.showText(hoverComponent))

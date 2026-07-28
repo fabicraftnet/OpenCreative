@@ -61,7 +61,7 @@ public class AdvertisementCommand extends CommandHandler {
         }
 
         if (getCooldown(player, CooldownUtils.CooldownType.ADVERTISEMENT_COMMAND) > 0) {
-            player.sendMessage(getLocaleMessage("advertisement.cooldown").replace("%cooldown%", String.valueOf(getCooldown(player, CooldownUtils.CooldownType.ADVERTISEMENT_COMMAND))));
+            player.sendMessage(toComponent(getLocaleMessageString("advertisement.cooldown").replace("%cooldown%", String.valueOf(getCooldown(player, CooldownUtils.CooldownType.ADVERTISEMENT_COMMAND)))));
             return;
         }
 
@@ -80,8 +80,8 @@ public class AdvertisementCommand extends CommandHandler {
             double advertisementPrice = OpenCreative.getSettings().getGroups().getGroup(player).getAdvertisementPrice();
 
             if (playerBalance < advertisementPrice) {
-                player.sendMessage(getPlayerLocaleMessage("advertisement.no-money", player)
-                        .replace("%money%", String.valueOf(Math.round(advertisementPrice - playerBalance))));
+                player.sendMessage(toComponent(getPlayerLocaleMessageString("advertisement.no-money", player)
+                        .replace("%money%", String.valueOf(Math.round(advertisementPrice - playerBalance)))));
                 return;
             } else {
                 OpenCreative.getEconomy().withdrawMoney(player, advertisementPrice);
@@ -179,7 +179,7 @@ public class AdvertisementCommand extends CommandHandler {
         }
 
         if (getCooldown(player, CooldownUtils.CooldownType.ADVERTISEMENT_COMMAND) > 0) {
-            player.sendMessage(getLocaleMessage("advertisement.cooldown").replace("%cooldown%", String.valueOf(getCooldown(player, CooldownUtils.CooldownType.ADVERTISEMENT_COMMAND))));
+            player.sendMessage(toComponent(getLocaleMessageString("advertisement.cooldown").replace("%cooldown%", String.valueOf(getCooldown(player, CooldownUtils.CooldownType.ADVERTISEMENT_COMMAND)))));
             return;
         }
 

@@ -18,6 +18,9 @@
 
 package ua.mcchickenstudio.opencreative.coding.modules;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TextReplacementConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -39,6 +42,7 @@ import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.toComponent;
 
 public final class OwnModulesBrowserMenu extends ListBrowserMenu<Module> {
 
@@ -60,18 +64,22 @@ public final class OwnModulesBrowserMenu extends ListBrowserMenu<Module> {
         ItemStack item = clearItemMeta(module.getInformation().getIcon().clone());
         ItemMeta meta = item.getItemMeta();
         meta.displayName(module.getInformation().displayName());
-        List<String> lore = new ArrayList<>();
-        for (String loreLine : MessageUtils.getLocaleItemDescription("menus.own-modules.items.module.lore")) {
-            if (loreLine.contains("%moduleDescription%")) {
+        List<Component> lore = new ArrayList<>();
+        for (Component loreLine : MessageUtils.getLocaleItemDescription("menus.own-modules.items.module.lore")) {
+            if (((TextComponent)loreLine).content().contains("%moduleDescription%")) {
                 String[] newLines = module.getInformation().getDescription().split("\\\\n");
                 for (String newLine : newLines) {
-                    lore.add(loreLine.replace("%moduleDescription%", ChatColor.translateAlternateColorCodes('&', newLine)));
+                    lore.add(
+                            loreLine.replaceText(TextReplacementConfig.builder()
+                                    .match("%moduleDescription%")
+                                    .replacement(toComponent(newLine))
+                                    .build()));
                 }
             } else {
                 lore.add(MessageUtils.parseModuleLines(module, loreLine));
             }
         }
-        meta.setLore(lore);
+        meta.lore(lore);
         item.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         meta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
         meta.addItemFlags(ItemFlag.HIDE_DESTROYS);

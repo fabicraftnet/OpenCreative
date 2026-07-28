@@ -43,7 +43,7 @@ import java.util.Set;
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.getCooldown;
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.setCooldown;
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 
 public final class BlocksManipulatorMenu extends AbstractMenu {
 
@@ -55,11 +55,11 @@ public final class BlocksManipulatorMenu extends AbstractMenu {
     private final ItemStack createModuleLimit = createItem(Material.RED_STAINED_GLASS, 1, "menus.developer.manipulator.items.create-module-limit", "module");
 
     public BlocksManipulatorMenu(@NotNull Player player, @NotNull DevPlanet devPlanet, int selectedAmount) {
-        super(3, getLocaleMessage("menus.developer.manipulator.title", false)
+        super(3, toComponent(getLocaleMessageString("menus.developer.manipulator.title", false)
                 .replace("%amount%", String.valueOf(selectedAmount))
                 .replace("%limit%", String.valueOf(OpenCreative.getSettings().getGroups().getGroup(player)
                         .getLimit(LimitType.SELECTED_LINES_AMOUNT).calculateLimit(1)))
-        );
+        ));
         this.player = player;
         this.devPlanet = devPlanet;
     }
@@ -98,7 +98,7 @@ public final class BlocksManipulatorMenu extends AbstractMenu {
         }
         if (itemEquals(currentItem, duplicate)) {
             if (getCooldown(player, CooldownUtils.CooldownType.BLOCKS_DUPLICATION) > 0) {
-                player.sendMessage(getLocaleMessage("cooldown").replace("%cooldown%", String.valueOf(getCooldown(player, CooldownUtils.CooldownType.BLOCKS_DUPLICATION))));
+                player.sendMessage(toComponent(getLocaleMessageString("cooldown").replace("%cooldown%", String.valueOf(getCooldown(player, CooldownUtils.CooldownType.BLOCKS_DUPLICATION)))));
                 return;
             }
             setCooldown(player, OpenCreative.getSettings().getGroups().getGroup(player)
@@ -113,8 +113,8 @@ public final class BlocksManipulatorMenu extends AbstractMenu {
             CodingBlockPlacer.CodePlacementResult result = new CodingBlockPlacer(devPlanet).placeCodingLines(devPlanet, section);
 
             if (result.getType() == CodingBlockPlacer.CodePlacementResult.Type.NOT_ENOUGH_SPACE) {
-                player.sendMessage(getLocaleMessage("environment.duplication.few-space")
-                        .replace("%required%", String.valueOf(markedExecutors.size())));
+                player.sendMessage(toComponent(getLocaleMessageString("environment.duplication.few-space")
+                        .replace("%required%", String.valueOf(markedExecutors.size()))));
                 Sounds.DEV_NOT_ALLOWED.play(player);
             } else if (result.getType() == CodingBlockPlacer.CodePlacementResult.Type.ERROR) {
                 player.sendMessage(getLocaleMessage("environment.duplication.error"));
@@ -131,7 +131,7 @@ public final class BlocksManipulatorMenu extends AbstractMenu {
             }
         } else if (itemEquals(currentItem, createModule)) {
             if (getCooldown(player, CooldownUtils.CooldownType.MODULE_MANIPULATION) > 0) {
-                player.sendMessage(getLocaleMessage("cooldown").replace("%cooldown%", String.valueOf(getCooldown(player, CooldownUtils.CooldownType.MODULE_MANIPULATION))));
+                player.sendMessage(toComponent(getLocaleMessageString("cooldown").replace("%cooldown%", String.valueOf(getCooldown(player, CooldownUtils.CooldownType.MODULE_MANIPULATION)))));
                 return;
             }
             setCooldown(player, OpenCreative.getSettings().getGroups().getGroup(player).getModuleManipulationCooldown(),

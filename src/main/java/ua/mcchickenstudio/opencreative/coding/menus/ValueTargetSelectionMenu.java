@@ -71,12 +71,12 @@ public final class ValueTargetSelectionMenu extends AbstractMenu {
             Target target = Target.getByMaterial(item.getType());
             setPersistentData(itemInHand, getCodingTargetTypeKey(), target.name());
             ItemMeta meta = itemInHand.getItemMeta();
-            meta.setLore(getLocaleItemDescription("menus.developer.variables.items.event-value.lore"));
+            meta.lore(getLocaleItemDescription("menus.developer.variables.items.event-value.lore"));
             itemInHand.setItemMeta(meta);
-            addLoreAtBegin(itemInHand, getLocaleMessage("menus.developer.event-values.target")
-                    .replace("%target%", target.getLocaleName()));
+            addLoreAtBegin(itemInHand, toComponent(getLocaleMessageString("menus.developer.event-values.target",true)
+                    .replace("%target%", target.getLocaleName())));
             player.showTitle(Title.title(
-                    toComponent(getLocaleMessage("world.dev-mode.set-target")), toComponent(target.getLocaleName()),
+                    (getLocaleMessage("world.dev-mode.set-target")), toComponent(target.getLocaleName()),
                     Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
             ));
             player.closeInventory();

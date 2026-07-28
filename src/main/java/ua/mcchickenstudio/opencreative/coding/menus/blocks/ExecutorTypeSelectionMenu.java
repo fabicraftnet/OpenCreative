@@ -18,6 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.coding.menus.blocks;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -38,8 +39,7 @@ import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.setSignLine;
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.toComponent;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.translateBlockSign;
 
 public final class ExecutorTypeSelectionMenu extends BlocksWithMenusCategoryMenu<Executor> {
@@ -64,7 +64,7 @@ public final class ExecutorTypeSelectionMenu extends BlocksWithMenusCategoryMenu
             icon = createItem(Material.LIGHT_GRAY_STAINED_GLASS, 1, "items.developer.events." + executor.getID().replace("_", "-"));
         }
         if (executor instanceof EventAwaiter event) {
-            addLoreAtEnd(icon, (event.isCancellable() ? getLocaleMessage("items.developer.events.cancellable", false) : ""));
+            addLoreAtEnd(icon, (event.isCancellable() ? getLocaleMessage("items.developer.events.cancellable", false) : Component.text("")));
         }
         if (executor.isDisabled()) {
             icon.setType(Material.LIGHT_GRAY_STAINED_GLASS);
@@ -95,7 +95,7 @@ public final class ExecutorTypeSelectionMenu extends BlocksWithMenusCategoryMenu
                 translateBlockSign(signLocation.getBlock());
                 getPlayer().closeInventory();
                 getPlayer().showTitle(Title.title(
-                        toComponent(getLocaleMessage("world.dev-mode.set-events")), item.getItemMeta().displayName(),
+                        (getLocaleMessage("world.dev-mode.set-events")), item.getItemMeta().displayName(),
                         Title.Times.times(Duration.ofMillis(750), Duration.ofSeconds(1), Duration.ofMillis(750))
                 ));
                 Sounds.DEV_SET_EVENT.play(event.getWhoClicked());

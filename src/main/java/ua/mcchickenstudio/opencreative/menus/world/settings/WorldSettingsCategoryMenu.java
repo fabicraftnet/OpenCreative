@@ -34,7 +34,7 @@ import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import static org.bukkit.Material.ARROW;
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 
 public final class WorldSettingsCategoryMenu extends AbstractMenu implements WorldMenu {
 
@@ -86,7 +86,7 @@ public final class WorldSettingsCategoryMenu extends AbstractMenu implements Wor
             try {
                 PlanetInfo.Category category = PlanetInfo.Category.valueOf(categoryString);
                 planet.getInformation().setCategory(category);
-                event.getWhoClicked().sendMessage(getLocaleMessage("settings.world-category.changed").replace("%category%", category.getLocaleName()));
+                event.getWhoClicked().sendMessage(toComponent(getLocaleMessageString("settings.world-category.changed").replace("%category%", category.getLocaleName())));
             } catch (IllegalArgumentException ignored) {
                 return;
             }

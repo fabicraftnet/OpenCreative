@@ -47,6 +47,7 @@ import static ua.mcchickenstudio.opencreative.coding.arguments.Argument.parseEnt
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.FileUtils.getFileSize;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 /**
  * <h1>WorldVariables</h1>
@@ -145,7 +146,7 @@ public final class WorldVariables {
         }
 
         if (action == null || action.getExecutor().isDebug()) {
-            sendCodingDebugLog(planet, getLocaleMessage("coding-debug.variable." + (variable == null ? "created" : "set"), false)
+            sendCodingDebugLog(planet, getLocaleMessageString("coding-debug.variable." + (variable == null ? "created" : "set"), false)
                     .replace("%variable%", action != null ? parseEntity(link.getName(), action.getHandler(), action) : link.getName())
                     .replace("%value%", ValueType.getDisplayShortString(value)));
         }

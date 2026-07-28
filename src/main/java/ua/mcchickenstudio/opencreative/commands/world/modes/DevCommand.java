@@ -35,8 +35,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getPlayerLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 
 /**
  * <h1>DevCommand</h1>
@@ -127,12 +126,12 @@ public class DevCommand extends CommandHandler {
              */
             if (planet.getWorldPlayers().getDevelopersNotTrusted().contains(uuid)) {
                 planet.getWorldPlayers().addDeveloper(nickname, true);
-                sender.sendMessage(getLocaleMessage("world.players.developers.trusted").replace("%player%", nickname));
+                sender.sendMessage(toComponent(getLocaleMessageString("world.players.developers.trusted").replace("%player%", nickname)));
                 return;
             }
             if (planet.getWorldPlayers().getDevelopersTrusted().contains(uuid)) {
                 planet.getWorldPlayers().removeDeveloper(nickname);
-                sender.sendMessage(getLocaleMessage("world.players.developers.removed").replace("%player%", nickname));
+                sender.sendMessage(toComponent(getLocaleMessageString("world.players.developers.removed").replace("%player%", nickname)));
                 return;
             }
             /*
@@ -141,13 +140,13 @@ public class DevCommand extends CommandHandler {
              */
             int limit = planet.getLimits().getDevelopersLimit();
             if (planet.getWorldPlayers().getAllDevelopers().size() > limit) {
-                sender.sendMessage(getLocaleMessage("world.players.developers.limit").replace("%limit%", String.valueOf(limit)));
+                sender.sendMessage(toComponent(getLocaleMessageString("world.players.developers.limit").replace("%limit%", String.valueOf(limit))));
                 return;
             }
             if (onlinePlayer != null) {
                 Planet playerPlanet = OpenCreative.getPlanetsManager().getPlanetByPlayer(onlinePlayer);
                 if (planet.equals(playerPlanet)) {
-                    sender.sendMessage(getLocaleMessage("world.players.developers.added").replace("%player%", onlinePlayer.getName()));
+                    sender.sendMessage(toComponent(getLocaleMessageString("world.players.developers.added").replace("%player%", onlinePlayer.getName())));
                     planet.getWorldPlayers().addDeveloper(onlinePlayer.getName(), false);
                 } else {
                     sender.sendMessage(getLocaleMessage("no-player-found"));

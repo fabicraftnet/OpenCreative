@@ -56,6 +56,7 @@ import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.FileUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.*;
+import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.checkBadContainersInWorld;
 
 /**
  * <h1>Planet</h1>
@@ -533,7 +534,7 @@ public class Planet {
                     if (!isEntityInDevPlanet(player)) {
                         if (!ignoreEvents) new QuitEvent(player).callEvent();
                         player.showTitle(Title.title(
-                                toComponent(getLocaleMessage("world.build-mode.title")), toComponent(getLocaleMessage("world.build-mode.subtitle")),
+                                (getLocaleMessage("world.build-mode.title")), (getLocaleMessage("world.build-mode.subtitle")),
                                 Title.Times.times(Duration.ofMillis(100), Duration.ofSeconds(2), Duration.ofMillis(130))
                         ));
                         clearPlayer(player);
@@ -702,7 +703,7 @@ public class Planet {
      * @param flag flag to get value.
      * @return value of flag.
      */
-    public byte getFlagValue(PlanetFlags.PlanetFlag flag) {
+    public byte getFlagValue(@NotNull PlanetFlags.PlanetFlag flag) {
         return territory.getFlags().getFlagValue(flag);
     }
 
@@ -712,7 +713,7 @@ public class Planet {
      * @param flag  flag to set value.
      * @param value new value.
      */
-    public void setFlagValue(PlanetFlags.PlanetFlag flag, byte value) {
+    public void setFlagValue(@NotNull PlanetFlags.PlanetFlag flag, byte value) {
         territory.getFlags().setFlag(flag, value);
     }
 
@@ -894,6 +895,11 @@ public class Planet {
             }
             clearPlayer(player, false, OpenCreative.getSettings().getLobbySettings().shouldResetGameMode(player.getWorld()));
             Sounds.WORLD_CONNECTED.play(player);
+            if (!wasLoaded) {
+                Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
+                    checkBadContainersInWorld(getWorld(), 300_000L);
+                });
+            }
             mode.onPlayerConnect(player, this);
             PlanetPlayer planetPlayer = getWorldPlayers().getPlanetPlayer(player);
             player.clearTitle();
@@ -914,7 +920,7 @@ public class Planet {
                      * (after world's creation).
                      */
                     player.showTitle(Title.title(
-                            toComponent(MessageUtils.getPlayerLocaleMessage("creating-world.welcome-title", player)), toComponent(MessageUtils.getPlayerLocaleMessage("creating-world.welcome-subtitle", player)),
+                            (MessageUtils.getPlayerLocaleMessage("creating-world.welcome-title", player)), (MessageUtils.getPlayerLocaleMessage("creating-world.welcome-subtitle", player)),
                             Title.Times.times(Duration.ofMillis(750), Duration.ofSeconds(9), Duration.ofSeconds(2))
                     ));
                     player.sendMessage(getLocaleMessage("creating-world.welcome"));
@@ -1007,7 +1013,7 @@ public class Planet {
         };
 
         public String getName() {
-            return getLocaleMessage("world." + (this == PLAYING ? "play-mode" : "build-mode") + ".name", false);
+            return getLocaleMessageString("world." + (this == PLAYING ? "play-mode" : "build-mode") + ".name", false);
         }
 
         public void onPlayerConnect(Player player, Planet planet) {
@@ -1018,7 +1024,7 @@ public class Planet {
         PUBLIC, PRIVATE, CLOSED;
 
         public String getName() {
-            return getLocaleMessage("world.sharing." + (this == PUBLIC ? "public" : "private"), false);
+            return getLocaleMessageString("world.sharing." + (this == PUBLIC ? "public" : "private"), false);
         }
     }
 

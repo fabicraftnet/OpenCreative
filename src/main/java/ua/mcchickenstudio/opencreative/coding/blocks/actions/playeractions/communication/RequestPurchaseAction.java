@@ -59,11 +59,11 @@ public final class RequestPurchaseAction extends PlayerAction {
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
         if (planet == null) return;
         new ConfirmationMenu(
-                getLocaleMessage("menus.confirmation.request-money", false).replace("%name%", name),
+                toComponent(getLocaleMessageString("menus.confirmation.request-money", false).replace("%name%", name)),
                 Material.GOLD_INGOT,
-                getLocaleItemName("menus.confirmation.items.request-money.name")
+                toComponent( getLocaleItemNameString("menus.confirmation.items.request-money.name")
                         .replace("%price%", String.valueOf(price))
-                        .replace("%name%", name),
+                        .replace("%name%", name)),
                 getLocaleItemDescription("menus.confirmation.items.request-money.lore"),
                 new BukkitRunnable() {
                     @Override
@@ -74,7 +74,7 @@ public final class RequestPurchaseAction extends PlayerAction {
                             return;
                         }
                         if (OpenCreative.getEconomy().getBalance(player).intValue() < price) {
-                            player.sendMessage(getLocaleMessage("no-money").replace("%money%", String.valueOf(price)));
+                            player.sendMessage(toComponent(getLocaleMessageString("no-money",true).replace("%money%", String.valueOf(price))));
                         } else {
                             if (save) {
                                 if (planet.getWorldPlayers().getPlanetPlayer(player).getPurchases().contains(id.toLowerCase())) {

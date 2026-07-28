@@ -35,6 +35,7 @@ import java.util.List;
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendPlanetCodeCriticalErrorMessage;
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendPlanetLimitWarningMessage;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 public final class CatchErrorAction extends ControllerAction {
 
@@ -59,7 +60,7 @@ public final class CatchErrorAction extends ControllerAction {
             } else {
                 if (getPlanet().getLimits().isTooManyCodingErrors()) {
                     getPlanet().getTerritory().getScript().getExecutors().stopCode("errors limit");
-                    sendPlanetCodeCriticalErrorMessage(getPlanet(), getExecutor(), getLocaleMessage("coding-error.errors-limit", false)
+                    sendPlanetCodeCriticalErrorMessage(getPlanet(), getExecutor(), getLocaleMessageString("coding-error.errors-limit", false)
                             .replace("%limit%", String.valueOf(getPlanet().getLimits().getCodingErrorsLimit())));
                     return;
                 }

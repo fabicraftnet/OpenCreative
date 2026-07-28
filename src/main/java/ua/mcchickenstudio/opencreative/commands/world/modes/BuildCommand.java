@@ -43,8 +43,7 @@ import java.util.UUID;
 import static ua.mcchickenstudio.opencreative.listeners.player.ChangedWorld.removePlayerWithLocation;
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.createItem;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.toComponent;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.*;
 
 /**
@@ -115,7 +114,7 @@ public class BuildCommand extends CommandHandler {
             } else {
                 clearPlayer(player);
                 player.showTitle(Title.title(
-                        toComponent(getLocaleMessage("world.build-mode.title")), toComponent(getLocaleMessage("world.build-mode.subtitle")),
+                        (getLocaleMessage("world.build-mode.title")), (getLocaleMessage("world.build-mode.subtitle")),
                         Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
                 ));
                 player.teleport(planet.getTerritory().getSpawnLocation());
@@ -170,12 +169,12 @@ public class BuildCommand extends CommandHandler {
              */
             if (planet.getWorldPlayers().getBuildersNotTrusted().contains(uuid)) {
                 planet.getWorldPlayers().addBuilder(nickname, true);
-                sender.sendMessage(getLocaleMessage("world.players.builders.trusted").replace("%player%", nickname));
+                sender.sendMessage(toComponent(getLocaleMessageString("world.players.builders.trusted").replace("%player%", nickname)));
                 return;
             }
             if (planet.getWorldPlayers().getBuildersTrusted().contains(uuid)) {
                 planet.getWorldPlayers().removeBuilder(nickname);
-                sender.sendMessage(getLocaleMessage("world.players.builders.removed").replace("%player%", nickname));
+                sender.sendMessage(toComponent(getLocaleMessageString("world.players.builders.removed").replace("%player%", nickname)));
                 return;
             }
             /*
@@ -184,13 +183,13 @@ public class BuildCommand extends CommandHandler {
              */
             int limit = planet.getLimits().getBuildersLimit();
             if (planet.getWorldPlayers().getAllBuilders().size() > limit) {
-                sender.sendMessage(getLocaleMessage("world.players.builders.limit").replace("%limit%", String.valueOf(limit)));
+                sender.sendMessage(toComponent(getLocaleMessageString("world.players.builders.limit").replace("%limit%", String.valueOf(limit))));
                 return;
             }
             if (onlinePlayer != null) {
                 Planet playerPlanet = OpenCreative.getPlanetsManager().getPlanetByPlayer(onlinePlayer);
                 if (planet.equals(playerPlanet)) {
-                    sender.sendMessage(getLocaleMessage("world.players.builders.added").replace("%player%", onlinePlayer.getName()));
+                    sender.sendMessage(toComponent(getLocaleMessageString("world.players.builders.added").replace("%player%", onlinePlayer.getName())));
                     planet.getWorldPlayers().addBuilder(onlinePlayer.getName(), false);
                 } else {
                     sender.sendMessage(getLocaleMessage("no-player-found"));

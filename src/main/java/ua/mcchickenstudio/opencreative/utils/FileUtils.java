@@ -111,8 +111,8 @@ public final class FileUtils {
         config.set("world", "planet" + id);
         config.set("creation-time", System.currentTimeMillis());
         config.set("last-activity-time", System.currentTimeMillis());
-        config.set("name", MessageUtils.getLocaleMessage("creating-world.default-world-name").replace("%player%", owner.getName()));
-        config.set("description", MessageUtils.getLocaleMessage("creating-world.default-world-description").replace("%player%", owner.getName()));
+        config.set("name", MessageUtils.getLocaleMessageString("creating-world.default-world-name",true).replace("%player%", owner.getName()));
+        config.set("description", MessageUtils.getLocaleMessageString("creating-world.default-world-description",true).replace("%player%", owner.getName()));
         config.set("icon", String.valueOf(Material.DIAMOND));
         config.set("sharing", String.valueOf(Planet.Sharing.PUBLIC));
         config.set("category", String.valueOf(PlanetInfo.Category.SANDBOX));

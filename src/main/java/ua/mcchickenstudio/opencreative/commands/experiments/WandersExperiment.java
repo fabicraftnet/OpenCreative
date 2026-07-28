@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 
 public final class WandersExperiment extends Experiment {
 
@@ -73,8 +73,8 @@ public final class WandersExperiment extends Experiment {
                     return;
                 }
                 if (wander.addFavoriteWorld(planet.getId())) {
-                    wander.getPlayer().sendMessage(getLocaleMessage("world.favorites.added")
-                            .replace("%id%", String.valueOf(planet.getId())));
+                    wander.getPlayer().sendMessage(toComponent(getLocaleMessageString("world.favorites.added")
+                            .replace("%id%", String.valueOf(planet.getId()))));
                 } else {
                     wander.getPlayer().sendMessage("Already in favorites!");
                 }
@@ -94,8 +94,8 @@ public final class WandersExperiment extends Experiment {
                     return;
                 }
                 if (wander.removeFavoriteWorld(planet.getId())) {
-                    wander.getPlayer().sendMessage(getLocaleMessage("world.favorites.removed")
-                            .replace("%id%", String.valueOf(planet.getId())));
+                    wander.getPlayer().sendMessage(toComponent(getLocaleMessageString("world.favorites.removed")
+                            .replace("%id%", String.valueOf(planet.getId()))));
                 } else {
                     wander.getPlayer().sendMessage("Not in favorites!");
                 }

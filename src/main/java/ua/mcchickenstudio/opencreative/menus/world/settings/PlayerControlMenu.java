@@ -44,8 +44,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.substring;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.isEntityInDevPlanet;
 
 /**
@@ -70,8 +69,8 @@ public final class PlayerControlMenu extends AbstractMenu implements WorldMenu {
     private final ItemStack BACK = createItem(Material.ARROW, 1, "menus.player-control.items.back", "back");
 
     public PlayerControlMenu(String nickname, Planet planet) {
-        super(4, MessageUtils.getLocaleMessage("menus.player-control.title", false)
-                .replace("%name%", substring(nickname, 20)));
+        super(4,toComponent(MessageUtils.getLocaleMessageString("menus.player-control.title", false)
+                .replace("%name%", substring(nickname, 20))));
         this.nickname = nickname;
         this.uuid = Bukkit.getOfflinePlayer(nickname).getUniqueId();
         this.planet = planet;
@@ -198,8 +197,8 @@ public final class PlayerControlMenu extends AbstractMenu implements WorldMenu {
             case "kick" -> {
                 clicker.closeInventory();
                 if (selectedPlayer != null) {
-                    clicker.sendMessage(getLocaleMessage("world.players.kick.kicked")
-                            .replace("%player%", nickname));
+                    clicker.sendMessage(toComponent(getLocaleMessageString("world.players.kick.kicked")
+                            .replace("%player%", nickname)));
                     planet.getWorldPlayers().kickPlayer(selectedPlayer);
                 }
             }
@@ -207,52 +206,52 @@ public final class PlayerControlMenu extends AbstractMenu implements WorldMenu {
                 clicker.closeInventory();
                 int limit = planet.getLimits().getBlacklistedLimit();
                 if (planet.getWorldPlayers().getBannedPlayers().size() > limit) {
-                    clicker.sendMessage(getLocaleMessage("world.players.black-list.limit")
-                            .replace("%limit%", String.valueOf(limit)));
+                    clicker.sendMessage(toComponent(getLocaleMessageString("world.players.black-list.limit")
+                            .replace("%limit%", String.valueOf(limit))));
                     return;
                 }
-                clicker.sendMessage(getLocaleMessage("world.players.black-list.added")
-                        .replace("%player%", nickname));
+                clicker.sendMessage(toComponent(getLocaleMessageString("world.players.black-list.added")
+                        .replace("%player%", nickname)));
                 planet.getWorldPlayers().banPlayer(nickname);
             }
             case "unban" -> {
                 clicker.closeInventory();
-                clicker.sendMessage(getLocaleMessage("world.players.black-list.removed")
-                        .replace("%player%", nickname));
+                clicker.sendMessage(toComponent(getLocaleMessageString("world.players.black-list.removed")
+                        .replace("%player%", nickname)));
                 planet.getWorldPlayers().unbanPlayer(nickname);
             }
             case "whitelist" -> {
                 clicker.closeInventory();
                 int limit = planet.getLimits().getWhitelistedLimit();
                 if (planet.getWorldPlayers().getWhitelistedPlayers().size() > limit) {
-                    clicker.sendMessage(getLocaleMessage("world.players.white-list.limit")
-                            .replace("%limit%", String.valueOf(limit)));
+                    clicker.sendMessage(toComponent(getLocaleMessageString("world.players.white-list.limit")
+                            .replace("%limit%", String.valueOf(limit))));
                     return;
                 }
-                clicker.sendMessage(getLocaleMessage("world.players.white-list.added")
-                        .replace("%player%", nickname));
+                clicker.sendMessage(toComponent(getLocaleMessageString("world.players.white-list.added")
+                        .replace("%player%", nickname)));
                 planet.getWorldPlayers().whitelistPlayer(nickname);
             }
             case "unwhitelist" -> {
                 clicker.closeInventory();
-                clicker.sendMessage(getLocaleMessage("world.players.white-list.removed")
-                        .replace("%player%", nickname));
+                clicker.sendMessage(toComponent(getLocaleMessageString("world.players.white-list.removed")
+                        .replace("%player%", nickname)));
                 planet.getWorldPlayers().removeFromWhitelist(nickname);
             }
             case "transfer" -> {
                 clicker.closeInventory();
                 if (selectedPlayer == null) {
-                    clicker.sendMessage(getLocaleMessage("world.players.transfer-ownership.offline")
-                            .replace("%player%", nickname));
+                    clicker.sendMessage(toComponent(getLocaleMessageString("world.players.transfer-ownership.offline")
+                            .replace("%player%", nickname)));
                     return;
                 }
                 if (OpenCreative.getPlanetsManager().getPlanetsByOwner(selectedPlayer).size() >= OpenCreative.getSettings().getGroups().getGroup(selectedPlayer).getWorldsLimit()) {
-                    clicker.sendMessage(getLocaleMessage("world.players.transfer-ownership.limit")
-                            .replace("%player%", nickname));
+                    clicker.sendMessage(toComponent(getLocaleMessageString("world.players.transfer-ownership.limit")
+                            .replace("%player%", nickname)));
                     return;
                 }
-                clicker.sendMessage(getLocaleMessage("world.players.transfer-ownership.confirm-old")
-                        .replace("%player%", nickname).replace("%id%", String.valueOf(planet.getId())));
+                clicker.sendMessage(toComponent(getLocaleMessageString("world.players.transfer-ownership.confirm-old")
+                        .replace("%player%", nickname).replace("%id%", String.valueOf(planet.getId()))));
                 if (!PlayerConfirmation.hasConfirmation(clicker)) {
                     PlayerConfirmation.setConfirmation(clicker, PlayerConfirmation.TRANSFER_OWNERSHIP, nickname);
                 }
@@ -283,28 +282,28 @@ public final class PlayerControlMenu extends AbstractMenu implements WorldMenu {
                 String dev = (String) button.getCurrentValue();
                 switch (dev.toLowerCase()) {
                     case "none" -> {
-                        clicker.sendMessage(getLocaleMessage("world.players.developers.removed")
-                                .replace("%player%", nickname));
+                        clicker.sendMessage(toComponent(getLocaleMessageString("world.players.developers.removed")
+                                .replace("%player%", nickname)));
                         planet.getWorldPlayers().removeDeveloper(nickname);
                     }
                     case "guest" -> {
                         int limit = planet.getLimits().getDevelopersLimit();
                         if (planet.getWorldPlayers().getAllDevelopers().size() > limit) {
-                            clicker.sendMessage(getLocaleMessage("world.players.developers.limit").replace("%limit%", String.valueOf(limit)));
+                            clicker.sendMessage(toComponent(getLocaleMessageString("world.players.developers.limit").replace("%limit%", String.valueOf(limit))));
                             return true;
                         }
-                        clicker.sendMessage(MessageUtils.getLocaleMessage("world.players.developers.guest")
-                                .replace("%player%", nickname));
+                        clicker.sendMessage(toComponent(getLocaleMessageString("world.players.developers.guest")
+                                .replace("%player%", nickname)));
                         planet.getWorldPlayers().addDeveloperGuest(nickname);
                     }
                     case "not-trusted" -> {
-                        clicker.sendMessage(getLocaleMessage("world.players.developers.added")
-                                .replace("%player%", nickname));
+                        clicker.sendMessage(toComponent(getLocaleMessageString("world.players.developers.added")
+                                .replace("%player%", nickname)));
                         planet.getWorldPlayers().addDeveloper(nickname, false);
                     }
                     case "trusted" -> {
-                        clicker.sendMessage(MessageUtils.getLocaleMessage("world.players.developers.trusted")
-                                .replace("%player%", nickname));
+                        clicker.sendMessage(toComponent(getLocaleMessageString("world.players.developers.trusted")
+                                .replace("%player%", nickname)));
                         planet.getWorldPlayers().addDeveloper(nickname, true);
                     }
                 }
@@ -316,24 +315,24 @@ public final class PlayerControlMenu extends AbstractMenu implements WorldMenu {
                 String build = (String) button.getCurrentValue();
                 switch (build.toLowerCase()) {
                     case "none" -> {
-                        clicker.sendMessage(getLocaleMessage("world.players.builders.removed")
-                                .replace("%player%", nickname));
+                        clicker.sendMessage(toComponent(getLocaleMessageString("world.players.builders.removed")
+                                .replace("%player%", nickname)));
                         planet.getWorldPlayers().removeBuilder(nickname);
                     }
                     case "not-trusted" -> {
                         int limit = planet.getLimits().getBuildersLimit();
                         if (planet.getWorldPlayers().getAllBuilders().size() > limit) {
-                            clicker.sendMessage(getLocaleMessage("world.players.builders.limit")
-                                    .replace("%limit%", String.valueOf(limit)));
+                            clicker.sendMessage(toComponent(getLocaleMessageString("world.players.builders.limit")
+                                    .replace("%limit%", String.valueOf(limit))));
                             return true;
                         }
-                        clicker.sendMessage(getLocaleMessage("world.players.builders.added")
-                                .replace("%player%", nickname));
+                        clicker.sendMessage(toComponent(getLocaleMessageString("world.players.builders.added")
+                                .replace("%player%", nickname)));
                         planet.getWorldPlayers().addBuilder(nickname, false);
                     }
                     case "trusted" -> {
-                        clicker.sendMessage(MessageUtils.getLocaleMessage("world.players.builders.trusted")
-                                .replace("%player%", nickname));
+                        clicker.sendMessage(toComponent(getLocaleMessageString("world.players.builders.trusted")
+                                .replace("%player%", nickname)));
                         planet.getWorldPlayers().addBuilder(nickname, true);
                     }
                 }

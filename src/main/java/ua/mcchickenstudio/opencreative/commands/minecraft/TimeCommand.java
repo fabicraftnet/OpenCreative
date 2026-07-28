@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 
 /**
  * <h1>TimeCommand</h1>
@@ -83,8 +83,8 @@ public class TimeCommand extends CommandHandler {
         }
         time += add ? (int) player.getWorld().getTime() : 0;
         player.getWorld().setTime(time);
-        sender.sendMessage(getLocaleMessage("commands.time.changed")
-                .replace("%time%", String.valueOf(time)));
+        sender.sendMessage(toComponent(getLocaleMessageString("commands.time.changed")
+                .replace("%time%", String.valueOf(time))));
     }
 
     @Override

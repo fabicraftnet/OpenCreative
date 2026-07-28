@@ -35,6 +35,7 @@ import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.menus.world.WorldMenu;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.planets.PlanetPlayer;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 import ua.mcchickenstudio.opencreative.utils.PlayerUtils;
 
 public final class EnderChestMenu extends AbstractMenu implements WorldMenu, BlockMenu {
@@ -44,7 +45,7 @@ public final class EnderChestMenu extends AbstractMenu implements WorldMenu, Blo
     private final @Nullable BlockState blockState;
 
     public EnderChestMenu(@NotNull Planet planet, @Nullable Location location) {
-        super(3, InventoryType.ENDER_CHEST.getDefaultTitle());
+        super(3, MessageUtils.toComponent(InventoryType.ENDER_CHEST.getDefaultTitle()));
         this.planet = planet;
         this.location = location;
         this.blockState = location != null ? location.getBlock().getState() : null;

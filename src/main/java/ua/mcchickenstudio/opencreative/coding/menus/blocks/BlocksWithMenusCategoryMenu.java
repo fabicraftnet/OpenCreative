@@ -18,6 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.coding.menus.blocks;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -29,6 +30,7 @@ import ua.mcchickenstudio.opencreative.coding.menus.MenusCategory;
 import ua.mcchickenstudio.opencreative.menus.BlockMenu;
 
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 /**
  * This class represents a menu where player can select type of coding block.
@@ -45,7 +47,7 @@ public abstract class BlocksWithMenusCategoryMenu<T> extends ContentWithMenusCat
                                        @NotNull Material stainedPane,
                                        @NotNull MenusCategory defaultCategory) {
         super(player, mainCategory,
-                ChatColor.stripColor(getLocaleMessage("blocks." + blockPath, false)),
+                  Component.text(ChatColor.stripColor(getLocaleMessageString("blocks." + blockPath, false))),
                 stainedPane, defaultCategory);
         this.signLocation = location;
     }

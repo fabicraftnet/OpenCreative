@@ -116,7 +116,7 @@ public enum ActionCategory implements CodingBlockCategory {
 
     @Override
     public @NotNull String getLocaleName() {
-        return MessageUtils.getLocaleMessage("blocks." + this.name().toLowerCase(), false);
+        return MessageUtils.getLocaleMessageString("blocks." + this.name().toLowerCase(), false);
     }
 
     @Override

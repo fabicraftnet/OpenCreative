@@ -35,6 +35,7 @@ import java.util.Map;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.toComponent;
 
 public final class ParticlesMenu extends ListBrowserMenu<Particle> {
 
@@ -164,7 +165,7 @@ public final class ParticlesMenu extends ListBrowserMenu<Particle> {
     @Override
     protected ItemStack getElementIcon(Particle particle) {
         ItemStack itemStack = createItem(getMaterial(particle), 1);
-        setDisplayName(itemStack, particle.name());
+        setDisplayName(itemStack, toComponent(particle.name()));
         setPersistentData(itemStack, getCodingValueKey(), "PARTICLE");
         setPersistentData(itemStack, getCodingParticleTypeKey(), particle.name());
         return itemStack;

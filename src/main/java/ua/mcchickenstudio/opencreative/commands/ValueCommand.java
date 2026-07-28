@@ -18,6 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.commands;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -47,6 +48,7 @@ import static ua.mcchickenstudio.opencreative.utils.BlockUtils.isOutOfBorders;
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.toComponent;
 
 /**
  * <h1>ValueCommand</h1>
@@ -75,7 +77,7 @@ public class ValueCommand extends CommandHandler {
             case "text" -> {
                 itemStack = createItem(Material.BOOK, 1, "menus.developer.variables.items.text");
                 if (args.length != 0) {
-                    setDisplayName(itemStack, ChatColor.translateAlternateColorCodes('&', String.join(" ", args)));
+                    setDisplayName(itemStack, toComponent( String.join(" ", args)));
                 }
             }
             case "num", "number" -> {
@@ -89,7 +91,7 @@ public class ValueCommand extends CommandHandler {
                     if (args[0].equalsIgnoreCase("p") || args[0].equalsIgnoreCase("pi")) {
                         number = 3.1415926d;
                     }
-                    setDisplayName(itemStack, "§a" + number);
+                    setDisplayName(itemStack, toComponent( "§a" + number));
                 }
             }
             case "loc", "location" -> {
@@ -128,7 +130,7 @@ public class ValueCommand extends CommandHandler {
                         y = Double.parseDouble(args[1]);
                         z = Double.parseDouble(args[2]);
                     }
-                    setDisplayName(itemStack, "§b" + x + " " + y + " " + z);
+                    setDisplayName(itemStack, toComponent( "§b" + x + " " + y + " " + z));
                 } catch (Exception ignored) {
                 }
             }
@@ -136,7 +138,7 @@ public class ValueCommand extends CommandHandler {
                 itemStack = createItem(Material.CLOCK, 1, "menus.developer.variables.items.boolean");
                 if (args.length > 0) {
                     boolean value = Boolean.parseBoolean(args[0]);
-                    setDisplayName(itemStack, (value ? "§a" : "§c") + value);
+                    setDisplayName(itemStack, toComponent((value ? "§a" : "§c") + value));
                 }
             }
             case "value", "eventvalue", "gamevalue", "worldvalue" -> {
@@ -145,7 +147,7 @@ public class ValueCommand extends CommandHandler {
                     try {
                         EventValue value = EventValues.getInstance().getById(args[0]);
                         if (value == null) return;
-                        setDisplayName(itemStack, value.getLocaleName());
+                        setDisplayName(itemStack, toComponent(value.getLocaleName()));
                         setPersistentData(itemStack, getCodingVariableTypeKey(), args[0].toUpperCase());
                     } catch (Exception ignored) {
                     }
@@ -159,9 +161,9 @@ public class ValueCommand extends CommandHandler {
                     setPersistentData(itemStack, getCodingVariableTypeKey(), type.name());
                     if (args.length > 1) {
                         setDisplayName(itemStack,
-                                (type == VariableLink.VariableType.SAVED ? "§a" :
+                                toComponent((type == VariableLink.VariableType.SAVED ? "§a" :
                                         type == VariableLink.VariableType.GLOBAL ? "§e" : "§c")
-                                        + String.join(" ", Arrays.stream(args).toList().subList(1, args.length)));
+                                        + String.join(" ", Arrays.stream(args).toList().subList(1, args.length))));
                     }
                 }
             }

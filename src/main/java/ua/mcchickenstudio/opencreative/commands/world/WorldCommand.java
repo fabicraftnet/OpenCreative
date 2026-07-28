@@ -22,6 +22,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.title.Title;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -93,7 +94,7 @@ public class WorldCommand extends CommandHandler {
                 }
                 planet.getTerritory().setSpawnLocation(player.getLocation());
                 player.showTitle(Title.title(
-                        toComponent(getLocaleMessage("settings.world-spawn.title")), toComponent(getLocaleMessage("settings.world-spawn.subtitle")),
+                        (getLocaleMessage("settings.world-spawn.title")), (getLocaleMessage("settings.world-spawn.subtitle")),
                         Title.Times.times(Duration.ofMillis(100), Duration.ofSeconds(2), Duration.ofMillis(130))
                 ));
                 Sounds.WORLD_SETTINGS_SPAWN_SET.play(player);
@@ -161,22 +162,32 @@ public class WorldCommand extends CommandHandler {
                     sender.sendMessage(getLocaleMessage("too-few-args"));
                     return;
                 }
+                int limit = planet.getLimits().getWhitelistedLimit();
+                if (planet.getWorldPlayers().getWhitelistedPlayers().size() > limit) {
+                    sender.sendMessage(toComponent(getLocaleMessageString("world.players.white-list.limit").replace("%limit%", String.valueOf(limit))));
+                    return;
+                }
                 Player playerToWhitelist = Bukkit.getPlayer(args[1]);
-                if (playerToWhitelist == null || !planet.getPlayers().contains(playerToWhitelist)) {
-                    sender.sendMessage(getLocaleMessage("not-found-player"));
+                if (playerToWhitelist == null) {
+                    OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(args[1]);
+                    if (!offlinePlayer.hasPlayedBefore()) {
+                        sender.sendMessage(getLocaleMessage("never-played"));
+                        return;
+                    }
+                    if (offlinePlayer.getUniqueId().equals(player.getUniqueId())) {
+                        sender.sendMessage(getLocaleMessage("same-player"));
+                        return;
+                    }
+                    sender.sendMessage(getPlayerLocaleMessage("world.players.white-list.added", offlinePlayer));
+                    planet.getWorldPlayers().banPlayer(offlinePlayer.getName());
                     return;
                 }
                 if (planet.isOwner(playerToWhitelist)) {
                     sender.sendMessage(getLocaleMessage("same-player"));
                     return;
                 }
-                int limit = planet.getLimits().getWhitelistedLimit();
-                if (planet.getWorldPlayers().getWhitelistedPlayers().size() > limit) {
-                    sender.sendMessage(getLocaleMessage("world.players.white-list.limit").replace("%limit%", String.valueOf(limit)));
-                    return;
-                }
                 sender.sendMessage(getPlayerLocaleMessage("world.players.white-list.added", playerToWhitelist));
-                planet.getWorldPlayers().whitelistPlayer(args[1]);
+                planet.getWorldPlayers().whitelistPlayer(playerToWhitelist.getName());
             }
             case "ban", "block", "blacklist" -> {
                 if (!planet.isOwner(player)) {
@@ -187,18 +198,28 @@ public class WorldCommand extends CommandHandler {
                     sender.sendMessage(getLocaleMessage("too-few-args"));
                     return;
                 }
+                int limit = planet.getLimits().getBlacklistedLimit();
+                if (planet.getWorldPlayers().getBannedPlayers().size() > limit) {
+                    sender.sendMessage(toComponent(getLocaleMessageString("world.players.black-list.limit").replace("%limit%", String.valueOf(limit))));
+                    return;
+                }
                 Player playerToBan = Bukkit.getPlayer(args[1]);
-                if (playerToBan == null || !planet.getPlayers().contains(playerToBan)) {
-                    sender.sendMessage(getLocaleMessage("not-found-player"));
+                if (playerToBan == null) {
+                    OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(args[1]);
+                    if (!offlinePlayer.hasPlayedBefore()) {
+                        sender.sendMessage(getLocaleMessage("never-played"));
+                        return;
+                    }
+                    if (offlinePlayer.getUniqueId().equals(player.getUniqueId())) {
+                        sender.sendMessage(getLocaleMessage("same-player"));
+                        return;
+                    }
+                    sender.sendMessage(getPlayerLocaleMessage("world.players.black-list.added", offlinePlayer));
+                    planet.getWorldPlayers().banPlayer(offlinePlayer.getName());
                     return;
                 }
                 if (planet.isOwner(playerToBan)) {
                     sender.sendMessage(getLocaleMessage("same-player"));
-                    return;
-                }
-                int limit = planet.getLimits().getBlacklistedLimit();
-                if (planet.getWorldPlayers().getBannedPlayers().size() > limit) {
-                    sender.sendMessage(getLocaleMessage("world.players.black-list.limit").replace("%limit%", String.valueOf(limit)));
                     return;
                 }
                 if (playerToBan.hasPermission("opencreative.world.ban.bypass")) {
@@ -206,7 +227,7 @@ public class WorldCommand extends CommandHandler {
                     return;
                 }
                 sender.sendMessage(getPlayerLocaleMessage("world.players.black-list.added", playerToBan));
-                planet.getWorldPlayers().banPlayer(args[1]);
+                planet.getWorldPlayers().banPlayer(playerToBan.getName());
             }
             case "kick" -> {
                 if (!planet.isOwner(player)) {
@@ -309,14 +330,14 @@ public class WorldCommand extends CommandHandler {
                 long folderSize = getFolderSize(getPlanetFolder(planet));
                 long devWorldSize = getFolderSize(getDevPlanetFolder(planet.getDevPlanet()));
                 long worldSize = folderSize - dataSize - variablesSize - scriptSize - settingsSize;
-                sender.sendMessage(getLocaleMessage("world.size")
+                sender.sendMessage(toComponent(getLocaleMessageString("world.size")
                         .replace("%total%", FileUtils.byteCountToDisplaySize(folderSize + devWorldSize))
                         .replace("%world%", FileUtils.byteCountToDisplaySize(worldSize))
                         .replace("%script%", FileUtils.byteCountToDisplaySize(scriptSize))
                         .replace("%variables%", FileUtils.byteCountToDisplaySize(variablesSize))
                         .replace("%dev%", FileUtils.byteCountToDisplaySize(devWorldSize))
                         .replace("%data%", FileUtils.byteCountToDisplaySize(dataSize))
-                        .replace("%settings%", FileUtils.byteCountToDisplaySize(settingsSize)));
+                        .replace("%settings%", FileUtils.byteCountToDisplaySize(settingsSize))));
             }
             case "mem", "tps", "memory" -> {
                 if (!sender.hasPermission("opencreative.world.memory")) {
@@ -347,8 +368,8 @@ public class WorldCommand extends CommandHandler {
                 if (platformerID.equals("reset") || platformerID.equals("default")) {
                     platformer = OpenCreative.getDevPlatformer();
                     planet.getDevPlanet().setPlatformerID(platformer.getID());
-                    sender.sendMessage(getLocaleMessage("world.platformer.reset")
-                            .replace("%id%", platformer.getID()));
+                    sender.sendMessage(toComponent(getLocaleMessageString("world.platformer.reset")
+                            .replace("%id%", platformer.getID())));
                     if (planet.getDevPlanet().isLoaded()) {
                         platformer.setWorldBorder(planet.getDevPlanet());
                         planet.getDevPlanet().displayWorldBorders();
@@ -356,13 +377,13 @@ public class WorldCommand extends CommandHandler {
                     return;
                 }
                 if (platformer == null) {
-                    sender.sendMessage(getLocaleMessage("world.platformer.not-found")
-                            .replace("%id%", platformerID));
+                    sender.sendMessage(toComponent(getLocaleMessageString("world.platformer.not-found")
+                            .replace("%id%", platformerID)));
                     return;
                 }
                 planet.getDevPlanet().setPlatformerID(platformer.getID());
-                sender.sendMessage(getLocaleMessage("world.platformer.set")
-                        .replace("%id%", platformer.getID()));
+                sender.sendMessage(toComponent(getLocaleMessageString("world.platformer.set")
+                        .replace("%id%", platformer.getID())));
                 if (planet.getDevPlanet().isLoaded()) {
                     platformer.setWorldBorder(planet.getDevPlanet());
                     planet.getDevPlanet().displayWorldBorders();
@@ -418,11 +439,11 @@ public class WorldCommand extends CommandHandler {
 
     private void sendPlanetInfo(CommandSender sender, Planet planet) {
         long now = System.currentTimeMillis();
-        sender.sendMessage(getLocaleMessage("world.info").replace("%name%", planet.getInformation().getDisplayName())
+        sender.sendMessage(toComponent(getLocaleMessageString("world.info").replace("%name%", planet.getInformation().getDisplayName())
                 .replace("%id%", String.valueOf(planet.getId())).replace("%creation-time%", getElapsedTime(now, planet.getCreationTime()))
                 .replace("%activity-time%", getElapsedTime(now, planet.getLastActivityTime())).replace("%online%", String.valueOf(planet.getOnline()))
                 .replace("%builders%", planet.getWorldPlayers().getBuilders()).replace("%coders%", planet.getWorldPlayers().getDevelopers()).replace("%owner%", planet.getOwnerName())
-                .replace("%sharing%", planet.getSharing().getName()).replace("%mode%", planet.getMode().getName()).replace("%description%", planet.getInformation().getDescription()));
+                .replace("%sharing%", planet.getSharing().getName()).replace("%mode%", planet.getMode().getName()).replace("%description%", planet.getInformation().getDescription())));
     }
 
     @Override

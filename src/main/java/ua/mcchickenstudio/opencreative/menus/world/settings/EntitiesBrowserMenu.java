@@ -42,6 +42,7 @@ import java.util.UUID;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.toComponent;
 
 /**
  * This class represents a menu, that displays specified list of entities in world.
@@ -165,7 +166,7 @@ public final class EntitiesBrowserMenu extends ListBrowserMenu<Entity> implement
             }
             for (Player p : planet.getPlayers()) {
                 if (planet.getWorldPlayers().canBuild(p)) {
-                    p.sendMessage(MessageUtils.getPlayerLocaleMessage("menus.entities-browser.removed-all", getPlayer()).replace("%count%", String.valueOf(count)));
+                    p.sendMessage(toComponent(MessageUtils.getPlayerLocaleMessageString("menus.entities-browser.removed-all", getPlayer()).replace("%count%", String.valueOf(count))));
                 }
             }
             elements.removeIf(Entity::isDead);
@@ -223,11 +224,11 @@ public final class EntitiesBrowserMenu extends ListBrowserMenu<Entity> implement
             case SHIFT_LEFT -> {
                 for (Player p : planet.getPlayers()) {
                     if (planet.getWorldPlayers().canBuild(p)) {
-                        p.sendMessage(MessageUtils.getPlayerLocaleMessage("menus.entities-browser.removed", getPlayer())
+                        p.sendMessage(toComponent(MessageUtils.getPlayerLocaleMessageString("menus.entities-browser.removed", getPlayer())
                                 .replace("%name%", entity.getName().substring(0, Math.min(20, entity.getName().length())))
                                 .replace("%x%", String.valueOf(entity.getLocation().getBlockX()))
                                 .replace("%y%", String.valueOf(entity.getLocation().getBlockY()))
-                                .replace("%z%", String.valueOf(entity.getLocation().getBlockZ())));
+                                .replace("%z%", String.valueOf(entity.getLocation().getBlockZ()))));
                     }
                 }
                 Sounds.WORLD_REMOVE_ENTITY.play(getPlayer());

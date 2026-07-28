@@ -18,6 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.menus;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -43,21 +44,21 @@ public abstract class ListBrowserMenu<T> extends AbstractListMenu<T> {
     private final int nextPageButtonSlot;
     private final int noElementsPageButtonSlot;
 
-    public ListBrowserMenu(Player player, String title) {
+    public ListBrowserMenu(Player player, Component title) {
         this(player, title, PlacementLayout.LEFT_CHARMS_BAR);
     }
 
-    public ListBrowserMenu(Player player, String title, PlacementLayout layout) {
+    public ListBrowserMenu(Player player, Component title, PlacementLayout layout) {
         this(player, title, layout.getElementsSlots(), layout.getCharmsBarSlots(), layout.getDecorationSlots(),
                 layout.getNoElementsSlot(), layout.getPreviousPageSlot(), layout.getNextPageSlot());
     }
 
-    public ListBrowserMenu(Player player, String title, PlacementLayout layout, int[] charmsBarSlots, int[] decorationSlots) {
+    public ListBrowserMenu(Player player, Component title, PlacementLayout layout, int[] charmsBarSlots, int[] decorationSlots) {
         this(player, title, layout.getElementsSlots(), charmsBarSlots, decorationSlots,
                 layout.getNoElementsSlot(), layout.getPreviousPageSlot(), layout.getNextPageSlot());
     }
 
-    public ListBrowserMenu(Player player, String title,
+    public ListBrowserMenu(Player player, Component title,
                            int[] elementsSlots, int[] charmsBarSlots,
                            int[] decorationSlots, int noElementsPageButtonSlot,
                            int previousPageButtonSlot, int nextPageButtonSlot) {

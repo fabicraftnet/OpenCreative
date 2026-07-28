@@ -370,7 +370,7 @@ public final class OpenCreative extends JavaPlugin {
                 ClickListener.class, RedstoneListener.class, BlockChangeListener.class,
                 Menus.class, GameModeListener.class, EntityStateListener.class,
                 CreativeListener.class, PotionListener.class, PlanetListener.class,
-                CraftListener.class, WorldListener.class
+                CraftListener.class, WorldListener.class, WitherCreationListener.class
         };
         for (Class<?> listenerClass : listeners) {
             try {

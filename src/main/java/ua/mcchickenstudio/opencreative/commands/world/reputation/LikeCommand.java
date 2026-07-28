@@ -36,8 +36,7 @@ import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.convertTime;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 
 /**
  * <h1>LikeCommand</h1>
@@ -66,8 +65,8 @@ public class LikeCommand extends CommandHandler {
             if (OpenCreative.getSettings().getRequirements().getWorldReputationMinSeconds() > createdSeconds) {
                 Sounds.PLAYER_CANCEL.play(player);
                 long unlockTime = (OpenCreative.getSettings().getRequirements().getWorldReputationMinSeconds() - createdSeconds) * 1000;
-                player.sendMessage(MessageUtils.getPlayerLocaleMessage("world.cant-rate", player).replace("%time%",
-                        convertTime(unlockTime)));
+                player.sendMessage(toComponent(MessageUtils.getPlayerLocaleMessageString("world.cant-rate", player).replace("%time%",
+                        convertTime(unlockTime))));
                 return;
             }
             if (planet.getWorldPlayers().hasDisliked(player.getUniqueId()) || !planet.getWorldPlayers().addLike(player.getUniqueId())) {
@@ -78,7 +77,7 @@ public class LikeCommand extends CommandHandler {
                 new LikeEvent(player).callEvent();
                 if (planet.getFlagValue(PlanetFlags.PlanetFlag.LIKE_MESSAGES) == 1) {
                     for (Player p : planet.getPlayers()) {
-                        p.sendMessage(getLocaleMessage("world.liked").replace("%player%", sender.getName()));
+                        p.sendMessage(toComponent(getLocaleMessageString("world.liked").replace("%player%", sender.getName())));
                     }
                 }
                 if (OpenCreative.getEconomy().isWorking() && !planet.isOwner(player)) {

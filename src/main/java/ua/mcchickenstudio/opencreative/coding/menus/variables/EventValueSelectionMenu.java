@@ -77,7 +77,7 @@ public final class EventValueSelectionMenu extends ContentWithMenusCategoryMenu<
         setPersistentData(itemInHand, getCodingVariableTypeKey(), getPersistentData(item, getCodingVariableTypeKey()));
         getPlayer().closeInventory();
         getPlayer().showTitle(Title.title(
-                toComponent(getLocaleMessage("world.dev-mode.set-variable")), displayName,
+                (getLocaleMessage("world.dev-mode.set-variable")), displayName,
                 Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
         ));
         Sounds.DEV_EVENT_VALUE_SET.play(event.getWhoClicked());

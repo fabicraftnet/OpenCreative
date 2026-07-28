@@ -36,7 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 
 /**
  * <h1>GiveCommand</h1>
@@ -75,9 +75,9 @@ public class GiveCommand extends CommandHandler {
                 try {
                     ItemStack item = getItem(args[0], 1);
                     player.getInventory().addItem(item);
-                    player.sendMessage(getLocaleMessage("commands.give.given")
+                    player.sendMessage(toComponent(getLocaleMessageString("commands.give.given")
                             .replace("%material%", item.getType().name().toLowerCase())
-                            .replace("%amount%", "1"));
+                            .replace("%amount%", "1")));
                 } catch (IllegalArgumentException error) {
                     player.sendMessage(getLocaleMessage("commands.give.wrong"));
                 }
@@ -99,10 +99,10 @@ public class GiveCommand extends CommandHandler {
                 try {
                     ItemStack item = getItem(args[1], 1);
                     givePlayer.getInventory().addItem(item);
-                    player.sendMessage(getLocaleMessage("commands.give.given-player")
+                    player.sendMessage(toComponent(getLocaleMessageString("commands.give.given-player")
                             .replace("%player%", givePlayer.getName())
                             .replace("%material%", item.getType().name().toLowerCase())
-                            .replace("%amount%", "1"));
+                            .replace("%amount%", "1")));
                 } catch (IllegalArgumentException e) {
                     player.sendMessage(getLocaleMessage("commands.give.wrong"));
                 }
@@ -125,10 +125,10 @@ public class GiveCommand extends CommandHandler {
                     int amount = Integer.parseInt(args[2]);
                     ItemStack item = getItem(args[1], amount);
                     givePlayer.getInventory().addItem(item);
-                    player.sendMessage(getLocaleMessage("commands.give.given-player")
+                    player.sendMessage(toComponent(getLocaleMessageString("commands.give.given-player")
                             .replace("%player%", givePlayer.getName())
                             .replace("%material%", item.getType().name().toLowerCase())
-                            .replace("%amount%", String.valueOf(amount)));
+                            .replace("%amount%", String.valueOf(amount))));
                 } catch (NumberFormatException error) {
                     player.sendMessage(getLocaleMessage("commands.give.wrong-amount"));
                 } catch (IllegalArgumentException error) {

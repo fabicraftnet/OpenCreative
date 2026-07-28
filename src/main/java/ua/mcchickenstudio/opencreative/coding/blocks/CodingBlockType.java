@@ -18,6 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.coding.blocks;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 

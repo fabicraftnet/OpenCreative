@@ -18,6 +18,7 @@
 
 package ua.mcchickenstudio.opencreative.coding.menus.blocks;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -57,7 +58,7 @@ public abstract class MenusCategorySelectionMenu extends AbstractMenu {
                                       @NotNull ItemStack mainItem,
                                       @NotNull Material additionalPane,
                                       @NotNull Collection<MenusCategory> menusCategories,
-                                      @NotNull String title,
+                                      @NotNull Component title,
                                       @NotNull String mainCategory,
                                       @NotNull Object frequency
     ) {
