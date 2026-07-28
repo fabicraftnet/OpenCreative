@@ -158,9 +158,12 @@ public final class CodingSettings {
             OpenCreative.getManagers().register(CodingPrompter.class, new DisabledCodingPrompter());
         } else {
             switch (type.toLowerCase()) {
-                case "chatgpt", "openai" -> OpenCreative.getManagers().register(CodingPrompter.class, new OpenAIPrompter());
-                case "openrouter", "openrouterai" -> OpenCreative.getManagers().register(CodingPrompter.class, new OpenRouterPrompter());
-                case "gemini", "google" -> OpenCreative.getManagers().register(CodingPrompter.class, new GeminiPrompter());
+                case "chatgpt", "openai" ->
+                        OpenCreative.getManagers().register(CodingPrompter.class, new OpenAIPrompter());
+                case "openrouter", "openrouterai" ->
+                        OpenCreative.getManagers().register(CodingPrompter.class, new OpenRouterPrompter());
+                case "gemini", "google" ->
+                        OpenCreative.getManagers().register(CodingPrompter.class, new GeminiPrompter());
                 default -> {
                     sendWarningErrorMessage("[CODING PROMPT] Unknown prompter: " + type + ", using disabled prompt handler.");
                     OpenCreative.getManagers().register(CodingPrompter.class, new DisabledCodingPrompter());

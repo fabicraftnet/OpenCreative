@@ -56,6 +56,7 @@ import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.FileUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.*;
+import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.checkBadContainersInWorld;
 
 /**
  * <h1>Planet</h1>
@@ -702,7 +703,7 @@ public class Planet {
      * @param flag flag to get value.
      * @return value of flag.
      */
-    public byte getFlagValue(PlanetFlags.PlanetFlag flag) {
+    public byte getFlagValue(@NotNull PlanetFlags.PlanetFlag flag) {
         return territory.getFlags().getFlagValue(flag);
     }
 
@@ -712,7 +713,7 @@ public class Planet {
      * @param flag  flag to set value.
      * @param value new value.
      */
-    public void setFlagValue(PlanetFlags.PlanetFlag flag, byte value) {
+    public void setFlagValue(@NotNull PlanetFlags.PlanetFlag flag, byte value) {
         territory.getFlags().setFlag(flag, value);
     }
 
@@ -894,6 +895,11 @@ public class Planet {
             }
             clearPlayer(player, false, OpenCreative.getSettings().getLobbySettings().shouldResetGameMode(player.getWorld()));
             Sounds.WORLD_CONNECTED.play(player);
+            if (!wasLoaded) {
+                Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
+                    checkBadContainersInWorld(getWorld(), 300_000L);
+                });
+            }
             mode.onPlayerConnect(player, this);
             PlanetPlayer planetPlayer = getWorldPlayers().getPlanetPlayer(player);
             player.clearTitle();

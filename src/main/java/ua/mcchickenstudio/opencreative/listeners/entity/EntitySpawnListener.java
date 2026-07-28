@@ -26,7 +26,6 @@ import org.bukkit.entity.minecart.CommandMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityPlaceEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
@@ -34,12 +33,10 @@ import org.bukkit.event.vehicle.VehicleCreateEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.world.other.LimitReachedEntitiesEvent;
 import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
 import ua.mcchickenstudio.opencreative.planets.Planet;
-import ua.mcchickenstudio.opencreative.planets.PlanetFlags;
 import ua.mcchickenstudio.opencreative.utils.ItemUtils;
 import ua.mcchickenstudio.opencreative.wanders.Wander;
 
@@ -47,9 +44,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.isOutOfBorders;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleComponent;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.sendMessageOnce;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.isEntityInDevPlanet;
-import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.*;
+import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isDevPlanet;
+import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isLobbyWorld;
 
 public final class EntitySpawnListener implements Listener {
 
@@ -161,11 +160,27 @@ public final class EntitySpawnListener implements Listener {
                         "/world deletemobs", null, 3);
                 new LimitReachedEntitiesEvent(planet).callEvent();
             } else {
-               Player player = event.getPlayer();
-               if (player != null && event.getEntity().getType() == EntityType.TNT_MINECART) {
-                   Wander wander = OpenCreative.getWander(player);
-                   wander.getGriefStats().addTntPlacementsAmount(1);
-               }
+                Player player = event.getPlayer();
+                if (player != null) {
+                    switch (event.getEntityType()) {
+                        case TNT_MINECART -> {
+                            Wander wander = OpenCreative.getWander(player);
+                            wander.getGriefStats().addTntPlacementsAmount(1);
+                        }
+                        case CREEPER -> {
+                            Wander wander = OpenCreative.getWander(player);
+                            wander.getGriefStats().addCreeperSummonsAmount(1);
+                        }
+                        case WITHER -> {
+                            Wander wander = OpenCreative.getWander(player);
+                            wander.getGriefStats().addWithersSummonsAmount(1);
+                        }
+                        case ENDER_DRAGON -> {
+                            Wander wander = OpenCreative.getWander(player);
+                            wander.getGriefStats().addDragonsSummonsAmount(1);
+                        }
+                    }
+                }
             }
         } else if (isDevPlanet(world)) {
             event.setCancelled(true);

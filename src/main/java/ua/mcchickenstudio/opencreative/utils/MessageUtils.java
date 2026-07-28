@@ -25,6 +25,8 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -437,12 +439,12 @@ public final class MessageUtils {
     public static @NotNull Component getUnknownArgumentMessage(@NotNull String label, @NotNull String[] args) {
         int length = label.length();
         if (length > 7) {
-            label = "..." + label.substring(length-7, length);
+            label = "..." + label.substring(length - 7, length);
         }
         return Component.translatable("command.unknown.argument", NamedTextColor.RED)
                 .append(Component.newline())
                 .append(Component.text(label + (args.length == 0 ? "" : " "), NamedTextColor.GRAY))
-                .append (Component.text(String.join(" ", args),
+                .append(Component.text(String.join(" ", args),
                         NamedTextColor.RED, TextDecoration.UNDERLINED))
                 .append(Component.translatable("command.context.here", NamedTextColor.RED, TextDecoration.ITALIC));
     }
