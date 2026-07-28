@@ -42,7 +42,9 @@ import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.player.world.ChatEvent;
 import ua.mcchickenstudio.opencreative.coding.modules.Module;
+import ua.mcchickenstudio.opencreative.commands.ChatCommand;
 import ua.mcchickenstudio.opencreative.events.player.WorldChatEvent;
+import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
 import ua.mcchickenstudio.opencreative.settings.filters.Filter;
 import ua.mcchickenstudio.opencreative.settings.filters.FilterResult;
 import ua.mcchickenstudio.opencreative.wanders.Wander;
@@ -177,9 +179,9 @@ public final class ChatListener implements Listener {
             setCooldown(player, OpenCreative.getSettings().getGroups().getGroup(player).getChatCooldown(), CooldownUtils.CooldownType.WORLD_CHAT);
 
             String format = OpenCreative.getPlugin().getConfig().getString("messages.world-chat", "&7 %player%&8: &f%message%");
-            Component formatted = toComponent(parsePAPI(player, format)
-                    .replace("%player%", player.getName())
-                    .replace("%message%", MiniMessage.miniMessage().escapeTags(message)));
+            Component formatted = toComponent(parsePAPI(player, format).replace("%player%", player.getName()));
+            formatted = new PlaceholderReplacer("message", ChatCommand.formatPlayerChatInput(player, "chat", message))
+                    .apply(formatted);
             if (formatted.clickEvent() == null) formatted = formatted.clickEvent(ClickEvent.suggestCommand(message));
             
             Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);

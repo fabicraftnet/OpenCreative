@@ -26,6 +26,8 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -34,6 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.events.player.CreativeChatEvent;
+import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.settings.filters.Filter;
 import ua.mcchickenstudio.opencreative.settings.filters.FilterResult;
@@ -171,8 +174,9 @@ public class ChatCommand extends CommandHandler {
                         .replace("%player%", sender.getName())
                         .replace("%cc-prefix%", prefix);
                 format = parsePAPI(player, format);
-                Component formatted = toComponent(format
-                        .replace("%message%", MiniMessage.miniMessage().escapeTags(text.get())));
+
+                Component formatted = new PlaceholderReplacer("message", formatPlayerChatInput(sender, "creative-chat", text.get()))
+                        .apply(toComponent(format));
                 if (formatted.clickEvent() == null) formatted = formatted.clickEvent(ClickEvent.suggestCommand(text.get()));
                 formatted = parseAdvertisementInMessage(formatted);
 
@@ -188,12 +192,45 @@ public class ChatCommand extends CommandHandler {
                 }
             });
         });
-
-
     }
 
     @Override
     public @Nullable List<String> onTab(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
-        return Bukkit.getOnlinePlayers().stream().map(Player::getName).toList();
+        return null;
+    }
+
+    public static @NotNull Component formatPlayerChatInput(@NotNull CommandSender sender, @NotNull String permission, @NotNull String input) {
+        boolean canUseColors = sender.hasPermission("opencreative." + permission + ".color");
+        boolean canUseBold = sender.hasPermission("opencreative." + permission + ".bold");
+        boolean canUseItalic = sender.hasPermission("opencreative." + permission + ".italic");
+        boolean canUseUnderlined = sender.hasPermission("opencreative." + permission + ".underline");
+        boolean canUseStrikeThrough = sender.hasPermission("opencreative." + permission + ".strikethrough");
+        boolean canUseObfuscated = sender.hasPermission("opencreative." + permission + ".obfuscated");
+        TagResolver.Builder resolver = TagResolver.builder().resolvers(
+                StandardTags.decorations(), StandardTags.color(), StandardTags.gradient(),
+                StandardTags.pride(), StandardTags.rainbow());
+
+        Component component = MiniMessage.builder().tags(resolver.build()).build()
+                .deserialize(fromLegacyToMiniMessage(input));
+        if (!canUseColors) {
+            component = component.color(null);
+            component = component.shadowColor(null);
+        }
+        if (!canUseBold) {
+            component = component.decoration(TextDecoration.BOLD, false);
+        }
+        if (!canUseItalic) {
+            component = component.decoration(TextDecoration.ITALIC, false);
+        }
+        if (!canUseUnderlined) {
+            component = component.decoration(TextDecoration.UNDERLINED, false);
+        }
+        if (!canUseObfuscated) {
+            component = component.decoration(TextDecoration.OBFUSCATED, false);
+        }
+        if (!canUseStrikeThrough) {
+            component = component.decoration(TextDecoration.STRIKETHROUGH, false);
+        }
+        return component;
     }
 }

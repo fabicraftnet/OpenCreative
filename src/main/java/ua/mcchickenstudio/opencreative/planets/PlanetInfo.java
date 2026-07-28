@@ -31,6 +31,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.utils.ItemUtils;
 
@@ -70,6 +71,29 @@ public class PlanetInfo {
     public PlanetInfo(Planet planet) {
         this.planet = planet;
         loadInformation();
+    }
+
+    public PlanetInfo(@NotNull Planet planet, @Nullable String displayName,
+                  @Nullable String description, @Nullable String customID,
+                  @Nullable String icon, @Nullable Category category,
+                  int uniques, int reputation) {
+        this.planet = planet;
+        this.displayName = displayName == null ? "Unknown name" : displayName;
+        this.description = description == null ? "World data is corrupted,\\nplease report server admin\\nabout this world." : description;
+        this.customID = customID == null ? String.valueOf(planet.getId()) : customID;
+        this.category = category == null ? Category.SANDBOX : category;
+        if (icon != null) {
+            Material material = Material.matchMaterial(icon);
+            if (material != null && material.isItem()) {
+                this.icon = new ItemStack(material, 1);
+            } else {
+                this.icon = ItemUtils.loadItemFromByteArray(icon);
+            }
+        } else {
+            this.icon = new ItemStack(Material.REDSTONE);
+        }
+        this.uniques = uniques;
+        this.reputation = reputation;
     }
 
     /**
