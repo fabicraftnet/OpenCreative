@@ -1,0 +1,68 @@
+/*
+ * OpenCreative+, Minecraft plugin.
+ * (C) 2022-2026, McChicken Studio, mcchickenstudio@gmail.com
+ *
+ * OpenCreative+ is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * OpenCreative+ is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package ua.mcchickenstudio.opencreative.plugin.listeners.world;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import ua.mcchickenstudio.opencreative.plugin.OpenCreative;
+import ua.mcchickenstudio.opencreative.plugin.coding.blocks.events.world.blocks.BlockRedstoneEvent;
+import ua.mcchickenstudio.opencreative.plugin.coding.blocks.events.world.other.LimitReachedRedstoneEvent;
+import ua.mcchickenstudio.opencreative.plugin.indev.messages.PlaceholderReplacer;
+import ua.mcchickenstudio.opencreative.plugin.planets.Planet;
+
+import static ua.mcchickenstudio.opencreative.plugin.utils.MessageUtils.sendMessageOnce;
+import static ua.mcchickenstudio.opencreative.plugin.utils.world.WorldUtils.isDevPlanet;
+
+public final class RedstoneListener implements Listener {
+
+    @EventHandler
+    public void onBlockRedstone(org.bukkit.event.block.BlockRedstoneEvent event) {
+        if (isDevPlanet(event.getBlock().getWorld())) {
+            event.setNewCurrent(event.getOldCurrent());
+            return;
+        }
+        Location location = event.getBlock().getLocation();
+        Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(location.getWorld());
+        if (planet != null) {
+            if (!planet.getLimits().canRedstoneWork(event.getBlock().getLocation())) {
+                event.setNewCurrent(event.getOldCurrent());
+                sendMessageOnce(planet, "world.redstone-limit",
+                        new PlaceholderReplacer("count", planet.getLimits().getRedstoneOperationsLimit()),
+                        null, null, 5);
+                Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> location.getBlock().setType(Material.AIR), 1L);
+                new LimitReachedRedstoneEvent(planet).callEvent();
+                return;
+            }
+            new BlockRedstoneEvent(planet, event).callEvent();
+        }
+
+    }
+
+    @EventHandler
+    public void onPiston(BlockPistonExtendEvent event) {
+        if (isDevPlanet(event.getBlock().getWorld())) {
+            event.setCancelled(true);
+        }
+    }
+
+}

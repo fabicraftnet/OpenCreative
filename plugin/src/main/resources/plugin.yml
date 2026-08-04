@@ -1,0 +1,110 @@
+#
+# OpenCreative+ 6.0.0 - Well, it's possible.
+# (C) McChicken Studio 2017-2026.
+#
+
+name: 'OpenCreative'
+main: opencreative.OpenCreative
+api-version: 1.21
+
+version: '6.0.0 Pre-release 3'
+description: 'Let players create the worlds'
+build: ${build_timestamp}
+
+authors: [McChicken Studio]
+contributors: [McChicken Team, onn512, pawsashatoy, LWJENNI, HACKERPRO17, liventmst, logiklop, 70N77U, kalienda]
+prefix: "OC+"
+
+load: POSTWORLD
+database: false
+website: https://gitlab.com/eagles-creative/opencreative
+
+softdepend: [PacketEvents, PlaceholderAPI, ProtocolLib, Vault, LibsDisguises]
+
+#
+# We load plugin before these plugins
+# to register some commands first.
+#
+loadbefore:
+  - FastAsyncWorldEdit
+  - WorldEdit
+  - Essentials
+
+commands:
+  creative:
+    description: 'Shows OpenCreative+ information.'
+    aliases: [coding, creativecoding, creative, oc]
+  edit:
+    description: 'Edits item in hand.'
+    aliases: [itemedit, edititem]
+  locate:
+    description: 'Locates player`s current world.'
+    aliases: [find]
+  chat:
+    description: 'Sends message to all players.'
+    aliases: [cc]
+  build:
+    description: 'Changes world`s mode to build.'
+  dev:
+    description: 'Connects to developer world.'
+    aliases: [develop, code, d]
+  play:
+    description: 'Changes world`s mode to play.'
+    aliases: [start, run]
+  join:
+    description: 'Joins world by specified id.'
+    aliases: [id, j]
+  ad:
+    description: 'Advertises world to all players.'
+  like:
+    description: 'Marks current world as liked.'
+    aliases: [vote, v, l]
+  dislike:
+    description: 'Marks current world as disliked.'
+    aliases: [dis]
+  spawn:
+    description: 'Teleports to spawn.'
+    aliases: [hub, lobby, s]
+  menu:
+    description: 'Opens worlds browser menu.'
+    aliases: [games, worlds, minigames, g]
+  ownworlds:
+    description: 'Opens own worlds browser menu.'
+    aliases: [myworlds, mygames, owngames]
+  world:
+    description: 'Opens world`s settings menu.'
+    aliases: [settings, game]
+  environment:
+    description: 'Opens environment`s settings menu.'
+    aliases: [env, editor]
+  value:
+    description: 'Gives coding value item to player.'
+    aliases: [text, number, num, boolean, bool, location, loc,
+              vector, eventvalue, gamevalue, worldvalue, variable, var]
+  gamemode:
+    description: 'Changes current player`s gamemode.'
+    aliases: [gm]
+  give:
+    description: 'Gives specified item to player.'
+  teleport:
+    description: 'Teleports to specified location.'
+    aliases: [tp]
+  playsound:
+    description: 'Plays specified sound.'
+  stopsound:
+    description: 'Stops specified sound.'
+  weather:
+    description: 'Changes current world`s weather.'
+  time:
+    description: 'Sets current world`s time.'
+  module:
+    description: 'Opens module`s browser menu.'
+    aliases: [modules]
+  jointo:
+    description: 'Connects player to specified one'
+#  favorite:
+#    description: 'Adds world to favorites list'
+#    aliases: [fav, афм, афмщкшеу, favourite]
+#  unfavorite:
+#    description: 'Removes world from favorites list'
+#    aliases: [unfav, гтафм, гтафмщкшеу, unfavourite]

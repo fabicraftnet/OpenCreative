@@ -1,0 +1,94 @@
+/*
+ * OpenCreative+, Minecraft plugin.
+ * (C) 2022-2026, McChicken Studio, mcchickenstudio@gmail.com
+ *
+ * OpenCreative+ is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * OpenCreative+ is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package ua.mcchickenstudio.opencreative.plugin.commands.world.reputation;
+
+import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import ua.mcchickenstudio.opencreative.plugin.OpenCreative;
+import ua.mcchickenstudio.opencreative.plugin.coding.blocks.events.player.world.LikeEvent;
+import ua.mcchickenstudio.opencreative.plugin.commands.CommandHandler;
+import ua.mcchickenstudio.opencreative.plugin.planets.Planet;
+import ua.mcchickenstudio.opencreative.plugin.planets.PlanetFlags;
+import ua.mcchickenstudio.opencreative.plugin.settings.Sounds;
+import ua.mcchickenstudio.opencreative.plugin.utils.CooldownUtils;
+import ua.mcchickenstudio.opencreative.plugin.utils.MessageUtils;
+
+import java.util.List;
+
+import static ua.mcchickenstudio.opencreative.plugin.utils.CooldownUtils.checkAndSetCooldownWithMessage;
+import static ua.mcchickenstudio.opencreative.plugin.utils.MessageUtils.*;
+
+/**
+ * <h1>LikeCommand</h1>
+ * This command allows players to rate current world
+ * as good one and increase world's reputation.
+ * <p>
+ * If economy is set up, then world's owner can
+ * get server's virtual currency money.
+ * <p>
+ * Available: For all world players.
+ */
+public class LikeCommand extends CommandHandler {
+
+    @Override
+    public void onExecute(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+        if (sender instanceof Player player) {
+            Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
+            if (planet == null) {
+                player.sendMessage(getLocaleMessage("only-in-world"));
+                return;
+            }
+
+            if (!checkAndSetCooldownWithMessage(player, CooldownUtils.CooldownType.GENERIC_COMMAND)) return;
+
+            long createdSeconds = (System.currentTimeMillis() - planet.getCreationTime()) / 1000;
+            if (OpenCreative.getSettings().getRequirements().getWorldReputationMinSeconds() > createdSeconds) {
+                Sounds.PLAYER_CANCEL.play(player);
+                long unlockTime = (OpenCreative.getSettings().getRequirements().getWorldReputationMinSeconds() - createdSeconds) * 1000;
+                player.sendMessage(toComponent(MessageUtils.getPlayerLocaleMessageString("world.cant-rate", player).replace("%time%",
+                        convertTime(unlockTime))));
+                return;
+            }
+            if (planet.getWorldPlayers().hasDisliked(player.getUniqueId()) || !planet.getWorldPlayers().addLike(player.getUniqueId())) {
+                sender.sendMessage(getLocaleMessage("world.already-rated"));
+            } else {
+                Sounds.WORLD_LIKED.play(player);
+                planet.getInformation().setPlanetReputation(planet.getInformation().getReputation() + 1);
+                new LikeEvent(player).callEvent();
+                if (planet.getFlagValue(PlanetFlags.PlanetFlag.LIKE_MESSAGES) == 1) {
+                    for (Player p : planet.getPlayers()) {
+                        p.sendMessage(toComponent(getLocaleMessageString("world.liked").replace("%player%", sender.getName())));
+                    }
+                }
+                if (OpenCreative.getEconomy().isWorking() && !planet.isOwner(player)) {
+                    OpenCreative.getEconomy().depositMoney(Bukkit.getOfflinePlayer(planet.getOwner()), planet.getGroup().getLikeReward());
+                }
+            }
+        }
+    }
+
+    @Override
+    public @Nullable List<String> onTab(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+        return null;
+    }
+}

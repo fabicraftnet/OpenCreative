@@ -25,10 +25,10 @@ deploy_job:
     refs:
       - main
     changes:
-      # It deploys only in Main branch, when source files or build.gradle are changed.
+      # It deploys only in Main branch, when source files or build.gradle.kts are changed.
       - src/**/*
-      - build.gradle
-      - settings.gradle
+      - build.gradle.kts
+      - settings.gradle.kts
       - .gitlab-ci.yml
 pages:
   stage: deploy
