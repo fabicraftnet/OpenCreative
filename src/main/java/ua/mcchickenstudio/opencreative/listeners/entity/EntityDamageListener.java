@@ -30,10 +30,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.player.fighting.*;
+import ua.mcchickenstudio.opencreative.listeners.player.ChangedWorld;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.planets.PlanetFlags;
 import ua.mcchickenstudio.opencreative.utils.world.WorldUtils;
 
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleComponent;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getPlayerLocaleComponent;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.getLobbyLocation;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.isEntityInLobby;
@@ -131,6 +133,11 @@ public final class EntityDamageListener implements Listener {
             if (event.getDamager() instanceof Player damager) {
                 Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(damager);
                 if (planet != null) {
+                    if ((planet.getMode() == Planet.Mode.BUILD) && !planet.getWorldPlayers().canBuild(damager)) {
+                        damager.sendActionBar(getLocaleComponent("not-builder"));
+                        event.setCancelled(true);
+                        return;
+                    }
                     new PlayerDamagesMobEvent(damager, event).callEvent();
                 } else {
                     if (isEntityInLobby(damager) && OpenCreative.getSettings().getLobbySettings().isDamagingMobsDisallowed()

@@ -137,6 +137,13 @@ public final class InteractListener implements Listener {
         Player player = event.getPlayer();
         ItemStack fixedMain = ItemUtils.fixItem(player.getInventory().getItemInMainHand().clone());
         ItemStack fixedOff = ItemUtils.fixItem(player.getInventory().getItemInOffHand().clone());
+        Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
+        if (planet != null) {
+        if ((planet.getMode() == Planet.Mode.BUILD) && !planet.getWorldPlayers().canBuild(player)) {
+            player.sendActionBar(getLocaleComponent("not-builder"));
+            event.setCancelled(true);
+            return;
+        } }
         if (!fixedMain.equals(player.getInventory().getItemInMainHand())) {
             player.getInventory().setItemInMainHand(fixedMain);
         }
@@ -992,6 +999,11 @@ public final class InteractListener implements Listener {
         Player player = event.getPlayer();
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
         if (planet != null) {
+            if ((planet.getMode() == Planet.Mode.BUILD) && !planet.getWorldPlayers().canBuild(player)) {
+                player.sendActionBar(getLocaleComponent("not-builder"));
+                event.setCancelled(true);
+                return;
+            }
             if (planet.getFlagValue(PlanetFlags.PlanetFlag.MOB_INTERACT) == 2 && !planet.getWorldPlayers().canBuild(player)) {
                 // Disallow entire mob interaction.
                 event.getPlayer().sendActionBar(getLocaleMessage("world.cant-mob-interact"));
@@ -1012,6 +1024,11 @@ public final class InteractListener implements Listener {
         Player player = event.getPlayer();
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
         if (planet != null) {
+            if ((planet.getMode() == Planet.Mode.BUILD) && !planet.getWorldPlayers().canBuild(player)) {
+                player.sendActionBar(getLocaleComponent("not-builder"));
+                event.setCancelled(true);
+                return;
+            }
             if (event.getHand() == EquipmentSlot.HAND) {
                 new MobInteractionEvent(player, event).callEvent();
             }
@@ -1041,6 +1058,11 @@ public final class InteractListener implements Listener {
         }
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
         if (planet != null) {
+            if ((planet.getMode() == Planet.Mode.BUILD) && !planet.getWorldPlayers().canBuild(player)) {
+                player.sendActionBar(getLocaleComponent("not-builder"));
+                event.setCancelled(true);
+                return;
+            }
             new MobInteractionEvent(player, event).callEvent();
             if (planet.getFlagValue(PlanetFlags.PlanetFlag.MOB_INTERACT) == 2 && !planet.getWorldPlayers().canBuild(player)) {
                 player.sendActionBar(getLocaleMessage("world.cant-mob-interact"));
@@ -1110,6 +1132,13 @@ public final class InteractListener implements Listener {
 
     @EventHandler
     public void onEntityRename(PlayerNameEntityEvent event) {
+        Player player = event.getPlayer();
+        Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
+        if ((planet.getMode() == Planet.Mode.BUILD) && !planet.getWorldPlayers().canBuild(player)) {
+            player.sendActionBar(getLocaleComponent("not-builder"));
+            event.setCancelled(true);
+            return;
+        }
         if (event.getName() == null) return;
         String text = PlainTextComponentSerializer.plainText().serialize(event.getName());
         int limit = OpenCreative.getSettings().getItemFixerSettings().getMaxEntityNameLength();
@@ -1126,6 +1155,13 @@ public final class InteractListener implements Listener {
             event.setCancelled(true);
             event.getPlayer().sendActionBar(getLocaleComponent("not-for-lobby"));
         }
+        Player player = event.getPlayer();
+        Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
+        if ((planet.getMode() == Planet.Mode.BUILD) && !planet.getWorldPlayers().canBuild(player)) {
+            player.sendActionBar(getLocaleComponent("not-builder"));
+            event.setCancelled(true);
+            return;
+        }
     }
 
     @EventHandler
@@ -1135,6 +1171,13 @@ public final class InteractListener implements Listener {
             event.setCancelled(true);
             event.getPlayer().sendActionBar(getLocaleComponent("not-for-lobby"));
         }
+        Player player = event.getPlayer();
+        Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
+        if ((planet.getMode() == Planet.Mode.BUILD) && !planet.getWorldPlayers().canBuild(player)) {
+            player.sendActionBar(getLocaleComponent("not-builder"));
+            event.setCancelled(true);
+            return;
+        }
     }
 
     @EventHandler
@@ -1143,6 +1186,13 @@ public final class InteractListener implements Listener {
         if (OpenCreative.getSettings().getLobbySettings().isEditingArmorStandsDisallowed() && !event.getPlayer().hasPermission("opencreative.lobby.editing-armor-stands.bypass")) {
             event.setCancelled(true);
             event.getPlayer().sendActionBar(getLocaleComponent("not-for-lobby"));
+        }
+        Player player = event.getPlayer();
+        Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
+        if ((planet.getMode() == Planet.Mode.BUILD) && !planet.getWorldPlayers().canBuild(player)) {
+            player.sendActionBar(getLocaleComponent("not-builder"));
+            event.setCancelled(true);
+            return;
         }
     }
 
