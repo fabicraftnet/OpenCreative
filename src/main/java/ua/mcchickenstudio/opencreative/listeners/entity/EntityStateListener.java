@@ -46,6 +46,8 @@ import ua.mcchickenstudio.opencreative.utils.world.WorldUtils;
 
 import java.util.List;
 
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleComponent;
+
 public final class EntityStateListener implements Listener {
 
     @EventHandler
@@ -85,6 +87,16 @@ public final class EntityStateListener implements Listener {
 
     @EventHandler
     public void onCollision(VehicleEntityCollisionEvent event) {
+        Entity attacker = event.getEntity();
+        if (attacker instanceof Player player) {
+            Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
+            if (planet != null) {
+                if ((planet.getMode() == Planet.Mode.BUILD) && !planet.getWorldPlayers().canBuild(player)) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+        }
         if (!OpenCreative.getSettings().getWorldFixerSettings().shouldFixVehicleCollisions()) return;
         if (event.getEntity() instanceof Minecart first && event.getVehicle() instanceof Minecart second) {
             long firstLastCollision = getMetadata(first, "oc_vehicle_last_collision");
@@ -401,12 +413,34 @@ public final class EntityStateListener implements Listener {
     }
     @EventHandler
     public void onVehicleDamage(VehicleDamageEvent event) {
+        Entity attacker = event.getAttacker();
+        if (attacker instanceof Player player) {
+            Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
+            if (planet != null) {
+                if ((planet.getMode() == Planet.Mode.BUILD) && !planet.getWorldPlayers().canBuild(player)) {
+                    player.sendActionBar(getLocaleComponent("not-builder"));
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+        }
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(event.getVehicle().getWorld());
         if (planet != null) new EntityVehicleDamageEvent(event).callEvent();
     }
 
     @EventHandler
     public  void onVehicleDestroy(VehicleDestroyEvent event) {
+        Entity attacker = event.getAttacker();
+        if (attacker instanceof Player player) {
+            Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
+            if (planet != null) {
+                if ((planet.getMode() == Planet.Mode.BUILD) && !planet.getWorldPlayers().canBuild(player)) {
+                    player.sendActionBar(getLocaleComponent("not-builder"));
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+        }
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(event.getVehicle().getWorld());
         if (planet != null) new EntityVehicleDestroyEvent(event).callEvent();
     }

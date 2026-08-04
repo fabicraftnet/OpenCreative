@@ -19,6 +19,7 @@
 package ua.mcchickenstudio.opencreative.listeners.player;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,6 +34,7 @@ import ua.mcchickenstudio.opencreative.utils.ItemUtils;
 import ua.mcchickenstudio.opencreative.utils.world.WorldUtils;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.getItemType;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleComponent;
 
 public final class DropItemListener implements Listener {
 
@@ -67,7 +69,14 @@ public final class DropItemListener implements Listener {
         event.getItem().setItemStack(item);
         if (!(event.getEntity() instanceof Player player)) return;
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
-        if (planet != null) new ItemPickupEvent(player, event).callEvent();
+        if (planet != null) {
+            if ((planet.getMode() == Planet.Mode.BUILD) && !planet.getWorldPlayers().canBuild(player)) {
+                event.setCancelled(true);
+                return;
+            }
+
+            new ItemPickupEvent(player, event).callEvent();
+        }
     }
 
 }
