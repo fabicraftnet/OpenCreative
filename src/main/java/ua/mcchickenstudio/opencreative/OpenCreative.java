@@ -18,15 +18,12 @@
 
 package ua.mcchickenstudio.opencreative;
 
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -77,13 +74,6 @@ import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCriticalError
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.isEntityInLobby;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.teleportToLobby;
 
-/**
- * This class represents OpenCreative+ java plugin for PaperMC.
- * Only for loading, enabling and disabling plugin. Contains
- * general information about plugin's version and codename.
- *
- * @author McChicken Studio
- */
 public final class OpenCreative extends JavaPlugin {
 
     private static OpenCreative plugin;
@@ -94,32 +84,18 @@ public final class OpenCreative extends JavaPlugin {
     private DevPlatformer devPlatformer;
 
     private static final int planetConfigVersion = 1;
-    /**
-     * Plugin load operations.
-     *
-     * @see #onEnable
-     */
+
     @Override
     public void onLoad() {
-        getLogger().info(String.join("\n",
-                "", "",
-                "This software was made by Ukrainians, suffering from never-ending air alerts, explosions, and deaths.",
-                "We're AGAINST THE WAR. This software IS NOT DESIGNED for those who support killing and robbing another country.",
-                "",
-                "Let us have fun, like players who create their worlds...",
-                "McChicken Studio 2017–2026",
-                ""
-        ));
+        getLogger().info("""
+                This software was made by Ukrainians, suffering from never-ending air alerts, explosions, and deaths.
+                We're AGAINST THE WAR. This software IS NOT DESIGNED for those who support killing and robbing another country.
+                Let us have fun, like players who create their worlds...
+                
+                McChicken Studio 2017–2026
+                """);
     }
 
-    /**
-     * Plugin startup operations.
-     * <p>
-     * Loads settings, registers commands and events,
-     * starts managers and notifies players about startup.
-     *
-     * @see #onDisable
-     **/
     @Override
     public void onEnable() {
         plugin = this;
@@ -133,13 +109,6 @@ public final class OpenCreative extends JavaPlugin {
         new Metrics(this, 22001);
     }
 
-    /**
-     * Plugin shutdown operations.
-     * <p>
-     * Unloads worlds when plugin is being disabled.
-     *
-     * @see #onEnable
-     */
     @Override
     public void onDisable() {
         getLogger().info("Shutting down OpenCreative+, please wait...");
