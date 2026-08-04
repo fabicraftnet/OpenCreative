@@ -1153,8 +1153,7 @@ public class CreativeCommand extends CommandHandler {
 
     public Component getCopyrightMessage() {
         return toComponent(OpenCreative.getPlugin().getConfig().getString("messages.version", "\n§7 Open§fCreative§b+ §7%version%§f: §f%codename% \n §cMcChicken Studio 2017-2026\n ")
-                .replace("%version%", OpenCreative.getVersion())
-                .replace("%codename%", OpenCreative.getCodename()));
+                .replace("%version%", OpenCreative.getPlugin().getPluginMeta().getVersion()));
     }
 
     private BukkitRunnable maintenanceRunnable;

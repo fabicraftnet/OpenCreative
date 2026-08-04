@@ -191,9 +191,9 @@ public final class TestificationExperiment extends Experiment {
             if (sender instanceof Player player) {
                 showDialog(player,
                         Component.text("McChicken Studio 2017-2026", NamedTextColor.RED),
-                        MiniMessage.miniMessage().deserialize("Open<gradient:#dbdbdb:#A3E2FF>Creative</gradient><color:#74D3FF>+ <gray>" + OpenCreative.getVersion() + ": " + OpenCreative.getCodename()),
+                        MiniMessage.miniMessage().deserialize("Open<gradient:#dbdbdb:#A3E2FF>Creative</gradient><color:#74D3FF>+ <gray>" + OpenCreative.getPlugin().getPluginMeta().getVersion()),
                         String.join("\n", "",
-                                "OpenCreative+ " + OpenCreative.getVersion(),
+                                "OpenCreative+ " + OpenCreative.getPlugin().getPluginMeta().getVersion(),
                                 "  Running on " + Bukkit.getName() + " " + Bukkit.getMinecraftVersion() + " server",
                                 "  with " + Bukkit.getOnlinePlayers().size() + " online players. ",
                                 "",

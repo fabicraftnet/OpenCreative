@@ -107,7 +107,7 @@ public final class ErrorUtils {
                 (!colored ?
                         """
                                 \\|/ _____ \\|/
-                                "@'/ . . \\`@"\s""" + OpenCreative.getVersion() + """
+                                "@'/ . . \\`@"\s""" + OpenCreative.getPlugin().getPluginMeta().getVersion() + """
                                 \n/_| \\___/ |_\\\s""" + getRandomPhrase() + """
                                 \n   \\___U_/
                                 """ : "") +

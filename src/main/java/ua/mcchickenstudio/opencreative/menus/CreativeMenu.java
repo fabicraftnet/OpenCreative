@@ -48,8 +48,7 @@ public final class CreativeMenu extends AbstractMenu {
 
     public CreativeMenu() {
         super(6, toComponent(getLocaleMessageString("menus.creative.title", false)
-                .replace("%version%", OpenCreative.getVersion())
-                .replace("%codename%", OpenCreative.getCodename())));
+                .replace("%version%", OpenCreative.getPlugin().getPluginMeta().getVersion())));
     }
 
     @Override

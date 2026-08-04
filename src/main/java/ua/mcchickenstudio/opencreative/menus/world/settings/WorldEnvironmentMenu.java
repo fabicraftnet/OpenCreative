@@ -97,7 +97,7 @@ public final class WorldEnvironmentMenu extends AbstractMenu implements WorldMen
                 "variables-limit", devPlanet.getPlanet().getLimits().getVariablesAmountLimit(),
                 "executor-calls-limit", devPlanet.getPlanet().getLimits().getCodeOperationsLimit(),
                 "planetID", devPlanet.getPlanet().getId(),
-                "version", OpenCreative.getVersion()));
+                "version", OpenCreative.getPlugin().getPluginMeta().getVersion()));
         return info;
     }
 

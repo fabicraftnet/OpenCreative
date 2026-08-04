@@ -593,7 +593,7 @@ public final class MessageUtils {
                 pages.add(MiniMessage.miniMessage().deserialize(fromLegacyToMiniMessageBook(page)
                         .replace("%prefix%", getPrefix())
                         .replace("%cc-prefix%", getCreativeChatPrefix())
-                        .replace("%version%", OpenCreative.getVersion())
+                        .replace("%version%", OpenCreative.getPlugin().getPluginMeta().getVersion())
                 ));
             }
         }

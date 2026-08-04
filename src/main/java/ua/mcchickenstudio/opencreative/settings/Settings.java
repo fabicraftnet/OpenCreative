@@ -343,7 +343,7 @@ public final class Settings {
                 }
             }
             if (!addedKeys.isEmpty()) {
-                config.set("version", OpenCreative.getVersion());
+                config.set("version", OpenCreative.getPlugin().getPluginMeta().getVersion());
                 config.setComments("version", List.of("Last config update: " +
                         new SimpleDateFormat("HH:mm:ss (dd/MM/yyyy)").format(new Date())));
                 OpenCreative.getPlugin().getLogger().warning("Added " + addedKeys.size() +
@@ -778,7 +778,7 @@ public final class Settings {
         if (debug) {
             announcer = new BukkitRunnable() {
                 private final Component actionbar = MiniMessage.miniMessage()
-                        .deserialize("<white>Open<gradient:#dbdbdb:#A3E2FF>Creative</gradient><color:#74D3FF>+ <white>" + OpenCreative.getVersion() + "<gray> Debug Mode. <white>Running the Show...");
+                        .deserialize("<white>Open<gradient:#dbdbdb:#A3E2FF>Creative</gradient><color:#74D3FF>+ <white>" + OpenCreative.getPlugin().getPluginMeta().getVersion() + "<gray> Debug Mode. <white>Running the Show...");
 
                 @Override
                 public void run() {

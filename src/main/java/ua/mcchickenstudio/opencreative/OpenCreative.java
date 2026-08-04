@@ -93,9 +93,6 @@ public final class OpenCreative extends JavaPlugin {
     private Settings settings;
     private DevPlatformer devPlatformer;
 
-    private static final String version = "6.0.0 Pre-release 3";
-    private static final String codename = "Well, it's possible";
-
     private static final int planetConfigVersion = 1;
     /**
      * Plugin load operations.
@@ -127,7 +124,7 @@ public final class OpenCreative extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         long startTime = System.currentTimeMillis();
-        logStartup();
+        getLogger().info("Starting OpenCreative+ " + getPluginMeta().getVersion() + ", please wait...");
 
         loadCore();
         loadManagers();
@@ -150,7 +147,7 @@ public final class OpenCreative extends JavaPlugin {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 player.sendMessage(
                         MiniMessage.miniMessage().deserialize(
-                                " \n<white> Shutting down Open<gradient:#dbdbdb:#A3E2FF>Creative</gradient><color:#74D3FF>+ <gray>" + version + "<white>, please wait...\n "
+                                " \n<white> Shutting down Open<gradient:#dbdbdb:#A3E2FF>Creative</gradient><color:#74D3FF>+ <gray>" + getPluginMeta().getVersion() + "<white>, please wait...\n "
                         ));
                 if (WorldUtils.isPlanet(player.getWorld())) {
                     teleportToLobby(player);
@@ -164,7 +161,6 @@ public final class OpenCreative extends JavaPlugin {
                 "",
                 "Goodbye from OpenCreative+",
                 "",
-                " " + codename,
                 "  Made by McChicken Studio 2017–2026",
                 ""
         ));
@@ -180,21 +176,6 @@ public final class OpenCreative extends JavaPlugin {
      **/
     public static @NotNull OpenCreative getPlugin() {
         return plugin;
-    }
-
-    /**
-     * Notifies console and players about OpenCreative+ startup.
-     */
-    private void logStartup() {
-        getLogger().info("Starting OpenCreative+ " + version + ": " + codename + ", please wait...");
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 1));
-            player.showTitle(Title.title(
-                    MiniMessage.miniMessage().deserialize("<white>Open<gradient:#dbdbdb:#A3E2FF>Creative</gradient><color:#74D3FF>+ <gray>" + version),
-                    Component.text("§f" + codename + "..."),
-                    Title.Times.times(Duration.ofSeconds(0), Duration.ofSeconds(5), Duration.ofSeconds(0))
-            ));
-        }
     }
 
     /**
@@ -265,25 +246,25 @@ public final class OpenCreative extends JavaPlugin {
                 Sounds.LOBBY.play(player);
                 player.clearTitle();
                 player.sendMessage(
-                        MiniMessage.miniMessage().deserialize("\n <white>Open<gradient:#dbdbdb:#A3E2FF>Creative</gradient><color:#74D3FF>+ <gray>" + version + " <white>is loaded <green>:) \n ")
+                        MiniMessage.miniMessage().deserialize("\n <white>Open<gradient:#dbdbdb:#A3E2FF>Creative</gradient><color:#74D3FF>+ <gray>" + getPluginMeta().getVersion() + " <white>is loaded <green>:) \n ")
                 );
             }
         }
         getServer().sendActionBar(
                 MiniMessage.miniMessage().deserialize(
-                        "<white>Open<gradient:#dbdbdb:#A3E2FF>Creative</gradient><color:#74D3FF>+ <gray>" + version + "<white> is loaded for " + loadedTime + " ms."
+                        "<white>Open<gradient:#dbdbdb:#A3E2FF>Creative</gradient><color:#74D3FF>+ <gray>" + getPluginMeta().getVersion() + "<white> is loaded for " + loadedTime + " ms."
                 )
         );
         getLogger().info(String.join("\n",
-                "OpenCreative+ " + version + ": " + codename + " is loaded for " + loadedTime + " ms.",
+                "OpenCreative+ " + getPluginMeta().getVersion() + " is loaded for " + loadedTime + " ms.",
                 "",
-                " Welcome to OpenCreative+ " + version + "!",
+                " Welcome to OpenCreative+ " + getPluginMeta().getVersion() + "!",
                 "",
                 "  Running on " + Bukkit.getMinecraftVersion() + " server",
                 "  Current time " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),
                 isChristmas() ? "  Ho-ho-ho! Merry Christmas, server owners! :-) ❆" :
                         isHalloween() ? "  Spo-o-o-oky Halloween, server owners! O_o 🎃" : "",
-                "  " + codename,
+                "  ",
                 "  Made by McChicken Studio 2017–2026",
                 ""
         ));
@@ -553,29 +534,11 @@ public final class OpenCreative extends JavaPlugin {
     }
 
     /**
-     * Gets version of OpenCreative+.
-     *
-     * @return version of plugin.
-     */
-    public static @NotNull String getVersion() {
-        return version;
-    }
-
-    /**
      * Gets update manager, that has methods to
      * check available updates for plugin.
      */
     public static Updater getUpdater() {
         return getPlugin().managers.get(Updater.class);
-    }
-
-    /**
-     * Gets codename of current OpenCreative+ version.
-     *
-     * @return codename of version.
-     */
-    public static @NotNull String getCodename() {
-        return codename;
     }
 
     /**
