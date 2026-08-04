@@ -16,21 +16,17 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ua.mcchickenstudio.opencreative.plugin.managers;
+package ua.mcchickenstudio.opencreative.api.manager;
 
 /**
- * <h1>Toggleable</h1>
- * Represents a manager, that can be started and shut downed,
- * so it has a working state.
+ * <h1>Startable</h1>
+ * This interface is used for managers, that require operations on their start.
  */
-public interface Toggleable extends Startable, ShutDownable {
+public interface Startable {
 
     /**
-     * Checks whether manager was started successfully
-     * and it currently works.
-     *
-     * @return true - started up, false - shut downed.
+     * Does tasks on start.
      */
-    boolean isWorking();
+    void start();
 
 }

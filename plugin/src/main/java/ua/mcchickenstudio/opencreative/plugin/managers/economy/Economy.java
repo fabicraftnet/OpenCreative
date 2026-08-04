@@ -20,8 +20,8 @@ package ua.mcchickenstudio.opencreative.plugin.managers.economy;
 
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
-import ua.mcchickenstudio.opencreative.plugin.managers.Manager;
-import ua.mcchickenstudio.opencreative.plugin.managers.Toggleable;
+import ua.mcchickenstudio.opencreative.api.manager.Manager;
+import ua.mcchickenstudio.opencreative.api.manager.Toggleable;
 
 /**
  * <h1>Economy</h1>

@@ -33,7 +33,7 @@ import ua.mcchickenstudio.opencreative.plugin.coding.blocks.actions.ActionCatego
 import ua.mcchickenstudio.opencreative.plugin.coding.blocks.executors.ExecutorCategory;
 import ua.mcchickenstudio.opencreative.plugin.coding.variables.ValueType;
 import ua.mcchickenstudio.opencreative.plugin.listeners.player.ChangedWorld;
-import ua.mcchickenstudio.opencreative.plugin.managers.Startable;
+import ua.mcchickenstudio.opencreative.api.manager.Startable;
 import ua.mcchickenstudio.opencreative.plugin.utils.MessageUtils;
 
 import static ua.mcchickenstudio.opencreative.plugin.utils.PlayerUtils.isEntityInDevPlanet;

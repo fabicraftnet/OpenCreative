@@ -35,13 +35,7 @@ import static ua.mcchickenstudio.opencreative.plugin.utils.MessageUtils.getLocal
 import static ua.mcchickenstudio.opencreative.plugin.utils.MessageUtils.toComponent;
 import static ua.mcchickenstudio.opencreative.plugin.utils.PlayerUtils.*;
 
-/**
- * <h1>PlanetPlayers</h1>
- * This class represents a planet players with
- * data and statuses, like building or development
- * permissions.
- */
-public class PlanetPlayers {
+public class PlanetPlayers implements ua.mcchickenstudio.opencreative.api.planet.PlanetPlayers {
 
     private final Planet planet;
 

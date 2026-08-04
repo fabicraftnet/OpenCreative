@@ -32,7 +32,7 @@ import ua.mcchickenstudio.opencreative.plugin.events.planet.PlanetCreationEvent;
 import ua.mcchickenstudio.opencreative.plugin.events.planet.PlanetDeletionEvent;
 import ua.mcchickenstudio.opencreative.plugin.events.planet.PlanetRegisterEvent;
 import ua.mcchickenstudio.opencreative.plugin.events.planet.PlanetSharingChangeEvent;
-import ua.mcchickenstudio.opencreative.plugin.managers.Startable;
+import ua.mcchickenstudio.opencreative.api.manager.Startable;
 import ua.mcchickenstudio.opencreative.plugin.menus.world.WorldMenu;
 import ua.mcchickenstudio.opencreative.plugin.planets.DevPlanet;
 import ua.mcchickenstudio.opencreative.plugin.planets.Planet;

@@ -20,7 +20,7 @@ package ua.mcchickenstudio.opencreative.plugin.managers.hints;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import ua.mcchickenstudio.opencreative.plugin.managers.Manager;
+import ua.mcchickenstudio.opencreative.api.manager.Manager;
 
 /**
  * <h1>HintManager</h1>

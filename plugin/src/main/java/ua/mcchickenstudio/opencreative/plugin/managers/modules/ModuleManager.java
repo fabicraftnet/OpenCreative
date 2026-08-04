@@ -23,8 +23,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.plugin.coding.modules.Module;
-import ua.mcchickenstudio.opencreative.plugin.managers.Manager;
-import ua.mcchickenstudio.opencreative.plugin.managers.Toggleable;
+import ua.mcchickenstudio.opencreative.api.manager.Manager;
+import ua.mcchickenstudio.opencreative.api.manager.Toggleable;
 import ua.mcchickenstudio.opencreative.plugin.planets.DevPlanet;
 
 import java.util.Set;

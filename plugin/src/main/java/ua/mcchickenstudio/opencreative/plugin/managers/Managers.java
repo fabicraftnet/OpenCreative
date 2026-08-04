@@ -19,6 +19,9 @@
 package ua.mcchickenstudio.opencreative.plugin.managers;
 
 import org.jetbrains.annotations.NotNull;
+import ua.mcchickenstudio.opencreative.api.manager.Manager;
+import ua.mcchickenstudio.opencreative.api.manager.ShutDownable;
+import ua.mcchickenstudio.opencreative.api.manager.Startable;
 
 import java.util.Collection;
 import java.util.HashMap;

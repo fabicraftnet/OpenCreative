@@ -16,17 +16,23 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ua.mcchickenstudio.opencreative.plugin.managers;
+package ua.mcchickenstudio.opencreative.api.manager;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
- * <h1>ShutDownable</h1>
- * This interface is used for managers, that require operations on their shutdown.
+ * This interface represents a manager, that controls
+ * something and can be replaced with your realization.
  */
-public interface ShutDownable {
+public interface Manager {
+
 
     /**
-     * Does tasks on shutdown.
+     * Returns name of manager, that will be
+     * displayed by request in the logs.
+     *
+     * @return name of manager.
      */
-    void shutdown();
+    @NotNull String getName();
 
 }

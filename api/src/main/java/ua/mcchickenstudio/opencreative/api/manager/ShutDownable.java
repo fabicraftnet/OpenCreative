@@ -16,17 +16,17 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ua.mcchickenstudio.opencreative.plugin.managers;
+package ua.mcchickenstudio.opencreative.api.manager;
 
 /**
- * <h1>Startable</h1>
- * This interface is used for managers, that require operations on their start.
+ * <h1>ShutDownable</h1>
+ * This interface is used for managers, that require operations on their shutdown.
  */
-public interface Startable {
+public interface ShutDownable {
 
     /**
-     * Does tasks on start.
+     * Does tasks on shutdown.
      */
-    void start();
+    void shutdown();
 
 }

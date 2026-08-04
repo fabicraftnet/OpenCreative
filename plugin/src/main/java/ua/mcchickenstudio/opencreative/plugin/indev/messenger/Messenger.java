@@ -20,7 +20,7 @@ package ua.mcchickenstudio.opencreative.plugin.indev.messenger;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ua.mcchickenstudio.opencreative.plugin.managers.Manager;
+import ua.mcchickenstudio.opencreative.api.manager.Manager;
 
 import java.util.UUID;
 

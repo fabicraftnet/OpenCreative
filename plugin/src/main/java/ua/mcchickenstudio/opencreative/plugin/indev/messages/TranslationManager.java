@@ -22,7 +22,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-import ua.mcchickenstudio.opencreative.plugin.managers.Manager;
+import ua.mcchickenstudio.opencreative.api.manager.Manager;
 
 public interface TranslationManager extends Manager {
 

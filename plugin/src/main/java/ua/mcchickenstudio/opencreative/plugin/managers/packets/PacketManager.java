@@ -22,8 +22,8 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import ua.mcchickenstudio.opencreative.plugin.managers.Manager;
-import ua.mcchickenstudio.opencreative.plugin.managers.Toggleable;
+import ua.mcchickenstudio.opencreative.api.manager.Manager;
+import ua.mcchickenstudio.opencreative.api.manager.Toggleable;
 
 /**
  * <h1>PacketManager</h1>

@@ -21,7 +21,7 @@ package ua.mcchickenstudio.opencreative.plugin.managers.updater;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.plugin.OpenCreative;
-import ua.mcchickenstudio.opencreative.plugin.managers.Startable;
+import ua.mcchickenstudio.opencreative.api.manager.Startable;
 
 import java.io.BufferedReader;
 import java.io.IOException;

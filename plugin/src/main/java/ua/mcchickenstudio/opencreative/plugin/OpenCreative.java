@@ -107,7 +107,9 @@ public final class OpenCreative extends JavaPlugin {
      * Useful for accessing planets manager, or settings.
      *
      * @return plugin instance.
+     * @deprecated Use static constructor instead
      **/
+    @Deprecated(forRemoval = true)
     public static @NotNull OpenCreative getPlugin() {
         return plugin;
     }
@@ -174,7 +176,6 @@ public final class OpenCreative extends JavaPlugin {
      *
      * @return blocks manager.
      */
-    @SuppressWarnings("unused")
     public static BlocksManager getBlocksManager() {
         return getPlugin().managers.get(BlocksManager.class);
     }
@@ -185,7 +186,6 @@ public final class OpenCreative extends JavaPlugin {
      *
      * @return disguise manager.
      */
-    @SuppressWarnings("unused")
     public static DisguiseManager getDisguiseManager() {
         return getPlugin().managers.get(DisguiseManager.class);
     }
@@ -353,7 +353,7 @@ public final class OpenCreative extends JavaPlugin {
                 This software was made by Ukrainians, suffering from never-ending air alerts, explosions, and deaths.
                 We're AGAINST THE WAR. This software IS NOT DESIGNED for those who support killing and robbing another country.
                 Let us have fun, like players who create their worlds...
-
+                
                 McChicken Studio 2017–2026
                 """);
     }
@@ -390,7 +390,7 @@ public final class OpenCreative extends JavaPlugin {
         }
         getLogger().info("""
                 Goodbye from OpenCreative+
-
+                
                 Made by McChicken Studio 2017–2026""");
     }
 
@@ -483,10 +483,10 @@ public final class OpenCreative extends JavaPlugin {
         if (settings.isFirstLaunch()) {
             Bukkit.getScheduler().runTaskLater(this, () -> getLogger().info("""
                     Thank you for installing OpenCreative+!
-
+                    
                     You can always get help on our Discord server:
                     https://discord.gg/sSFCXUeq63
-
+                    
                     Check wiki pages about setting up:
                     https://gitlab.com/eagles-creative/opencreative/-/wikis/home
                     """), 30L); //FIXME The intention is probably to have the message after all the other log spam in the startup. Should be moved to ServerPostLoad event or whatever that was called without the arbitary delay

@@ -40,7 +40,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.plugin.OpenCreative;
-import ua.mcchickenstudio.opencreative.plugin.managers.Toggleable;
+import ua.mcchickenstudio.opencreative.api.manager.Toggleable;
 import ua.mcchickenstudio.opencreative.plugin.planets.Planet;
 import ua.mcchickenstudio.opencreative.plugin.utils.SystemUtils;
 import ua.mcchickenstudio.opencreative.plugin.utils.hooks.HookUtils;

@@ -32,7 +32,7 @@ import org.bukkit.WorldCreator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.plugin.OpenCreative;
-import ua.mcchickenstudio.opencreative.plugin.managers.Startable;
+import ua.mcchickenstudio.opencreative.api.manager.Startable;
 import ua.mcchickenstudio.opencreative.plugin.planets.Planet;
 import ua.mcchickenstudio.opencreative.plugin.utils.FileUtils;
 

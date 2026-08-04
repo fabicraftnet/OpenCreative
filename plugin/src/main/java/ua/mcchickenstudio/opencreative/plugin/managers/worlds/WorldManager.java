@@ -22,7 +22,7 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ua.mcchickenstudio.opencreative.plugin.managers.Manager;
+import ua.mcchickenstudio.opencreative.api.manager.Manager;
 import ua.mcchickenstudio.opencreative.plugin.planets.Planet;
 
 import java.util.concurrent.CompletableFuture;

@@ -40,8 +40,8 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ua.mcchickenstudio.opencreative.plugin.managers.Manager;
-import ua.mcchickenstudio.opencreative.plugin.managers.Startable;
+import ua.mcchickenstudio.opencreative.api.manager.Manager;
+import ua.mcchickenstudio.opencreative.api.manager.Startable;
 
 import java.util.List;
 

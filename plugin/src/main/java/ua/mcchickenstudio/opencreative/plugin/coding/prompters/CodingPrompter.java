@@ -19,8 +19,8 @@
 package ua.mcchickenstudio.opencreative.plugin.coding.prompters;
 
 import org.jetbrains.annotations.NotNull;
-import ua.mcchickenstudio.opencreative.plugin.managers.Manager;
-import ua.mcchickenstudio.opencreative.plugin.managers.Toggleable;
+import ua.mcchickenstudio.opencreative.api.manager.Manager;
+import ua.mcchickenstudio.opencreative.api.manager.Toggleable;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;

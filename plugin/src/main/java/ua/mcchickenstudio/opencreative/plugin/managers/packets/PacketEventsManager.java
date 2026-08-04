@@ -51,7 +51,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.plugin.OpenCreative;
-import ua.mcchickenstudio.opencreative.plugin.managers.Toggleable;
+import ua.mcchickenstudio.opencreative.api.manager.Toggleable;
 import ua.mcchickenstudio.opencreative.plugin.utils.world.cache.ChunkCache;
 
 import java.util.*;

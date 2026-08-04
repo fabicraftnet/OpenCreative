@@ -23,8 +23,8 @@ import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.plugin.OpenCreative;
-import ua.mcchickenstudio.opencreative.plugin.managers.Manager;
-import ua.mcchickenstudio.opencreative.plugin.managers.Toggleable;
+import ua.mcchickenstudio.opencreative.api.manager.Manager;
+import ua.mcchickenstudio.opencreative.api.manager.Toggleable;
 import ua.mcchickenstudio.opencreative.plugin.utils.async.AsyncScheduler;
 import ua.mcchickenstudio.opencreative.plugin.utils.millennium.types.EvictingList;
 

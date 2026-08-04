@@ -24,7 +24,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.plugin.OpenCreative;
-import ua.mcchickenstudio.opencreative.plugin.managers.Toggleable;
+import ua.mcchickenstudio.opencreative.api.manager.Toggleable;
 import ua.mcchickenstudio.opencreative.plugin.planets.Planet;
 import ua.mcchickenstudio.opencreative.plugin.settings.Sounds;
 

@@ -22,7 +22,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
-import ua.mcchickenstudio.opencreative.plugin.managers.Manager;
+import ua.mcchickenstudio.opencreative.api.manager.Manager;
 
 import java.util.concurrent.CompletableFuture;
 
