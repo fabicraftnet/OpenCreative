@@ -107,9 +107,9 @@ public final class OpenCreative extends JavaPlugin {
      * Useful for accessing planets manager, or settings.
      *
      * @return plugin instance.
-     * @deprecated Use static constructor instead
+     * @deprecated Use dependency injection instead
      **/
-    @Deprecated(forRemoval = true)
+    @Deprecated()
     public static @NotNull OpenCreative getPlugin() {
         return plugin;
     }
