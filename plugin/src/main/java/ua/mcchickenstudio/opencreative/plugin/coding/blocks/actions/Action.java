@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.plugin.OpenCreative;
 import ua.mcchickenstudio.opencreative.plugin.coding.arguments.Argument;
 import ua.mcchickenstudio.opencreative.plugin.coding.arguments.Arguments;
-import ua.mcchickenstudio.opencreative.plugin.coding.blocks.CodingBlock;
+import ua.mcchickenstudio.opencreative.api.code.block.CodingBlock;
 import ua.mcchickenstudio.opencreative.plugin.coding.blocks.actions.selectionactions.SelectionAction;
 import ua.mcchickenstudio.opencreative.plugin.coding.blocks.events.WorldEvent;
 import ua.mcchickenstudio.opencreative.plugin.coding.blocks.events.player.fighting.KillerVictimEvent;

@@ -16,7 +16,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ua.mcchickenstudio.opencreative.plugin.coding.blocks;
+package ua.mcchickenstudio.opencreative.api.code.block;
 
 /**
  * <h1>CodingBlock</h1>

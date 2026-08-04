@@ -21,7 +21,7 @@ package ua.mcchickenstudio.opencreative.plugin.coding.blocks.executors;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.plugin.OpenCreative;
 import ua.mcchickenstudio.opencreative.plugin.coding.ExtensionContent;
-import ua.mcchickenstudio.opencreative.plugin.coding.blocks.CodingBlock;
+import ua.mcchickenstudio.opencreative.api.code.block.CodingBlock;
 import ua.mcchickenstudio.opencreative.plugin.coding.blocks.actions.Action;
 import ua.mcchickenstudio.opencreative.plugin.coding.blocks.actions.ActionsHandler;
 import ua.mcchickenstudio.opencreative.plugin.coding.blocks.events.WorldEvent;
