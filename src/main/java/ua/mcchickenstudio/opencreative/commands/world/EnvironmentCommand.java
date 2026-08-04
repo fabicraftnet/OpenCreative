@@ -114,7 +114,7 @@ public class EnvironmentCommand extends CommandHandler {
                         return;
                     }
                     if (args[1].equalsIgnoreCase("size")) {
-                        player.sendMessage(toComponent(getLocaleMessageString(("environment.variables.size").replace("%count%", String.valueOf(planet.getVariables().getTotalVariablesAmount())))));
+                        player.sendMessage(toComponent(getLocaleMessageString("environment.variables.size").replace("%count%", String.valueOf(planet.getVariables().getTotalVariablesAmount()))));
                     } else if (args[1].equalsIgnoreCase("set")) {
                         if (args.length <= 4) {
                             player.sendMessage(getLocaleMessage("environment.variables.set.help"));
@@ -180,12 +180,12 @@ public class EnvironmentCommand extends CommandHandler {
                         }
                         if (value != null) {
                             if (planet.getVariables().setVariableValue(new VariableLink(varName, type), valueType, value)) {
-                                player.sendMessage(toComponent(getLocaleMessageString(("environment.variables.set.message")
+                                player.sendMessage(toComponent(getLocaleMessageString("environment.variables.set.message")
                                         .replace("%variable%", varName)
-                                        .replace("%value%", value.toString().length() > 100 ? value.toString().substring(0, 100) + "..." : value.toString()))));
+                                        .replace("%value%", value.toString().length() > 100 ? value.toString().substring(0, 100) + "..." : value.toString())));
                             } else {
-                                player.sendMessage(toComponent(getLocaleMessageString(("environment.variables.set.limit")
-                                        .replace("%limit%", String.valueOf(planet.getLimits().getVariablesAmountLimit())))));
+                                player.sendMessage(toComponent(getLocaleMessageString("environment.variables.set.limit")
+                                        .replace("%limit%", String.valueOf(planet.getLimits().getVariablesAmountLimit()))));
                             }
                         }
                     } else if (args[1].equalsIgnoreCase("get")) {
@@ -234,7 +234,7 @@ public class EnvironmentCommand extends CommandHandler {
                         int current = Math.min(((page + 1) * 20), allVariables.size());
                         List<WorldVariable> variables = new ArrayList<>(allVariables.subList(page * 20, current));
                         Sounds.DEV_VAR_LIST.play(player);
-                        player.sendMessage(toComponent(getLocaleMessageString(("environment.variables.list.header").replace("%current%", String.valueOf(current)).replace("%amount%", String.valueOf(allVariables.size())))));
+                        player.sendMessage(toComponent(getLocaleMessageString("environment.variables.list.header").replace("%current%", String.valueOf(current)).replace("%amount%", String.valueOf(allVariables.size()))));
                         for (WorldVariable variable : variables) {
                             String name = variable.getName();
                             VariableLink.VariableType type = variable.getVarType();
@@ -408,7 +408,7 @@ public class EnvironmentCommand extends CommandHandler {
                         return;
                     }
                     if (devPlanet.getPlatforms().size() >= devPlanet.getPlanet().getLimits().getCodingPlatformsLimit()) {
-                        sender.sendMessage(toComponent(getLocaleMessageString(("environment.platform.limit").replace("%amount%", String.valueOf(devPlanet.getPlanet().getLimits().getCodingPlatformsLimit())))));
+                        sender.sendMessage(toComponent(getLocaleMessageString("environment.platform.limit").replace("%amount%", String.valueOf(devPlanet.getPlanet().getLimits().getCodingPlatformsLimit()))));
                         return;
                     }
                     DevPlatform platform = devPlanet.getDevPlatformer().getNextAvailablePlatform(devPlanet);
@@ -611,14 +611,14 @@ public class EnvironmentCommand extends CommandHandler {
                     player.sendMessage(getLocaleMessage("environment.scoreboards.list.empty"));
                     return;
                 }
-                player.sendMessage(toComponent(getLocaleMessageString(("environment.scoreboards.list.amount")
-                        .replace("%amount%", String.valueOf(scoreboards.size())))));
+                player.sendMessage(toComponent(getLocaleMessageString("environment.scoreboards.list.amount")
+                        .replace("%amount%", String.valueOf(scoreboards.size()))));
                 for (String id : scoreboards.keySet()) {
                     Objective objective = scoreboards.get(id).getObjective("score");
                     if (objective == null) continue;
-                    player.sendMessage(toComponent(getLocaleMessageString(("environment.scoreboards.list.scoreboard")
+                    player.sendMessage(toComponent(getLocaleMessageString("environment.scoreboards.list.scoreboard")
                             .replace("%id%", id)
-                            .replace("%name%", substring(objective.getDisplayName(), 45)))));
+                            .replace("%name%", substring(objective.getDisplayName(), 45))));
                 }
             }
             case "remove" -> {
@@ -629,12 +629,12 @@ public class EnvironmentCommand extends CommandHandler {
                 String id = args[2].toLowerCase();
                 org.bukkit.scoreboard.Scoreboard board = planet.getTerritory().getScoreboards().getScoreboard(id);
                 if (board == null) {
-                    player.sendMessage(toComponent(getLocaleMessageString(("environment.scoreboards.not-found")
-                            .replace("%id%", id))));
+                    player.sendMessage(toComponent(getLocaleMessageString("environment.scoreboards.not-found")
+                            .replace("%id%", id)));
                     return;
                 }
-                player.sendMessage(toComponent(getLocaleMessageString(("environment.scoreboards.removed")
-                        .replace("%id%", id))));
+                player.sendMessage(toComponent(getLocaleMessageString("environment.scoreboards.removed")
+                        .replace("%id%", id)));
                 planet.getTerritory().getScoreboards().destroyScoreboard(board);
                 planet.getTerritory().getScoreboards().unregisterScoreboard(id);
             }
@@ -649,12 +649,12 @@ public class EnvironmentCommand extends CommandHandler {
                     displayName = String.join(" ", Arrays.copyOfRange(args,3, args.length));
                 }
                 if (planet.getTerritory().getScoreboards().getScoreboard(id) != null) {
-                    player.sendMessage(toComponent(getLocaleMessageString(("environment.scoreboards.already-exists")
-                            .replace("%id%", id))));
+                    player.sendMessage(toComponent(getLocaleMessageString("environment.scoreboards.already-exists")
+                            .replace("%id%", id)));
                     return;
                 }
-                player.sendMessage(toComponent(getLocaleMessageString(("environment.scoreboards.created")
-                        .replace("%id%", id))));
+                player.sendMessage(toComponent(getLocaleMessageString("environment.scoreboards.created")
+                        .replace("%id%", id)));
                 Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
                 Objective objective = scoreboard.registerNewObjective("score", Criteria.DUMMY,
                         fromInputToComponent(displayName));
@@ -673,8 +673,8 @@ public class EnvironmentCommand extends CommandHandler {
                 String id = args[2].toLowerCase();
                 Scoreboard board = planet.getTerritory().getScoreboards().getScoreboard(id);
                 if (board == null) {
-                    player.sendMessage(toComponent(getLocaleMessageString(("environment.scoreboards.not-found")
-                            .replace("%id%", id))));
+                    player.sendMessage(toComponent(getLocaleMessageString("environment.scoreboards.not-found")
+                            .replace("%id%", id)));
                     return;
                 }
                 String targetName = args[3];
@@ -751,7 +751,7 @@ public class EnvironmentCommand extends CommandHandler {
                              * before function activation.
                              */
                             found = true;
-                            player.sendMessage(toComponent(getLocaleMessageString(("environment.execute.function").replace("%function%", argument))));
+                            player.sendMessage(toComponent(getLocaleMessageString("environment.execute.function").replace("%function%", argument)));
                         }
                         PlanetExecutors.activate(function, new JoinEvent(player));
                     }
@@ -765,7 +765,7 @@ public class EnvironmentCommand extends CommandHandler {
                     if (argument.equalsIgnoreCase(method.getCallName())) {
                         if (!found) {
                             found = true;
-                            player.sendMessage(toComponent(getLocaleMessageString(("environment.execute.method").replace("%method%", argument))));
+                            player.sendMessage(toComponent(getLocaleMessageString("environment.execute.method").replace("%method%", argument)));
                         }
                         PlanetExecutors.activate(method, new JoinEvent(player));
                     }

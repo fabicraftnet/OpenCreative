@@ -32,8 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.messageExists;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 
 /**
  * <h1>ParameterButton</h1>
@@ -76,21 +75,21 @@ public class ParameterButton {
                 createItem(materialList.get(currentChoice - 1), 1, localizationPath);
         if (!messageExists(localizationPath + ".name")) {
             ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&fParameter: &6" + name));
+            meta.displayName( toComponent( "&fParameter: &6" + name));
             item.setItemMeta(meta);
         }
         if (!messageExists(localizationPath + ".lore")) {
             ItemMeta meta = item.getItemMeta();
-            List<String> notFoundLore = new ArrayList<>();
-            notFoundLore.add(ChatColor.translateAlternateColorCodes('&', "&6This parameter was not filled in localization,"));
-            notFoundLore.add(ChatColor.translateAlternateColorCodes('&', "&6please tell administration to fill line."));
-            notFoundLore.add(" ");
-            notFoundLore.add(ChatColor.translateAlternateColorCodes('&', "&7" + localizationPath));
-            notFoundLore.add(ChatColor.translateAlternateColorCodes('&', "&fValues:"));
+            List<Component> notFoundLore = new ArrayList<>();
+            notFoundLore.add(toComponent("&6This parameter was not filled in localization,"));
+            notFoundLore.add(toComponent("&6please tell administration to fill line."));
+            notFoundLore.add(Component.text(" "));
+            notFoundLore.add(toComponent( "&7" + localizationPath));
+            notFoundLore.add(toComponent( "&fValues:"));
             for (int i = 1; i < valueList.size() + 1; i++) {
-                notFoundLore.add("%" + i + "%");
+                notFoundLore.add(toComponent("%" + i + "%"));
             }
-            meta.setLore(notFoundLore);
+            meta.lore(notFoundLore);
             item.setItemMeta(meta);
         }
         setPersistentData(item, getItemTypeKey(), name);

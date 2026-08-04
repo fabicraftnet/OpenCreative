@@ -128,6 +128,7 @@ public final class EntityDamageListener implements Listener {
             }
         } else {
             // Player damages mob
+            //TODO FIX BUILD
             if (event.getDamager() instanceof Player damager) {
                 Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(damager);
                 if (planet != null) {
