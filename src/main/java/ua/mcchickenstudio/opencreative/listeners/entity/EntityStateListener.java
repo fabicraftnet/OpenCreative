@@ -42,6 +42,7 @@ import ua.mcchickenstudio.opencreative.coding.blocks.events.entity.state.*;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.player.movement.EnteredVehicleEvent;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.player.movement.PlayerVehicleExitEvent;
 import ua.mcchickenstudio.opencreative.planets.Planet;
+import ua.mcchickenstudio.opencreative.planets.PlanetFlags;
 import ua.mcchickenstudio.opencreative.utils.world.WorldUtils;
 
 import java.util.List;
@@ -94,6 +95,9 @@ public final class EntityStateListener implements Listener {
                 if ((planet.getMode() == Planet.Mode.BUILD) && !planet.getWorldPlayers().canBuild(player)) {
                     event.setCancelled(true);
                     return;
+                } else if (planet.getFlagValue(PlanetFlags.PlanetFlag.VEHICLE_INTERACT) == 3 && planet.getMode() == Planet.Mode.PLAYING) {
+                    //planet flag
+                    event.setCancelled(true);
                 }
             }
         }
@@ -421,6 +425,9 @@ public final class EntityStateListener implements Listener {
                     player.sendActionBar(getLocaleComponent("not-builder"));
                     event.setCancelled(true);
                     return;
+                } else if (planet.getFlagValue(PlanetFlags.PlanetFlag.VEHICLE_INTERACT) != 1 && planet.getMode() == Planet.Mode.PLAYING) {
+                    //planet flag
+                    event.setCancelled(true);
                 }
             }
         }
@@ -438,6 +445,9 @@ public final class EntityStateListener implements Listener {
                     player.sendActionBar(getLocaleComponent("not-builder"));
                     event.setCancelled(true);
                     return;
+                } else if (planet.getFlagValue(PlanetFlags.PlanetFlag.VEHICLE_INTERACT) != 1 && planet.getMode() == Planet.Mode.PLAYING) {
+                    //planet flag
+                    event.setCancelled(true);
                 }
             }
         }
@@ -458,6 +468,10 @@ public final class EntityStateListener implements Listener {
         if (planet == null) return;
         if (entity instanceof Player player) {
             new EnteredVehicleEvent(player, event).callEvent();
+            if (planet.getFlagValue(PlanetFlags.PlanetFlag.VEHICLE_INTERACT) == 3 && planet.getMode() == Planet.Mode.PLAYING) {
+                //planet flag
+                event.setCancelled(true);
+            }
         } else {
             new EntityEnteredVehicleEvent(event).callEvent();
         }

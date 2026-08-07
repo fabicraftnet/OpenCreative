@@ -19466,6 +19466,22 @@ menus:
           - "%1%"
           - "%2%"
           - "%3%"
+      vehicle-interact:
+        choices:
+          1: "Allow interaction with vehicles"
+          2: "Disable vehicle damage"
+          3: "Disable all vehicle interactions"
+        name: "&3Vehicle interaction"
+        lore:
+          - " "
+          - "&7Vehicles actions uuhh... descriptive"
+          - ""
+          - "&eClick to change."
+          - ""
+          - "&fOptions:"
+          - "%1%"
+          - "%2%"
+          - "%3%"
       immediate-respawn:
         choices:
           1: "Player must press the button"
