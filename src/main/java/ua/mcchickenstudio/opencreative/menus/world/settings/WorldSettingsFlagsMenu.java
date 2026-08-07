@@ -64,6 +64,14 @@ public final class WorldSettingsFlagsMenu extends AbstractMenu {
         choicesActions.add(() -> planet.setFlagValue(PlanetFlags.PlanetFlag.MOB_INTERACT, (byte) 3));
         return new RadioButton(Material.VILLAGER_SPAWN_EGG, MessageUtils.getLocaleItemName("menus.world-settings-flags.items.mob-interact.name"), MessageUtils.getLocaleItemDescription("menus.world-settings-flags.items.mob-interact.lore"), planet.getFlagValue(PlanetFlags.PlanetFlag.MOB_INTERACT), 3, choicesActions, "menus.world-settings-flags.items.mob-interact.choices", "menus.world-settings-flags");
     }
+    public static RadioButton getVehicleInteractFlagButton(Planet planet) {
+        List<Runnable> choicesActions = new ArrayList<>();
+        choicesActions.add(() -> planet.setFlagValue(PlanetFlags.PlanetFlag.VEHICLE_INTERACT, (byte) 1));
+        choicesActions.add(() -> planet.setFlagValue(PlanetFlags.PlanetFlag.VEHICLE_INTERACT, (byte) 2));
+        choicesActions.add(() -> planet.setFlagValue(PlanetFlags.PlanetFlag.VEHICLE_INTERACT, (byte) 3));
+        return new RadioButton(Material.MINECART, MessageUtils.getLocaleItemName("menus.world-settings-flags.items.vehicle-interact.name"), MessageUtils.getLocaleItemDescription("menus.world-settings-flags.items.mob-interact.lore"), planet.getFlagValue(PlanetFlags.PlanetFlag.VEHICLE_INTERACT), 3, choicesActions, "menus.world-settings-flags.items.vehicle-interact.choices", "menus.world-settings-flags");
+    }
+
 
     public static RadioButton getMobLootFlagButton(Planet planet) {
         List<Runnable> choicesActions = new ArrayList<>();
@@ -291,6 +299,7 @@ public final class WorldSettingsFlagsMenu extends AbstractMenu {
         setItem(14, getMobInteractFlagButton(planet).getButtonItem());
         setItem(15, getWeatherFlagButton(planet).getButtonItem());
         setItem(16, getKeepInventoryFlagButton(planet).getButtonItem());
+        //new row
         setItem(19, getMobSpawnFlagButton(planet).getButtonItem());
         setItem(20, getImmediateRespawnFlagButton(planet).getButtonItem());
         setItem(21, getJoinQuitMessagesFlagButton(planet).getButtonItem());
@@ -298,10 +307,12 @@ public final class WorldSettingsFlagsMenu extends AbstractMenu {
         setItem(23, getLikeMessagesFlagButton(planet).getButtonItem());
         setItem(24, getBlockChangingFlagButton(planet).getButtonItem());
         setItem(25, getNaturalRegenerationFlagButton(planet).getButtonItem());
+        //new row
         setItem(28, getMobLootFlagButton(planet).getButtonItem());
         setItem(29, getWorldBordersButton(planet).getButtonItem());
+        setItem(30, getVehicleInteractFlagButton(planet).getButtonItem());
         if (GameRule.getByName("locator_bar") != null) {
-            setItem(30, getLocatorBarButton(planet).getButtonItem());
+            setItem(31, getLocatorBarButton(planet).getButtonItem());
         }
     }
 
