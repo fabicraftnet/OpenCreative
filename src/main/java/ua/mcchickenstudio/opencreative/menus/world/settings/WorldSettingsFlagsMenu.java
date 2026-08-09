@@ -73,6 +73,13 @@ public final class WorldSettingsFlagsMenu extends AbstractMenu {
         return new RadioButton(Material.MINECART, MessageUtils.getLocaleItemName("menus.world-settings-flags.items.vehicle-interact.name"), MessageUtils.getLocaleItemDescription("menus.world-settings-flags.items.mob-interact.lore"), planet.getFlagValue(PlanetFlags.PlanetFlag.VEHICLE_INTERACT), 3, choicesActions, "menus.world-settings-flags.items.vehicle-interact.choices", "menus.world-settings-flags");
     }
 
+    public static RadioButton getBlockUpdateFlagButton(Planet planet) {
+        List<Runnable> choicesActions = new ArrayList<>();
+        choicesActions.add(() -> planet.setFlagValue(PlanetFlags.PlanetFlag.BLOCK_UPDATE, (byte) 1));
+        choicesActions.add(() -> planet.setFlagValue(PlanetFlags.PlanetFlag.BLOCK_UPDATE, (byte) 2));
+        return new RadioButton(Material.WOODEN_AXE, MessageUtils.getLocaleItemName("menus.world-settings-flags.items.block-update.name"), MessageUtils.getLocaleItemDescription("menus.world-settings-flags.items.block-update.lore"), planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_UPDATE), 2, choicesActions, "menus.world-settings-flags.items.block-update.choices", "menus.world-settings-flags");
+    }
+
 
     public static RadioButton getMobLootFlagButton(Planet planet) {
         List<Runnable> choicesActions = new ArrayList<>();
@@ -313,6 +320,7 @@ public final class WorldSettingsFlagsMenu extends AbstractMenu {
         setItem(29, getWorldBordersButton(planet).getButtonItem());
         setItem(30, getVehicleInteractFlagButton(planet).getButtonItem());
         setItem(31, getLocatorBarButton(planet).getButtonItem());
+        setItem(32, getBlockUpdateFlagButton(planet).getButtonItem());
 
     }
 

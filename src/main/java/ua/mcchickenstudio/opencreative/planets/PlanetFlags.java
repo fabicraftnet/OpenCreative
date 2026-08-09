@@ -89,6 +89,7 @@ public class PlanetFlags {
         MOB_SPAWN("mob-spawn", Material.PIG_SPAWN_EGG, (byte) 1, (byte) 5, GameRules.SPAWN_MOBS),
         NATURAL_REGENERATION("natural-regeneration", Material.POTION, (byte) 1, (byte) 2, GameRules.NATURAL_HEALTH_REGENERATION),
         BLOCK_CHANGING("block-changing", Material.ICE, (byte) 1, (byte) 2),
+        BLOCK_UPDATE("block-update", Material.WOODEN_AXE, (byte) 1, (byte) 2),
         BLOCK_EXPLOSION("block-explosion", Material.TNT, (byte) 1, (byte) 2, GameRules.MOB_GRIEFING),
         LIKE_MESSAGES("like-messages", Material.KNOWLEDGE_BOOK, (byte) 1, (byte) 2),
         DEATH_MESSAGES("death-messages", Material.WITHER_SKELETON_SKULL, (byte) 1, (byte) 2),
@@ -96,7 +97,7 @@ public class PlanetFlags {
         IMMEDIATE_RESPAWN("immediate-respawn", Material.SKELETON_SKULL, (byte) 1, (byte) 2, GameRules.IMMEDIATE_RESPAWN),
         LOCATOR_BAR("locator-bar", Material.RECOVERY_COMPASS, (byte) 1, (byte) 2),
         WORLD_BORDERS("world-borders", Material.LIGHT_BLUE_STAINED_GLASS, (byte) 1, (byte) 4),
-        VEHICLE_INTERACT("vehicle-interact", Material.VILLAGER_SPAWN_EGG, (byte) 1, (byte) 3);
+        VEHICLE_INTERACT("vehicle-interact", Material.MINECART, (byte) 1, (byte) 3);
 
         private final String configPath;
         private final byte defaultValue;

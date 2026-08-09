@@ -19,15 +19,18 @@
 package ua.mcchickenstudio.opencreative.listeners.player;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.*;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Powerable;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -40,6 +43,7 @@ import ua.mcchickenstudio.opencreative.coding.menus.layouts.Layout;
 import ua.mcchickenstudio.opencreative.planets.DevPlanet;
 import ua.mcchickenstudio.opencreative.planets.DevPlatform;
 import ua.mcchickenstudio.opencreative.planets.Planet;
+import ua.mcchickenstudio.opencreative.planets.PlanetFlags;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
 import ua.mcchickenstudio.opencreative.utils.ItemUtils;
 
@@ -330,10 +334,33 @@ public final class PlaceBlockListener implements Listener {
             if (event.getBlock().getType() == Material.TNT && !event.isCancelled() && !planet.isOwner(player)) {
                 OpenCreative.getWander(player).getGriefStats().addTntPlacementsAmount(1);
             }
+            if (planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_UPDATE) == 2) {
+
+                BlockData blockData = event.getBlock().getBlockData();
+                event.setCancelled(true);
+                Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
+                    event.getBlock().setBlockData(blockData,false);
+                }, 1L);
+
+            }
         } else if (isEntityInLobby(player) && OpenCreative.getSettings().getLobbySettings().isPlacingBlocksDisallowed()
                 && !player.hasPermission("opencreative.lobby.placing-blocks.bypass")) {
             event.setCancelled(true);
             player.sendActionBar(getLocaleComponent("not-for-lobby"));
+        }
+    }
+    @EventHandler
+    public void onBreak(BlockBreakEvent event)
+    {
+        Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(event.getPlayer());
+        if (planet != null) {
+            if (planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_UPDATE) == 2) {
+                event.setCancelled(true);
+                Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
+                    event.getBlock().setType(Material.AIR, false);
+                    }, 1L);
+
+            }
         }
     }
 }

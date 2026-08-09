@@ -19482,6 +19482,20 @@ menus:
           - "%1%"
           - "%2%"
           - "%3%"
+      block-update:
+        choices:
+          1: "Update blocks when placed"
+          2: "Disable block updates"
+        name: "&dBlock updates"
+        lore:
+          - " "
+          - "&7Update neighbours! or not!"
+          - ""
+          - "&eClick to change."
+          - ""
+          - "&fOptions:"
+          - "%1%"
+          - "%2%"
       immediate-respawn:
         choices:
           1: "Player must press the button"
