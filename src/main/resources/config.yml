@@ -1190,3 +1190,7 @@ debug: false
 #
 last-world-id: 0 # Recommended to not change.
 
+#
+# Replace chat inputs with dialog  windows.
+#
+dialog: true

@@ -21,9 +21,6 @@ package ua.mcchickenstudio.opencreative.coding.modules;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TextReplacementConfig;
-import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -85,7 +82,7 @@ public class ModuleInfo {
      * @return display name of planet.
      */
     public Component displayName() {
-        return LegacyComponentSerializer.legacySection().deserialize(displayName).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+        return fromInputToComponent(displayName);
     }
 
     public @NotNull String getDescription() {
@@ -188,7 +185,7 @@ public class ModuleInfo {
     public void updateIcon() {
         ItemStack item = icon.clone();
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(
+        meta.itemName(
                 getLocaleComponent("menus.modules.items.module.name")
                         .replaceText(TextReplacementConfig.builder()
                                 .match("%moduleName%")

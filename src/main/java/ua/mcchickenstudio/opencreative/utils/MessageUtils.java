@@ -90,7 +90,21 @@ public final class MessageUtils {
     );
     private static File localizationFile;
     private static FileConfiguration localizationConfig;
-
+    public static final MiniMessage miniMessage = MiniMessage.miniMessage();
+    public static final MiniMessage userMM = MiniMessage.builder()
+            .tags(TagResolver.builder()
+                    .resolver(StandardTags.color())
+                    .resolver(StandardTags.decorations())
+                    .resolver(StandardTags.gradient())
+                    .resolver(StandardTags.pride())
+                    .resolver(StandardTags.rainbow())
+                    .resolver(StandardTags.newline())
+                    .resolver(StandardTags.reset())
+                    .resolver(StandardTags.sequentialHead())
+                    .resolver(StandardTags.shadowColor())
+                    .resolver(StandardTags.sprite())
+                    .build())
+        .build();
     /**
      * Converts text into component by deserializing it with
      * legacy serializer (if message has & or § symbol), or with
@@ -100,7 +114,7 @@ public final class MessageUtils {
      * @return text component.
      */
     public static @NotNull Component toComponent(String text) {
-        return MiniMessage.miniMessage().deserialize(fromLegacyToMiniMessage(text));
+        return miniMessage.deserialize(fromLegacyToMiniMessage(text));
     }
 
     /**
@@ -112,7 +126,7 @@ public final class MessageUtils {
      * @return text component without hover and click events.
      */
     public static @NotNull Component fromInputToComponent(@NotNull String input) {
-        return MiniMessage.miniMessage().deserialize(fromLegacyToMiniMessage(input))
+        return userMM.deserialize(fromLegacyToMiniMessage(input))
                 .clickEvent(null).hoverEvent(null);
     }
 
@@ -525,7 +539,7 @@ public final class MessageUtils {
         if (originalName == null || originalName.equalsIgnoreCase("null")) {
             if (OpenCreative.getSettings().shouldLogNotFoundMessages())
                 ErrorUtils.sendWarningErrorMessage("Not found item name " + nameID + " in localization file!");
-            return MiniMessage.miniMessage().deserialize("<white>fNot found: " + nameID);
+            return miniMessage.deserialize("<white>fNot found: " + nameID);
         } else {
             if (originalName.length() > 50) originalName = originalName.substring(0, 50);
             return toComponent(originalName.replace("%prefix%", getPrefix()).replace("%cc-prefix%", getCreativeChatPrefix()).replace("%branding%", getBranding()));
@@ -590,7 +604,7 @@ public final class MessageUtils {
             pages.add(Component.text("§4Not found pages: §0" + localizationID + " \nPlease report server administration, they need to fill this line in locales" + File.separator + getLanguage() + ".yml"));
         } else {
             for (String page : foundPages) {
-                pages.add(MiniMessage.miniMessage().deserialize(fromLegacyToMiniMessageBook(page)
+                pages.add(miniMessage.deserialize(fromLegacyToMiniMessageBook(page)
                         .replace("%prefix%", getPrefix())
                         .replace("%cc-prefix%", getCreativeChatPrefix())
                         .replace("%version%", OpenCreative.getPlugin().getPluginMeta().getVersion())
@@ -799,7 +813,7 @@ public final class MessageUtils {
     }
     public static Component parseModuleLines(Module module, Component component) {
         //anather dumb fix. its so dumb that im not gonna fix that typo
-        return toComponent(parseModuleLines(module,MiniMessage.miniMessage().serialize(component)));
+        return toComponent(parseModuleLines(module,miniMessage.serialize(component)));
     }
 
     /**

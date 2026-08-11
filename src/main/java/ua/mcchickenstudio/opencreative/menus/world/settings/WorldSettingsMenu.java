@@ -22,8 +22,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.title.Title;
-import org.bukkit.ChatColor;
-import org.bukkit.GameRule;
 import org.bukkit.GameRules;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -32,6 +30,8 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import ua.mcchickenstudio.opencreative.OpenCreative;
+import ua.mcchickenstudio.opencreative.dialog.DialogItemDescription;
 import ua.mcchickenstudio.opencreative.events.planet.PlanetSharingChangeEvent;
 import ua.mcchickenstudio.opencreative.menus.AbstractMenu;
 import ua.mcchickenstudio.opencreative.menus.buttons.ParameterButton;
@@ -96,7 +96,7 @@ public final class WorldSettingsMenu extends AbstractMenu implements WorldMenu {
     public void fillItems(Player player) {
         setItem(10, playersControl);
         setItem(11, parameters);
-        setItem(19, name);
+        if (!OpenCreative.getSettings().isDialog()) setItem(19, name);
         setItem(20, description);
         setItem(28, category);
         setItem(29, customID);
@@ -125,7 +125,7 @@ public final class WorldSettingsMenu extends AbstractMenu implements WorldMenu {
     public ItemStack getPlanetIcon() {
         ItemStack item = clearItemMeta(planet.getInformation().getIcon().clone());
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(MessageUtils.toComponent( MessageUtils.getLocaleItemNameString("menus.world-settings.items.world.name").replace("%planetName%", planet.getInformation().getDisplayName()) ));
+        meta.itemName(MessageUtils.toComponent( MessageUtils.getLocaleItemNameString("menus.world-settings.items.world.name").replace("%planetName%", planet.getInformation().getDisplayName()) ));
         List<Component> lore = new ArrayList<>();
         for (Component loreLine : MessageUtils.getLocaleItemDescription("menus.world-settings.items.world.lore")) {
             if (((TextComponent)loreLine).content().contains("%planetDescription%")) {
@@ -167,6 +167,11 @@ public final class WorldSettingsMenu extends AbstractMenu implements WorldMenu {
                 PlayerConfirmation.setConfirmation(player, PlayerConfirmation.WORLD_NAME_CHANGE);
             }
         } else if (itemEquals(currentItem, description)) {
+            if (OpenCreative.getSettings().isDialog()){
+                player.closeInventory();
+                player.showDialog(new DialogItemDescription().planetDescription(planet,player,planet.getInformation().getIcon()));
+            }
+            else {
             player.showTitle(Title.title(
                     (getLocaleMessage("settings.world-description.title")), (getLocaleMessage("settings.world-description.subtitle")),
                     Title.Times.times(Duration.ofMillis(100), Duration.ofSeconds(30), Duration.ofMillis(130))
@@ -175,6 +180,7 @@ public final class WorldSettingsMenu extends AbstractMenu implements WorldMenu {
             player.closeInventory();
             if (!PlayerConfirmation.hasConfirmation(player)) {
                 PlayerConfirmation.setConfirmation(player, PlayerConfirmation.WORLD_DESCRIPTION_CHANGE);
+            }
             }
         } else if (itemEquals(currentItem, customID)) {
             player.showTitle(Title.title(

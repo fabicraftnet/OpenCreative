@@ -578,7 +578,7 @@ public final class InteractListener implements Listener {
                 return;
             }
             Component displayName = meta.displayName();
-            if (usingDialog)
+            if (OpenCreative.getSettings().isDialog())
             {
                 player.showDialog(dialogs.textValue(event,player,currentItem));
             }

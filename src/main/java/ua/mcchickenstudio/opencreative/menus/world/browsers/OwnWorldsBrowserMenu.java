@@ -72,7 +72,7 @@ public final class OwnWorldsBrowserMenu extends ListBrowserMenu<Planet> {
     protected ItemStack getElementIcon(Planet planet) {
         ItemStack item = clearItemMeta(planet.getInformation().getIcon().clone());
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(planet.getInformation().displayName());
+        meta.itemName(planet.getInformation().displayName());
         List<Component> lore = new ArrayList<>();
         for (Component loreLine : MessageUtils.getLocaleItemDescription("menus.own-worlds.items.world.lore")) {
             if (((TextComponent)loreLine).content().contains("%planetDescription%")) {

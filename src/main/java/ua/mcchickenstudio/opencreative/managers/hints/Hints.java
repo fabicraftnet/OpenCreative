@@ -49,7 +49,7 @@ public final class Hints implements HintManager, Startable {
             }
             if (ChangedWorld.isPlayerWithLocation(player)) {
                 // If player is in build world and they're setting location
-                player.sendActionBar(MessageUtils.getPlayerLocaleComponent("environment.hints.location.build", player));
+                player.sendActionBar(MessageUtils.getPlayerLocaleComponent("environment.hints.location"+(OpenCreative.getSettings().isDialog() ? "-dialog": "")+".build", player));
             }
             return;
         }
@@ -102,8 +102,8 @@ public final class Hints implements HintManager, Startable {
         if (type != null) {
             hint = switch (type) {
                 case TEXT, NUMBER, EVENT_VALUE, VECTOR, POTION, PARTICLE, VARIABLE, BOOLEAN, COLOR ->
-                        type.name().toLowerCase().replace("_", "-");
-                case LOCATION -> "location.dev";
+                        type.name().toLowerCase().replace("_", "-")+(OpenCreative.getSettings().isDialog() ? "-dialog": "");
+                case LOCATION -> "location"+(OpenCreative.getSettings().isDialog() ? "-dialog": "")+".dev";
                 default -> "";
             };
             if (!hint.isEmpty()) {

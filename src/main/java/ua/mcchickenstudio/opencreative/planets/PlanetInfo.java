@@ -185,7 +185,7 @@ public class PlanetInfo {
     public void updateIcon() {
         ItemStack item = icon.clone();
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(
+        meta.itemName(
                 getLocaleComponent("menus.all-worlds.items.world.name")
                         .replaceText(TextReplacementConfig.builder()
                                 .match("%planetName%")
@@ -198,7 +198,7 @@ public class PlanetInfo {
                     lore.add(
                             loreLine.replaceText(TextReplacementConfig.builder()
                                             .match("%planetDescription%")
-                                            .replacement(toComponent(newLine))
+                                            .replacement(fromInputToComponent(newLine))
                                     .build()));
                 }
             } else {
@@ -228,9 +228,16 @@ public class PlanetInfo {
      * @return display name of planet.
      */
     public Component displayName() {
-        return LegacyComponentSerializer.legacySection().deserialize(displayName).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+        return fromInputToComponent(displayName);
     }
 
+    /**
+     * Make sure you actually need the string instead of the component.
+     * @return string
+     */
+    public String displayNameString() {
+        return displayName;
+    }
     /**
      * Returns text component of description, that can be
      * used in item stacks or texts.
@@ -238,9 +245,15 @@ public class PlanetInfo {
      * @return description of planet.
      */
     public Component description() {
-        return LegacyComponentSerializer.legacySection().deserialize(description);
+        return fromInputToComponent(description);
     }
-
+    /**
+     * Make sure you actually need the string instead of the component.
+     * @return string
+     */
+    public String descriptionString() {
+        return description;
+    }
     /**
      * Returns display name, that stores in
      * world's settings.

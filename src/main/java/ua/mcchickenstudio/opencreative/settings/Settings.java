@@ -102,6 +102,7 @@ public final class Settings {
     private boolean disableCreativeChat = false;
     private boolean generateFlatWorldHigher = false;
     private boolean firstLaunch = false;
+    private boolean dialog = false;
     private BukkitRunnable announcer;
     private PlayerListChanger listChanger = PlayerListChanger.FULL;
 
@@ -180,6 +181,7 @@ public final class Settings {
         cancelChatOnConfirmation = config.getBoolean("messages.cancel-chat-on-confirmation", false);
         handleWorldChat = config.getBoolean("messages.handle-world-chat", true);
         disableCreativeChat = config.getBoolean("messages.disable-creative-chat", false);
+        dialog = config.getBoolean("dialog", true);
 
         notifyNoPlayersAround = config.getBoolean("messages.notify-no-players-around", true);
 
@@ -1045,6 +1047,14 @@ public final class Settings {
      */
     public boolean isFirstLaunch() {
         return firstLaunch;
+    }
+
+    /**
+     * If using dialog inputs.
+     * @return bool
+     */
+    public boolean isDialog() {
+        return dialog;
     }
 
     public enum PlayerListChanger {

@@ -63,7 +63,7 @@ public final class OwnModulesBrowserMenu extends ListBrowserMenu<Module> {
     protected ItemStack getElementIcon(Module module) {
         ItemStack item = clearItemMeta(module.getInformation().getIcon().clone());
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(module.getInformation().displayName());
+        meta.itemName(module.getInformation().displayName());
         List<Component> lore = new ArrayList<>();
         for (Component loreLine : MessageUtils.getLocaleItemDescription("menus.own-modules.items.module.lore")) {
             if (((TextComponent)loreLine).content().contains("%moduleDescription%")) {

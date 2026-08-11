@@ -270,6 +270,18 @@ environment:
     vector: "&7Chat &f- Set coordinates of vector"
     particle: "&7RMB &f- Select a type, &7Shift+RMB &f- Show particle"
     color: "&7Chat &f- Set color"
+    variable-dialog: "&7Chat &f- Rename, &7RMB &f- Change type"
+    event-value-dialog: "&7RMB &f- Select a type, &7Shift+RMB &f- Set target"
+    number-dialog: "&7Chat &f- Set the number, &7RMB &f- Copy in chat"
+    text-dialog: "&7Chat &f- Set the text, &7RMB &f- Edit in dialog"
+    potion-dialog: "&7Chat &f- Set duration and strength"
+    boolean-dialog: "&7RMB &f- Change type"
+    location-dialog:
+      build: "&7RMB &f- Set location, &7LMB &f- Return to coding"
+      dev: "&7LMB &f- Teleport to world, &7F &f- Teleport to location"
+    vector-dialog: "&7Chat &f- Set coordinates of vector"
+    particle-dialog: "&7RMB &f- Select a type, &7Shift+RMB &f- Show particle"
+    color-dialog: "&7Chat &f- Set color"
     lines-controller: "&7LMB/RMB &f- Move action or condition"
     arrow-not: "&7LMB &f- Add/remove NOT in condition"
     fly-speed-changer: "&7RMB &f- Change flight speed"
@@ -20660,3 +20672,51 @@ time:
   minutes: "min"
   seconds: "sec"
   less-second: "less than a second"
+dialog:
+  module:
+    title: "Edit module"
+    inputs:
+      name: "Name"
+      description: "Description"
+      confirm: "Enter"
+    hint:
+      name: ""
+      lore:
+        - "formantting stuff"
+        - "and stuff"
+  planet:
+    title: "Edit planet"
+    inputs:
+      name: "Name"
+      description: "Description"
+      confirm: "Enter"
+  World-id:
+    title: "Edit world ID"
+    inputs:
+      id: "ID"
+      confirm: "Enter"
+    hint:
+      name: ""
+      lore:
+        - "tell ID restricktions"
+        - "and stuff"
+  dev:
+    text:
+      title: "Edit text"
+      inputs:
+        text: "Text"
+        Confirm: "Enter"
+    variable:
+      title: "Edit variable"
+      inputs:
+        name: "Name"
+        Space:
+          global: "Global"
+          local: "Local"
+          saved: "Saved"
+        Confirm: "Enter"
+    number:
+      title: "Edit number"
+      inputs:
+        number: "NUmber"
+        Confirm: "Enter"

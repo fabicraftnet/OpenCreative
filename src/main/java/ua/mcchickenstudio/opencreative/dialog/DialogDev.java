@@ -20,26 +20,26 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.time.Duration;
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.getCodingValueKey;
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.setPersistentData;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.toComponent;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 
 /**
  * Dialog handler for setting developer values.
  */
+@SuppressWarnings("UnstableApiUsage")
 public final class DialogDev {
 
     public Dialog textValue(PlayerInteractEvent event, Player player, ItemStack currentItem)
     {
-        String serialized = MiniMessage.miniMessage().serialize(currentItem.getItemMeta().displayName().compact()) ;
+        String serialized = userMM.serialize(currentItem.getItemMeta().displayName().compact()) ;
 
-        Bukkit.getLogger().info(serialized);
-        Dialog dialog = Dialog.create(buider -> buider.empty()
+        return Dialog.create(buider -> buider.empty()
 
                 .base(DialogBase.builder(Component.text("Enter text value"))
                         .inputs(List.of(
@@ -56,8 +56,6 @@ public final class DialogDev {
                                 )
                                 ))
                 ));
-
-        return  dialog;
     }
     private void applyText(DialogResponseView view, Player player, ItemStack item)
     {
@@ -74,5 +72,6 @@ public final class DialogDev {
                 Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
         ));
     }
+
 
 }

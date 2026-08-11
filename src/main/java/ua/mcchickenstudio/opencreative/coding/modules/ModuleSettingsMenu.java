@@ -33,6 +33,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.OpenCreative;
+import ua.mcchickenstudio.opencreative.dialog.DialogItemDescription;
 import ua.mcchickenstudio.opencreative.menus.AbstractMenu;
 import ua.mcchickenstudio.opencreative.menus.ConfirmationMenu;
 import ua.mcchickenstudio.opencreative.menus.buttons.ParameterButton;
@@ -70,7 +71,7 @@ public final class ModuleSettingsMenu extends AbstractMenu {
 
     @Override
     public void fillItems(Player player) {
-        setItem(10, name);
+        if (!OpenCreative.getSettings().isDialog()) setItem(10, name);
         setItem(11, description);
         setItem(16, access.getItem());
 
@@ -88,7 +89,7 @@ public final class ModuleSettingsMenu extends AbstractMenu {
     public ItemStack getModuleIcon() {
         ItemStack item = clearItemMeta(module.getInformation().getIcon().clone());
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(MessageUtils.toComponent( MessageUtils.getLocaleItemNameString("menus.module-settings.items.module.name")
+        meta.itemName(MessageUtils.toComponent( MessageUtils.getLocaleItemNameString("menus.module-settings.items.module.name")
                 .replace("%moduleName%", module.getInformation().getDisplayName())));
         List<Component> lore = new ArrayList<>();
         for (Component loreLine : MessageUtils.getLocaleItemDescription("menus.module-settings.items.module.lore")) {
@@ -132,14 +133,19 @@ public final class ModuleSettingsMenu extends AbstractMenu {
                 PlayerConfirmation.setConfirmation(player, PlayerConfirmation.MODULE_NAME_CHANGE, module.getId());
             }
         } else if (itemEquals(currentItem, description)) {
-            player.showTitle(Title.title(
-                    (getLocaleMessage("settings.module-description.title")), (getLocaleMessage("settings.module-description.subtitle")),
-                    Title.Times.times(Duration.ofMillis(100), Duration.ofSeconds(30), Duration.ofMillis(130))
-            ));
-            player.sendMessage(getLocaleMessage("settings.module-description.usage"));
-            player.closeInventory();
-            if (!PlayerConfirmation.hasConfirmation(player)) {
-                PlayerConfirmation.setConfirmation(player, PlayerConfirmation.MODULE_DESCRIPTION_CHANGE, module.getId());
+            if (OpenCreative.getSettings().isDialog()) {
+                player.showDialog(new DialogItemDescription().moduleDescription(module,player,getModuleIcon()));
+            }
+            else {
+                player.showTitle(Title.title(
+                        (getLocaleMessage("settings.module-description.title")), (getLocaleMessage("settings.module-description.subtitle")),
+                        Title.Times.times(Duration.ofMillis(100), Duration.ofSeconds(30), Duration.ofMillis(130))
+                ));
+                player.sendMessage(getLocaleMessage("settings.module-description.usage"));
+                player.closeInventory();
+                if (!PlayerConfirmation.hasConfirmation(player)) {
+                    PlayerConfirmation.setConfirmation(player, PlayerConfirmation.MODULE_DESCRIPTION_CHANGE, module.getId());
+                }
             }
         } else if (itemEquals(currentItem, access.getItem())) {
             access.next();
