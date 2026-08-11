@@ -353,7 +353,8 @@ public final class PlaceBlockListener implements Listener {
     public void onBreak(BlockBreakEvent event)
     {
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(event.getPlayer());
-        if (planet != null) {
+        DevPlanet devPlanet = OpenCreative.getPlanetsManager().getDevPlanet(event.getPlayer());
+        if (planet != null && devPlanet == null) {
             if (planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_UPDATE) == 2) {
                 event.setCancelled(true);
                 Bukkit.getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> {
