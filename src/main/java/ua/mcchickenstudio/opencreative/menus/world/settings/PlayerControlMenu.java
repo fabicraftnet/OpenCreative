@@ -177,7 +177,7 @@ public final class PlayerControlMenu extends AbstractMenu implements WorldMenu {
             statusKey = "online";
         }
         replacePlaceholdersInItem(item, new PlaceholderReplacer("name", substring(nickname, 30),
-                "status", getLocaleMessage("menus.player-control.items.player." + statusKey)));
+                "status", getLocaleMessageComponent("menus.player-control.items.player." + statusKey)));
         return item;
     }
 

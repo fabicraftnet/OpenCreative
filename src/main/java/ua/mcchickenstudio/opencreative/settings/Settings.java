@@ -48,6 +48,7 @@ import ua.mcchickenstudio.opencreative.settings.groups.Groups;
 import ua.mcchickenstudio.opencreative.settings.items.*;
 import ua.mcchickenstudio.opencreative.utils.ErrorUtils;
 import ua.mcchickenstudio.opencreative.utils.ItemUtils;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 import ua.mcchickenstudio.opencreative.utils.world.generators.*;
 import ua.mcchickenstudio.opencreative.utils.world.platforms.DevPlatformer;
 import ua.mcchickenstudio.opencreative.utils.world.platforms.DevPlatformers;
@@ -63,7 +64,7 @@ import java.util.regex.Pattern;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCriticalErrorMessage;
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendWarningErrorMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.teleportToLobby;
 
 /**
@@ -750,7 +751,7 @@ public final class Settings {
             OpenCreative.getPlugin().getLogger().info("Maintenance mode started! Unloading planets, please wait...");
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 Sounds.MAINTENANCE_START.play(onlinePlayer);
-                onlinePlayer.sendMessage(getLocaleMessage("creative.maintenance.started"));
+                onlinePlayer.sendMessage(MessageUtils.getLocaleMessageComponent("creative.maintenance.started"));
                 for (Planet planet : OpenCreative.getPlanetsManager().getPlanets()) {
                     if (planet.isLoaded()) {
                         for (Player player : planet.getPlayers()) {
@@ -764,7 +765,7 @@ public final class Settings {
             OpenCreative.getPlugin().getLogger().info("Maintenance mode ended, now players can play in worlds.");
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 Sounds.MAINTENANCE_END.play(onlinePlayer);
-                onlinePlayer.sendMessage(getLocaleMessage("creative.maintenance.ended"));
+                onlinePlayer.sendMessage(MessageUtils.getLocaleMessageComponent("creative.maintenance.ended"));
             }
             new MaintenanceEndEvent(sender).callEvent();
         }

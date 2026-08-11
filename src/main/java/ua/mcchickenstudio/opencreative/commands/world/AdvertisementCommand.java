@@ -35,6 +35,7 @@ import ua.mcchickenstudio.opencreative.events.planet.PlanetInviteEvent;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
 import ua.mcchickenstudio.opencreative.utils.CooldownUtils;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -56,7 +57,7 @@ public class AdvertisementCommand extends CommandHandler {
 
     public static void handlePlanetAdvertisement(Player player, Planet planet) {
         if (planet == null) {
-            player.sendMessage(getLocaleMessage("only-in-world"));
+            player.sendMessage(getLocaleMessageComponent("only-in-world"));
             return;
         }
 
@@ -66,7 +67,7 @@ public class AdvertisementCommand extends CommandHandler {
         }
 
         if (!(planet.getSharing() == Planet.Sharing.PUBLIC)) {
-            player.sendMessage(getLocaleMessage("advertisement.closed-world"));
+            player.sendMessage(getLocaleMessageComponent("advertisement.closed-world"));
             return;
         }
 
@@ -104,7 +105,7 @@ public class AdvertisementCommand extends CommandHandler {
                         .match("%world%")
                         .replacement(planet.getInformation().displayName()
                         ).build());
-        Component hoverComponent = parsePlanetLines(planet, getLocaleComponent("advertisement.hover"));
+        Component hoverComponent = parsePlanetLines(planet, MessageUtils.getLocaleMessageComponent("advertisement.hover"));
         String clickCommand = "/ad " + planet.getId();
 
         advertisement = advertisement
@@ -118,17 +119,17 @@ public class AdvertisementCommand extends CommandHandler {
     public void onExecute(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(getLocaleMessage("only-players"));
+            sender.sendMessage(getLocaleMessageComponent("only-players"));
             return;
         }
 
         if (OpenCreative.getSettings().isMaintenance() && !player.hasPermission("opencreative.maintenance.bypass")) {
-            player.sendMessage(getLocaleMessage("maintenance"));
+            player.sendMessage(getLocaleMessageComponent("maintenance"));
             return;
         }
 
         if (OpenCreative.getStability().isVeryBad() && !player.hasPermission("opencreative.stability.bypass")) {
-            player.sendMessage(getLocaleMessage("creative.stability.cannot"));
+            player.sendMessage(getLocaleMessageComponent("creative.stability.cannot"));
             return;
         }
 
@@ -139,7 +140,7 @@ public class AdvertisementCommand extends CommandHandler {
             case 1:  // /ad [planet id]
                 if (!checkAndSetCooldownWithMessage(player, CooldownUtils.CooldownType.GENERIC_COMMAND)) return;
                 if (player.isDead()) {
-                    player.sendMessage(getLocaleMessage("only-alive"));
+                    player.sendMessage(getLocaleMessageComponent("only-alive"));
                     return;
                 }
                 handlePlayerConnection(player, args[0]);
@@ -174,7 +175,7 @@ public class AdvertisementCommand extends CommandHandler {
         }
 
         if (foundPlanet.getSharing() != Planet.Sharing.PUBLIC) {
-            player.sendMessage(getLocaleMessage("advertisement.closed-world"));
+            player.sendMessage(getLocaleMessageComponent("advertisement.closed-world"));
             return;
         }
 

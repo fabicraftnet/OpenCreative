@@ -35,6 +35,7 @@ import ua.mcchickenstudio.opencreative.menus.buttons.ParameterButton;
 import ua.mcchickenstudio.opencreative.menus.world.WorldMenu;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 import ua.mcchickenstudio.opencreative.utils.PlayerUtils;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 
 /**
  * This class represents a menu, that displays list of players in world.
@@ -56,7 +57,7 @@ public final class PlayersBrowserMenu extends ListBrowserMenu<UUID> implements W
     private final ItemStack BACK_TO_SETTINGS = createItem(Material.ARROW, 1, "menus.players-browser.items.back");
 
     public PlayersBrowserMenu(Player player, Planet planet) {
-        super(player, getLocaleMessage("menus.players-browser.title", false),
+        super(player, getLocaleMessageComponent("menus.players-browser.title", false),
                 PlacementLayout.BOTTOM_NO_DECORATION, new int[]{45, 48, 50}, new int[]{46, 52});
         this.planet = planet;
     }
@@ -143,11 +144,11 @@ public final class PlayersBrowserMenu extends ListBrowserMenu<UUID> implements W
 
         replacePlaceholdersInItem(item, new PlaceholderReplacer(
                 "name", displayName,
-                "status", getLocaleMessage("menus.players-browser.items.player." + statusKey),
-                "dev", getLocaleMessage("menus.players-browser.items.player.dev." + devKey),
-                "build", getLocaleMessage("menus.players-browser.items.player.build." + buildKey),
-                "white-list", getLocaleMessage("menus.players-browser.items.player.white-list." + whitelistKey),
-                "flight", getLocaleMessage("menus.players-browser.items.player.flight." + flightKey)));
+                "status", MessageUtils.getLocaleMessageComponent("menus.players-browser.items.player." + statusKey),
+                "dev", MessageUtils.getLocaleMessageComponent("menus.players-browser.items.player.dev." + devKey),
+                "build", MessageUtils.getLocaleMessageComponent("menus.players-browser.items.player.build." + buildKey),
+                "white-list", MessageUtils.getLocaleMessageComponent("menus.players-browser.items.player.white-list." + whitelistKey),
+                "flight", MessageUtils.getLocaleMessageComponent("menus.players-browser.items.player.flight." + flightKey)));
         setPersistentData(item, getItemTypeKey(), nickname);
         return item;
     }

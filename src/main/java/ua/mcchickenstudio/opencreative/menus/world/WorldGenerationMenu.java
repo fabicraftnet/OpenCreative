@@ -30,6 +30,7 @@ import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.menus.AbstractMenu;
 import ua.mcchickenstudio.opencreative.menus.buttons.ParameterButton;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 import ua.mcchickenstudio.opencreative.utils.world.WorldUtils;
 import ua.mcchickenstudio.opencreative.utils.world.generators.*;
 
@@ -37,7 +38,7 @@ import java.util.*;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.createItem;
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.itemEquals;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 
 public final class WorldGenerationMenu extends AbstractMenu {
 
@@ -50,7 +51,7 @@ public final class WorldGenerationMenu extends AbstractMenu {
     private final ItemStack createButton = createItem(Material.PUFFERFISH_BUCKET, 1, "menus.world-creation.items.create");
 
     public WorldGenerationMenu(Player player, String generator, String environment, boolean generateStructures) {
-        super(3, getLocaleMessage("menus.world-creation.title", false));
+        super(3, getLocaleMessageComponent("menus.world-creation.title", false));
         this.player = player;
         this.generatorButton = new ParameterButton(generator,
                 WorldGenerators.getInstance().getGeneratorsIDs(),
@@ -128,7 +129,7 @@ public final class WorldGenerationMenu extends AbstractMenu {
             case 16 -> {
                 player.closeInventory();
                 if (!OpenCreative.getStability().isFine()) {
-                    player.sendMessage(getLocaleMessage("creative.stability.cannot"));
+                    player.sendMessage(MessageUtils.getLocaleMessageComponent("creative.stability.cannot"));
                     Sounds.PLAYER_FAIL.play(player);
                     return;
                 }

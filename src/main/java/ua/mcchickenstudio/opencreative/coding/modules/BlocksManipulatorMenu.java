@@ -117,13 +117,13 @@ public final class BlocksManipulatorMenu extends AbstractMenu {
                         .replace("%required%", String.valueOf(markedExecutors.size()))));
                 Sounds.DEV_NOT_ALLOWED.play(player);
             } else if (result.getType() == CodingBlockPlacer.CodePlacementResult.Type.ERROR) {
-                player.sendMessage(getLocaleMessage("environment.duplication.error"));
+                player.sendMessage(getLocaleMessageComponent("environment.duplication.error"));
                 Sounds.PLAYER_ERROR.play(player);
                 for (Location placedExecutor : result.getPlacedColumns()) {
                     devPlanet.addChangedColumn(placedExecutor);
                 }
             } else {
-                player.sendMessage(getLocaleMessage("environment.duplication.success"));
+                player.sendMessage(getLocaleMessageComponent("environment.duplication.success"));
                 Sounds.DEV_BLOCKS_DUPLICATED.play(player);
                 for (Location placedExecutor : result.getPlacedColumns()) {
                     devPlanet.addChangedColumn(placedExecutor);

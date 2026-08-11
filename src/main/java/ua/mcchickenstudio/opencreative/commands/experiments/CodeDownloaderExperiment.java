@@ -28,6 +28,7 @@ import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.CodeConfiguration;
 import ua.mcchickenstudio.opencreative.coding.CodingBlockPlacer;
 import ua.mcchickenstudio.opencreative.planets.DevPlanet;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -37,7 +38,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 
 public final class CodeDownloaderExperiment extends Experiment {
 
@@ -59,20 +60,20 @@ public final class CodeDownloaderExperiment extends Experiment {
     @Override
     public void handleCommand(@NotNull CommandSender sender, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(getLocaleMessage("only-players"));
+            sender.sendMessage(MessageUtils.getLocaleMessageComponent("only-players"));
             return;
         }
         if (args.length == 0) {
-            sender.sendMessage(getLocaleMessage("too-few-args"));
+            sender.sendMessage(MessageUtils.getLocaleMessageComponent("too-few-args"));
             return;
         }
         DevPlanet devPlanet = OpenCreative.getPlanetsManager().getDevPlanet(player);
         if (devPlanet == null) {
-            sender.sendMessage(getLocaleMessage("only-in-dev-world"));
+            sender.sendMessage(MessageUtils.getLocaleMessageComponent("only-in-dev-world"));
             return;
         }
         if (!devPlanet.getPlanet().getWorldPlayers().canDevelop(player)) {
-            sender.sendMessage(getLocaleMessage("not-developer"));
+            sender.sendMessage(MessageUtils.getLocaleMessageComponent("not-developer"));
             return;
         }
         String link = args[0];

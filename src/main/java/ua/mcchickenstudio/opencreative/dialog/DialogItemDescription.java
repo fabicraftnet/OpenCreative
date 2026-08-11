@@ -42,19 +42,46 @@ public final class DialogItemDescription {
 
         return Dialog.create(buider -> buider.empty()
 
-                .base(DialogBase.builder(getLocaleMessage("dialog.planet.title"))
+                .base(DialogBase.builder(getLocaleMessageComponent("dialog.planet.title"))
                         .inputs(List.of(
-                                DialogInput.text("name", 240,getLocaleMessage("dialog.planet.inputs.name"),true,name,64, TextDialogInput.MultilineOptions.create(1,null)),
-                                DialogInput.text("desc",240,getLocaleMessage("dialog.planet.inputs.description"),true, description,256, TextDialogInput.MultilineOptions.create(8,null))
+                                DialogInput.text("name", 240, getLocaleMessageComponent("dialog.planet.inputs.name"),true,name,64, TextDialogInput.MultilineOptions.create(1,null)),
+                                DialogInput.text("desc",240, getLocaleMessageComponent("dialog.planet.inputs.description"),true, description,256, TextDialogInput.MultilineOptions.create(8,null))
                         ))
                         .body(List.of(
-                                DialogBody.item(icon).build()
+                                DialogBody.item(icon).build(),
+                                DialogBody.plainMessage(toComponent("<sprite:gui:icon/info>").hoverEvent(miniMessage.deserialize(getLocaleMessageString("dialog.planet.hint").replace("%max%",Integer.toString(OpenCreative.getSettings().getRequirements().getWorldNameMaxLength())))))
                         ))
 
 
                         .build())
                 .type(DialogType.notice(
-                        ActionButton.create(getLocaleMessage("dialog.planet.inputs.confirm"),null,60,
+                        ActionButton.create(getLocaleMessageComponent("dialog.planet.inputs.confirm"),null,60,
+                                DialogAction.customClick(
+                                        (view, audience) -> applyToWorld(view, player, planet)
+                                        , ClickCallback.Options.builder().build()
+                                )
+                        ))
+                ));
+    }
+    public Dialog planetID(Planet planet, Player player, ItemStack icon)
+    {
+        String ID = (planet.getInformation().getCustomID());
+
+        return Dialog.create(buider -> buider.empty()
+
+                .base(DialogBase.builder(getLocaleMessageComponent("dialog.planet.title"))
+                        .inputs(List.of(
+                                DialogInput.text("name", 240, getLocaleMessageComponent("dialog.world-id.inputs.id"),true,ID,16, TextDialogInput.MultilineOptions.create(1,null))
+                        ))
+                        .body(List.of(
+                                DialogBody.item(icon).build(),
+                                DialogBody.plainMessage(toComponent("<sprite:gui:icon/info>").hoverEvent(miniMessage.deserialize(getLocaleMessageString("dialog.world-id.hint").replace("%max%",Integer.toString(OpenCreative.getSettings().getRequirements().getCustomIdMaxLength())))))
+                        ))
+
+
+                        .build())
+                .type(DialogType.notice(
+                        ActionButton.create(getLocaleMessageComponent("dialog.world-id.inputs.confirm"),null,60,
                                 DialogAction.customClick(
                                         (view, audience) -> applyToWorld(view, player, planet)
                                         , ClickCallback.Options.builder().build()
@@ -108,13 +135,14 @@ public final class DialogItemDescription {
 
         return Dialog.create(buider -> buider.empty()
 
-                .base(DialogBase.builder(getLocaleMessage("dialog.module.title"))
+                .base(DialogBase.builder(getLocaleMessageComponent("dialog.module.title"))
                         .inputs(List.of(
                                 DialogInput.text("name", 240,Component.text("dialog.module.inputs.name"),true,name,64, TextDialogInput.MultilineOptions.create(1,null)),
                                 DialogInput.text("desc",240,Component.text("dialog.module.inputs.description"),true, description,256, TextDialogInput.MultilineOptions.create(8,null))
                         ))
                         .body(List.of(
-                                DialogBody.item(icon).build()
+                                DialogBody.item(icon).build(),
+                                DialogBody.plainMessage(toComponent("<sprite:gui:icon/info>").hoverEvent(miniMessage.deserialize(getLocaleMessageString("dialog.module.hint").replace("%max%",Integer.toString(OpenCreative.getSettings().getRequirements().getWorldNameMaxLength())))))
                         ))
 
 

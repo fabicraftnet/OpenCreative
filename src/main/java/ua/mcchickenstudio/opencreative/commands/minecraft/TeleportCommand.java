@@ -67,11 +67,11 @@ public class TeleportCommand extends CommandHandler {
              */
             Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
             if (planet == null) {
-                player.sendMessage(getLocaleMessage("only-in-world"));
+                player.sendMessage(getLocaleMessageComponent("only-in-world"));
                 return;
             }
             if (!(planet.isOwner(player) || planet.getWorldPlayers().canDevelop(player) || planet.getWorldPlayers().canBuild(player))) {
-                player.sendMessage(getLocaleMessage("not-owner"));
+                player.sendMessage(getLocaleMessageComponent("not-owner"));
                 return;
             }
             /*
@@ -79,7 +79,7 @@ public class TeleportCommand extends CommandHandler {
              * because it's work depends on game mode.
              */
             if (OpenCreative.getPlanetsManager().getDevPlanet(player) != null) {
-                player.sendMessage(getLocaleMessage("only-in-world"));
+                player.sendMessage(getLocaleMessageComponent("only-in-world"));
                 return;
             }
         }
@@ -89,18 +89,18 @@ public class TeleportCommand extends CommandHandler {
              */
             Player teleportToPlayer = Bukkit.getPlayer(args[0]);
             if (teleportToPlayer == null) {
-                player.sendMessage(getLocaleMessage("no-player-found"));
+                player.sendMessage(getLocaleMessageComponent("no-player-found"));
                 return;
             }
             Planet teleportPlanet = OpenCreative.getPlanetsManager().getPlanetByPlayer(teleportToPlayer);
             if (!player.hasPermission("opencreative.teleport.bypass")) {
                 Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
                 if (planet == null || !planet.equals(teleportPlanet)) {
-                    player.sendMessage(getLocaleMessage("no-player-found"));
+                    player.sendMessage(getLocaleMessageComponent("no-player-found"));
                     return;
                 }
                 if (OpenCreative.getPlanetsManager().getDevPlanet(teleportToPlayer) != null) {
-                    player.sendMessage(getLocaleMessage("only-in-world"));
+                    player.sendMessage(getLocaleMessageComponent("only-in-world"));
                     return;
                 }
             }
@@ -135,12 +135,12 @@ public class TeleportCommand extends CommandHandler {
              */
             Player firstPlayer = Bukkit.getPlayer(args[0]);
             if (firstPlayer == null) {
-                player.sendMessage(getLocaleMessage("no-player-found"));
+                player.sendMessage(getLocaleMessageComponent("no-player-found"));
                 return;
             }
             Player secondPlayer = Bukkit.getPlayer(args[1]);
             if (secondPlayer == null) {
-                player.sendMessage(getLocaleMessage("no-player-found"));
+                player.sendMessage(getLocaleMessageComponent("no-player-found"));
                 return;
             }
             Planet firstPlanet = OpenCreative.getPlanetsManager().getPlanetByPlayer(firstPlayer);
@@ -148,11 +148,11 @@ public class TeleportCommand extends CommandHandler {
             if (!player.hasPermission("opencreative.teleport.others-bypass")) {
                 Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
                 if (planet == null || !planet.equals(firstPlanet) || !planet.equals(secondPlanet) || !firstPlanet.equals(secondPlanet)) {
-                    player.sendMessage(getLocaleMessage("no-player-found"));
+                    player.sendMessage(getLocaleMessageComponent("no-player-found"));
                     return;
                 }
                 if (OpenCreative.getPlanetsManager().getDevPlanet(firstPlayer) != null || OpenCreative.getPlanetsManager().getDevPlanet(secondPlayer) != null) {
-                    player.sendMessage(getLocaleMessage("only-in-world"));
+                    player.sendMessage(getLocaleMessageComponent("only-in-world"));
                     return;
                 }
             }
@@ -202,13 +202,13 @@ public class TeleportCommand extends CommandHandler {
                     ));
                     Sounds.PLAYER_TELEPORT.play(player);
                 } else {
-                    sender.sendMessage(getLocaleMessage("commands.teleport.out-of-borders"));
+                    sender.sendMessage(getLocaleMessageComponent("commands.teleport.out-of-borders"));
                 }
             } catch (NumberFormatException exception) {
-                sender.sendMessage(getLocaleMessage("commands.teleport.help"));
+                sender.sendMessage(getLocaleMessageComponent("commands.teleport.help"));
             }
         } else {
-            sender.sendMessage(getLocaleMessage("commands.teleport.help"));
+            sender.sendMessage(getLocaleMessageComponent("commands.teleport.help"));
         }
     }
 

@@ -21,9 +21,6 @@ package ua.mcchickenstudio.opencreative.planets;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TextReplacementConfig;
-import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -34,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.utils.ItemUtils;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -186,7 +184,7 @@ public class PlanetInfo {
         ItemStack item = icon.clone();
         ItemMeta meta = item.getItemMeta();
         meta.itemName(
-                getLocaleComponent("menus.all-worlds.items.world.name")
+                MessageUtils.getLocaleMessageComponent("menus.all-worlds.items.world.name")
                         .replaceText(TextReplacementConfig.builder()
                                 .match("%planetName%")
                                 .replacement(displayName()).build()));

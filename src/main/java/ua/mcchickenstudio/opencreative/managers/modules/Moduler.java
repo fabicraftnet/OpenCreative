@@ -44,7 +44,7 @@ import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCriticalError
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendPlayerErrorMessage;
 import static ua.mcchickenstudio.opencreative.utils.FileUtils.getModuleConfigFile;
 import static ua.mcchickenstudio.opencreative.utils.FileUtils.getModulesFiles;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 
 public final class Moduler implements ModuleManager {
 
@@ -116,7 +116,7 @@ public final class Moduler implements ModuleManager {
     public void createModule(@NotNull Player owner, @NotNull DevPlanet devPlanet, @NotNull Set<Location> locations) {
         CodeStorage configuration = new CodeConfiguration();
         if (!new CodingBlockParser(devPlanet, true).parseExecutors(devPlanet, configuration, new LinkedHashSet<>(locations))) {
-            owner.sendMessage(getLocaleMessage("modules.error"));
+            owner.sendMessage(MessageUtils.getLocaleMessageComponent("modules.error"));
             return;
         }
         configuration.set("owner", owner.getUniqueId().toString());
@@ -134,7 +134,7 @@ public final class Moduler implements ModuleManager {
                 return;
             }
             OpenCreative.getModuleManager().registerModule(module);
-            owner.sendMessage(getLocaleMessage("modules.created"));
+            owner.sendMessage(MessageUtils.getLocaleMessageComponent("modules.created"));
             new ModuleSettingsMenu(module, owner).open(owner);
             Sounds.DEV_MODULE_CREATED.play(owner);
         } catch (Exception e) {

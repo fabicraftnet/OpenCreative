@@ -51,7 +51,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.copySignData;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleComponent;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.toComponent;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.isEntityInLobby;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.translateBlockSign;
@@ -271,7 +271,7 @@ public final class PlaceBlockListener implements Listener {
                         Sounds.DEV_SET_DEBUG_TORCH.play(player);
                     }
                 } else if ((!(block.getType().name().contains("SIGN") && supportBlock.getX() >= 4 && (supportBlock.getX() % 2) == 0)) && (!devPlanet.getAllowedBlocks().contains(block.getType())) || block.getY() <= 0) {
-                    player.sendActionBar(getLocaleComponent("world.dev-mode.cant-place-on-floor"));
+                    player.sendActionBar(getLocaleMessageComponent("world.dev-mode.cant-place-on-floor"));
                     Sounds.DEV_NOT_ALLOWED.play(player);
                     event.setCancelled(true);
                 }
@@ -291,7 +291,7 @@ public final class PlaceBlockListener implements Listener {
                     devPlanet.addChangedColumn(block.getLocation());
                     placeDevBlock(block.getLocation(), block.getType(), additionalBlockMaterial, devPlanet.getSignMaterial(), signText);
                 } else {
-                    player.sendActionBar(getLocaleComponent("world.dev-mode.cant-place-action-on-event"));
+                    player.sendActionBar(getLocaleMessageComponent("world.dev-mode.cant-place-action-on-event"));
                     Sounds.DEV_NOT_ALLOWED.play(player);
                     event.setCancelled(true);
                 }
@@ -314,7 +314,7 @@ public final class PlaceBlockListener implements Listener {
                     devPlanet.addInsideCodeColumnChange(block.getLocation());
                     placeDevBlock(block.getLocation(), block.getType(), additionalBlockMaterial, devPlanet.getSignMaterial(), signText);
                 } else {
-                    player.sendActionBar(getLocaleComponent("world.dev-mode.cant-place-event-on-action"));
+                    player.sendActionBar(getLocaleMessageComponent("world.dev-mode.cant-place-event-on-action"));
                     Sounds.DEV_NOT_ALLOWED.play(player);
                     event.setCancelled(true);
                 }
@@ -326,7 +326,7 @@ public final class PlaceBlockListener implements Listener {
             }
         } else if (planet != null) {
             if (ChangedWorld.isPlayerWithLocation(player) && !planet.getWorldPlayers().canBuild(player)) {
-                player.sendActionBar(getLocaleComponent("not-builder"));
+                player.sendActionBar(getLocaleMessageComponent("not-builder"));
                 event.setCancelled(true);
                 return;
             }
@@ -346,7 +346,7 @@ public final class PlaceBlockListener implements Listener {
         } else if (isEntityInLobby(player) && OpenCreative.getSettings().getLobbySettings().isPlacingBlocksDisallowed()
                 && !player.hasPermission("opencreative.lobby.placing-blocks.bypass")) {
             event.setCancelled(true);
-            player.sendActionBar(getLocaleComponent("not-for-lobby"));
+            player.sendActionBar(getLocaleMessageComponent("not-for-lobby"));
         }
     }
     @EventHandler

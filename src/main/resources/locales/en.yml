@@ -20679,33 +20679,31 @@ dialog:
       name: "Name"
       description: "Description"
       confirm: "Enter"
-    hint:
-      name: ""
-      lore:
-        - "formantting stuff"
-        - "and stuff"
+    hint: "Maximum line lenght is %max% charecters.<br>
+          Format with legacy &0 - &f or minimessage \\<red>"
   planet:
     title: "Edit planet"
     inputs:
       name: "Name"
       description: "Description"
       confirm: "Enter"
+    hint: "Maximum line lenght is %max% charecters.<br>
+          Format with legacy &0 - &f or minimessage \\<red>"
   World-id:
     title: "Edit world ID"
     inputs:
       id: "ID"
       confirm: "Enter"
-    hint:
-      name: ""
-      lore:
-        - "tell ID restricktions"
-        - "and stuff"
+    hint: "ID must be alphanumeric and maximum<br>
+          of %max% charecters long."
   dev:
     text:
       title: "Edit text"
       inputs:
         text: "Text"
         Confirm: "Enter"
+      hint: "Formatting supports legacy and minimessage.<br>
+            Placeholders can be used in the text."
     variable:
       title: "Edit variable"
       inputs:

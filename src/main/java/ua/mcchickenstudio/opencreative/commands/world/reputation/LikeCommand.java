@@ -55,7 +55,7 @@ public class LikeCommand extends CommandHandler {
         if (sender instanceof Player player) {
             Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
             if (planet == null) {
-                player.sendMessage(getLocaleMessage("only-in-world"));
+                player.sendMessage(getLocaleMessageComponent("only-in-world"));
                 return;
             }
 
@@ -70,7 +70,7 @@ public class LikeCommand extends CommandHandler {
                 return;
             }
             if (planet.getWorldPlayers().hasDisliked(player.getUniqueId()) || !planet.getWorldPlayers().addLike(player.getUniqueId())) {
-                sender.sendMessage(getLocaleMessage("world.already-rated"));
+                sender.sendMessage(getLocaleMessageComponent("world.already-rated"));
             } else {
                 Sounds.WORLD_LIKED.play(player);
                 planet.getInformation().setPlanetReputation(planet.getInformation().getReputation() + 1);

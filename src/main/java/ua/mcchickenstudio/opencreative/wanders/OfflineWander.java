@@ -50,7 +50,7 @@ import java.util.*;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendDebugError;
 import static ua.mcchickenstudio.opencreative.utils.FileUtils.getWanderJsonFile;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 /**

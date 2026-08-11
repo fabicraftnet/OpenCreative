@@ -18,7 +18,6 @@
 
 package ua.mcchickenstudio.opencreative.menus.world.browsers;
 
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -52,7 +51,7 @@ public final class WorldsCompassMenu extends AbstractMenu {
     private boolean showingCategoriesInsteadOfWorlds = false;
 
     public WorldsCompassMenu() {
-        super(6, getLocaleMessage("menus.recommended-worlds.title", false));
+        super(6, getLocaleMessageComponent("menus.recommended-worlds.title", false));
     }
 
     @Override

@@ -36,6 +36,7 @@ import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
 import ua.mcchickenstudio.opencreative.settings.items.ItemsGroup;
 import ua.mcchickenstudio.opencreative.utils.CooldownUtils;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +44,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static ua.mcchickenstudio.opencreative.listeners.player.ChangedWorld.removePlayerWithLocation;
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getPlayerLocaleMessage;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.*;
 
@@ -60,25 +61,25 @@ public class PlayCommand extends CommandHandler {
     @Override
     public void onExecute(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(getLocaleMessage("only-players"));
+            sender.sendMessage(MessageUtils.getLocaleMessageComponent("only-players"));
             return;
         }
 
         if (!checkAndSetCooldownWithMessage(player, CooldownUtils.CooldownType.GENERIC_COMMAND)) return;
 
         if (player.isDead()) {
-            sender.sendMessage(getLocaleMessage("only-alive"));
+            sender.sendMessage(MessageUtils.getLocaleMessageComponent("only-alive"));
             return;
         }
 
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
         if (planet == null) {
-            player.sendMessage(getLocaleMessage("only-in-world"));
+            player.sendMessage(MessageUtils.getLocaleMessageComponent("only-in-world"));
             return;
         }
 
         if (!OpenCreative.getSettings().getCodingSettings().isEnabled()) {
-            player.sendMessage(getLocaleMessage("world.dev-mode.disabled"));
+            player.sendMessage(MessageUtils.getLocaleMessageComponent("world.dev-mode.disabled"));
             return;
         }
 
@@ -97,7 +98,7 @@ public class PlayCommand extends CommandHandler {
                     return;
                 }
                 if (!OpenCreative.getStability().isFine()) {
-                    player.sendMessage(getLocaleMessage("creative.stability.cannot"));
+                    player.sendMessage(MessageUtils.getLocaleMessageComponent("creative.stability.cannot"));
                     Sounds.PLAYER_FAIL.play(player);
                     return;
                 }
@@ -116,14 +117,14 @@ public class PlayCommand extends CommandHandler {
         }
         if (planet.getWorldPlayers().canDevelop(player)) {
             if (!OpenCreative.getStability().isFine()) {
-                player.sendMessage(getLocaleMessage("creative.stability.cannot"));
+                player.sendMessage(MessageUtils.getLocaleMessageComponent("creative.stability.cannot"));
                 Sounds.PLAYER_FAIL.play(player);
             } else {
-                player.sendMessage(getLocaleMessage("world.play-mode.message.owner"));
+                player.sendMessage(MessageUtils.getLocaleMessageComponent("world.play-mode.message.owner"));
                 if (!Arrays.asList(args).contains("--no-compile")) {
                     if (planet.getDevPlanet().isLoaded()) {
                         if (planet.getDevPlanet().isCodeChanged() && planet.getDevPlanet().isCurrentlySavingCode()) {
-                            player.sendMessage(getLocaleMessage("world.dev-mode.already-saving-code"));
+                            player.sendMessage(MessageUtils.getLocaleMessageComponent("world.dev-mode.already-saving-code"));
                         } else {
                             CompletableFuture<Boolean> parserResult;
                             if (Arrays.asList(args).contains("recompile")) {
@@ -133,7 +134,7 @@ public class PlayCommand extends CommandHandler {
                                 } else {
                                     parserResult = new CodingBlockParser(planet.getDevPlanet())
                                             .parseCode(planet.getDevPlanet());
-                                    player.sendMessage(getLocaleMessage("no-perms"));
+                                    player.sendMessage(MessageUtils.getLocaleMessageComponent("no-perms"));
                                 }
                             } else {
                                 parserResult = new CodingBlockParser(planet.getDevPlanet())
@@ -152,7 +153,7 @@ public class PlayCommand extends CommandHandler {
                 }
             }
         } else {
-            player.sendMessage(getLocaleMessage("world.play-mode.message.players"));
+            player.sendMessage(MessageUtils.getLocaleMessageComponent("world.play-mode.message.players"));
         }
         afterCompilation(player, playerDevPlanet, true);
     }

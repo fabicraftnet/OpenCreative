@@ -19,7 +19,6 @@
 package ua.mcchickenstudio.opencreative.planets;
 
 import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.util.TriState;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -32,8 +31,8 @@ import ua.mcchickenstudio.opencreative.coding.CodeScript;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.player.world.QuitEvent;
 import ua.mcchickenstudio.opencreative.events.planet.PlanetLoadEvent;
 import ua.mcchickenstudio.opencreative.events.planet.PlanetUnloadEvent;
-import ua.mcchickenstudio.opencreative.utils.FileUtils;
 import ua.mcchickenstudio.opencreative.utils.ItemUtils;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 import ua.mcchickenstudio.opencreative.utils.world.WorldUtils;
 import ua.mcchickenstudio.opencreative.utils.world.generators.EnvironmentCapable;
 import ua.mcchickenstudio.opencreative.utils.world.generators.StructuresCapable;
@@ -48,10 +47,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static ua.mcchickenstudio.opencreative.utils.FileUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.clearOnceMessages;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.isEntityInDevPlanet;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.teleportToLobby;
-import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.checkBadContainersInChunk;
 
 /**
  * <h1>PlanetTerritory</h1>
@@ -693,7 +691,7 @@ public class PlanetTerritory {
         if (this.autoSave == autoSave) return;
         this.autoSave = autoSave;
         for (Player planetPlayer : planet.getPlayers()) {
-            planetPlayer.sendMessage(getLocaleMessage("settings.autosave." + (autoSave ? "enabled" : "disabled")));
+            planetPlayer.sendMessage(MessageUtils.getLocaleMessageComponent("settings.autosave." + (autoSave ? "enabled" : "disabled")));
         }
         if (getWorld() != null) {
             getWorld().setAutoSave(autoSave);

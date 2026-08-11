@@ -63,7 +63,7 @@ public class WorldCommand extends CommandHandler {
     @Override
     public void onExecute(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(getLocaleMessage("only-players"));
+            sender.sendMessage(getLocaleMessageComponent("only-players"));
             return;
         }
 
@@ -71,7 +71,7 @@ public class WorldCommand extends CommandHandler {
 
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
         if (planet == null) {
-            player.sendMessage(getLocaleMessage("only-in-world"));
+            player.sendMessage(getLocaleMessageComponent("only-in-world"));
             return;
         }
         String arg = args.length == 0 ? "" : args[0].toLowerCase();
@@ -80,12 +80,12 @@ public class WorldCommand extends CommandHandler {
                 if (planet.getWorldPlayers().canBuild(player)) {
                     new EntitiesBrowserMenu(player, planet).open(player);
                 } else {
-                    sender.sendMessage(getLocaleMessage("not-owner"));
+                    sender.sendMessage(getLocaleMessageComponent("not-owner"));
                 }
             }
             case "setspawn" -> {
                 if (!planet.isOwner(player)) {
-                    sender.sendMessage(getLocaleMessage("not-owner"));
+                    sender.sendMessage(getLocaleMessageComponent("not-owner"));
                     return;
                 }
                 if (isEntityInDevPlanet(player)) {
@@ -94,14 +94,14 @@ public class WorldCommand extends CommandHandler {
                 }
                 planet.getTerritory().setSpawnLocation(player.getLocation());
                 player.showTitle(Title.title(
-                        (getLocaleMessage("settings.world-spawn.title")), (getLocaleMessage("settings.world-spawn.subtitle")),
+                        (getLocaleMessageComponent("settings.world-spawn.title")), (getLocaleMessageComponent("settings.world-spawn.subtitle")),
                         Title.Times.times(Duration.ofMillis(100), Duration.ofSeconds(2), Duration.ofMillis(130))
                 ));
                 Sounds.WORLD_SETTINGS_SPAWN_SET.play(player);
             }
             case "spawn" -> {
                 if (!planet.isOwner(player)) {
-                    sender.sendMessage(getLocaleMessage("not-owner"));
+                    sender.sendMessage(getLocaleMessageComponent("not-owner"));
                     return;
                 }
                 if (isEntityInDevPlanet(player)) {
@@ -109,7 +109,7 @@ public class WorldCommand extends CommandHandler {
                     return;
                 }
                 if (player.isDead()) {
-                    player.sendMessage(getLocaleMessage("only-alive"));
+                    player.sendMessage(getLocaleMessageComponent("only-alive"));
                     return;
                 }
                 player.teleport(planet.getTerritory().getSpawnLocation());
@@ -117,7 +117,7 @@ public class WorldCommand extends CommandHandler {
             }
             case "close" -> {
                 if (!planet.isOwner(player)) {
-                    sender.sendMessage(getLocaleMessage("not-owner"));
+                    sender.sendMessage(getLocaleMessageComponent("not-owner"));
                     return;
                 }
                 if (planet.getSharing() != Planet.Sharing.PUBLIC) {
@@ -132,11 +132,11 @@ public class WorldCommand extends CommandHandler {
                 }
                 Sounds.WORLD_SETTINGS_SHARING_PRIVATE.play(player);
                 planet.setSharing(Planet.Sharing.PRIVATE);
-                player.sendMessage(getLocaleMessage("settings.world-sharing.disabled"));
+                player.sendMessage(getLocaleMessageComponent("settings.world-sharing.disabled"));
             }
             case "open" -> {
                 if (!planet.isOwner(player)) {
-                    sender.sendMessage(getLocaleMessage("not-owner"));
+                    sender.sendMessage(getLocaleMessageComponent("not-owner"));
                     return;
                 }
                 if (planet.getSharing() == Planet.Sharing.PUBLIC) {
@@ -151,15 +151,15 @@ public class WorldCommand extends CommandHandler {
                 }
                 Sounds.WORLD_SETTINGS_SHARING_PUBLIC.play(player);
                 planet.setSharing(Planet.Sharing.PUBLIC);
-                player.sendMessage(getLocaleMessage("settings.world-sharing.enabled"));
+                player.sendMessage(getLocaleMessageComponent("settings.world-sharing.enabled"));
             }
             case "whitelist", "white" -> {
                 if (!planet.isOwner(player)) {
-                    sender.sendMessage(getLocaleMessage("not-owner"));
+                    sender.sendMessage(getLocaleMessageComponent("not-owner"));
                     return;
                 }
                 if (args.length == 1) {
-                    sender.sendMessage(getLocaleMessage("too-few-args"));
+                    sender.sendMessage(getLocaleMessageComponent("too-few-args"));
                     return;
                 }
                 int limit = planet.getLimits().getWhitelistedLimit();
@@ -171,11 +171,11 @@ public class WorldCommand extends CommandHandler {
                 if (playerToWhitelist == null) {
                     OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(args[1]);
                     if (!offlinePlayer.hasPlayedBefore()) {
-                        sender.sendMessage(getLocaleMessage("never-played"));
+                        sender.sendMessage(getLocaleMessageComponent("never-played"));
                         return;
                     }
                     if (offlinePlayer.getUniqueId().equals(player.getUniqueId())) {
-                        sender.sendMessage(getLocaleMessage("same-player"));
+                        sender.sendMessage(getLocaleMessageComponent("same-player"));
                         return;
                     }
                     sender.sendMessage(getPlayerLocaleMessage("world.players.white-list.added", offlinePlayer));
@@ -183,7 +183,7 @@ public class WorldCommand extends CommandHandler {
                     return;
                 }
                 if (planet.isOwner(playerToWhitelist)) {
-                    sender.sendMessage(getLocaleMessage("same-player"));
+                    sender.sendMessage(getLocaleMessageComponent("same-player"));
                     return;
                 }
                 sender.sendMessage(getPlayerLocaleMessage("world.players.white-list.added", playerToWhitelist));
@@ -191,11 +191,11 @@ public class WorldCommand extends CommandHandler {
             }
             case "ban", "block", "blacklist" -> {
                 if (!planet.isOwner(player)) {
-                    sender.sendMessage(getLocaleMessage("not-owner"));
+                    sender.sendMessage(getLocaleMessageComponent("not-owner"));
                     return;
                 }
                 if (args.length == 1) {
-                    sender.sendMessage(getLocaleMessage("too-few-args"));
+                    sender.sendMessage(getLocaleMessageComponent("too-few-args"));
                     return;
                 }
                 int limit = planet.getLimits().getBlacklistedLimit();
@@ -207,11 +207,11 @@ public class WorldCommand extends CommandHandler {
                 if (playerToBan == null) {
                     OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(args[1]);
                     if (!offlinePlayer.hasPlayedBefore()) {
-                        sender.sendMessage(getLocaleMessage("never-played"));
+                        sender.sendMessage(getLocaleMessageComponent("never-played"));
                         return;
                     }
                     if (offlinePlayer.getUniqueId().equals(player.getUniqueId())) {
-                        sender.sendMessage(getLocaleMessage("same-player"));
+                        sender.sendMessage(getLocaleMessageComponent("same-player"));
                         return;
                     }
                     sender.sendMessage(getPlayerLocaleMessage("world.players.black-list.added", offlinePlayer));
@@ -219,7 +219,7 @@ public class WorldCommand extends CommandHandler {
                     return;
                 }
                 if (planet.isOwner(playerToBan)) {
-                    sender.sendMessage(getLocaleMessage("same-player"));
+                    sender.sendMessage(getLocaleMessageComponent("same-player"));
                     return;
                 }
                 if (playerToBan.hasPermission("opencreative.world.ban.bypass")) {
@@ -231,26 +231,26 @@ public class WorldCommand extends CommandHandler {
             }
             case "kick" -> {
                 if (!planet.isOwner(player)) {
-                    sender.sendMessage(getLocaleMessage("not-owner"));
+                    sender.sendMessage(getLocaleMessageComponent("not-owner"));
                     return;
                 }
                 if (args.length == 1) {
-                    sender.sendMessage(getLocaleMessage("too-few-args"));
+                    sender.sendMessage(getLocaleMessageComponent("too-few-args"));
                     return;
                 }
                 List<Player> playersToKick = new ArrayList<>();
                 if (List.of("*", "@a").contains(args[1].toLowerCase())) {
                     playersToKick.addAll(planet.getPlayers());
                     playersToKick.remove(player);
-                    sender.sendMessage(getLocaleMessage("world.players.kick.all"));
+                    sender.sendMessage(getLocaleMessageComponent("world.players.kick.all"));
                 } else {
                     Player playerToKick = Bukkit.getPlayer(args[1]);
                     if (playerToKick == null || !planet.getPlayers().contains(playerToKick)) {
-                        sender.sendMessage(getLocaleMessage("not-found-player"));
+                        sender.sendMessage(getLocaleMessageComponent("not-found-player"));
                         return;
                     }
                     if (planet.isOwner(playerToKick)) {
-                        sender.sendMessage(getLocaleMessage("same-player"));
+                        sender.sendMessage(getLocaleMessageComponent("same-player"));
                         return;
                     }
                     if (playerToKick.hasPermission("opencreative.world.kick.bypass")) {
@@ -265,19 +265,19 @@ public class WorldCommand extends CommandHandler {
             }
             case "unban", "unblacklist" -> {
                 if (!planet.isOwner(player)) {
-                    sender.sendMessage(getLocaleMessage("not-owner"));
+                    sender.sendMessage(getLocaleMessageComponent("not-owner"));
                     return;
                 }
                 if (args.length == 1) {
-                    sender.sendMessage(getLocaleMessage("too-few-args"));
+                    sender.sendMessage(getLocaleMessageComponent("too-few-args"));
                     return;
                 }
                 if (planet.isOwner(Bukkit.getOfflinePlayer(args[1]).getUniqueId())) {
-                    sender.sendMessage(getLocaleMessage("same-player"));
+                    sender.sendMessage(getLocaleMessageComponent("same-player"));
                     return;
                 }
                 if (!planet.getWorldPlayers().isBanned(args[1])) {
-                    sender.sendMessage(getLocaleMessage("not-found-player"));
+                    sender.sendMessage(getLocaleMessageComponent("not-found-player"));
                     return;
                 }
                 planet.getWorldPlayers().unbanPlayer(args[1]);
@@ -285,19 +285,19 @@ public class WorldCommand extends CommandHandler {
             }
             case "unwhitelist", "unwhite" -> {
                 if (!planet.isOwner(player)) {
-                    sender.sendMessage(getLocaleMessage("not-owner"));
+                    sender.sendMessage(getLocaleMessageComponent("not-owner"));
                     return;
                 }
                 if (args.length == 1) {
-                    sender.sendMessage(getLocaleMessage("too-few-args"));
+                    sender.sendMessage(getLocaleMessageComponent("too-few-args"));
                     return;
                 }
                 if (planet.isOwner(Bukkit.getOfflinePlayer(args[1]).getUniqueId())) {
-                    sender.sendMessage(getLocaleMessage("same-player"));
+                    sender.sendMessage(getLocaleMessageComponent("same-player"));
                     return;
                 }
                 if (!planet.getWorldPlayers().isWhitelisted(args[1])) {
-                    sender.sendMessage(getLocaleMessage("not-found-player"));
+                    sender.sendMessage(getLocaleMessageComponent("not-found-player"));
                     return;
                 }
                 planet.getWorldPlayers().removeFromWhitelist(args[1]);
@@ -305,22 +305,22 @@ public class WorldCommand extends CommandHandler {
             }
             case "exp", "e", "experiment", "experiments" -> {
                 if (!planet.isOwner(player)) {
-                    sender.sendMessage(getLocaleMessage("not-owner"));
+                    sender.sendMessage(getLocaleMessageComponent("not-owner"));
                     return;
                 }
                 if (!sender.hasPermission("opencreative.world.experiments")) {
-                    sender.sendMessage(getLocaleMessage("no-perms"));
+                    sender.sendMessage(getLocaleMessageComponent("no-perms"));
                     return;
                 }
                 if (args.length == 1) {
-                    sender.sendMessage(getLocaleMessage("too-few-args"));
+                    sender.sendMessage(getLocaleMessageComponent("too-few-args"));
                     return;
                 }
                 planet.getExperiments().handle(player, Arrays.copyOfRange(args, 1, args.length));
             }
             case "size" -> {
                 if (!sender.hasPermission("opencreative.world.size")) {
-                    sender.sendMessage(getLocaleMessage("no-perms"));
+                    sender.sendMessage(getLocaleMessageComponent("no-perms"));
                     return;
                 }
                 long settingsSize = getFileSize(new File(getPlanetFolder(planet), "settings.yml"));
@@ -341,7 +341,7 @@ public class WorldCommand extends CommandHandler {
             }
             case "mem", "tps", "memory" -> {
                 if (!sender.hasPermission("opencreative.world.memory")) {
-                    sender.sendMessage(getLocaleMessage("no-perms"));
+                    sender.sendMessage(getLocaleMessageComponent("no-perms"));
                     return;
                 }
                 int chunks = planet.getTerritory().getWorld().getChunkCount()
@@ -356,11 +356,11 @@ public class WorldCommand extends CommandHandler {
             }
             case "platformer" -> {
                 if (!sender.hasPermission("opencreative.world.set-platformer")) {
-                    sender.sendMessage(getLocaleMessage("no-perms"));
+                    sender.sendMessage(getLocaleMessageComponent("no-perms"));
                     return;
                 }
                 if (args.length == 1) {
-                    sender.sendMessage(getLocaleMessage("too-few-args"));
+                    sender.sendMessage(getLocaleMessageComponent("too-few-args"));
                     return;
                 }
                 String platformerID = args[1].toLowerCase();
@@ -391,20 +391,20 @@ public class WorldCommand extends CommandHandler {
             }
             case "download" -> {
                 if (!sender.hasPermission("opencreative.world.download")) {
-                    sender.sendMessage(getLocaleMessage("no-perms"));
+                    sender.sendMessage(getLocaleMessageComponent("no-perms"));
                     return;
                 }
                 if (!OpenCreative.getDownloadManager().isWorking()) {
-                    sender.sendMessage(getLocaleMessage("world.downloader.unavailable"));
+                    sender.sendMessage(getLocaleMessageComponent("world.downloader.unavailable"));
                     return;
                 }
                 if (!planet.isOwner(player) && !player.hasPermission("opencreative.world.download.others")) {
-                    sender.sendMessage(getLocaleMessage("not-owner"));
+                    sender.sendMessage(getLocaleMessageComponent("not-owner"));
                     return;
                 }
                 if (!checkAndSetCooldownWithMessage(player, CooldownUtils.CooldownType.WORLD_DOWNLOAD)) return;
                 Sounds.WORLD_DOWNLOADER_UPLOADING.play(player);
-                sender.sendMessage(getLocaleMessage("world.downloader.uploading"));
+                sender.sendMessage(getLocaleMessageComponent("world.downloader.uploading"));
                 new BukkitRunnable() {
                     @Override
                     public void run() {
@@ -416,9 +416,9 @@ public class WorldCommand extends CommandHandler {
                         }).exceptionally(error -> {
                             Sounds.PLAYER_ERROR.play(player);
                             if (error.getCause() instanceof TooBigWorldException) {
-                                player.sendMessage(getLocaleMessage("world.downloader.size-limit"));
+                                player.sendMessage(getLocaleMessageComponent("world.downloader.size-limit"));
                             } else {
-                                player.sendMessage(getLocaleMessage("world.downloader.failed"));
+                                player.sendMessage(getLocaleMessageComponent("world.downloader.failed"));
                             }
                             return null;
                         });

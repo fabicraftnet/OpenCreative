@@ -20,7 +20,7 @@ package ua.mcchickenstudio.opencreative.managers.stability;
 
 import org.jetbrains.annotations.NotNull;
 
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 public enum StabilityState {

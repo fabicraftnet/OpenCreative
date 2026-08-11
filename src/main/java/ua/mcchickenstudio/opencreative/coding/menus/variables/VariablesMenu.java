@@ -27,9 +27,10 @@ import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.coding.variables.ValueType;
 import ua.mcchickenstudio.opencreative.menus.AbstractMenu;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 
 public final class VariablesMenu extends AbstractMenu {
 
@@ -44,7 +45,7 @@ public final class VariablesMenu extends AbstractMenu {
     private final ItemStack VECTOR_ITEM = createItem(Material.PRISMARINE_SHARD, 1, "menus.developer.variables.items.vector");
 
     public VariablesMenu() {
-        super(1, getLocaleMessage("menus.developer.variables.title"));
+        super(1, MessageUtils.getLocaleMessageComponent("menus.developer.variables.title"));
     }
 
     @Override

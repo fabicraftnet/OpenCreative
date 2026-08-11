@@ -64,11 +64,11 @@ public final class ExecutorTypeSelectionMenu extends BlocksWithMenusCategoryMenu
             icon = createItem(Material.LIGHT_GRAY_STAINED_GLASS, 1, "items.developer.events." + executor.getID().replace("_", "-"));
         }
         if (executor instanceof EventAwaiter event) {
-            addLoreAtEnd(icon, (event.isCancellable() ? getLocaleMessage("items.developer.events.cancellable", false) : Component.text("")));
+            addLoreAtEnd(icon, (event.isCancellable() ? getLocaleMessageComponent("items.developer.events.cancellable", false) : Component.text("")));
         }
         if (executor.isDisabled()) {
             icon.setType(Material.LIGHT_GRAY_STAINED_GLASS);
-            addLoreAtEnd(icon, getLocaleMessage("disabled"));
+            addLoreAtEnd(icon, getLocaleMessageComponent("disabled"));
         }
         setPersistentData(icon, getCodingValueKey(), executor.getID());
         return icon;
@@ -95,7 +95,7 @@ public final class ExecutorTypeSelectionMenu extends BlocksWithMenusCategoryMenu
                 translateBlockSign(signLocation.getBlock());
                 getPlayer().closeInventory();
                 getPlayer().showTitle(Title.title(
-                        (getLocaleMessage("world.dev-mode.set-events")), item.getItemMeta().displayName(),
+                        (getLocaleMessageComponent("world.dev-mode.set-events")), item.getItemMeta().displayName(),
                         Title.Times.times(Duration.ofMillis(750), Duration.ofSeconds(1), Duration.ofMillis(750))
                 ));
                 Sounds.DEV_SET_EVENT.play(event.getWhoClicked());

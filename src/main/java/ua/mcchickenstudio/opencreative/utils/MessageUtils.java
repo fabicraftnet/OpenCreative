@@ -90,7 +90,12 @@ public final class MessageUtils {
     );
     private static File localizationFile;
     private static FileConfiguration localizationConfig;
-    public static final MiniMessage miniMessage = MiniMessage.miniMessage();
+
+    /**
+     * MiniMessage providers for user inputs and plugin messages.
+     * Plugin minimessage provider can be expanded as needed but needs a
+     * refactor to ensure that no user inputs get passed to it.
+     */
     public static final MiniMessage userMM = MiniMessage.builder()
             .tags(TagResolver.builder()
                     .resolver(StandardTags.color())
@@ -105,6 +110,7 @@ public final class MessageUtils {
                     .resolver(StandardTags.sprite())
                     .build())
         .build();
+    public static final MiniMessage miniMessage = userMM;
     /**
      * Converts text into component by deserializing it with
      * legacy serializer (if message has & or § symbol), or with
@@ -332,15 +338,6 @@ public final class MessageUtils {
         return localizationConfig;
     }
 
-    /**
-     * Returns component message from translation.
-     *
-     * @param messageID id of message.
-     * @return component message, or "Error | Not found message.path...", if message was not found.
-     */
-    public static @NotNull Component getLocaleComponent(String messageID) {
-        return (getLocaleMessage(messageID));
-    }
 
     /**
      * Returns component message from translation
@@ -393,32 +390,27 @@ public final class MessageUtils {
 
         return result;
     }
-
-    /**
-     * Returns component message from translation
-     * with parsed player placeholders.
-     *
-     * @param messageID           id of message.
-     * @param returnDetailedError if true - returns detailed error when message
-     *                            was not found, false - will return only path.
-     * @return component message.
-     */
-    public static Component getLocaleComponent(String messageID, boolean returnDetailedError) {
-        return (getLocaleMessage(messageID, returnDetailedError));
+    private static String missingLocalization(String messageID) {
+        if (OpenCreative.getSettings().shouldLogNotFoundMessages())
+            ErrorUtils.sendWarningErrorMessage("Not found " + messageID + " in localization file!");
+        return ("§6 Error §8| §fNot found §6" + messageID + "§f! Administration of server needs to fill that line in §6locales" + File.separator + getLanguage() + ".yml");
+    }
+    private static String missingLocalization(String messageID, boolean detailed) {
+        if (OpenCreative.getSettings().shouldLogNotFoundMessages())
+            ErrorUtils.sendWarningErrorMessage("Not found " + messageID + " in localization file!");
+        return detailed ? ("§6 Error §8| §fNot found §6" + messageID + "§f! Administration of server needs to fill that line in §6locales" + File.separator + getLanguage() + ".yml"): messageID;
     }
 
     /**
-     * Returns message from translation.
+     * Returns component message from translation.
      *
      * @param messageID id of message.
-     * @return translated message, or "Error | Not found message.path...", if message was not found.
+     * @return component message, or "Error | Not found message.path...", if message was not found.
      */
-    public static Component getLocaleMessage(String messageID) {
+    public static Component getLocaleMessageComponent(String messageID) {
         String originalMessage = getLocalization().getString(messageID);
         if (originalMessage == null || originalMessage.equalsIgnoreCase("null")) {
-            if (OpenCreative.getSettings().shouldLogNotFoundMessages())
-                ErrorUtils.sendWarningErrorMessage("Not found " + messageID + " in localization file!");
-            return toComponent("§6 Error §8| §fNot found §6" + messageID + "§f! Administration of server needs to fill that line in §6locales" + File.separator + getLanguage() + ".yml");
+            return toComponent(missingLocalization(messageID));
         } else {
             return toComponent(
                     originalMessage.replace("%prefix%", getPrefix())
@@ -429,9 +421,7 @@ public final class MessageUtils {
     public static String getLocaleMessageString(String messageID) {
         String originalMessage = getLocalization().getString(messageID);
         if (originalMessage == null || originalMessage.equalsIgnoreCase("null")) {
-            if (OpenCreative.getSettings().shouldLogNotFoundMessages())
-                ErrorUtils.sendWarningErrorMessage("Not found " + messageID + " in localization file!");
-            return ("§6 Error §8| §fNot found §6" + messageID + "§f! Administration of server needs to fill that line in §6locales" + File.separator + getLanguage() + ".yml");
+            return missingLocalization(messageID);
         } else {
             return (
                     originalMessage.replace("%prefix%", getPrefix())
@@ -448,26 +438,11 @@ public final class MessageUtils {
      * @param player    player to parse.
      * @return translated message, or "Error | Not found message.path...", if message was not found.
      */
-    public static Component getPlayerLocaleMessage(String messageID, OfflinePlayer player) {
-        String originalMessage = getLocalization().getString(messageID);
-        if (originalMessage == null || originalMessage.equalsIgnoreCase("null")) {
-            if (OpenCreative.getSettings().shouldLogNotFoundMessages())
-                ErrorUtils.sendWarningErrorMessage("Not found " + messageID + " in localization file!");
-            return toComponent( "§6 Error §8| §fNot found §6"+ messageID + "§f! Administration of server needs to fill that line in §6locales" + File.separator + getLanguage() + ".yml");
-        } else {
-            return toComponent( parsePAPI(player, originalMessage
-                    .replace("%prefix%", getPrefix())
-                    .replace("%branding%", getBranding())
-                    .replace("%cc-prefix%", getCreativeChatPrefix())
-                    .replace("%player%", player.getName() == null ? "Unknown player" : player.getName())));
-        }
-    }
+
     public static String getPlayerLocaleMessageString(String messageID, OfflinePlayer player) {
         String originalMessage = getLocalization().getString(messageID);
         if (originalMessage == null || originalMessage.equalsIgnoreCase("null")) {
-            if (OpenCreative.getSettings().shouldLogNotFoundMessages())
-                ErrorUtils.sendWarningErrorMessage("Not found " + messageID + " in localization file!");
-            return ( "§6 Error §8| §fNot found §6"+ messageID + "§f! Administration of server needs to fill that line in §6locales" + File.separator + getLanguage() + ".yml");
+            return missingLocalization(messageID);
         } else {
             return ( parsePAPI(player, originalMessage
                     .replace("%prefix%", getPrefix())
@@ -475,6 +450,9 @@ public final class MessageUtils {
                     .replace("%cc-prefix%", getCreativeChatPrefix())
                     .replace("%player%", player.getName() == null ? "Unknown player" : player.getName())));
         }
+    }
+    public static Component getPlayerLocaleMessage(String messageID, OfflinePlayer player) {
+        return  toComponent(getPlayerLocaleMessageString(messageID,player));
     }
 
     public static @NotNull Component getUnknownArgumentMessage(@NotNull String label, @NotNull String[] args) {
@@ -502,30 +480,22 @@ public final class MessageUtils {
     public static String getLocaleMessageString(String messageID, boolean returnDetailedError) {
         String originalMessage = getLocalization().getString(messageID);
         if (originalMessage == null || originalMessage.equalsIgnoreCase("null")) {
-            if (OpenCreative.getSettings().shouldLogNotFoundMessages())
-                ErrorUtils.sendWarningErrorMessage("Not found " + messageID + " in localization file!");
-            if (returnDetailedError) {
-                return "§6 Error §8| §fNot found §6" + messageID + "§f! Administration of server needs to fill that line in §6locales" + File.separator + getLanguage() + ".yml";
-            } else {
-                return messageID;
-            }
+                return missingLocalization(messageID, returnDetailedError);
         } else {
             return ChatColor.translateAlternateColorCodes('&', originalMessage.replace("%prefix%", getPrefix()).replace("%branding%", getBranding()).replace("%cc-prefix%", getCreativeChatPrefix()));
         }
     }
-    public static Component getLocaleMessage(String messageID, boolean returnDetailedError) {
-        String originalMessage = getLocalization().getString(messageID);
-        if (originalMessage == null || originalMessage.equalsIgnoreCase("null")) {
-            if (OpenCreative.getSettings().shouldLogNotFoundMessages())
-                ErrorUtils.sendWarningErrorMessage("Not found " + messageID + " in localization file!");
-            if (returnDetailedError) {
-                return   toComponent( "§6 Error §8| §fNot found §6"+ messageID + "§f! Administration of server needs to fill that line in §6locales" + File.separator + getLanguage() + ".yml");
-            } else {
-                return Component.text(messageID);
-            }
-        } else {
-            return toComponent( originalMessage.replace("%prefix%", getPrefix()).replace("%branding%", getBranding()).replace("%cc-prefix%", getCreativeChatPrefix()));
-        }
+    /**
+     * Returns component message from translation
+     * with parsed player placeholders.
+     *
+     * @param messageID           id of message.
+     * @param returnDetailedError if true - returns detailed error when message
+     *                            was not found, false - will return only path.
+     * @return component message.
+     */
+    public static Component getLocaleMessageComponent(String messageID, boolean returnDetailedError) {
+        return toComponent(getLocaleMessageString(messageID,returnDetailedError));
     }
 
     /**
@@ -535,15 +505,7 @@ public final class MessageUtils {
      * @return translated item name, or "Not found: message.path", if message was not found.
      */
     public static Component getLocaleItemName(String nameID) {
-        String originalName = getLocalization().getString(nameID);
-        if (originalName == null || originalName.equalsIgnoreCase("null")) {
-            if (OpenCreative.getSettings().shouldLogNotFoundMessages())
-                ErrorUtils.sendWarningErrorMessage("Not found item name " + nameID + " in localization file!");
-            return miniMessage.deserialize("<white>fNot found: " + nameID);
-        } else {
-            if (originalName.length() > 50) originalName = originalName.substring(0, 50);
-            return toComponent(originalName.replace("%prefix%", getPrefix()).replace("%cc-prefix%", getCreativeChatPrefix()).replace("%branding%", getBranding()));
-        }
+        return toComponent(getLocaleItemNameString(nameID));
     }
     /**
      * Returns item name from translation.
@@ -638,7 +600,7 @@ public final class MessageUtils {
             elapsedTime = elapsedTime.concat(elapsedTimeInMinutes + " " + getLocaleMessageString("time.minutes", false) + " ");
         if (elapsedTimeInSeconds > 0)
             elapsedTime = elapsedTime.concat(elapsedTimeInSeconds + " " + getLocaleMessageString("time.seconds", false) + " ");
-        if ((currentTime - oldTime) < 1000) elapsedTime = getLocaleMessage("time.less-second", false) + " ";
+        if ((currentTime - oldTime) < 1000) elapsedTime = getLocaleMessageComponent("time.less-second", false) + " ";
 
         return elapsedTime + getLocaleMessageString("time.ago", false);
 

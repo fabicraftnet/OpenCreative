@@ -61,7 +61,7 @@ public class WanderSettingsMenu extends AbstractMenu {
     private final ItemStack CHANGE_SOCIAL_TELEGRAM = createItem(Material.LIGHT_BLUE_STAINED_GLASS, 1, "menus.profile-settings.items.change-social-telegram", "telegram");
 
     public WanderSettingsMenu(@NotNull String nickname) {
-        super(4, getLocaleMessage("menus.profile-settings.title", false));
+        super(4, getLocaleMessageComponent("menus.profile-settings.title", false));
         this.nickname = nickname;
         this.wander = OpenCreative.getOfflineWander(Bukkit.getOfflinePlayer(nickname).getUniqueId());
         CHANGE_GENDER = new ParameterButton(
@@ -133,11 +133,11 @@ public class WanderSettingsMenu extends AbstractMenu {
         switch (getItemType(item)) {
             case "description" -> {
                 player.showTitle(Title.title(
-                        (getLocaleMessage("settings.profile-description.title")), (getLocaleMessage("settings.world-description.subtitle")),
+                        (getLocaleMessageComponent("settings.profile-description.title")), (getLocaleMessageComponent("settings.world-description.subtitle")),
                         Title.Times.times(Duration.ofMillis(100), Duration.ofSeconds(30), Duration.ofMillis(130))
                 ));
                 PlayerConfirmation.setConfirmation(player, PlayerConfirmation.PROFILE_DESCRIPTION);
-                player.sendMessage(getLocaleMessage("settings.profile-description.usage"));
+                player.sendMessage(getLocaleMessageComponent("settings.profile-description.usage"));
                 player.closeInventory();
             }
             case "gender" -> {
@@ -153,11 +153,11 @@ public class WanderSettingsMenu extends AbstractMenu {
                 String social = getItemType(item);
                 PlayerConfirmation.setConfirmation(player, PlayerConfirmation.PROFILE_SOCIAL_CHANGE, social);
                 player.showTitle(Title.title(
-                        getLocaleComponent("settings.profile-social-" + social + ".title"),
-                        getLocaleComponent("settings.profile-social-" + social + ".subtitle"),
+                        MessageUtils.getLocaleMessageComponent("settings.profile-social-" + social + ".title"),
+                        MessageUtils.getLocaleMessageComponent("settings.profile-social-" + social + ".subtitle"),
                         Title.Times.times(Duration.ofMillis(100), Duration.ofSeconds(30), Duration.ofMillis(130))
                 ));
-                player.sendMessage(getLocaleMessage("settings.profile-social-" + social + ".usage"));
+                player.sendMessage(getLocaleMessageComponent("settings.profile-social-" + social + ".usage"));
                 player.closeInventory();
             }
         }

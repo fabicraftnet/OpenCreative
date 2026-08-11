@@ -47,7 +47,7 @@ import ua.mcchickenstudio.opencreative.utils.world.WorldUtils;
 
 import java.util.List;
 
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleComponent;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 
 public final class EntityStateListener implements Listener {
 
@@ -422,7 +422,7 @@ public final class EntityStateListener implements Listener {
             Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
             if (planet != null) {
                 if ((planet.getMode() == Planet.Mode.BUILD) && !planet.getWorldPlayers().canBuild(player)) {
-                    player.sendActionBar(getLocaleComponent("not-builder"));
+                    player.sendActionBar(getLocaleMessageComponent("not-builder"));
                     event.setCancelled(true);
                     return;
                 } else if (planet.getFlagValue(PlanetFlags.PlanetFlag.VEHICLE_INTERACT) != 1 && planet.getMode() == Planet.Mode.PLAYING) {
@@ -442,7 +442,7 @@ public final class EntityStateListener implements Listener {
             Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
             if (planet != null) {
                 if ((planet.getMode() == Planet.Mode.BUILD) && !planet.getWorldPlayers().canBuild(player)) {
-                    player.sendActionBar(getLocaleComponent("not-builder"));
+                    player.sendActionBar(getLocaleMessageComponent("not-builder"));
                     event.setCancelled(true);
                     return;
                 } else if (planet.getFlagValue(PlanetFlags.PlanetFlag.VEHICLE_INTERACT) != 1 && planet.getMode() == Planet.Mode.PLAYING) {

@@ -33,6 +33,7 @@ import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.CodeConfiguration;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.utils.ItemUtils;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -186,7 +187,7 @@ public class ModuleInfo {
         ItemStack item = icon.clone();
         ItemMeta meta = item.getItemMeta();
         meta.itemName(
-                getLocaleComponent("menus.modules.items.module.name")
+                MessageUtils.getLocaleMessageComponent("menus.modules.items.module.name")
                         .replaceText(TextReplacementConfig.builder()
                                 .match("%moduleName%")
                                 .replacement(displayName()).build()));

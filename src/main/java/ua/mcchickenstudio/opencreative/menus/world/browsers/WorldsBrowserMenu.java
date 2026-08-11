@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Set;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getPlayerLocaleMessage;
 
 /**
@@ -54,7 +54,7 @@ public class WorldsBrowserMenu extends ListBrowserMenu<Planet> {
     private int sortType = 1;
 
     public WorldsBrowserMenu(Player player, Set<Planet> planets) {
-        super(player, getLocaleMessage("menus.all-worlds.title", false), PlacementLayout.BOTTOM_NO_DECORATION,
+        super(player, getLocaleMessageComponent("menus.all-worlds.title", false), PlacementLayout.BOTTOM_NO_DECORATION,
                 new int[]{45, 48, 50}, new int[]{45, 46, 52, 53});
         this.planets = new ArrayList<>(planets);
         Comparator<Planet> sortByOnline = (planet1, planet2) -> Integer.compare(planet2.getInformation().getAsyncOnline(), planet1.getInformation().getAsyncOnline());
@@ -63,7 +63,7 @@ public class WorldsBrowserMenu extends ListBrowserMenu<Planet> {
     }
 
     public WorldsBrowserMenu(Player player, Set<Planet> planets, boolean withRecommendedButton) {
-        super(player, getLocaleMessage("menus.all-worlds.title", false), PlacementLayout.BOTTOM_NO_DECORATION,
+        super(player, getLocaleMessageComponent("menus.all-worlds.title", false), PlacementLayout.BOTTOM_NO_DECORATION,
                 new int[]{45, 48, 50}, new int[]{45, 46, 52, 53});
         this.planets = new ArrayList<>(planets);
         Comparator<Planet> sortByOnline = (planet1, planet2) -> Integer.compare(planet2.getInformation().getAsyncOnline(), planet1.getInformation().getAsyncOnline());

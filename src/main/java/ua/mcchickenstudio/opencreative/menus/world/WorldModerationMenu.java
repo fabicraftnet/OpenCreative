@@ -33,7 +33,7 @@ import ua.mcchickenstudio.opencreative.settings.Sounds;
 import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 public final class WorldModerationMenu extends AbstractMenu implements WorldMenu {
@@ -52,7 +52,7 @@ public final class WorldModerationMenu extends AbstractMenu implements WorldMenu
     private final ItemStack CLOSE_WORLD = createItem(Material.BARRIER, 1, "menus.world-moderation.items.close-world", "close-world");
 
     public WorldModerationMenu(Planet planet) {
-        super(4, MessageUtils.getLocaleMessage("menus.world-moderation.title", false));
+        super(4, MessageUtils.getLocaleMessageComponent("menus.world-moderation.title", false));
         this.planet = planet;
     }
 

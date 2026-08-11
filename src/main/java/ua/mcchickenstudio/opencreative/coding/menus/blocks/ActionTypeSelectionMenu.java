@@ -43,8 +43,7 @@ import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.setSignLine;
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.toComponent;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.translateBlockSign;
 
 public final class ActionTypeSelectionMenu extends BlocksWithMenusCategoryMenu<ActionType> {
@@ -110,7 +109,7 @@ public final class ActionTypeSelectionMenu extends BlocksWithMenusCategoryMenu<A
                 translateBlockSign(signLocation.getBlock());
                 getPlayer().closeInventory();
                 getPlayer().showTitle(Title.title(
-                        (getLocaleMessage("world.dev-mode.set-" + (action.isCondition() ? "conditions" : "actions"),true)), item.getItemMeta().displayName(),
+                        (getLocaleMessageComponent("world.dev-mode.set-" + (action.isCondition() ? "conditions" : "actions"),true)), item.getItemMeta().displayName(),
                         Title.Times.times(Duration.ofMillis(750), Duration.ofSeconds(1), Duration.ofMillis(750))
                 ));
                 (action.isCondition() ? Sounds.DEV_SET_CONDITION : Sounds.DEV_SET_ACTION).play(event.getWhoClicked());

@@ -30,6 +30,7 @@ import ua.mcchickenstudio.opencreative.planets.DevPlanet;
 import ua.mcchickenstudio.opencreative.planets.DevPlatform;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,7 +38,7 @@ import java.util.List;
 import java.util.Set;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.createItem;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 
 public final class WorldEnvironmentColorMenu extends AbstractListMenu<Material> implements WorldMenu {
 
@@ -48,7 +49,7 @@ public final class WorldEnvironmentColorMenu extends AbstractListMenu<Material> 
     private final DevPlatform platform;
 
     public WorldEnvironmentColorMenu(Player player, DevPlanet devPlanet, DevPlatform devPlatform, String type) {
-        super(player, getLocaleMessage("menus.developer.environment.colors.title"),
+        super(player, MessageUtils.getLocaleMessageComponent("menus.developer.environment.colors.title"),
                 new int[]{10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25}, new int[]{36},
                 new int[]{37, 38, 42, 43, 44}
         );

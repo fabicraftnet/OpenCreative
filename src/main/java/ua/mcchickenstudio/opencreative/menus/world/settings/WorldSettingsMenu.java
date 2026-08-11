@@ -77,7 +77,7 @@ public final class WorldSettingsMenu extends AbstractMenu implements WorldMenu {
     private ItemStack worldIcon;
 
     public WorldSettingsMenu(Planet planet, Player player) {
-        super(6, getLocaleMessage("menus.world-settings.title", false));
+        super(6, getLocaleMessageComponent("menus.world-settings.title", false));
         this.planet = planet;
         this.player = player;
         worldIcon = getPlanetIcon();
@@ -158,7 +158,7 @@ public final class WorldSettingsMenu extends AbstractMenu implements WorldMenu {
         }
         if (itemEquals(currentItem, name)) {
             player.showTitle(Title.title(
-                    (getLocaleMessage("settings.world-name.title")), (getLocaleMessage("settings.world-name.subtitle")),
+                    (getLocaleMessageComponent("settings.world-name.title")), (getLocaleMessageComponent("settings.world-name.subtitle")),
                     Title.Times.times(Duration.ofMillis(100), Duration.ofSeconds(30), Duration.ofMillis(130))
             ));
             player.sendMessage(toComponent(getLocaleMessageString("settings.world-name.usage").replace("%player%", player.getName())));
@@ -173,10 +173,10 @@ public final class WorldSettingsMenu extends AbstractMenu implements WorldMenu {
             }
             else {
             player.showTitle(Title.title(
-                    (getLocaleMessage("settings.world-description.title")), (getLocaleMessage("settings.world-description.subtitle")),
+                    (getLocaleMessageComponent("settings.world-description.title")), (getLocaleMessageComponent("settings.world-description.subtitle")),
                     Title.Times.times(Duration.ofMillis(100), Duration.ofSeconds(30), Duration.ofMillis(130))
             ));
-            player.sendMessage(getLocaleMessage("settings.world-description.usage"));
+            player.sendMessage(getLocaleMessageComponent("settings.world-description.usage"));
             player.closeInventory();
             if (!PlayerConfirmation.hasConfirmation(player)) {
                 PlayerConfirmation.setConfirmation(player, PlayerConfirmation.WORLD_DESCRIPTION_CHANGE);
@@ -184,7 +184,7 @@ public final class WorldSettingsMenu extends AbstractMenu implements WorldMenu {
             }
         } else if (itemEquals(currentItem, customID)) {
             player.showTitle(Title.title(
-                    (getLocaleMessage("settings.world-id.title")), (getLocaleMessage("settings.world-id.subtitle")),
+                    (getLocaleMessageComponent("settings.world-id.title")), (getLocaleMessageComponent("settings.world-id.subtitle")),
                     Title.Times.times(Duration.ofMillis(100), Duration.ofSeconds(30), Duration.ofMillis(130))
             ));
             player.sendMessage(toComponent(getLocaleMessageString("settings.world-id.usage").replace("%player%", player.getName())));
@@ -201,7 +201,7 @@ public final class WorldSettingsMenu extends AbstractMenu implements WorldMenu {
             if (event.getClick().isLeftClick()) {
                 planet.getTerritory().setSpawnLocation(player.getLocation());
                 player.showTitle(Title.title(
-                        (getLocaleMessage("settings.world-spawn.title")), (getLocaleMessage("settings.world-spawn.subtitle")),
+                        (getLocaleMessageComponent("settings.world-spawn.title")), (getLocaleMessageComponent("settings.world-spawn.subtitle")),
                         Title.Times.times(Duration.ofMillis(100), Duration.ofSeconds(2), Duration.ofMillis(130))
                 ));
                 Sounds.WORLD_SETTINGS_SPAWN_SET.play(player);
@@ -236,7 +236,7 @@ public final class WorldSettingsMenu extends AbstractMenu implements WorldMenu {
                 planetEvent.callEvent();
                 if (planetEvent.isCancelled()) return;
                 planet.setSharing(Planet.Sharing.PUBLIC);
-                player.sendMessage(getLocaleMessage("settings.world-sharing.enabled"));
+                player.sendMessage(getLocaleMessageComponent("settings.world-sharing.enabled"));
                 Sounds.WORLD_SETTINGS_SHARING_PUBLIC.play(player);
                 planet.getInformation().updateIcon();
             } else {
@@ -244,7 +244,7 @@ public final class WorldSettingsMenu extends AbstractMenu implements WorldMenu {
                 planetEvent.callEvent();
                 if (planetEvent.isCancelled()) return;
                 planet.setSharing(Planet.Sharing.PRIVATE);
-                player.sendMessage(getLocaleMessage("settings.world-sharing.disabled"));
+                player.sendMessage(getLocaleMessageComponent("settings.world-sharing.disabled"));
                 Sounds.WORLD_SETTINGS_SHARING_PRIVATE.play(player);
                 planet.getInformation().updateIcon();
             }
@@ -283,11 +283,11 @@ public final class WorldSettingsMenu extends AbstractMenu implements WorldMenu {
             }
         } else if (itemEquals(currentItem, worldIcon)) {
             if (event.getCursor().isEmpty()) {
-                player.sendMessage(getLocaleMessage("settings.world-icon.error"));
+                player.sendMessage(getLocaleMessageComponent("settings.world-icon.error"));
                 Sounds.PLAYER_FAIL.play(player);
             } else {
                 planet.getInformation().setIcon(event.getCursor());
-                player.sendMessage(getLocaleMessage("settings.world-icon.changed"));
+                player.sendMessage(getLocaleMessageComponent("settings.world-icon.changed"));
                 worldIcon = getPlanetIcon();
                 setItem(49, getPlanetIcon());
                 event.setCursor(null);

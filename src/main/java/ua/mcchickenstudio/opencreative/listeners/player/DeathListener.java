@@ -68,7 +68,7 @@ public final class DeathListener implements Listener {
                 new PlayerKilledPlayerEvent(killer, player, event).callEvent();
             }
             player.showTitle(Title.title(
-                    (getLocaleMessage("deaths.title", false)), Component.text("§7 " + player.getName() + "§f " + translateDeathMessage(player)),
+                    (getLocaleMessageComponent("deaths.title", false)), Component.text("§7 " + player.getName() + "§f " + translateDeathMessage(player)),
                     Title.Times.times(Duration.ofMillis(750), Duration.ofSeconds(2), Duration.ofMillis(500))
             ));
         } else if (isLobbyWorld(event.getPlayer().getWorld())) {

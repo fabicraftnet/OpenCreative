@@ -43,7 +43,7 @@ public final class WorldSettingsCategoryMenu extends AbstractMenu implements Wor
     private final ItemStack BACK_ITEM = createItem(ARROW, 1, "menus.world-settings-categories.items.back");
 
     public WorldSettingsCategoryMenu(Planet planet) {
-        super(6, MessageUtils.getLocaleMessage("menus.world-settings.title"));
+        super(6, MessageUtils.getLocaleMessageComponent("menus.world-settings.title"));
         this.currentCategory = planet.getInformation().getCategory();
         this.planet = planet;
     }

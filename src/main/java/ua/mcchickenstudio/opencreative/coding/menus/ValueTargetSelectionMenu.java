@@ -39,7 +39,7 @@ public final class ValueTargetSelectionMenu extends AbstractMenu {
     private final Player player;
 
     public ValueTargetSelectionMenu(@NotNull Player player) {
-        super(1, getLocaleMessage("menus.developer.selection.title-values"));
+        super(1, getLocaleMessageComponent("menus.developer.selection.title-values"));
         this.player = player;
     }
 
@@ -76,7 +76,7 @@ public final class ValueTargetSelectionMenu extends AbstractMenu {
             addLoreAtBegin(itemInHand, toComponent(getLocaleMessageString("menus.developer.event-values.target",true)
                     .replace("%target%", target.getLocaleName())));
             player.showTitle(Title.title(
-                    (getLocaleMessage("world.dev-mode.set-target")), toComponent(target.getLocaleName()),
+                    (getLocaleMessageComponent("world.dev-mode.set-target")), toComponent(target.getLocaleName()),
                     Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
             ));
             player.closeInventory();

@@ -54,7 +54,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendDebugError;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isDevPlanet;
 

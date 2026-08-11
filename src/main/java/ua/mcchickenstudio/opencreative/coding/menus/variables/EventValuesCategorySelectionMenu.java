@@ -26,7 +26,7 @@ import ua.mcchickenstudio.opencreative.coding.menus.blocks.ContentWithMenusCateg
 import ua.mcchickenstudio.opencreative.coding.menus.blocks.MenusCategorySelectionMenu;
 import ua.mcchickenstudio.opencreative.coding.values.EventValues;
 
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 
 /**
  * This class represents a menu where player
@@ -37,7 +37,7 @@ public final class EventValuesCategorySelectionMenu extends MenusCategorySelecti
     public EventValuesCategorySelectionMenu(@NotNull Player player,
                                             @NotNull ItemStack currentItem) {
         super(player, currentItem, Material.ORANGE_STAINED_GLASS_PANE, EventValues.getInstance().getCategories(),
-                getLocaleMessage("menus.developer.event-values.title", false),
+                getLocaleMessageComponent("menus.developer.event-values.title", false),
                 "event-values", "");
     }
 

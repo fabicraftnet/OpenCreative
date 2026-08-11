@@ -267,7 +267,7 @@ public final class ChatListener implements Listener {
                 setPersistentData(itemInHand, getCodingValueKey(), "TEXT");
                 player.getInventory().setItemInMainHand(itemInHand);
                 player.showTitle(Title.title(
-                        (getLocaleMessage("world.dev-mode.set-variable")), meta.displayName(),
+                        (getLocaleMessageComponent("world.dev-mode.set-variable")), meta.displayName(),
                         Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
                 ));
                 player.swingMainHand();
@@ -282,7 +282,7 @@ public final class ChatListener implements Listener {
                 Double number = parseTicks(numberString);
                 if (number == null) {
                     player.showTitle(Title.title(
-                            Component.empty(), (getLocaleMessage("world.dev-mode.set-variable-number-error")),
+                            Component.empty(), (getLocaleMessageComponent("world.dev-mode.set-variable-number-error")),
                             Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
                     ));
                     return;
@@ -294,7 +294,7 @@ public final class ChatListener implements Listener {
                 Sounds.DEV_NUMBER_SET.play(player);
                 player.setItemInHand(itemInHand);
                 player.showTitle(Title.title(
-                        (getLocaleMessage("world.dev-mode.set-variable")), meta.displayName(),
+                        (getLocaleMessageComponent("world.dev-mode.set-variable")), meta.displayName(),
                         Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
                 ));
                 player.swingMainHand();
@@ -319,7 +319,7 @@ public final class ChatListener implements Listener {
                 Sounds.DEV_VARIABLE_SET.play(player);
                 player.getInventory().setItemInMainHand(itemInHand);
                 player.showTitle(Title.title(
-                        (getLocaleMessage("world.dev-mode.set-variable")), meta.displayName(),
+                        (getLocaleMessageComponent("world.dev-mode.set-variable")), meta.displayName(),
                         Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
                 ));
                 player.swingMainHand();
@@ -338,7 +338,7 @@ public final class ChatListener implements Listener {
                 }
                 setPersistentData(itemInHand, getCodingValueKey(), "COLOR");
                 player.showTitle(Title.title(
-                        (getLocaleMessage("world.dev-mode.set-variable")), meta.displayName(),
+                        (getLocaleMessageComponent("world.dev-mode.set-variable")), meta.displayName(),
                         Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
                 ));
                 Sounds.DEV_VALUE_SET.play(player);
@@ -508,7 +508,7 @@ public final class ChatListener implements Listener {
                 }
                 for (Planet searchablePlanet : OpenCreative.getPlanetsManager().getPlanets()) {
                     if (searchablePlanet.getInformation().getCustomID().equalsIgnoreCase(input)) {
-                        player.sendMessage(getLocaleMessage("settings.world-id.taken"));
+                        player.sendMessage(getLocaleMessageComponent("settings.world-id.taken"));
                         return true;
                     }
                 }
@@ -545,7 +545,7 @@ public final class ChatListener implements Listener {
                 if (!foundPlanetsByName.isEmpty()) {
                     Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> new WorldsBrowserMenu(player, foundPlanetsByName).open(player));
                 } else {
-                    player.sendMessage(getLocaleMessage("menus.all-worlds.items.search.not-found"));
+                    player.sendMessage(getLocaleMessageComponent("menus.all-worlds.items.search.not-found"));
                 }
                 return true;
             }
@@ -555,7 +555,7 @@ public final class ChatListener implements Listener {
                 if (!foundPlanetsByID.isEmpty()) {
                     Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> new WorldsBrowserMenu(player, foundPlanetsByID).open(player));
                 } else {
-                    player.sendMessage(getLocaleMessage("menus.all-worlds.items.search.not-found"));
+                    player.sendMessage(getLocaleMessageComponent("menus.all-worlds.items.search.not-found"));
                 }
                 return true;
             }
@@ -565,7 +565,7 @@ public final class ChatListener implements Listener {
                 if (!foundPlanets.isEmpty()) {
                     Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> new WorldsBrowserMenu(player, foundPlanets).open(player));
                 } else {
-                    player.sendMessage(getLocaleMessage("menus.all-worlds.items.search.not-found"));
+                    player.sendMessage(getLocaleMessageComponent("menus.all-worlds.items.search.not-found"));
                 }
                 return true;
             }
@@ -593,7 +593,7 @@ public final class ChatListener implements Listener {
                                 .replace("%player%", player.getName()).replace("%id%", String.valueOf(planet.getId()))));
                         PlayerConfirmation.setConfirmation(newOwnerPlayer, PlayerConfirmation.GET_OWNERSHIP);
                     } else {
-                        player.sendMessage(getLocaleMessage("world.players.transfer-ownership.wrong-id"));
+                        player.sendMessage(getLocaleMessageComponent("world.players.transfer-ownership.wrong-id"));
                     }
                 }
                 return true;
@@ -616,7 +616,7 @@ public final class ChatListener implements Listener {
                         }
                         OpenCreative.getPlugin().getLogger().info("[WORLD-CHAT: " + planet.getId() + "] " + oldOwner.getName() + " transferred world's ownership to: " + player.getName());
                         oldOwner.sendMessage(toComponent(getLocaleMessageString(("world.players.transfer-ownership.transferred-old").replace("%player%", player.getName()))));
-                        player.sendMessage(getLocaleMessage("world.players.transfer-ownership.transferred-new"));
+                        player.sendMessage(getLocaleMessageComponent("world.players.transfer-ownership.transferred-new"));
                         planet.setChangingOwner(false);
                         Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
                             planet.setOwner(player.getName());
@@ -635,9 +635,9 @@ public final class ChatListener implements Listener {
                         });
                     } else {
                         if (oldOwner != null) {
-                            oldOwner.sendMessage(getLocaleMessage("world.players.transfer-ownership.cancelled"));
+                            oldOwner.sendMessage(getLocaleMessageComponent("world.players.transfer-ownership.cancelled"));
                         }
-                        player.sendMessage(getLocaleMessage("world.players.transfer-ownership.wrong-id"));
+                        player.sendMessage(getLocaleMessageComponent("world.players.transfer-ownership.wrong-id"));
                         planet.setChangingOwner(false);
                     }
                 }

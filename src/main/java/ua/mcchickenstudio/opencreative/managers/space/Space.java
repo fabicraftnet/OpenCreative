@@ -128,7 +128,7 @@ public final class Space implements PlanetsManager, Startable {
         Wander wander = OpenCreative.getWander(owner);
         wander.setConnectingToPlanet(true);
         owner.showTitle(Title.title(
-                (getLocaleMessage("creating-world.title")), (getLocaleMessage("creating-world.subtitle")),
+                (getLocaleMessageComponent("creating-world.title")), (getLocaleMessageComponent("creating-world.subtitle")),
                 Title.Times.times(Duration.ofMillis(500), Duration.ofSeconds(30), Duration.ofSeconds(2))
         ));
         long startTime = System.currentTimeMillis();
@@ -157,7 +157,7 @@ public final class Space implements PlanetsManager, Startable {
             Bukkit.getScheduler().runTask(OpenCreative.getPlugin(), () -> {
                 wander.setConnectingToPlanet(false);
                 owner.showTitle(Title.title(
-                        (getLocaleMessage("creating-world.title")), (getLocaleMessage("creating-world.subtitle")),
+                        (getLocaleMessageComponent("creating-world.title")), (getLocaleMessageComponent("creating-world.subtitle")),
                         Title.Times.times(Duration.ofMillis(500), Duration.ofSeconds(30), Duration.ofSeconds(2))
                 ));
                 OpenCreative.getPlugin().getLogger().info("Creating new planet " + id + " by " + owner.getName() + "...");
@@ -196,7 +196,7 @@ public final class Space implements PlanetsManager, Startable {
         long startTime = System.currentTimeMillis();
 
         owner.showTitle(Title.title(
-                (getLocaleMessage("creating-world.title")), (getLocaleMessage("creating-world.subtitle")),
+                (getLocaleMessageComponent("creating-world.title")), (getLocaleMessageComponent("creating-world.subtitle")),
                 Title.Times.times(Duration.ofMillis(500), Duration.ofSeconds(30), Duration.ofSeconds(2))
         ));
         OpenCreative.getPlugin().getLogger().info("Creating new planet " + id + " by " + owner.getName() + "...");

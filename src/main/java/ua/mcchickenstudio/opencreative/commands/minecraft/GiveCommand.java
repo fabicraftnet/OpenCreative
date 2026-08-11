@@ -58,16 +58,16 @@ public class GiveCommand extends CommandHandler {
             if (!player.hasPermission("opencreative.give.bypass")) {
                 Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
                 if (planet == null) {
-                    player.sendMessage(getLocaleMessage("only-in-world"));
+                    player.sendMessage(getLocaleMessageComponent("only-in-world"));
                     return;
                 }
                 if (!(planet.isOwner(player) || planet.getWorldPlayers().canDevelop(player) || planet.getWorldPlayers().canBuild(player))) {
-                    player.sendMessage(getLocaleMessage("not-owner"));
+                    player.sendMessage(getLocaleMessageComponent("not-owner"));
                     return;
                 }
             }
             if (args.length == 0) {
-                sender.sendMessage(getLocaleMessage("commands.give.help"));
+                sender.sendMessage(getLocaleMessageComponent("commands.give.help"));
                 return;
             }
             // give apple
@@ -79,20 +79,20 @@ public class GiveCommand extends CommandHandler {
                             .replace("%material%", item.getType().name().toLowerCase())
                             .replace("%amount%", "1")));
                 } catch (IllegalArgumentException error) {
-                    player.sendMessage(getLocaleMessage("commands.give.wrong"));
+                    player.sendMessage(getLocaleMessageComponent("commands.give.wrong"));
                 }
                 // give player apple
             } else if (args.length == 2) {
                 Player givePlayer = Bukkit.getPlayer(args[0]);
                 if (givePlayer == null) {
-                    player.sendMessage(getLocaleMessage("no-player-found"));
+                    player.sendMessage(getLocaleMessageComponent("no-player-found"));
                     return;
                 }
                 Planet givePlanet = OpenCreative.getPlanetsManager().getPlanetByPlayer(givePlayer);
                 if (!player.hasPermission("opencreative.give.bypass")) {
                     Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
                     if (planet == null || !planet.equals(givePlanet)) {
-                        player.sendMessage(getLocaleMessage("no-player-found"));
+                        player.sendMessage(getLocaleMessageComponent("no-player-found"));
                         return;
                     }
                 }
@@ -104,21 +104,21 @@ public class GiveCommand extends CommandHandler {
                             .replace("%material%", item.getType().name().toLowerCase())
                             .replace("%amount%", "1")));
                 } catch (IllegalArgumentException e) {
-                    player.sendMessage(getLocaleMessage("commands.give.wrong"));
+                    player.sendMessage(getLocaleMessageComponent("commands.give.wrong"));
                 }
                 // give player item amount
             } else if (args.length == 3) {
                 try {
                     Player givePlayer = Bukkit.getPlayer(args[0]);
                     if (givePlayer == null) {
-                        player.sendMessage(getLocaleMessage("no-player-found"));
+                        player.sendMessage(getLocaleMessageComponent("no-player-found"));
                         return;
                     }
                     Planet givePlanet = OpenCreative.getPlanetsManager().getPlanetByPlayer(givePlayer);
                     if (!player.hasPermission("opencreative.give.bypass")) {
                         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
                         if (planet == null || !planet.equals(givePlanet)) {
-                            player.sendMessage(getLocaleMessage("no-player-found"));
+                            player.sendMessage(getLocaleMessageComponent("no-player-found"));
                             return;
                         }
                     }
@@ -130,9 +130,9 @@ public class GiveCommand extends CommandHandler {
                             .replace("%material%", item.getType().name().toLowerCase())
                             .replace("%amount%", String.valueOf(amount))));
                 } catch (NumberFormatException error) {
-                    player.sendMessage(getLocaleMessage("commands.give.wrong-amount"));
+                    player.sendMessage(getLocaleMessageComponent("commands.give.wrong-amount"));
                 } catch (IllegalArgumentException error) {
-                    player.sendMessage(getLocaleMessage("commands.give.wrong"));
+                    player.sendMessage(getLocaleMessageComponent("commands.give.wrong"));
                 }
             }
         }

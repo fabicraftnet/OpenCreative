@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.coding.menus.MenusCategory;
 import ua.mcchickenstudio.opencreative.menus.BlockMenu;
 
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 /**

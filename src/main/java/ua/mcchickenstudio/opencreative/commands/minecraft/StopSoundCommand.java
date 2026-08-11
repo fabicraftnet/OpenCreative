@@ -55,11 +55,11 @@ public class StopSoundCommand extends CommandHandler {
             if (!player.hasPermission("opencreative.stop-sound.bypass")) {
                 Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
                 if (planet == null) {
-                    player.sendMessage(getLocaleMessage("only-in-world"));
+                    player.sendMessage(getLocaleMessageComponent("only-in-world"));
                     return;
                 }
                 if (!(planet.isOwner(player) || planet.getWorldPlayers().canDevelop(player))) {
-                    player.sendMessage(getLocaleMessage("not-owner"));
+                    player.sendMessage(getLocaleMessageComponent("not-owner"));
                     return;
                 }
             }
@@ -75,21 +75,21 @@ public class StopSoundCommand extends CommandHandler {
             } else if (args.length == 2) {
                 target = Bukkit.getPlayer(args[0]);
                 if (target == null) {
-                    sender.sendMessage(getLocaleMessage("no-player-found"));
+                    sender.sendMessage(getLocaleMessageComponent("no-player-found"));
                     return;
                 } else if (!sender.hasPermission("opencreative.stop-sound.bypass")) {
                     Planet targetPlanet = OpenCreative.getPlanetsManager().getPlanetByPlayer(target);
                     if (!player.hasPermission("opencreative.stop-sound.bypass")) {
                         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
                         if (planet == null || !planet.equals(targetPlanet)) {
-                            player.sendMessage(getLocaleMessage("no-player-found"));
+                            player.sendMessage(getLocaleMessageComponent("no-player-found"));
                             return;
                         }
                     }
                 }
                 soundOrCategory = args[1].toUpperCase();
             } else {
-                sender.sendMessage(getLocaleMessage("commands.stop-sound.help"));
+                sender.sendMessage(getLocaleMessageComponent("commands.stop-sound.help"));
                 return;
             }
             Sound sound = null;

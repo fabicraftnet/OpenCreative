@@ -30,7 +30,7 @@ import ua.mcchickenstudio.opencreative.menus.AbstractMenu;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.createItem;
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.itemEquals;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 
 public final class RepeatConditionSelectionMenu extends AbstractMenu {
 
@@ -43,7 +43,7 @@ public final class RepeatConditionSelectionMenu extends AbstractMenu {
     private final ItemStack entityCondition = createItem(Material.BRICKS, 1, "items.developer.entity-condition");
 
     public RepeatConditionSelectionMenu(Player player, Location location, boolean opposed) {
-        super(3, getLocaleMessage("blocks.repeat_while" + (opposed ? "_not" : ""),
+        super(3, getLocaleMessageComponent("blocks.repeat_while" + (opposed ? "_not" : ""),
                 false));
         this.player = player;
         this.signLocation = location;

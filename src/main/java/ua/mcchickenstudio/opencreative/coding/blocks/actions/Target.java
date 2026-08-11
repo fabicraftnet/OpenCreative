@@ -18,7 +18,6 @@
 
 package ua.mcchickenstudio.opencreative.coding.blocks.actions;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -26,7 +25,7 @@ import org.bukkit.block.BlockFace;
 import org.jetbrains.annotations.NotNull;
 
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.getSignLine;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 /**

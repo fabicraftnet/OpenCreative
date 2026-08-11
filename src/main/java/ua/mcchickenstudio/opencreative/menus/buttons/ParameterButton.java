@@ -169,8 +169,8 @@ public class ParameterButton {
     }
 
     public void updateLore() {
-        Component turnedOn = MessageUtils.getLocaleMessage(turnedPath + ".turned-on",true);
-        Component turnedOff = MessageUtils.getLocaleMessage(turnedPath + ".turned-off",true);
+        Component turnedOn = MessageUtils.getLocaleMessageComponent(turnedPath + ".turned-on",true);
+        Component turnedOff = MessageUtils.getLocaleMessageComponent(turnedPath + ".turned-off",true);
         List<Component> newLore = new ArrayList<>();
         Component turned;
         for (Component loreLine : originalLore) {
@@ -187,7 +187,7 @@ public class ParameterButton {
                 String choicePath = localizationPath + ".choices." + (value instanceof Integer i ? (i) : value).toString();
                 Component choiceMessage = Component.text((value instanceof Integer i ? (i) : value).toString());
                 if (messageExists(choicePath)) {
-                    choiceMessage = getLocaleMessage(choicePath, false);
+                    choiceMessage = getLocaleMessageComponent(choicePath, false);
                 }
                 loreLine = loreLine.replaceText(TextReplacementConfig.builder().replacement(turned.append(choiceMessage)).match("%" + choiceNumber + "%").build());
                 //content = content.replace("%" + choiceNumber + "%", turned + choiceMessage);

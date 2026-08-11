@@ -18,7 +18,6 @@
 
 package ua.mcchickenstudio.opencreative.coding.menus.blocks;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
@@ -30,7 +29,7 @@ import ua.mcchickenstudio.opencreative.coding.blocks.executors.ExecutorCategory;
 import ua.mcchickenstudio.opencreative.coding.blocks.executors.Executors;
 import ua.mcchickenstudio.opencreative.menus.BlockMenu;
 
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 
 /**
  * <h1>BlocksCategorySelectionMenu</h1>
@@ -50,7 +49,7 @@ public final class BlocksCategorySelectionMenu extends MenusCategorySelectionMen
         super(player, category.getItem(),
                 category.getStainedPane(),
                 Executors.getInstance().getCategories(category),
-                (getLocaleMessage("blocks." + category.name().toLowerCase(),true)),
+                (getLocaleMessageComponent("blocks." + category.name().toLowerCase(),true)),
                 "events", category);
         this.location = location;
     }
@@ -61,7 +60,7 @@ public final class BlocksCategorySelectionMenu extends MenusCategorySelectionMen
         super(player, category.getItem(),
                 category.getStainedPane(),
                 ActionType.getMenusCategories(category),
-                (getLocaleMessage("blocks." + category.name().toLowerCase(),true)),
+                (getLocaleMessageComponent("blocks." + category.name().toLowerCase(),true)),
                 category.isCondition() ? "conditions" : "actions", category);
         this.location = location;
     }
@@ -73,7 +72,7 @@ public final class BlocksCategorySelectionMenu extends MenusCategorySelectionMen
         super(player, category.getItem(),
                 category.getStainedPane(),
                 ActionType.getMenusCategories(category),
-                (getLocaleMessage("blocks." + category.name().toLowerCase(),true)),
+                (getLocaleMessageComponent("blocks." + category.name().toLowerCase(),true)),
                 category.isCondition() ? "conditions" : "actions", category);
         this.firstLine = firstLine;
         this.location = location;

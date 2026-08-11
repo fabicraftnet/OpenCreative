@@ -44,7 +44,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.isOutOfBorders;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleComponent;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.sendMessageOnce;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.isEntityInDevPlanet;
 import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isDevPlanet;
@@ -189,7 +189,7 @@ public final class EntitySpawnListener implements Listener {
             if (player == null) return;
             if (OpenCreative.getSettings().getLobbySettings().isSpawningMobsDisallowed() && !player.hasPermission("opencreative.lobby.spawning-mobs.bypass")) {
                 event.setCancelled(true);
-                player.sendActionBar(getLocaleComponent("not-for-lobby"));
+                player.sendActionBar(getLocaleMessageComponent("not-for-lobby"));
             }
         }
     }

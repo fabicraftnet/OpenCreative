@@ -51,25 +51,25 @@ public class DevCommand extends CommandHandler {
     public void onExecute(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(getLocaleMessage("only-players"));
+            sender.sendMessage(getLocaleMessageComponent("only-players"));
             return;
         }
 
         if (!checkAndSetCooldownWithMessage(player, CooldownUtils.CooldownType.GENERIC_COMMAND)) return;
 
         if (player.isDead()) {
-            sender.sendMessage(getLocaleMessage("only-alive"));
+            sender.sendMessage(getLocaleMessageComponent("only-alive"));
             return;
         }
 
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
         if (planet == null) {
-            player.sendMessage(getLocaleMessage("only-in-world"));
+            player.sendMessage(getLocaleMessageComponent("only-in-world"));
             return;
         }
 
         if (!OpenCreative.getSettings().getCodingSettings().isEnabled()) {
-            player.sendMessage(getLocaleMessage("world.dev-mode.disabled"));
+            player.sendMessage(getLocaleMessageComponent("world.dev-mode.disabled"));
             return;
         }
 
@@ -78,12 +78,12 @@ public class DevCommand extends CommandHandler {
                 if (!planet.getWorldPlayers().isTrustedDeveloper(player)) {
                     Player planetOwner = Bukkit.getPlayer(planet.getOwner());
                     if (planetOwner == null) {
-                        sender.sendMessage(getLocaleMessage("world.dev-mode.cant-dev-when-offline"));
+                        sender.sendMessage(getLocaleMessageComponent("world.dev-mode.cant-dev-when-offline"));
                         return;
                     }
                     Planet ownerPlanet = OpenCreative.getPlanetsManager().getPlanetByPlayer(planetOwner);
                     if (!planet.equals(ownerPlanet)) {
-                        sender.sendMessage(getLocaleMessage("world.dev-mode.cant-dev-when-offline"));
+                        sender.sendMessage(getLocaleMessageComponent("world.dev-mode.cant-dev-when-offline"));
                         return;
                     }
                 }
@@ -105,7 +105,7 @@ public class DevCommand extends CommandHandler {
             }
         } else {
             if (!planet.isOwner(sender.getName())) {
-                sender.sendMessage(getLocaleMessage("not-owner"));
+                sender.sendMessage(getLocaleMessageComponent("not-owner"));
                 return;
             }
             String nickname = args[0];
@@ -117,7 +117,7 @@ public class DevCommand extends CommandHandler {
                 }
             }
             if (planet.isOwner(uuid)) {
-                sender.sendMessage(getLocaleMessage("same-player"));
+                sender.sendMessage(getLocaleMessageComponent("same-player"));
                 return;
             }
             /*
@@ -149,10 +149,10 @@ public class DevCommand extends CommandHandler {
                     sender.sendMessage(toComponent(getLocaleMessageString("world.players.developers.added").replace("%player%", onlinePlayer.getName())));
                     planet.getWorldPlayers().addDeveloper(onlinePlayer.getName(), false);
                 } else {
-                    sender.sendMessage(getLocaleMessage("no-player-found"));
+                    sender.sendMessage(getLocaleMessageComponent("no-player-found"));
                 }
             } else {
-                sender.sendMessage(getLocaleMessage("no-player-found"));
+                sender.sendMessage(getLocaleMessageComponent("no-player-found"));
             }
         }
     }

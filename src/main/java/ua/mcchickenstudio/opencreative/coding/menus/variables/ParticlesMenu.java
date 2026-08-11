@@ -27,6 +27,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.menus.ListBrowserMenu;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.toComponent;
 
 public final class ParticlesMenu extends ListBrowserMenu<Particle> {
@@ -152,7 +153,7 @@ public final class ParticlesMenu extends ListBrowserMenu<Particle> {
     }
 
     public ParticlesMenu(Player player) {
-        super(player, getLocaleMessage("menus.developer.particles-list.title"), PlacementLayout.VALUE_CHOOSER);
+        super(player, MessageUtils.getLocaleMessageComponent("menus.developer.particles-list.title"), PlacementLayout.VALUE_CHOOSER);
     }
 
     private Material getMaterial(Particle type) {

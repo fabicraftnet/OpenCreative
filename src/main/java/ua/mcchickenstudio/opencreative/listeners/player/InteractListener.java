@@ -20,13 +20,9 @@ package ua.mcchickenstudio.opencreative.listeners.player;
 
 import com.destroystokyo.paper.event.player.PlayerStartSpectatingEntityEvent;
 import com.destroystokyo.paper.event.player.PlayerStopSpectatingEntityEvent;
-import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.event.player.PlayerFlowerPotManipulateEvent;
 import io.papermc.paper.event.player.PlayerItemFrameChangeEvent;
 import io.papermc.paper.event.player.PlayerNameEntityEvent;
-import io.papermc.paper.registry.data.dialog.DialogBase;
-import io.papermc.paper.registry.data.dialog.input.DialogInput;
-import io.papermc.paper.registry.data.dialog.type.DialogType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -95,6 +91,7 @@ import ua.mcchickenstudio.opencreative.settings.filters.FilterResult;
 import ua.mcchickenstudio.opencreative.settings.groups.LimitType;
 import ua.mcchickenstudio.opencreative.utils.CooldownUtils;
 import ua.mcchickenstudio.opencreative.utils.ItemUtils;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.time.Duration;
 import java.util.*;
@@ -112,7 +109,6 @@ import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.*;
 
 public final class InteractListener implements Listener {
 
-    private boolean usingDialog = true;
     private DialogDev dialogs = new DialogDev();
     private static VariableLink.VariableType getVariableType(ItemMeta meta) {
         char colorCode = 'c';
@@ -148,7 +144,7 @@ public final class InteractListener implements Listener {
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
         if (planet != null) {
         if ((planet.getMode() == Planet.Mode.BUILD) && !planet.getWorldPlayers().canBuild(player)) {
-            player.sendActionBar(getLocaleComponent("not-builder"));
+            player.sendActionBar(MessageUtils.getLocaleMessageComponent("not-builder"));
             event.setCancelled(true);
             return;
         } }
@@ -364,7 +360,7 @@ public final class InteractListener implements Listener {
             }
             return true;
         } catch (IllegalArgumentException e) {
-            player.sendActionBar(getLocaleComponent("coding-error.unknown-layout"));
+            player.sendActionBar(MessageUtils.getLocaleMessageComponent("coding-error.unknown-layout"));
             event.setCancelled(false);
             return true;
         }
@@ -551,7 +547,7 @@ public final class InteractListener implements Listener {
             }
             Component displayName = meta.displayName();
             if (displayName != null) {
-                player.sendMessage(displayName.hoverEvent(HoverEvent.showText((getLocaleMessage("world.dev-mode.click-to-copy")))).clickEvent(ClickEvent.suggestCommand(ChatColor.stripColor(meta.getDisplayName()))));
+                player.sendMessage(displayName.hoverEvent(HoverEvent.showText((getLocaleMessageComponent("world.dev-mode.click-to-copy")))).clickEvent(ClickEvent.suggestCommand(ChatColor.stripColor(meta.getDisplayName()))));
                 player.swingMainHand();
             }
         }
@@ -565,7 +561,7 @@ public final class InteractListener implements Listener {
             }
             Component displayName = meta.displayName();
             if (displayName != null) {
-                player.sendMessage(displayName.hoverEvent(HoverEvent.showText((getLocaleMessage("world.dev-mode.click-to-copy")))).clickEvent(ClickEvent.suggestCommand(ChatColor.stripColor(meta.getDisplayName()))));
+                player.sendMessage(displayName.hoverEvent(HoverEvent.showText((getLocaleMessageComponent("world.dev-mode.click-to-copy")))).clickEvent(ClickEvent.suggestCommand(ChatColor.stripColor(meta.getDisplayName()))));
                 setPersistentData(currentItem, getCodingValueKey(), "NUMBER");
             }
         }
@@ -584,7 +580,7 @@ public final class InteractListener implements Listener {
             }
             else {
                 if (displayName != null) {
-                    player.sendMessage(displayName.hoverEvent(HoverEvent.showText((getLocaleMessage("world.dev-mode.click-to-copy")))).clickEvent(ClickEvent.suggestCommand(meta.getDisplayName().replace("§", "&"))));
+                    player.sendMessage(displayName.hoverEvent(HoverEvent.showText((getLocaleMessageComponent("world.dev-mode.click-to-copy")))).clickEvent(ClickEvent.suggestCommand(meta.getDisplayName().replace("§", "&"))));
                     setPersistentData(currentItem, getCodingValueKey(), "TEXT");
                     player.swingMainHand();
                 }
@@ -611,7 +607,7 @@ public final class InteractListener implements Listener {
             } else {
                 Component displayName = meta.displayName();
                 if (displayName != null) {
-                    player.sendMessage(displayName.hoverEvent(HoverEvent.showText((getLocaleMessage("world.dev-mode.click-to-copy")))).clickEvent(ClickEvent.suggestCommand(ChatColor.stripColor(meta.getDisplayName()))));
+                    player.sendMessage(displayName.hoverEvent(HoverEvent.showText((getLocaleMessageComponent("world.dev-mode.click-to-copy")))).clickEvent(ClickEvent.suggestCommand(ChatColor.stripColor(meta.getDisplayName()))));
                     setPersistentData(currentItem, getCodingValueKey(), "VECTOR");
                     player.swingMainHand();
                 }
@@ -681,7 +677,7 @@ public final class InteractListener implements Listener {
             player.setCooldown(Material.COMPARATOR, 20);
             Set<Location> markedExecutors = devPlanet.getMarkedExecutors(player);
             if (markedExecutors.isEmpty()) {
-                player.sendActionBar(getLocaleComponent("menus.developer.manipulator.not-selected"));
+                player.sendActionBar(MessageUtils.getLocaleMessageComponent("menus.developer.manipulator.not-selected"));
                 Sounds.DEV_NOT_ALLOWED.play(player);
                 return;
             }
@@ -702,13 +698,13 @@ public final class InteractListener implements Listener {
                         .replace("%required%", String.valueOf(markedExecutors.size()))));
                 Sounds.DEV_NOT_ALLOWED.play(player);
             } else if (result.getType() == CodingBlockPlacer.CodePlacementResult.Type.ERROR) {
-                player.sendMessage(getLocaleMessage("environment.duplication.error"));
+                player.sendMessage(getLocaleMessageComponent("environment.duplication.error"));
                 for (Location placedExecutor : result.getPlacedColumns()) {
                     devPlanet.addChangedColumn(placedExecutor);
                 }
                 Sounds.PLAYER_ERROR.play(player);
             } else {
-                player.sendMessage(getLocaleMessage("environment.duplication.success"));
+                player.sendMessage(getLocaleMessageComponent("environment.duplication.success"));
                 for (Location placedExecutor : result.getPlacedColumns()) {
                     devPlanet.addChangedColumn(placedExecutor);
                 }
@@ -796,7 +792,7 @@ public final class InteractListener implements Listener {
         player.swingMainHand();
         setPersistentData(currentItem, getCodingValueKey(), "BOOLEAN");
         player.showTitle(Title.title(
-                (getLocaleMessage("world.dev-mode.set-variable")), displayName,
+                (getLocaleMessageComponent("world.dev-mode.set-variable")), displayName,
                 Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
         ));
     }
@@ -818,7 +814,7 @@ public final class InteractListener implements Listener {
             Component formattedLocation = formatLocation(location);
             setDisplayName(currentItem, formattedLocation);
             player.showTitle(Title.title(
-                    (getLocaleMessage("world.dev-mode.set-variable")), formattedLocation,
+                    (getLocaleMessageComponent("world.dev-mode.set-variable")), formattedLocation,
                     Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
             ));
             setPersistentData(currentItem, getCodingValueKey(), "LOCATION");
@@ -862,11 +858,11 @@ public final class InteractListener implements Listener {
             if (getItemType(currentItem).equals("worlds")) {
                 // Opens recommended worlds menus.
                 if (OpenCreative.getSettings().isMaintenance() && !player.hasPermission("opencreative.maintenance.bypass")) {
-                    player.sendMessage(getLocaleMessage("maintenance"));
+                    player.sendMessage(getLocaleMessageComponent("maintenance"));
                     return;
                 }
                 if (OpenCreative.getStability().isVeryBad() && !player.hasPermission("opencreative.stability.bypass")) {
-                    player.sendMessage(getLocaleMessage("creative.stability.cannot"));
+                    player.sendMessage(getLocaleMessageComponent("creative.stability.cannot"));
                     return;
                 }
                 player.setCooldown(currentItem.getType(), 60);
@@ -874,11 +870,11 @@ public final class InteractListener implements Listener {
             } else if (getItemType(currentItem).equals("own_worlds")) {
                 // Opens player's worlds menus.
                 if (OpenCreative.getSettings().isMaintenance() && !player.hasPermission("opencreative.maintenance.bypass")) {
-                    player.sendMessage(getLocaleMessage("maintenance"));
+                    player.sendMessage(getLocaleMessageComponent("maintenance"));
                     return;
                 }
                 if (OpenCreative.getStability().isVeryBad() && !player.hasPermission("opencreative.stability.bypass")) {
-                    player.sendMessage(getLocaleMessage("creative.stability.cannot"));
+                    player.sendMessage(getLocaleMessageComponent("creative.stability.cannot"));
                     return;
                 }
                 player.setCooldown(currentItem.getType(), 60);
@@ -887,11 +883,11 @@ public final class InteractListener implements Listener {
         } else if (planet != null && getItemType(currentItem).equals("world_settings")) {
             // Opens world settings menus.
             if (OpenCreative.getSettings().isMaintenance() && !player.hasPermission("opencreative.maintenance.bypass")) {
-                player.sendMessage(getLocaleMessage("maintenance"));
+                player.sendMessage(getLocaleMessageComponent("maintenance"));
                 return;
             }
             if (OpenCreative.getStability().isVeryBad() && !player.hasPermission("opencreative.stability.bypass")) {
-                player.sendMessage(getLocaleMessage("creative.stability.cannot"));
+                player.sendMessage(getLocaleMessageComponent("creative.stability.cannot"));
                 return;
             }
             if (planet.isOwner(player)) {
@@ -941,7 +937,7 @@ public final class InteractListener implements Listener {
                 return;
             }
             event.setCancelled(true);
-            player.sendActionBar(getLocaleMessage("not-for-lobby"));
+            player.sendActionBar(getLocaleMessageComponent("not-for-lobby"));
             return;
         }
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
@@ -980,27 +976,27 @@ public final class InteractListener implements Listener {
             switch (planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_INTERACT)) {
                 // Disallow every block interact.
                 case 2 -> {
-                    player.sendActionBar(getLocaleMessage("world.cant-block-interact"));
+                    player.sendActionBar(getLocaleMessageComponent("world.cant-block-interact"));
                     event.setCancelled(true);
                 }
                 // Disallow changing comparator, repeater, note block.
                 case 3 -> {
                     if (event.getClickedBlock().getType() == Material.COMPARATOR || event.getClickedBlock().getType() == Material.REPEATER || event.getClickedBlock().getType() == Material.NOTE_BLOCK) {
-                        player.sendActionBar(getLocaleMessage("world.cant-block-interact"));
+                        player.sendActionBar(getLocaleMessageComponent("world.cant-block-interact"));
                         event.setCancelled(true);
                     }
                 }
                 // Disallow changing doors and chests.
                 case 4 -> {
                     if (event.getClickedBlock().getType() == Material.CHEST || event.getClickedBlock().getType().name().contains("DOOR")) {
-                        player.sendActionBar(getLocaleMessage("world.cant-block-interact"));
+                        player.sendActionBar(getLocaleMessageComponent("world.cant-block-interact"));
                         event.setCancelled(true);
                     }
                 }
                 // Allow interacting only with buttons, plates, levers
                 case 5 -> {
                     if (!(event.getClickedBlock().getType().name().contains("BUTTON") || event.getClickedBlock().getType().name().contains("PRESSURE_PLATE") || event.getClickedBlock().getType() == Material.LEVER)) {
-                        player.sendActionBar(getLocaleMessage("world.cant-block-interact"));
+                        player.sendActionBar(getLocaleMessageComponent("world.cant-block-interact"));
                         event.setCancelled(true);
                     }
                 }
@@ -1014,19 +1010,19 @@ public final class InteractListener implements Listener {
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
         if (planet != null) {
             if ((planet.getMode() == Planet.Mode.BUILD) && !planet.getWorldPlayers().canBuild(player)) {
-                player.sendActionBar(getLocaleComponent("not-builder"));
+                player.sendActionBar(MessageUtils.getLocaleMessageComponent("not-builder"));
                 event.setCancelled(true);
                 return;
             }
             if (planet.getFlagValue(PlanetFlags.PlanetFlag.MOB_INTERACT) == 2 && !planet.getWorldPlayers().canBuild(player)) {
                 // Disallow entire mob interaction.
-                event.getPlayer().sendActionBar(getLocaleMessage("world.cant-mob-interact"));
+                event.getPlayer().sendActionBar(getLocaleMessageComponent("world.cant-mob-interact"));
                 event.setCancelled(true);
             }
             if (planet.getFlagValue(PlanetFlags.PlanetFlag.MOB_INTERACT) == 3 && !planet.getWorldPlayers().canBuild(player)) {
                 // Disallow changing item frames and armor stands.
                 if (event.getRightClicked().getType().name().contains("FRAME") || event.getRightClicked().getType() == EntityType.ARMOR_STAND) {
-                    event.getPlayer().sendActionBar(getLocaleMessage("world.cant-mob-interact"));
+                    event.getPlayer().sendActionBar(getLocaleMessageComponent("world.cant-mob-interact"));
                     event.setCancelled(true);
                 }
             }
@@ -1039,7 +1035,7 @@ public final class InteractListener implements Listener {
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
         if (planet != null) {
             if ((planet.getMode() == Planet.Mode.BUILD) && !planet.getWorldPlayers().canBuild(player)) {
-                player.sendActionBar(getLocaleComponent("not-builder"));
+                player.sendActionBar(MessageUtils.getLocaleMessageComponent("not-builder"));
                 event.setCancelled(true);
                 return;
             }
@@ -1048,13 +1044,13 @@ public final class InteractListener implements Listener {
             }
             if (planet.getFlagValue(PlanetFlags.PlanetFlag.MOB_INTERACT) == 2 && !planet.getWorldPlayers().canBuild(player)) {
                 // Disallow entire mob interaction.
-                event.getPlayer().sendActionBar(getLocaleMessage("world.cant-mob-interact"));
+                event.getPlayer().sendActionBar(getLocaleMessageComponent("world.cant-mob-interact"));
                 event.setCancelled(true);
             }
             if (planet.getFlagValue(PlanetFlags.PlanetFlag.MOB_INTERACT) == 3 && !planet.getWorldPlayers().canBuild(player)) {
                 // Disallow changing item frames and armor stands.
                 if (event.getRightClicked().getType().name().contains("FRAME") || event.getRightClicked().getType() == EntityType.ARMOR_STAND) {
-                    event.getPlayer().sendActionBar(getLocaleMessage("world.cant-mob-interact"));
+                    event.getPlayer().sendActionBar(getLocaleMessageComponent("world.cant-mob-interact"));
                     event.setCancelled(true);
                 }
             }
@@ -1067,24 +1063,24 @@ public final class InteractListener implements Listener {
         if (isEntityInLobby(player) && OpenCreative.getSettings().getLobbySettings().isDestroyingBlocksDisallowed()
                 && !player.hasPermission("opencreative.lobby.destroying-blocks.bypass")) {
             event.setCancelled(true);
-            player.sendActionBar(getLocaleMessage("not-for-lobby"));
+            player.sendActionBar(getLocaleMessageComponent("not-for-lobby"));
             return;
         }
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
         if (planet != null) {
             if ((planet.getMode() == Planet.Mode.BUILD) && !planet.getWorldPlayers().canBuild(player)) {
-                player.sendActionBar(getLocaleComponent("not-builder"));
+                player.sendActionBar(MessageUtils.getLocaleMessageComponent("not-builder"));
                 event.setCancelled(true);
                 return;
             }
             new MobInteractionEvent(player, event).callEvent();
             if (planet.getFlagValue(PlanetFlags.PlanetFlag.MOB_INTERACT) == 2 && !planet.getWorldPlayers().canBuild(player)) {
-                player.sendActionBar(getLocaleMessage("world.cant-mob-interact"));
+                player.sendActionBar(getLocaleMessageComponent("world.cant-mob-interact"));
                 event.setCancelled(true);
             }
             if (planet.getFlagValue(PlanetFlags.PlanetFlag.MOB_INTERACT) == 3 && !planet.getWorldPlayers().canBuild(player)) {
                 if (event.getEntity().getType().name().contains("FRAME")) {
-                    player.sendActionBar(getLocaleMessage("world.cant-mob-interact"));
+                    player.sendActionBar(getLocaleMessageComponent("world.cant-mob-interact"));
                     event.setCancelled(true);
                 }
             }
@@ -1149,7 +1145,7 @@ public final class InteractListener implements Listener {
         Player player = event.getPlayer();
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
         if ((planet.getMode() == Planet.Mode.BUILD) && !planet.getWorldPlayers().canBuild(player)) {
-            player.sendActionBar(getLocaleComponent("not-builder"));
+            player.sendActionBar(MessageUtils.getLocaleMessageComponent("not-builder"));
             event.setCancelled(true);
             return;
         }
@@ -1167,12 +1163,12 @@ public final class InteractListener implements Listener {
         if (!isEntityInLobby(event.getPlayer())) return;
         if (OpenCreative.getSettings().getLobbySettings().isChangingBlocksDisallowed() && !event.getPlayer().hasPermission("opencreative.lobby.changing-blocks.bypass")) {
             event.setCancelled(true);
-            event.getPlayer().sendActionBar(getLocaleComponent("not-for-lobby"));
+            event.getPlayer().sendActionBar(MessageUtils.getLocaleMessageComponent("not-for-lobby"));
         }
         Player player = event.getPlayer();
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
         if ((planet.getMode() == Planet.Mode.BUILD) && !planet.getWorldPlayers().canBuild(player)) {
-            player.sendActionBar(getLocaleComponent("not-builder"));
+            player.sendActionBar(MessageUtils.getLocaleMessageComponent("not-builder"));
             event.setCancelled(true);
             return;
         }
@@ -1183,12 +1179,12 @@ public final class InteractListener implements Listener {
         if (!isEntityInLobby(event.getPlayer())) return;
         if (OpenCreative.getSettings().getLobbySettings().isEditingArmorStandsDisallowed() && !event.getPlayer().hasPermission("opencreative.lobby.editing-armor-stands.bypass")) {
             event.setCancelled(true);
-            event.getPlayer().sendActionBar(getLocaleComponent("not-for-lobby"));
+            event.getPlayer().sendActionBar(MessageUtils.getLocaleMessageComponent("not-for-lobby"));
         }
         Player player = event.getPlayer();
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
         if ((planet.getMode() == Planet.Mode.BUILD) && !planet.getWorldPlayers().canBuild(player)) {
-            player.sendActionBar(getLocaleComponent("not-builder"));
+            player.sendActionBar(MessageUtils.getLocaleMessageComponent("not-builder"));
             event.setCancelled(true);
             return;
         }
@@ -1199,12 +1195,12 @@ public final class InteractListener implements Listener {
         if (!isEntityInLobby(event.getPlayer())) return;
         if (OpenCreative.getSettings().getLobbySettings().isEditingArmorStandsDisallowed() && !event.getPlayer().hasPermission("opencreative.lobby.editing-armor-stands.bypass")) {
             event.setCancelled(true);
-            event.getPlayer().sendActionBar(getLocaleComponent("not-for-lobby"));
+            event.getPlayer().sendActionBar(MessageUtils.getLocaleMessageComponent("not-for-lobby"));
         }
         Player player = event.getPlayer();
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
         if ((planet.getMode() == Planet.Mode.BUILD) && !planet.getWorldPlayers().canBuild(player)) {
-            player.sendActionBar(getLocaleComponent("not-builder"));
+            player.sendActionBar(MessageUtils.getLocaleMessageComponent("not-builder"));
             event.setCancelled(true);
             return;
         }
@@ -1220,7 +1216,7 @@ public final class InteractListener implements Listener {
         if (!(type.contains("DOOR") || type.contains("FENCE"))) return;
         if (OpenCreative.getSettings().getLobbySettings().isChangingBlocksDisallowed() && !event.getPlayer().hasPermission("opencreative.lobby.changing-blocks.bypass")) {
             event.setCancelled(true);
-            event.getPlayer().sendActionBar(getLocaleComponent("not-for-lobby"));
+            event.getPlayer().sendActionBar(MessageUtils.getLocaleMessageComponent("not-for-lobby"));
         }
     }
 

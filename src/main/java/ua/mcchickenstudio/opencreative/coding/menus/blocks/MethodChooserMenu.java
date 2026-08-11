@@ -38,6 +38,7 @@ import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
 import ua.mcchickenstudio.opencreative.menus.ListBrowserMenu;
 import ua.mcchickenstudio.opencreative.planets.DevPlanet;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -46,8 +47,7 @@ import java.util.List;
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.getSignLine;
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.setSignLine;
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.toComponent;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.translateBlockSign;
 
 public final class MethodChooserMenu extends ListBrowserMenu<Location> {
@@ -56,7 +56,7 @@ public final class MethodChooserMenu extends ListBrowserMenu<Location> {
     private final Location signLocation;
 
     public MethodChooserMenu(Player player, DevPlanet planet, Location location) {
-        super(player, getLocaleMessage("menus.developer.method-chooser.title",true), PlacementLayout.LOCATION_CHOOSER);
+        super(player, getLocaleMessageComponent("menus.developer.method-chooser.title",true), PlacementLayout.LOCATION_CHOOSER);
         this.devPlanet = planet;
         this.signLocation = location;
     }
@@ -126,7 +126,7 @@ public final class MethodChooserMenu extends ListBrowserMenu<Location> {
                 setSignLine(signLocation, 3, name);
                 translateBlockSign(signLocation.getBlock());
                 getPlayer().showTitle(Title.title(
-                        (getLocaleMessage("menus.developer.method-chooser.chosen")), Component.text(name).color(NamedTextColor.GREEN),
+                        (MessageUtils.getLocaleMessageComponent("menus.developer.method-chooser.chosen")), Component.text(name).color(NamedTextColor.GREEN),
                         Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
                 ));
                 Sounds.DEV_SET_METHOD.play(event.getWhoClicked());

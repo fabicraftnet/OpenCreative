@@ -41,22 +41,21 @@ import ua.mcchickenstudio.opencreative.settings.Sounds;
 import ua.mcchickenstudio.opencreative.settings.filters.Filter;
 import ua.mcchickenstudio.opencreative.settings.filters.FilterResult;
 import ua.mcchickenstudio.opencreative.utils.ItemUtils;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.listeners.player.ChangedWorld.addPlayerWithLocation;
 import static ua.mcchickenstudio.opencreative.listeners.player.ChangedWorld.isPlayerWithLocation;
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.isOutOfBorders;
-import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendDebug;
-import static ua.mcchickenstudio.opencreative.utils.ItemUtils.getInsideBadItemsAmount;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.spawnGlowingBlock;
 
 public final class ClickListener implements Listener {
 
     private static void cantDev(Player player) {
         player.closeInventory();
-        player.sendActionBar(getLocaleMessage("world.dev-mode.cant-dev"));
+        player.sendActionBar(MessageUtils.getLocaleMessageComponent("world.dev-mode.cant-dev"));
     }
 
     @EventHandler
@@ -234,7 +233,7 @@ public final class ClickListener implements Listener {
                 player.setCooldown(currentItem.getType(), 40);
                 int size = devPlanet.getMarkedExecutors(player).size();
                 if (size == 0) {
-                    player.sendActionBar(getLocaleMessage("menus.developer.manipulator.not-selected"));
+                    player.sendActionBar(MessageUtils.getLocaleMessageComponent("menus.developer.manipulator.not-selected"));
                     Sounds.DEV_NOT_ALLOWED.play(player);
                     return;
                 }

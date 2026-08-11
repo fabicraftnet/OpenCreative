@@ -28,7 +28,6 @@ import ua.mcchickenstudio.opencreative.commands.CommandHandler;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
 import ua.mcchickenstudio.opencreative.utils.CooldownUtils;
-import ua.mcchickenstudio.opencreative.utils.FileUtils;
 import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.util.List;
@@ -50,7 +49,7 @@ public class DislikeCommand extends CommandHandler {
         if (sender instanceof Player player) {
             Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
             if (planet == null) {
-                player.sendMessage(MessageUtils.getLocaleMessage("only-in-world"));
+                player.sendMessage(MessageUtils.getLocaleMessageComponent("only-in-world"));
                 return;
             }
 
@@ -65,7 +64,7 @@ public class DislikeCommand extends CommandHandler {
                 return;
             }
             if (planet.getWorldPlayers().hasLiked(player.getUniqueId()) || !planet.getWorldPlayers().addDislike(player.getUniqueId())) {
-                sender.sendMessage(getLocaleMessage("world.already-rated"));
+                sender.sendMessage(getLocaleMessageComponent("world.already-rated"));
             } else {
                 planet.getInformation().setPlanetReputation(planet.getInformation().getReputation() - 1);
                 Sounds.WORLD_DISLIKED.play(player);

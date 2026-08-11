@@ -21,7 +21,6 @@ package ua.mcchickenstudio.opencreative.menus.world.browsers;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TextReplacementConfig;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -59,7 +58,7 @@ public final class OwnWorldsBrowserMenu extends ListBrowserMenu<Planet> {
     private final ItemStack RECOMMENDED = createItem(Material.WIND_CHARGE, 1, "menus.own-worlds.items.recommended");
 
     public OwnWorldsBrowserMenu(Player player) {
-        super(player, getLocaleMessage("menus.own-worlds.title", false), PlacementLayout.BOTTOM_NO_DECORATION,
+        super(player, getLocaleMessageComponent("menus.own-worlds.title", false), PlacementLayout.BOTTOM_NO_DECORATION,
                 new int[]{45, 49}, new int[]{45, 46, 47, 51, 52, 53});
         this.planets = new ArrayList<>(OpenCreative.getPlanetsManager().getPlanetsByOwner(player));
         Comparator<Planet> sortByOnline = (planet1, planet2) -> Integer.compare(planet2.getInformation().getAsyncOnline(),

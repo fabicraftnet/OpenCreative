@@ -106,7 +106,7 @@ public class Module {
         if (!devPlanet.isLoaded()) return false;
         if (!devPlanet.getWorld().getPlayers().contains(player)) return false;
         if (!getInformation().isPublic() && !isOwner(player) && !player.hasPermission("opencreative.modules.private.bypass")) {
-            player.sendMessage(getLocaleMessage("modules.private"));
+            player.sendMessage(getLocaleMessageComponent("modules.private"));
             return true;
         }
 

@@ -41,6 +41,7 @@ import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.settings.filters.Filter;
 import ua.mcchickenstudio.opencreative.settings.filters.FilterResult;
 import ua.mcchickenstudio.opencreative.utils.CooldownUtils;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.util.HashSet;
 import java.util.List;
@@ -92,7 +93,7 @@ public class ChatCommand extends CommandHandler {
                     if (planet == null) {
                         return Component.text(command);
                     }
-                    Component hover = parsePlanetLines(planet, getLocaleComponent("advertisement.hover"));
+                    Component hover = parsePlanetLines(planet, MessageUtils.getLocaleMessageComponent("advertisement.hover"));
                     return Component.text(command)
                             .color(NamedTextColor.YELLOW)
                             .decorate(TextDecoration.UNDERLINED)
@@ -105,19 +106,19 @@ public class ChatCommand extends CommandHandler {
     @Override
     public void onExecute(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (OpenCreative.getSettings().isMaintenance() && !sender.hasPermission("opencreative.maintenance.bypass")) {
-            sender.sendMessage(getLocaleMessage("maintenance"));
+            sender.sendMessage(getLocaleMessageComponent("maintenance"));
             return;
         }
         if (OpenCreative.getStability().isVeryBad() && !sender.hasPermission("opencreative.stability.bypass")) {
-            sender.sendMessage(getLocaleMessage("creative.stability.cannot"));
+            sender.sendMessage(getLocaleMessageComponent("creative.stability.cannot"));
             return;
         }
         if (OpenCreative.getSettings().isCreativeChatDisabled() && !sender.hasPermission("opencreative.creative-chat.bypass")) {
-            sender.sendMessage(getLocaleMessage("creative.creative-chat.off"));
+            sender.sendMessage(getLocaleMessageComponent("creative.creative-chat.off"));
             return;
         }
         if (args.length == 0) {
-            sender.sendMessage(getLocaleMessage("creative-chat.cc-usage"));
+            sender.sendMessage(getLocaleMessageComponent("creative-chat.cc-usage"));
             return;
         }
         if (sender instanceof Player player) {
@@ -130,16 +131,16 @@ public class ChatCommand extends CommandHandler {
                 && sender instanceof Player player) {
             if (args[0].equalsIgnoreCase("off") || args[0].equalsIgnoreCase("disable")) {
                 creativeChatOff.add(player);
-                sender.sendMessage(getLocaleMessage("creative-chat.turned-off"));
+                sender.sendMessage(getLocaleMessageComponent("creative-chat.turned-off"));
             } else if (args[0].equalsIgnoreCase("on") || args[0].equalsIgnoreCase("enable")) {
                 creativeChatOff.remove(player);
-                sender.sendMessage(getLocaleMessage("creative-chat.turned-on"));
+                sender.sendMessage(getLocaleMessageComponent("creative-chat.turned-on"));
             }
             return;
         }
         if (sender instanceof Player player) {
             if (creativeChatOff.contains(player)) {
-                sender.sendMessage(getLocaleMessage("creative-chat.on-usage"));
+                sender.sendMessage(getLocaleMessageComponent("creative-chat.on-usage"));
                 return;
             }
         }

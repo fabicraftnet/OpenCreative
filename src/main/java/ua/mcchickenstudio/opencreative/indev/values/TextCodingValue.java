@@ -32,6 +32,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.time.Duration;
 
@@ -62,7 +63,7 @@ public class TextCodingValue extends CodingValue<String> implements ChatEditable
         Component subtitle = meta.displayName();
         if (subtitle == null) subtitle = newName;
         player.showTitle(Title.title(
-                getLocaleComponent("world.dev-mode.set-variable"), subtitle,
+                MessageUtils.getLocaleMessageComponent("world.dev-mode.set-variable"), subtitle,
                 Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
         ));
         player.swingMainHand();

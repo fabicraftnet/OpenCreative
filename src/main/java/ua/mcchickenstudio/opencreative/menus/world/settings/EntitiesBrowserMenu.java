@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.toComponent;
 
 /**
@@ -56,7 +56,7 @@ public final class EntitiesBrowserMenu extends ListBrowserMenu<Entity> implement
     private final ItemStack BACK_TO_SETTINGS = createItem(Material.ARROW, 1, "menus.entities-browser.items.back");
 
     public EntitiesBrowserMenu(Player player, Planet planet) {
-        super(player, getLocaleMessage("menus.entities-browser.title", false),
+        super(player, getLocaleMessageComponent("menus.entities-browser.title", false),
                 PlacementLayout.BOTTOM_NO_DECORATION, new int[]{45, 48, 50}, new int[]{46, 52});
         this.planet = planet;
     }

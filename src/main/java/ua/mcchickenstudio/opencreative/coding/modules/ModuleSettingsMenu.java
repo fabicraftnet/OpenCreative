@@ -60,7 +60,7 @@ public final class ModuleSettingsMenu extends AbstractMenu {
     private ItemStack moduleIcon;
 
     public ModuleSettingsMenu(Module module, Player player) {
-        super(4, getLocaleMessage("menus.module-settings.title", false));
+        super(4, getLocaleMessageComponent("menus.module-settings.title", false));
         this.module = module;
         this.player = player;
         moduleIcon = getModuleIcon();
@@ -124,7 +124,7 @@ public final class ModuleSettingsMenu extends AbstractMenu {
         }
         if (itemEquals(currentItem, name)) {
             player.showTitle(Title.title(
-                    (getLocaleMessage("settings.module-name.title")), (getLocaleMessage("settings.module-name.subtitle")),
+                    (getLocaleMessageComponent("settings.module-name.title")), (getLocaleMessageComponent("settings.module-name.subtitle")),
                     Title.Times.times(Duration.ofMillis(100), Duration.ofSeconds(30), Duration.ofMillis(130))
             ));
             player.sendMessage(toComponent(getLocaleMessageString("settings.module-name.usage").replace("%player%", player.getName())));
@@ -138,10 +138,10 @@ public final class ModuleSettingsMenu extends AbstractMenu {
             }
             else {
                 player.showTitle(Title.title(
-                        (getLocaleMessage("settings.module-description.title")), (getLocaleMessage("settings.module-description.subtitle")),
+                        (getLocaleMessageComponent("settings.module-description.title")), (getLocaleMessageComponent("settings.module-description.subtitle")),
                         Title.Times.times(Duration.ofMillis(100), Duration.ofSeconds(30), Duration.ofMillis(130))
                 ));
-                player.sendMessage(getLocaleMessage("settings.module-description.usage"));
+                player.sendMessage(getLocaleMessageComponent("settings.module-description.usage"));
                 player.closeInventory();
                 if (!PlayerConfirmation.hasConfirmation(player)) {
                     PlayerConfirmation.setConfirmation(player, PlayerConfirmation.MODULE_DESCRIPTION_CHANGE, module.getId());
@@ -152,22 +152,22 @@ public final class ModuleSettingsMenu extends AbstractMenu {
             setItem(event.getRawSlot(), access.getItem());
             if ("public".equals(access.getCurrentValue().toString())) {
                 module.getInformation().setPublic(true);
-                player.sendMessage(getLocaleMessage("settings.module-sharing.enabled"));
+                player.sendMessage(getLocaleMessageComponent("settings.module-sharing.enabled"));
                 Sounds.WORLD_SETTINGS_SHARING_PUBLIC.play(player);
             } else {
                 module.getInformation().setPublic(false);
-                player.sendMessage(getLocaleMessage("settings.module-sharing.disabled"));
+                player.sendMessage(getLocaleMessageComponent("settings.module-sharing.disabled"));
                 Sounds.WORLD_SETTINGS_SHARING_PRIVATE.play(player);
             }
             moduleIcon = getModuleIcon();
             setItem(31, moduleIcon);
         } else if (itemEquals(currentItem, moduleIcon)) {
             if (event.getCursor().isEmpty()) {
-                player.sendMessage(getLocaleMessage("settings.module-icon.error"));
+                player.sendMessage(getLocaleMessageComponent("settings.module-icon.error"));
                 Sounds.PLAYER_FAIL.play(player);
             } else {
                 module.getInformation().setIcon(event.getCursor());
-                player.sendMessage(getLocaleMessage("settings.module-icon.changed"));
+                player.sendMessage(getLocaleMessageComponent("settings.module-icon.changed"));
                 moduleIcon = getModuleIcon();
                 setItem(31, moduleIcon);
                 event.setCursor(null);
@@ -176,12 +176,12 @@ public final class ModuleSettingsMenu extends AbstractMenu {
             player.closeInventory();
             DevPlanet devPlanet = OpenCreative.getPlanetsManager().getDevPlanet(player);
             if (devPlanet == null) {
-                player.sendMessage(getLocaleMessage("only-in-dev-world"));
+                player.sendMessage(getLocaleMessageComponent("only-in-dev-world"));
                 Sounds.PLAYER_FAIL.play(player);
                 return;
             }
             if (!devPlanet.getPlanet().getWorldPlayers().canDevelop(player)) {
-                player.sendMessage(getLocaleMessage("not-developer"));
+                player.sendMessage(getLocaleMessageComponent("not-developer"));
                 Sounds.PLAYER_FAIL.play(player);
                 return;
             }

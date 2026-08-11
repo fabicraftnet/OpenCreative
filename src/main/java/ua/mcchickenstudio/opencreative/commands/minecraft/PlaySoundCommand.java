@@ -57,17 +57,17 @@ public class PlaySoundCommand extends CommandHandler {
             if (!player.hasPermission("opencreative.play-sound.bypass")) {
                 Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
                 if (planet == null) {
-                    player.sendMessage(getLocaleMessage("only-in-world"));
+                    player.sendMessage(getLocaleMessageComponent("only-in-world"));
                     return;
                 }
                 if (!(planet.isOwner(player) || planet.getWorldPlayers().canDevelop(player))) {
-                    player.sendMessage(getLocaleMessage("not-owner"));
+                    player.sendMessage(getLocaleMessageComponent("not-owner"));
                     return;
                 }
             }
 
             if (args.length == 0) {
-                sender.sendMessage(getLocaleMessage("commands.play-sound.help"));
+                sender.sendMessage(getLocaleMessageComponent("commands.play-sound.help"));
                 return;
             }
 
@@ -120,13 +120,13 @@ public class PlaySoundCommand extends CommandHandler {
 
             if (isCustomTarget) target = Bukkit.getPlayer(args[0]);
             if (target == null) {
-                sender.sendMessage(getLocaleMessage("no-player-found"));
+                sender.sendMessage(getLocaleMessageComponent("no-player-found"));
                 return;
             } else if (!sender.hasPermission("opencreative.play-sound.bypass")) {
                 Planet targetPlanet = OpenCreative.getPlanetsManager().getPlanetByPlayer(target);
                 Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
                 if (planet == null || !planet.equals(targetPlanet)) {
-                    player.sendMessage(getLocaleMessage("no-player-found"));
+                    player.sendMessage(getLocaleMessageComponent("no-player-found"));
                     return;
                 }
             }

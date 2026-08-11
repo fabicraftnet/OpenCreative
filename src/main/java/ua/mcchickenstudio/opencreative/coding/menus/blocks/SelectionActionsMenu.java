@@ -38,7 +38,7 @@ import ua.mcchickenstudio.opencreative.settings.Sounds;
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.setSignLine;
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.createItem;
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.itemEquals;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.translateBlockSign;
 
 public final class SelectionActionsMenu extends AbstractMenu {
@@ -60,7 +60,7 @@ public final class SelectionActionsMenu extends AbstractMenu {
     private final ItemStack lastSpawned = createItem(Target.LAST_SPAWNED.getIcon(), 1, "menus.developer.selection.items.last-spawned");
 
     public SelectionActionsMenu(Player player, Location location) {
-        super(5, getLocaleMessage("blocks.selection_action", false));
+        super(5, getLocaleMessageComponent("blocks.selection_action", false));
         this.player = player;
         this.signLocation = location;
     }

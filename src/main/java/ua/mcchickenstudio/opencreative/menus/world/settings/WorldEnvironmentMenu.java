@@ -33,11 +33,12 @@ import ua.mcchickenstudio.opencreative.planets.DevPlanet;
 import ua.mcchickenstudio.opencreative.planets.DevPlatform;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isDevPlanet;
 
 public final class WorldEnvironmentMenu extends AbstractMenu implements WorldMenu {
@@ -65,7 +66,7 @@ public final class WorldEnvironmentMenu extends AbstractMenu implements WorldMen
 
 
     public WorldEnvironmentMenu(Player player, DevPlanet devPlanet) {
-        super(6, getLocaleMessage("menus.developer.environment.title"));
+        super(6, MessageUtils.getLocaleMessageComponent("menus.developer.environment.title"));
         this.player = player;
         this.devPlanet = devPlanet;
         this.devPlatform = isDevPlanet(player.getWorld()) ? devPlanet.getPlatformInLocation(player.getLocation()) : null;

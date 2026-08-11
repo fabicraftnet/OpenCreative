@@ -32,12 +32,13 @@ import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.menus.AbstractMenu;
 import ua.mcchickenstudio.opencreative.menus.BlockMenu;
 import ua.mcchickenstudio.opencreative.menus.buttons.ParameterButton;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.createItem;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 
 public class ExecutorArgumentsMenu extends AbstractMenu implements BlockMenu {
 
@@ -49,7 +50,7 @@ public class ExecutorArgumentsMenu extends AbstractMenu implements BlockMenu {
     private final List<ParameterButton> typeChoosers = new ArrayList<>();
 
     public ExecutorArgumentsMenu(@NotNull String type, @NotNull Block containerBlock) {
-        super(3, getLocaleMessage("menus.developer.function-arguments.title"));
+        super(3, MessageUtils.getLocaleMessageComponent("menus.developer.function-arguments.title"));
         this.type = type;
         this.containerBlock = containerBlock;
     }

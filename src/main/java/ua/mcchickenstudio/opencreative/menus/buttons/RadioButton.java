@@ -95,8 +95,8 @@ public class RadioButton {
         ItemMeta buttonItemMeta = buttonItem.getItemMeta();
         List<Component> lore = new ArrayList<>();
 
-        Component turnedOn = MessageUtils.getLocaleMessage(turnedPath + ".turned-on");
-        Component turnedOff = MessageUtils.getLocaleMessage(turnedPath + ".turned-off");
+        Component turnedOn = MessageUtils.getLocaleMessageComponent(turnedPath + ".turned-on");
+        Component turnedOff = MessageUtils.getLocaleMessageComponent(turnedPath + ".turned-off");
         Component turned;
 
         for (Component loreLine : originalLore) {
@@ -107,7 +107,7 @@ public class RadioButton {
                 else turned = turnedOff;
                 //loreLine = loreLine.replace("%" + choiceNumber + "%", turned + MessageUtils.getLocaleMessage(itemLocalePath + "." + choiceNumber, false));
                 loreLine = loreLine.replaceText(TextReplacementConfig.builder()
-                        .replacement(turned.append(MessageUtils.getLocaleMessage(itemLocalePath + "." + choiceNumber, false)))
+                        .replacement(turned.append(MessageUtils.getLocaleMessageComponent(itemLocalePath + "." + choiceNumber, false)))
                         .match("%" + choiceNumber + "%").build());
             }
             lore.add(loreLine);

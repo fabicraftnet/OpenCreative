@@ -28,12 +28,13 @@ import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.commands.CommandHandler;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.utils.CooldownUtils;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 
 /**
  * <h1>WeatherCommand</h1>
@@ -63,36 +64,36 @@ public class WeatherCommand extends CommandHandler {
              */
             Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
             if (planet == null) {
-                player.sendMessage(getLocaleMessage("only-in-world"));
+                player.sendMessage(MessageUtils.getLocaleMessageComponent("only-in-world"));
                 return;
             }
             if (!(planet.isOwner(player) || planet.getWorldPlayers().canDevelop(player) || planet.getWorldPlayers().canBuild(player))) {
-                player.sendMessage(getLocaleMessage("not-owner"));
+                player.sendMessage(MessageUtils.getLocaleMessageComponent("not-owner"));
                 return;
             }
         }
         if (args.length != 1 || !(args[0].equalsIgnoreCase("sun") || args[0].equalsIgnoreCase("clear") || args[0].equalsIgnoreCase("storm") || args[0].equalsIgnoreCase("rain") || args[0].equalsIgnoreCase("rainy") || args[0].equalsIgnoreCase("thunder"))) {
-            sender.sendMessage(getLocaleMessage("commands.weather.help"));
+            sender.sendMessage(MessageUtils.getLocaleMessageComponent("commands.weather.help"));
             return;
         }
         switch (args[0].toLowerCase()) {
             case "sun", "clear" -> {
                 player.getWorld().setStorm(false);
                 player.getWorld().setThundering(false);
-                player.sendMessage(getLocaleMessage("commands.weather.changed.sun"));
+                player.sendMessage(MessageUtils.getLocaleMessageComponent("commands.weather.changed.sun"));
             }
             case "storm", "rain", "rainy" -> {
                 player.getWorld().setStorm(true);
                 player.getWorld().setThundering(false);
-                player.sendMessage(getLocaleMessage("commands.weather.changed.rain"));
+                player.sendMessage(MessageUtils.getLocaleMessageComponent("commands.weather.changed.rain"));
             }
             case "thunder" -> {
                 player.getWorld().setStorm(true);
                 player.getWorld().setThundering(true);
-                player.sendMessage(getLocaleMessage("commands.weather.changed.thunder"));
+                player.sendMessage(MessageUtils.getLocaleMessageComponent("commands.weather.changed.thunder"));
             }
             default -> {
-                sender.sendMessage(getLocaleMessage("commands.weather.help"));
+                sender.sendMessage(MessageUtils.getLocaleMessageComponent("commands.weather.help"));
             }
         }
     }

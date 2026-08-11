@@ -65,11 +65,11 @@ public class GamemodeCommand extends CommandHandler {
              */
             Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
             if (planet == null) {
-                player.sendMessage(getLocaleMessage("only-in-world"));
+                player.sendMessage(getLocaleMessageComponent("only-in-world"));
                 return;
             }
             if (!(planet.isOwner(player) || planet.getWorldPlayers().canDevelop(player) || planet.getWorldPlayers().canBuild(player))) {
-                player.sendMessage(getLocaleMessage("not-owner"));
+                player.sendMessage(getLocaleMessageComponent("not-owner"));
                 return;
             }
             /*
@@ -77,7 +77,7 @@ public class GamemodeCommand extends CommandHandler {
              * because it's work depends on game mode.
              */
             if (OpenCreative.getPlanetsManager().getDevPlanet(player) != null) {
-                player.sendMessage(getLocaleMessage("only-in-world"));
+                player.sendMessage(getLocaleMessageComponent("only-in-world"));
                 return;
             }
         }
@@ -97,9 +97,9 @@ public class GamemodeCommand extends CommandHandler {
                     mode = GameMode.valueOf(args[0].toUpperCase());
                 }
                 player.setGameMode(mode);
-                player.sendMessage(getLocaleMessage("commands.game-mode.changed." + mode.name().toLowerCase()));
+                player.sendMessage(getLocaleMessageComponent("commands.game-mode.changed." + mode.name().toLowerCase()));
             } catch (IllegalArgumentException error) {
-                player.sendMessage(getLocaleMessage("commands.game-mode.wrong"));
+                player.sendMessage(getLocaleMessageComponent("commands.game-mode.wrong"));
             }
 
         } else if (args.length == 2) {
@@ -119,7 +119,7 @@ public class GamemodeCommand extends CommandHandler {
                 }
                 Player modePlayer = Bukkit.getPlayer(args[1]);
                 if (modePlayer == null) {
-                    player.sendMessage(getLocaleMessage("no-player-found"));
+                    player.sendMessage(getLocaleMessageComponent("no-player-found"));
                     return;
                 } else {
                     /*
@@ -131,11 +131,11 @@ public class GamemodeCommand extends CommandHandler {
                     if (!player.hasPermission("opencreative.game-mode.bypass")) {
                         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
                         if (planet == null || !planet.equals(modePlanet)) {
-                            player.sendMessage(getLocaleMessage("no-player-found"));
+                            player.sendMessage(getLocaleMessageComponent("no-player-found"));
                             return;
                         }
                         if (OpenCreative.getPlanetsManager().getDevPlanet(modePlayer) != null) {
-                            player.sendMessage(getLocaleMessage("only-in-world"));
+                            player.sendMessage(getLocaleMessageComponent("only-in-world"));
                             return;
                         }
                     }
@@ -143,12 +143,12 @@ public class GamemodeCommand extends CommandHandler {
                 modePlayer.setGameMode(mode);
                 player.sendMessage(toComponent(getLocaleMessageString("commands.game-mode.changed-player." + mode.name().toLowerCase())
                         .replace("%player%", modePlayer.getName())));
-                modePlayer.sendMessage(getLocaleMessage("commands.game-mode.changed." + mode.name().toLowerCase()));
+                modePlayer.sendMessage(getLocaleMessageComponent("commands.game-mode.changed." + mode.name().toLowerCase()));
             } catch (IllegalArgumentException e) {
-                player.sendMessage(getLocaleMessage("commands.game-mode.wrong"));
+                player.sendMessage(getLocaleMessageComponent("commands.game-mode.wrong"));
             }
         } else {
-            sender.sendMessage(getLocaleMessage("commands.game-mode.help"));
+            sender.sendMessage(getLocaleMessageComponent("commands.game-mode.help"));
         }
     }
 

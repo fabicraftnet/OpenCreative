@@ -28,7 +28,7 @@ import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.planets.DevPlanet;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleComponent;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.isEntityInLobby;
 
 public final class BucketListener implements Listener {
@@ -42,7 +42,7 @@ public final class BucketListener implements Listener {
         } else if (isEntityInLobby(player) && OpenCreative.getSettings().getLobbySettings().isPlacingBlocksDisallowed()
                 && !player.hasPermission("opencreative.lobby.placing-blocks.bypass")) {
             event.setCancelled(true);
-            player.sendMessage(getLocaleComponent("not-for-lobby"));
+            player.sendMessage(getLocaleMessageComponent("not-for-lobby"));
         } else if (event.getBucket() == Material.LAVA_BUCKET) {
             Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
             if (planet == null) return;
@@ -58,7 +58,7 @@ public final class BucketListener implements Listener {
         if (isEntityInLobby(player) && OpenCreative.getSettings().getLobbySettings().isDestroyingBlocksDisallowed()
                 && !player.hasPermission("opencreative.lobby.destroying-blocks.bypass")) {
             event.setCancelled(true);
-            player.sendActionBar(getLocaleComponent("not-for-lobby"));
+            player.sendActionBar(getLocaleMessageComponent("not-for-lobby"));
         }
     }
 

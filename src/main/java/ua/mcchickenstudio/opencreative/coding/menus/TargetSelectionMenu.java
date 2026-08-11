@@ -30,10 +30,11 @@ import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
 import ua.mcchickenstudio.opencreative.menus.AbstractMenu;
 import ua.mcchickenstudio.opencreative.planets.DevPlanet;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.setSignLine;
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.createItem;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.translateBlockSign;
 
 public final class TargetSelectionMenu extends AbstractMenu {
@@ -41,7 +42,7 @@ public final class TargetSelectionMenu extends AbstractMenu {
     private final Location signLocation;
 
     public TargetSelectionMenu(Location location) {
-        super(1, getLocaleMessage("menus.developer.selection.title"));
+        super(1, MessageUtils.getLocaleMessageComponent("menus.developer.selection.title"));
         signLocation = location;
     }
 

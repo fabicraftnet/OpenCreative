@@ -26,11 +26,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.coding.blocks.events.player.world.QuitEvent;
 import ua.mcchickenstudio.opencreative.utils.CooldownUtils;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.removePassengers;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.teleportToLobby;
 
@@ -47,14 +48,14 @@ public class SpawnCommand extends CommandHandler {
         if (sender instanceof Player player) {
             if (!checkAndSetCooldownWithMessage(player, CooldownUtils.CooldownType.GENERIC_COMMAND)) return;
             if (player.isDead()) {
-                sender.sendMessage(getLocaleMessage("only-alive"));
+                sender.sendMessage(MessageUtils.getLocaleMessageComponent("only-alive"));
                 return;
             }
         }
         if (args.length == 0) {
             if (!(sender instanceof Player player)) {
                 // Console cannot be teleported to lobby
-                sender.sendMessage(getLocaleMessage("only-players"));
+                sender.sendMessage(MessageUtils.getLocaleMessageComponent("only-players"));
                 return;
             }
             new QuitEvent(player).callEvent();
@@ -63,12 +64,12 @@ public class SpawnCommand extends CommandHandler {
             return;
         }
         if (!sender.hasPermission("opencreative.spawn.others")) {
-            sender.sendMessage(getLocaleMessage("no-perms"));
+            sender.sendMessage(MessageUtils.getLocaleMessageComponent("no-perms"));
             return;
         }
         Player player = Bukkit.getPlayer(args[0]);
         if (player == null) {
-            sender.sendMessage(getLocaleMessage("not-found-player"));
+            sender.sendMessage(MessageUtils.getLocaleMessageComponent("not-found-player"));
             return;
         }
         new QuitEvent(player).callEvent();

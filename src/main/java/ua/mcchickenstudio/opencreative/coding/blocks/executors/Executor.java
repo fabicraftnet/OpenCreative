@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCodingDebugExecutor;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 /**

@@ -63,16 +63,16 @@ public class TimeCommand extends CommandHandler {
              */
             Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
             if (planet == null) {
-                player.sendMessage(getLocaleMessage("only-in-world"));
+                player.sendMessage(getLocaleMessageComponent("only-in-world"));
                 return;
             }
             if (!(planet.isOwner(player) || planet.getWorldPlayers().canDevelop(player) || planet.getWorldPlayers().canBuild(player))) {
-                player.sendMessage(getLocaleMessage("not-owner"));
+                player.sendMessage(getLocaleMessageComponent("not-owner"));
                 return;
             }
         }
         if (args.length != 2 || !(args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("add"))) {
-            sender.sendMessage(getLocaleMessage("commands.time.help"));
+            sender.sendMessage(getLocaleMessageComponent("commands.time.help"));
             return;
         }
         int time = 6000;

@@ -31,13 +31,13 @@ import ua.mcchickenstudio.opencreative.coding.menus.blocks.ContentWithMenusCateg
 import ua.mcchickenstudio.opencreative.coding.values.EventValue;
 import ua.mcchickenstudio.opencreative.coding.values.EventValues;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.time.Duration;
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.toComponent;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 
 /**
  * This class represents a menu where player can select event value
@@ -46,7 +46,7 @@ import static ua.mcchickenstudio.opencreative.utils.MessageUtils.toComponent;
 public final class EventValueSelectionMenu extends ContentWithMenusCategoryMenu<EventValue> {
 
     public EventValueSelectionMenu(@NotNull Player player) {
-        super(player, "event-values", getLocaleMessage("menus.developer.event-values.title", false),
+        super(player, "event-values", getLocaleMessageComponent("menus.developer.event-values.title", false),
                 Material.ORANGE_STAINED_GLASS_PANE, MenusCategory.WORLD);
     }
 
@@ -77,7 +77,7 @@ public final class EventValueSelectionMenu extends ContentWithMenusCategoryMenu<
         setPersistentData(itemInHand, getCodingVariableTypeKey(), getPersistentData(item, getCodingVariableTypeKey()));
         getPlayer().closeInventory();
         getPlayer().showTitle(Title.title(
-                (getLocaleMessage("world.dev-mode.set-variable")), displayName,
+                (MessageUtils.getLocaleMessageComponent("world.dev-mode.set-variable")), displayName,
                 Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
         ));
         Sounds.DEV_EVENT_VALUE_SET.play(event.getWhoClicked());

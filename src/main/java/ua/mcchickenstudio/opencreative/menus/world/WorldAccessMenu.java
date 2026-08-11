@@ -149,7 +149,7 @@ public final class WorldAccessMenu extends AbstractMenu implements WorldMenu {
                     return;
                 }
                 if (planet.getSharing() != Planet.Sharing.PUBLIC) {
-                    player.sendMessage(getLocaleMessage("advertisement.closed-world"));
+                    player.sendMessage(getLocaleMessageComponent("advertisement.closed-world"));
                     Sounds.PLAYER_FAIL.play(player);
                     player.setCooldown(item.getType(), OpenCreative.getSettings().getGroups().getGroup(player).getGenericCommandCooldown() * 20);
                     return;
@@ -229,7 +229,7 @@ public final class WorldAccessMenu extends AbstractMenu implements WorldMenu {
                                         Sounds.WORLD_DELETION.play(player);
                                         OpenCreative.getPlugin().getLogger().info("Planet " + planet.getId() + " is being deleted by world's owner " + player.getName());
                                         OpenCreative.getPlanetsManager().deletePlanet(planet);
-                                        Bukkit.getServer().getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> player.sendMessage(MessageUtils.getLocaleMessage("deleting-world.message")), 60);
+                                        Bukkit.getServer().getScheduler().runTaskLater(OpenCreative.getPlugin(), () -> player.sendMessage(MessageUtils.getLocaleMessageComponent("deleting-world.message")), 60);
                                     }
                                 }).open(player), 5L);
 

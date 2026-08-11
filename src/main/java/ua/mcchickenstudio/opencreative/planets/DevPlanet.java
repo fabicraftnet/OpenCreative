@@ -57,7 +57,6 @@ import static ua.mcchickenstudio.opencreative.utils.BlockUtils.getSignLine;
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.isOutOfBorders;
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.FileUtils.getDevPlanetFolder;
-import static ua.mcchickenstudio.opencreative.utils.FileUtils.getPlanetConfig;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.*;
 
@@ -364,7 +363,7 @@ public class DevPlanet {
             player.setAllowFlight(true);
             player.setFlying(true);
             player.teleport(platform.getSpawnLocation());
-            player.sendMessage(getLocaleMessage("environment.platform.claimed"));
+            player.sendMessage(getLocaleMessageComponent("environment.platform.claimed"));
             Sounds.DEV_PLATFORM_CLAIM.play(player);
             Location location = getDevPlatformer().getPlatformBeginLocation(platform);
             Chunk chunk = location.getChunk();
@@ -781,12 +780,12 @@ public class DevPlanet {
     public void connectPlayer(@NotNull Player player, boolean hidePlayer) {
         Wander wander = OpenCreative.getWander(player);
         if (wander.isConnectingToPlanet()) {
-            player.sendMessage(getLocaleMessage("world.connecting.busy"));
+            player.sendMessage(getLocaleMessageComponent("world.connecting.busy"));
             return;
         }
         wander.setConnectingToPlanet(true);
         player.showTitle(Title.title(
-                (getLocaleMessage("world.dev-mode.connecting.title")), (getLocaleMessage("world.dev-mode.connecting.subtitle")),
+                (getLocaleMessageComponent("world.dev-mode.connecting.title")), (getLocaleMessageComponent("world.dev-mode.connecting.subtitle")),
                 Title.Times.times(Duration.ofSeconds(15), Duration.ofSeconds(30), Duration.ofSeconds(10))
         ));
         World previousWorld = player.getWorld();
@@ -888,7 +887,7 @@ public class DevPlanet {
                 Sounds.WORLD_MODE_DEV.play(player);
                 displayWorldBorders();
                 player.showTitle(Title.title(
-                        (getLocaleMessage("world.dev-mode.title")), (getLocaleMessage("world.dev-mode.subtitle")),
+                        (getLocaleMessageComponent("world.dev-mode.title")), (getLocaleMessageComponent("world.dev-mode.subtitle")),
                         Title.Times.times(Duration.ofMillis(750), Duration.ofSeconds(2), Duration.ofMillis(750))
                 ));
                 wander.setConnectingToPlanet(false);

@@ -57,11 +57,11 @@ public final class WandersExperiment extends Experiment {
     @Override
     public void handleCommand(@NotNull CommandSender sender, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(getLocaleMessage("only-players"));
+            sender.sendMessage(getLocaleMessageComponent("only-players"));
             return;
         }
         if (args.length == 0) {
-            player.sendMessage(getLocaleMessage("too-few-args"));
+            player.sendMessage(getLocaleMessageComponent("too-few-args"));
             return;
         }
         Wander wander = OpenCreative.getWander(player);
@@ -69,7 +69,7 @@ public final class WandersExperiment extends Experiment {
             case "favorite" -> {
                 Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
                 if (planet == null) {
-                    player.sendMessage(getLocaleMessage("only-in-world"));
+                    player.sendMessage(getLocaleMessageComponent("only-in-world"));
                     return;
                 }
                 if (wander.addFavoriteWorld(planet.getId())) {
@@ -90,7 +90,7 @@ public final class WandersExperiment extends Experiment {
             case "unfavorite" -> {
                 Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
                 if (planet == null) {
-                    player.sendMessage(getLocaleMessage("only-in-world"));
+                    player.sendMessage(getLocaleMessageComponent("only-in-world"));
                     return;
                 }
                 if (wander.removeFavoriteWorld(planet.getId())) {
@@ -110,7 +110,7 @@ public final class WandersExperiment extends Experiment {
             }
             case "gender" -> {
                 if (args.length == 1) {
-                    sender.sendMessage(getLocaleMessage("too-few-args"));
+                    sender.sendMessage(getLocaleMessageComponent("too-few-args"));
                     return;
                 }
                 OfflineWander.Gender gender = OfflineWander.Gender.getGender(args[1]);
@@ -128,12 +128,12 @@ public final class WandersExperiment extends Experiment {
             }
             case "info" -> {
                 if (args.length == 1) {
-                    sender.sendMessage(getLocaleMessage("too-few-args"));
+                    sender.sendMessage(getLocaleMessageComponent("too-few-args"));
                     return;
                 }
                 Player found = Bukkit.getPlayer(args[1]);
                 if (found == null) {
-                    sender.sendMessage(getLocaleMessage("not-found-player"));
+                    sender.sendMessage(getLocaleMessageComponent("not-found-player"));
                     return;
                 }
                 wander = OpenCreative.getWander(found);

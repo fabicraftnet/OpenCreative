@@ -21,7 +21,6 @@ package ua.mcchickenstudio.opencreative.coding.modules;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TextReplacementConfig;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -41,7 +40,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.toComponent;
 
 public final class OwnModulesBrowserMenu extends ListBrowserMenu<Module> {
@@ -52,7 +51,7 @@ public final class OwnModulesBrowserMenu extends ListBrowserMenu<Module> {
     private final ItemStack BACK_TO_ALL_MODULES = createItem(Material.MANGROVE_CHEST_BOAT, 1, "menus.own-modules.items.all-modules");
 
     public OwnModulesBrowserMenu(Player player) {
-        super(player, getLocaleMessage("menus.own-modules.title", false), PlacementLayout.BOTTOM_NO_DECORATION,
+        super(player, getLocaleMessageComponent("menus.own-modules.title", false), PlacementLayout.BOTTOM_NO_DECORATION,
                 new int[]{45}, new int[]{45, 46, 52, 53});
         this.modules = new ArrayList<>(OpenCreative.getModuleManager().getPlayerModules(player.getUniqueId()));
         Comparator<Module> sortByOnline = Comparator.comparingLong(module -> module.getInformation().getCreationTime());

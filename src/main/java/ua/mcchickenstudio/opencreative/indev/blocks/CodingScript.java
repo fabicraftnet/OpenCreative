@@ -41,7 +41,7 @@ import java.util.Set;
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCodingDebugLog;
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendPlanetErrorMessage;
 import static ua.mcchickenstudio.opencreative.utils.FileUtils.getPlanetScriptFile;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 public class CodingScript {

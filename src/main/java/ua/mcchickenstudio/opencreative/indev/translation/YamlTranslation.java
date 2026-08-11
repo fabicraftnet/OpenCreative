@@ -81,7 +81,7 @@ public class YamlTranslation implements TranslationManager {
 
     @Override
     public @NotNull Component getLocaleComponent(@NotNull String id, @NotNull OfflinePlayer player) {
-        return MessageUtils.getLocaleComponent(id);
+        return MessageUtils.getLocaleMessageComponent(id);
     }
 
     @Override

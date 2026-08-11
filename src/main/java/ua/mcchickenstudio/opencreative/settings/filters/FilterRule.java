@@ -52,7 +52,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleComponent;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.substring;
 
 /**
@@ -253,17 +253,17 @@ public final class FilterRule {
                     + result.context().name().toLowerCase() + " by rule: " + result.rule().id + ", matched: " + match);
             for (Player moderator : Bukkit.getOnlinePlayers()) {
                 if (moderator.hasPermission("opencreative.moderation.filter-notify") && !moderator.equals(player)) {
-                    moderator.sendMessage(getLocaleComponent(
+                    moderator.sendMessage(getLocaleMessageComponent(
                             "filters." + result.context().name().toLowerCase() + "-violation.staff")
                             .replaceText(new PlaceholderReplacer("player", player.getName()).get())
                             .hoverEvent(HoverEvent.showText(new PlaceholderReplacer("rule", result.rule().id,
-                                    "match", match).apply(getLocaleComponent("filters.hover-text")))
+                                    "match", match).apply(getLocaleMessageComponent("filters.hover-text")))
                             ));
                 }
             }
         }
         if (warnPlayer) {
-            player.sendMessage(getLocaleComponent(
+            player.sendMessage(getLocaleMessageComponent(
                     "filters." + result.context().name().toLowerCase() + "-violation.player"));
             Sounds.PLAYER_FILTER.play(player);
         }

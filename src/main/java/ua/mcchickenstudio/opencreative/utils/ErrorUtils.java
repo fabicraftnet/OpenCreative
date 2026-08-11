@@ -331,7 +331,7 @@ public final class ErrorUtils {
                             .replace("%x%", String.valueOf(action.getX()))
                             .replace("%y%", String.valueOf(action.getExecutor().getY()))
                             .replace("%z%", String.valueOf(action.getExecutor().getZ())))
-                    .hoverEvent(HoverEvent.showText(toComponent(getLocaleMessage("coding-error.hover-message") + "\n" + parseException(error, true))))
+                    .hoverEvent(HoverEvent.showText(toComponent(getLocaleMessageComponent("coding-error.hover-message") + "\n" + parseException(error, true))))
                     .clickEvent(ClickEvent.runCommand("/dev " + (action.getX() - 0.5) + " " + action.getExecutor().getY() + " " + (action.getExecutor().getZ() - 0.5)));
             player.sendMessage(message);
             Sounds.WORLD_CODE_ERROR.play(player);
@@ -348,7 +348,7 @@ public final class ErrorUtils {
                     "x", action.getX(),
                     "y", action.getExecutor().getY(),
                     "z", action.getExecutor().getZ())
-                    .hoverEvent(HoverEvent.showText(getLocaleComponent("coding-error.hover-message")))
+                    .hoverEvent(HoverEvent.showText(MessageUtils.getLocaleMessageComponent("coding-error.hover-message")))
                     .clickEvent(ClickEvent.runCommand("/dev " + (action.getX() - 0.5) + " " + action.getExecutor().getY() + " " + (action.getExecutor().getZ() - 0.5)));
             player.sendMessage(message);
         }
@@ -406,7 +406,7 @@ public final class ErrorUtils {
                             .replace("%x%", String.valueOf(executor.getX()))
                             .replace("%y%", String.valueOf(executor.getY()))
                             .replace("%z%", String.valueOf(executor.getZ())))
-                    .hoverEvent(HoverEvent.showText(getLocaleMessage("coding-error.hover-message",true)))
+                    .hoverEvent(HoverEvent.showText(getLocaleMessageComponent("coding-error.hover-message",true)))
                     .clickEvent(ClickEvent.runCommand("/dev " + executor.getX() + " " + executor.getY() + " " + executor.getZ()));
             player.sendMessage(message);
         }
@@ -435,7 +435,7 @@ public final class ErrorUtils {
                             .replace("%x%", String.valueOf(executor.getX()))
                             .replace("%y%", String.valueOf(executor.getY()))
                             .replace("%z%", String.valueOf(executor.getZ())))
-                    .hoverEvent(HoverEvent.showText(getLocaleMessage("coding-error.hover-message")))
+                    .hoverEvent(HoverEvent.showText(getLocaleMessageComponent("coding-error.hover-message")))
                     .clickEvent(ClickEvent.runCommand("/dev " + executor.getX() + " " + executor.getY() + " " + executor.getZ()));
             player.sendMessage(message);
             Sounds.WORLD_CODE_ERROR.play(player);
@@ -459,7 +459,7 @@ public final class ErrorUtils {
                             .replace("%x%", String.valueOf(block.getX()))
                             .replace("%y%", String.valueOf(block.getY()))
                             .replace("%z%", String.valueOf(block.getZ())))
-                    .hoverEvent(HoverEvent.showText(getLocaleMessage("coding-error.hover-message",true)))
+                    .hoverEvent(HoverEvent.showText(getLocaleMessageComponent("coding-error.hover-message",true)))
                     .clickEvent(ClickEvent.runCommand("/dev " + block.getX() + " " + block.getY() + " " + block.getZ()));
             player.sendMessage(message);
             Sounds.WORLD_CODE_COMPILE_ERROR.play(player);
@@ -502,7 +502,7 @@ public final class ErrorUtils {
                                 .replace("%category%", category)
                                 .replace("%type%", type))
                         .color(color)
-                        .hoverEvent(HoverEvent.showText(getLocaleMessage("coding-error.hover-message",true)))
+                        .hoverEvent(HoverEvent.showText(getLocaleMessageComponent("coding-error.hover-message",true)))
                         .clickEvent(ClickEvent.runCommand("/dev " + block.getLocation().getX() + " " + block.getLocation().getY() + " " + block.getLocation().getZ()));
                 player.sendMessage(blockCoordinatesMessage);
             }

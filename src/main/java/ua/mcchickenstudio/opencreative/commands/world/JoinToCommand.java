@@ -28,12 +28,13 @@ import ua.mcchickenstudio.opencreative.coding.blocks.events.player.world.QuitEve
 import ua.mcchickenstudio.opencreative.commands.CommandHandler;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.utils.CooldownUtils;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.commands.world.JoinCommand.handlePlayerConnection;
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getPlayerLocaleMessage;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.teleportToLobby;
 
@@ -50,30 +51,30 @@ public class JoinToCommand extends CommandHandler {
         if (sender instanceof Player player) {
             if (!checkAndSetCooldownWithMessage(player, CooldownUtils.CooldownType.GENERIC_COMMAND)) return;
             if (player.isDead()) {
-                player.sendMessage(getLocaleMessage("only-alive"));
+                player.sendMessage(MessageUtils.getLocaleMessageComponent("only-alive"));
                 return;
             }
         } else if (args.length == 1) {
-            sender.sendMessage(getLocaleMessage("only-players"));
+            sender.sendMessage(MessageUtils.getLocaleMessageComponent("only-players"));
         }
 
         if (OpenCreative.getSettings().isMaintenance() && !sender.hasPermission("opencreative.maintenance.bypass")) {
-            sender.sendMessage(getLocaleMessage("maintenance"));
+            sender.sendMessage(MessageUtils.getLocaleMessageComponent("maintenance"));
             return;
         }
 
         if (OpenCreative.getStability().isVeryBad() && !sender.hasPermission("opencreative.stability.bypass")) {
-            sender.sendMessage(getLocaleMessage("creative.stability.cannot"));
+            sender.sendMessage(MessageUtils.getLocaleMessageComponent("creative.stability.cannot"));
             return;
         }
 
         if (args.length == 0 || args.length > 2) {
-            sender.sendMessage(getLocaleMessage("commands.join-to.help"));
+            sender.sendMessage(MessageUtils.getLocaleMessageComponent("commands.join-to.help"));
             return;
         }
 
         if (args.length == 2 && !sender.hasPermission("opencreative.join-to.others")) {
-            sender.sendMessage(getLocaleMessage("no-perms"));
+            sender.sendMessage(MessageUtils.getLocaleMessageComponent("no-perms"));
             return;
         }
 
@@ -81,7 +82,7 @@ public class JoinToCommand extends CommandHandler {
         if (args.length == 2) nickname = args[1];
         Player foundPlayer = Bukkit.getPlayer(nickname);
         if (foundPlayer == null) {
-            sender.sendMessage(getLocaleMessage("not-found-player"));
+            sender.sendMessage(MessageUtils.getLocaleMessageComponent("not-found-player"));
             return;
         }
 
@@ -92,7 +93,7 @@ public class JoinToCommand extends CommandHandler {
             playerToConnect = player;
         }
         if (playerToConnect == null) {
-            sender.sendMessage(getLocaleMessage("not-found-player"));
+            sender.sendMessage(MessageUtils.getLocaleMessageComponent("not-found-player"));
             return;
         }
 

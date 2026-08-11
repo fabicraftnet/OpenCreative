@@ -38,7 +38,6 @@ import ua.mcchickenstudio.opencreative.coding.blocks.events.world.other.GamePlay
 import ua.mcchickenstudio.opencreative.coding.variables.WorldVariables;
 import ua.mcchickenstudio.opencreative.commands.experiments.Experiments;
 import ua.mcchickenstudio.opencreative.events.planet.PlanetConnectPlayerEvent;
-import ua.mcchickenstudio.opencreative.utils.FileUtils;
 import ua.mcchickenstudio.opencreative.wanders.Wander;
 import ua.mcchickenstudio.opencreative.listeners.player.ChangedWorld;
 import ua.mcchickenstudio.opencreative.managers.stability.StabilityState;
@@ -534,7 +533,7 @@ public class Planet {
                     if (!isEntityInDevPlanet(player)) {
                         if (!ignoreEvents) new QuitEvent(player).callEvent();
                         player.showTitle(Title.title(
-                                (getLocaleMessage("world.build-mode.title")), (getLocaleMessage("world.build-mode.subtitle")),
+                                (getLocaleMessageComponent("world.build-mode.title")), (getLocaleMessageComponent("world.build-mode.subtitle")),
                                 Title.Times.times(Duration.ofMillis(100), Duration.ofSeconds(2), Duration.ofMillis(130))
                         ));
                         clearPlayer(player);
@@ -548,15 +547,15 @@ public class Planet {
                         if (worldPlayers.canBuild(player)) {
                             player.setGameMode(GameMode.CREATIVE);
                             giveBuildPermissions(player);
-                            player.sendMessage(getLocaleMessage("world.build-mode.message.owner"));
+                            player.sendMessage(getLocaleMessageComponent("world.build-mode.message.owner"));
                             if (!territory.isAutoSave()) {
-                                player.sendMessage(getLocaleMessage("settings.autosave.warning"));
+                                player.sendMessage(getLocaleMessageComponent("settings.autosave.warning"));
                             }
                         } else {
-                            player.sendMessage(getLocaleMessage("world.build-mode.message.players"));
+                            player.sendMessage(getLocaleMessageComponent("world.build-mode.message.players"));
                         }
                     } else {
-                        player.sendMessage(getLocaleMessage("world.build-mode.message.players"));
+                        player.sendMessage(getLocaleMessageComponent("world.build-mode.message.players"));
                     }
                 }
                 territory.stopBukkitRunnables();
@@ -572,16 +571,16 @@ public class Planet {
                         player.teleport(territory.getSpawnLocation());
                         territory.showBorders(player);
                         if (worldPlayers.canDevelop(player)) {
-                            player.sendMessage(getLocaleMessage("world.play-mode.message.owner"));
+                            player.sendMessage(getLocaleMessageComponent("world.play-mode.message.owner"));
                             givePlayPermissions(player);
                         } else {
-                            player.sendMessage(getLocaleMessage("world.play-mode.message.players"));
+                            player.sendMessage(getLocaleMessageComponent("world.play-mode.message.players"));
                         }
                         if (isOwner(player)) {
                             ItemsGroup.PLAY_OWNER.setItems(player);
                         }
                     } else {
-                        player.sendMessage(getLocaleMessage("world.play-mode.message.owner"));
+                        player.sendMessage(getLocaleMessageComponent("world.play-mode.message.owner"));
                     }
                 }
                 if (devPlanet.isLoaded() && devPlanet.isCodeChanged()) {
@@ -745,18 +744,18 @@ public class Planet {
     public void connectPlayer(@NotNull Player player, boolean hidePlayer) {
         // If stability is not good, not connecting
         if (OpenCreative.getStability().getState() != StabilityState.FINE && !isLoaded()) {
-            player.sendMessage(getLocaleMessage("creative.stability.cannot"));
+            player.sendMessage(getLocaleMessageComponent("creative.stability.cannot"));
             Sounds.PLAYER_FAIL.play(player);
             return;
         }
 
         if (territory.isBusy()) {
-            player.sendMessage(getLocaleMessage("world.connecting.unloading"));
+            player.sendMessage(getLocaleMessageComponent("world.connecting.unloading"));
             return;
         }
         Wander wander = OpenCreative.getWander(player);
         if (wander.isConnectingToPlanet()) {
-            player.sendMessage(getLocaleMessage("world.connecting.busy"));
+            player.sendMessage(getLocaleMessageComponent("world.connecting.busy"));
             return;
         }
 
@@ -808,13 +807,13 @@ public class Planet {
         new QuitEvent(player).callEvent();
         wander.setConnectingToPlanet(true);
         player.showTitle(Title.title(
-                getLocaleComponent("world.connecting.title"), getLocaleComponent("world.connecting.subtitle"),
+                MessageUtils.getLocaleMessageComponent("world.connecting.title"), MessageUtils.getLocaleMessageComponent("world.connecting.subtitle"),
                 Title.Times.times(Duration.ofMillis(710), Duration.ofSeconds(30), Duration.ofMillis(130))
         ));
         Sounds.WORLD_CONNECTION.play(player);
 
         if (territory.isBusy()) {
-            player.sendMessage(getLocaleMessage("world.connecting.unloading"));
+            player.sendMessage(getLocaleMessageComponent("world.connecting.unloading"));
             return;
         }
 
@@ -923,7 +922,7 @@ public class Planet {
                             (MessageUtils.getPlayerLocaleMessage("creating-world.welcome-title", player)), (MessageUtils.getPlayerLocaleMessage("creating-world.welcome-subtitle", player)),
                             Title.Times.times(Duration.ofMillis(750), Duration.ofSeconds(9), Duration.ofSeconds(2))
                     ));
-                    player.sendMessage(getLocaleMessage("creating-world.welcome"));
+                    player.sendMessage(getLocaleMessageComponent("creating-world.welcome"));
                     Sounds.WELCOME_TO_NEW_WORLD.play(player);
                     player.setGameMode(GameMode.CREATIVE);
                     ItemsGroup.BUILD_OWNER.setItems(player);
@@ -942,7 +941,7 @@ public class Planet {
                 }
             }
             if (!territory.isAutoSave() && worldPlayers.canBuild(player)) {
-                player.sendMessage(getLocaleMessage("settings.autosave.warning"));
+                player.sendMessage(getLocaleMessageComponent("settings.autosave.warning"));
             }
             if (hidePlayer) {
                 player.setGameMode(GameMode.SPECTATOR);

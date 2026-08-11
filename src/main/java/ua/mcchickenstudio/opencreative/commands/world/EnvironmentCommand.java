@@ -94,12 +94,12 @@ public class EnvironmentCommand extends CommandHandler {
 
             Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
             if (planet == null) {
-                player.sendMessage(getLocaleMessage("only-in-world"));
+                player.sendMessage(getLocaleMessageComponent("only-in-world"));
                 return;
             }
 
             if (!planet.getWorldPlayers().canDevelop(player)) {
-                player.sendMessage(getLocaleMessage("not-developer"));
+                player.sendMessage(getLocaleMessageComponent("not-developer"));
                 return;
             }
 
@@ -117,7 +117,7 @@ public class EnvironmentCommand extends CommandHandler {
                         player.sendMessage(toComponent(getLocaleMessageString("environment.variables.size").replace("%count%", String.valueOf(planet.getVariables().getTotalVariablesAmount()))));
                     } else if (args[1].equalsIgnoreCase("set")) {
                         if (args.length <= 4) {
-                            player.sendMessage(getLocaleMessage("environment.variables.set.help"));
+                            player.sendMessage(getLocaleMessageComponent("environment.variables.set.help"));
                             return;
                         }
                         // /env var set VAR_NAME VAR_TYPE VALUE_TYPE VALUE
@@ -202,7 +202,7 @@ public class EnvironmentCommand extends CommandHandler {
                             var = planet.getVariables().getVariable(varName, VariableLink.VariableType.SAVED, null);
                         }
                         if (var == null) {
-                            player.sendMessage(getLocaleMessage("environment.variables.get.empty"));
+                            player.sendMessage(getLocaleMessageComponent("environment.variables.get.empty"));
                         } else {
                             String message = getLocaleMessageString("environment.variables.get.message")
                                     .replace("%variable%", varName)
@@ -214,12 +214,12 @@ public class EnvironmentCommand extends CommandHandler {
                         }
                     } else if (args[1].equalsIgnoreCase("clear")) {
                         planet.getVariables().clearVariables();
-                        player.sendMessage(getLocaleMessage("environment.variables.cleared"));
+                        player.sendMessage(getLocaleMessageComponent("environment.variables.cleared"));
                     } else if (args[1].equalsIgnoreCase("list")) {
                         int page = 0;
                         List<WorldVariable> allVariables = new ArrayList<>(planet.getVariables().getSet());
                         if (allVariables.isEmpty()) {
-                            player.sendMessage(getLocaleMessage("environment.variables.list.empty"));
+                            player.sendMessage(getLocaleMessageComponent("environment.variables.list.empty"));
                             return;
                         }
                         if (args.length > 2) {
@@ -247,15 +247,15 @@ public class EnvironmentCommand extends CommandHandler {
                             }
                             player.sendMessage(toComponent(getLocaleMessageString("environment.variables.list.variable", false).replace("%name%", name).replace("%type%", type.getLocalized()).replace("%value%", value)));
                         }
-                        Component navigation = (getLocaleMessage("environment.variables.list.navigation"));
+                        Component navigation = (getLocaleMessageComponent("environment.variables.list.navigation"));
                         page += 1;
                         if (page * 20 > 20) {
-                            navigation = navigation.append((getLocaleMessage("environment.variables.list.previous-page")).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/environment variables list " + (page - 1))));
+                            navigation = navigation.append((getLocaleMessageComponent("environment.variables.list.previous-page")).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/environment variables list " + (page - 1))));
                         }
                         if (allVariables.size() > current) {
-                            navigation = navigation.append((getLocaleMessage("environment.variables.list.next-page")).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/environment variables list " + (page + 1))));
+                            navigation = navigation.append((getLocaleMessageComponent("environment.variables.list.next-page")).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/environment variables list " + (page + 1))));
                         }
-                        if (!(getLocaleMessage("environment.variables.list.navigation")).equals(navigation)) {
+                        if (!(getLocaleMessageComponent("environment.variables.list.navigation")).equals(navigation)) {
                             player.sendMessage(navigation);
                         }
                         player.sendMessage(" ");
@@ -264,7 +264,7 @@ public class EnvironmentCommand extends CommandHandler {
                 case "containers", "barrel", "barrels": {
                     DevPlanet devPlanet = OpenCreative.getPlanetsManager().getDevPlanet(player);
                     if (devPlanet == null) {
-                        player.sendMessage(getLocaleMessage("only-in-dev-world"));
+                        player.sendMessage(getLocaleMessageComponent("only-in-dev-world"));
                         return;
                     }
                     devPlanet.setContainerMaterial(devPlanet.getContainerMaterial() == Material.CHEST ? Material.BARREL : Material.CHEST);
@@ -273,12 +273,12 @@ public class EnvironmentCommand extends CommandHandler {
                 }
                 case "container": {
                     if (args.length < 2) {
-                        sender.sendMessage(getLocaleMessage("too-few-args"));
+                        sender.sendMessage(getLocaleMessageComponent("too-few-args"));
                         return;
                     }
                     DevPlanet devPlanet = OpenCreative.getPlanetsManager().getDevPlanet(player);
                     if (devPlanet == null) {
-                        sender.sendMessage(getLocaleMessage("only-in-dev-world"));
+                        sender.sendMessage(getLocaleMessageComponent("only-in-dev-world"));
                         return;
                     }
                     Material material = Material.CHEST;
@@ -316,7 +316,7 @@ public class EnvironmentCommand extends CommandHandler {
                 case "drops", "drop", "drop-items": {
                     DevPlanet devPlanet = OpenCreative.getPlanetsManager().getDevPlanet(player);
                     if (devPlanet == null) {
-                        player.sendMessage(getLocaleMessage("only-in-dev-world"));
+                        player.sendMessage(getLocaleMessageComponent("only-in-dev-world"));
                         return;
                     }
                     boolean value = !devPlanet.isDropItems();
@@ -326,7 +326,7 @@ public class EnvironmentCommand extends CommandHandler {
                             default -> false;
                         };
                     }
-                    player.sendMessage(getLocaleMessage("environment.drops." + (value ? "enabled" : "disabled")));
+                    player.sendMessage(getLocaleMessageComponent("environment.drops." + (value ? "enabled" : "disabled")));
                     devPlanet.setDropItems(value);
                     Sounds.DEV_SETTINGS_DROP_ITEMS.play(player);
                     break;
@@ -334,7 +334,7 @@ public class EnvironmentCommand extends CommandHandler {
                 case "night-vision": {
                     DevPlanet devPlanet = OpenCreative.getPlanetsManager().getDevPlanet(player);
                     if (devPlanet == null) {
-                        player.sendMessage(getLocaleMessage("only-in-dev-world"));
+                        player.sendMessage(getLocaleMessageComponent("only-in-dev-world"));
                         return;
                     }
                     boolean value = !devPlanet.isNightVision();
@@ -350,14 +350,14 @@ public class EnvironmentCommand extends CommandHandler {
                     } else {
                         player.removePotionEffect(PotionEffectType.NIGHT_VISION);
                     }
-                    player.sendMessage(getLocaleMessage("environment.night-vision." + (value ? "enabled" : "disabled")));
+                    player.sendMessage(getLocaleMessageComponent("environment.night-vision." + (value ? "enabled" : "disabled")));
                     Sounds.DEV_SETTINGS_NIGHT_VISION.play(player);
                     break;
                 }
                 case "save-location": {
                     DevPlanet devPlanet = OpenCreative.getPlanetsManager().getDevPlanet(player);
                     if (devPlanet == null) {
-                        player.sendMessage(getLocaleMessage("only-in-dev-world"));
+                        player.sendMessage(getLocaleMessageComponent("only-in-dev-world"));
                         return;
                     }
                     boolean value = !devPlanet.isSaveLocation();
@@ -367,23 +367,23 @@ public class EnvironmentCommand extends CommandHandler {
                             default -> false;
                         };
                     }
-                    player.sendMessage(getLocaleMessage("environment.save-location." + (value ? "enabled" : "disabled")));
+                    player.sendMessage(getLocaleMessageComponent("environment.save-location." + (value ? "enabled" : "disabled")));
                     devPlanet.setSaveLocation(value);
                     Sounds.DEV_SETTINGS_SAVE_LOCATION.play(player);
                     break;
                 }
                 case "createplatform": {
                     if (!sender.hasPermission("opencreative.debug")) {
-                        sender.sendMessage(getLocaleMessage("no-perms"));
+                        sender.sendMessage(getLocaleMessageComponent("no-perms"));
                         return;
                     }
                     if (args.length < 3) {
-                        sender.sendMessage(getLocaleMessage("too-few-args"));
+                        sender.sendMessage(getLocaleMessageComponent("too-few-args"));
                         return;
                     }
                     DevPlanet devPlanet = OpenCreative.getPlanetsManager().getDevPlanet(player);
                     if (devPlanet == null) {
-                        sender.sendMessage(getLocaleMessage("only-in-dev-world"));
+                        sender.sendMessage(getLocaleMessageComponent("only-in-dev-world"));
                         return;
                     }
                     int x = 1;
@@ -404,7 +404,7 @@ public class EnvironmentCommand extends CommandHandler {
                 case "platform", "p": {
                     DevPlanet devPlanet = OpenCreative.getPlanetsManager().getDevPlanet(player);
                     if (devPlanet == null) {
-                        sender.sendMessage(getLocaleMessage("only-in-dev-world"));
+                        sender.sendMessage(getLocaleMessageComponent("only-in-dev-world"));
                         return;
                     }
                     if (devPlanet.getPlatforms().size() >= devPlanet.getPlanet().getLimits().getCodingPlatformsLimit()) {
@@ -417,12 +417,12 @@ public class EnvironmentCommand extends CommandHandler {
                 }
                 case "sign": {
                     if (args.length < 2) {
-                        sender.sendMessage(getLocaleMessage("too-few-args"));
+                        sender.sendMessage(getLocaleMessageComponent("too-few-args"));
                         return;
                     }
                     DevPlanet devPlanet = OpenCreative.getPlanetsManager().getDevPlanet(player);
                     if (devPlanet == null) {
-                        sender.sendMessage(getLocaleMessage("only-in-dev-world"));
+                        sender.sendMessage(getLocaleMessageComponent("only-in-dev-world"));
                         return;
                     }
                     Material material = Material.OAK_WALL_SIGN;
@@ -438,12 +438,12 @@ public class EnvironmentCommand extends CommandHandler {
                 }
                 case "floor": {
                     if (args.length < 2) {
-                        sender.sendMessage(getLocaleMessage("too-few-args"));
+                        sender.sendMessage(getLocaleMessageComponent("too-few-args"));
                         return;
                     }
                     DevPlanet devPlanet = OpenCreative.getPlanetsManager().getDevPlanet(player);
                     if (devPlanet == null) {
-                        sender.sendMessage(getLocaleMessage("only-in-dev-world"));
+                        sender.sendMessage(getLocaleMessageComponent("only-in-dev-world"));
                         return;
                     }
                     Material material = Material.WHITE_STAINED_GLASS;
@@ -466,12 +466,12 @@ public class EnvironmentCommand extends CommandHandler {
                 }
                 case "action": {
                     if (args.length < 2) {
-                        sender.sendMessage(getLocaleMessage("too-few-args"));
+                        sender.sendMessage(getLocaleMessageComponent("too-few-args"));
                         return;
                     }
                     DevPlanet devPlanet = OpenCreative.getPlanetsManager().getDevPlanet(player);
                     if (devPlanet == null) {
-                        sender.sendMessage(getLocaleMessage("only-in-dev-world"));
+                        sender.sendMessage(getLocaleMessageComponent("only-in-dev-world"));
                         return;
                     }
                     Material material = Material.GRAY_STAINED_GLASS;
@@ -494,12 +494,12 @@ public class EnvironmentCommand extends CommandHandler {
                 }
                 case "event", "executor": {
                     if (args.length < 2) {
-                        sender.sendMessage(getLocaleMessage("too-few-args"));
+                        sender.sendMessage(getLocaleMessageComponent("too-few-args"));
                         return;
                     }
                     DevPlanet devPlanet = OpenCreative.getPlanetsManager().getDevPlanet(player);
                     if (devPlanet == null) {
-                        sender.sendMessage(getLocaleMessage("only-in-dev-world"));
+                        sender.sendMessage(getLocaleMessageComponent("only-in-dev-world"));
                         return;
                     }
                     Material material = Material.BLUE_STAINED_GLASS;
@@ -522,12 +522,12 @@ public class EnvironmentCommand extends CommandHandler {
                 }
                 case "theme", "settheme", "themes": {
                     if (args.length < 2) {
-                        sender.sendMessage(getLocaleMessage("too-few-args"));
+                        sender.sendMessage(getLocaleMessageComponent("too-few-args"));
                         return;
                     }
                     DevPlanet devPlanet = OpenCreative.getPlanetsManager().getDevPlanet(player);
                     if (devPlanet == null) {
-                        sender.sendMessage(getLocaleMessage("only-in-dev-world"));
+                        sender.sendMessage(getLocaleMessageComponent("only-in-dev-world"));
                         return;
                     }
                     DevPlatform platform = devPlanet.getPlatformInLocation(player.getLocation());
@@ -569,7 +569,7 @@ public class EnvironmentCommand extends CommandHandler {
                 }
                 case "debug": {
                     if (args.length == 1) {
-                        player.sendMessage(getLocaleMessage("environment.debug.help"));
+                        player.sendMessage(getLocaleMessageComponent("environment.debug.help"));
                         return;
                     }
                     if (args[1].equalsIgnoreCase("enable") || args[1].equalsIgnoreCase("on")) {
@@ -601,14 +601,14 @@ public class EnvironmentCommand extends CommandHandler {
 
     private void handleScoreboards(@NotNull Player player, @NotNull Planet planet, @NotNull String[] args) {
         if (args.length < 2) {
-            player.sendMessage(getLocaleMessage("too-few-args"));
+            player.sendMessage(getLocaleMessageComponent("too-few-args"));
             return;
         }
         switch (args[1].toLowerCase()) {
             case "list" -> {
                 Map<String, Scoreboard> scoreboards = planet.getTerritory().getScoreboards().getMap();
                 if (scoreboards.isEmpty()) {
-                    player.sendMessage(getLocaleMessage("environment.scoreboards.list.empty"));
+                    player.sendMessage(getLocaleMessageComponent("environment.scoreboards.list.empty"));
                     return;
                 }
                 player.sendMessage(toComponent(getLocaleMessageString("environment.scoreboards.list.amount")
@@ -623,7 +623,7 @@ public class EnvironmentCommand extends CommandHandler {
             }
             case "remove" -> {
                 if (args.length < 3) {
-                    player.sendMessage(getLocaleMessage("too-few-args"));
+                    player.sendMessage(getLocaleMessageComponent("too-few-args"));
                     return;
                 }
                 String id = args[2].toLowerCase();
@@ -640,7 +640,7 @@ public class EnvironmentCommand extends CommandHandler {
             }
             case "create" -> {
                 if (args.length < 3) {
-                    player.sendMessage(getLocaleMessage("too-few-args"));
+                    player.sendMessage(getLocaleMessageComponent("too-few-args"));
                     return;
                 }
                 String id = args[2].toLowerCase();
@@ -663,11 +663,11 @@ public class EnvironmentCommand extends CommandHandler {
             }
             case "show" -> {
                 if (args.length < 4) {
-                    player.sendMessage(getLocaleMessage("too-few-args"));
+                    player.sendMessage(getLocaleMessageComponent("too-few-args"));
                     return;
                 }
                 if (planet.getMode() != Planet.Mode.PLAYING) {
-                    player.sendMessage(getLocaleMessage("world.not-in-play-mode"));
+                    player.sendMessage(getLocaleMessageComponent("world.not-in-play-mode"));
                     return;
                 }
                 String id = args[2].toLowerCase();
@@ -686,7 +686,7 @@ public class EnvironmentCommand extends CommandHandler {
                 }
                 Player target = Bukkit.getPlayer(targetName);
                 if (target == null || !planet.equals(OpenCreative.getPlanetsManager().getPlanetByPlayer(target))) {
-                    player.sendMessage(getLocaleMessage("not-found-player"));
+                    player.sendMessage(getLocaleMessageComponent("not-found-player"));
                     return;
                 }
                 target.setScoreboard(board);
@@ -696,11 +696,11 @@ public class EnvironmentCommand extends CommandHandler {
     
     private void handleExecute(@NotNull Player player, @NotNull Planet planet, @NotNull String[] args) {
         if (planet.getMode() != Planet.Mode.PLAYING) {
-            player.sendMessage(getLocaleMessage("world.not-in-play-mode"));
+            player.sendMessage(getLocaleMessageComponent("world.not-in-play-mode"));
             return;
         }
         if (args.length < 3) {
-            player.sendMessage(getLocaleMessage("too-few-args"));
+            player.sendMessage(getLocaleMessageComponent("too-few-args"));
             return;
         }
         String eventName = args[1];
@@ -711,7 +711,7 @@ public class EnvironmentCommand extends CommandHandler {
             case "join", "player_join" -> {
                 Player eventPlayer = Bukkit.getPlayer(argument);
                 if (eventPlayer == null || !planet.getWorld().getPlayers().contains(eventPlayer)) {
-                    player.sendMessage(getLocaleMessage("environment.execute.offline"));
+                    player.sendMessage(getLocaleMessageComponent("environment.execute.offline"));
                     return;
                 }
                 new JoinEvent(eventPlayer).callEvent();
@@ -719,7 +719,7 @@ public class EnvironmentCommand extends CommandHandler {
             case "quit", "player_quit" -> {
                 Player eventPlayer = Bukkit.getPlayer(argument);
                 if (eventPlayer == null || !planet.getWorld().getPlayers().contains(eventPlayer)) {
-                    player.sendMessage(getLocaleMessage("environment.execute.offline"));
+                    player.sendMessage(getLocaleMessageComponent("environment.execute.offline"));
                     return;
                 }
                 new QuitEvent(eventPlayer).callEvent();
@@ -727,7 +727,7 @@ public class EnvironmentCommand extends CommandHandler {
             case "liked", "like", "player_like", "player_liked" -> {
                 Player eventPlayer = Bukkit.getPlayer(argument);
                 if (eventPlayer == null || !planet.getWorld().getPlayers().contains(eventPlayer)) {
-                    player.sendMessage(getLocaleMessage("environment.execute.offline"));
+                    player.sendMessage(getLocaleMessageComponent("environment.execute.offline"));
                     return;
                 }
                 new LikeEvent(eventPlayer).callEvent();
@@ -735,7 +735,7 @@ public class EnvironmentCommand extends CommandHandler {
             case "play", "player_play" -> {
                 Player eventPlayer = Bukkit.getPlayer(argument);
                 if (eventPlayer == null || !planet.getWorld().getPlayers().contains(eventPlayer)) {
-                    player.sendMessage(getLocaleMessage("environment.execute.offline"));
+                    player.sendMessage(getLocaleMessageComponent("environment.execute.offline"));
                     return;
                 }
                 new PlayEvent(eventPlayer).callEvent();
@@ -757,7 +757,7 @@ public class EnvironmentCommand extends CommandHandler {
                     }
                 }
                 if (!found)
-                    player.sendMessage(getLocaleMessage("environment.execute.function-not-found"));
+                    player.sendMessage(getLocaleMessageComponent("environment.execute.function-not-found"));
             }
             case "method", "meth" -> {
                 boolean found = false;
@@ -771,38 +771,38 @@ public class EnvironmentCommand extends CommandHandler {
                     }
                 }
                 if (!found)
-                    player.sendMessage(getLocaleMessage("environment.execute.method-not-found"));
+                    player.sendMessage(getLocaleMessageComponent("environment.execute.method-not-found"));
             }
-            default -> player.sendMessage(getLocaleMessage("environment.execute.help"));
+            default -> player.sendMessage(getLocaleMessageComponent("environment.execute.help"));
         }
     }
     
     private void handlePrompterMake(@NotNull Player player, @NotNull Planet planet, @NotNull String[] args) {
         if (args.length == 1) { // /env make a code that does something...
-            player.sendMessage(getLocaleMessage("environment.prompter.help"));
+            player.sendMessage(getLocaleMessageComponent("environment.prompter.help"));
             return;
         }
         if (!OpenCreative.getSettings().getGroups().getGroup(player).canUsePrompter() && !player.hasPermission("opencreative.prompter.bypass")) {
-            player.sendMessage(getLocaleMessage("no-perms"));
+            player.sendMessage(getLocaleMessageComponent("no-perms"));
             return;
         }
         if (!OpenCreative.getCodingPrompter().isWorking()) {
-            player.sendMessage(getLocaleMessage("environment.prompter.disabled"));
+            player.sendMessage(getLocaleMessageComponent("environment.prompter.disabled"));
             return;
         }
         DevPlanet devPlanet = OpenCreative.getPlanetsManager().getDevPlanet(player);
         if (devPlanet == null) {
-            player.sendMessage(getLocaleMessage("only-in-dev-world"));
+            player.sendMessage(getLocaleMessageComponent("only-in-dev-world"));
             return;
         }
         if (args.length <= 4) {
-            player.sendMessage(getLocaleMessage("environment.prompter.few-args"));
+            player.sendMessage(getLocaleMessageComponent("environment.prompter.few-args"));
             return;
         }
         if (!checkAndSetCooldownWithMessage(player, CooldownType.PROMPTER_REQUEST)) return;
         String request = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
         sendDebug("[CODING PROMPT] Player " + player.getName() + " requested to create a code: " + request);
-        player.sendMessage(getLocaleMessage("environment.prompter.thinking"));
+        player.sendMessage(getLocaleMessageComponent("environment.prompter.thinking"));
         broadcastPrompter(planet, player, request, "request");
         Sounds.DEV_PROMPTER_THINKING.play(player);
         long time = System.currentTimeMillis();
@@ -828,7 +828,7 @@ public class EnvironmentCommand extends CommandHandler {
                             if (section == null) {
                                 section = config.getConfigurationSection("blocks");
                                 if (section == null) {
-                                    player.sendMessage(getLocaleMessage("environment.prompter.bad-prompt"));
+                                    player.sendMessage(getLocaleMessageComponent("environment.prompter.bad-prompt"));
                                     Sounds.PLAYER_FAIL.play(player);
                                     Bukkit.getScheduler().runTask(OpenCreative.getPlugin(),
                                             () -> broadcastPrompter(planet, player, request, "failed")
@@ -837,7 +837,7 @@ public class EnvironmentCommand extends CommandHandler {
                                 }
                             }
                             if (section.getKeys(false).size() > OpenCreative.getSettings().getCodingSettings().getPrompterMaxExecutors()) {
-                                player.sendMessage(getLocaleMessage("environment.prompter.few-space"));
+                                player.sendMessage(getLocaleMessageComponent("environment.prompter.few-space"));
                                 Bukkit.getScheduler().runTask(OpenCreative.getPlugin(),
                                         () -> broadcastPrompter(planet, player, request, "failed")
                                 );
@@ -853,7 +853,7 @@ public class EnvironmentCommand extends CommandHandler {
                                         CodingBlockPlacer placer = new CodingBlockPlacer(devPlanet);
                                         CodingBlockPlacer.CodePlacementResult result = placer.placeCodingLines(devPlanet, finalSection);
                                         if (result.getType() == CodingBlockPlacer.CodePlacementResult.Type.NOT_ENOUGH_SPACE) {
-                                            player.sendMessage(getLocaleMessage("environment.prompter.few-space"));
+                                            player.sendMessage(getLocaleMessageComponent("environment.prompter.few-space"));
                                             Sounds.PLAYER_FAIL.play(player);
                                             broadcastPrompter(planet, player, request, "failed");
                                         } else if (result.getType().isSuccess()) {
@@ -875,20 +875,20 @@ public class EnvironmentCommand extends CommandHandler {
                         error -> {
                             switch (error.getCause()) {
                                 case UnauthorizedPrompterException ignored ->
-                                        player.sendMessage(getLocaleMessage("environment.prompter.unauthorized"));
+                                        player.sendMessage(getLocaleMessageComponent("environment.prompter.unauthorized"));
                                 case PrompterLimitedException ignored ->
-                                        player.sendMessage(getLocaleMessage("environment.prompter.limited"));
+                                        player.sendMessage(getLocaleMessageComponent("environment.prompter.limited"));
                                 case PrompterDownException ignored ->
-                                        player.sendMessage(getLocaleMessage("environment.prompter.unavailable"));
+                                        player.sendMessage(getLocaleMessageComponent("environment.prompter.unavailable"));
                                 case PrompterBadCodeException ignored -> {
-                                    player.sendMessage(getLocaleComponent("environment.prompter.bad-prompt")
+                                    player.sendMessage(MessageUtils.getLocaleMessageComponent("environment.prompter.bad-prompt")
                                             .hoverEvent(HoverEvent.showText(Component.text(parseException(ignored, true)))));
                                     Sounds.PLAYER_FAIL.play(player);
                                 }
                                 case HttpTimeoutException ignored ->
-                                        player.sendMessage(getLocaleMessage("environment.prompter.timeout"));
+                                        player.sendMessage(getLocaleMessageComponent("environment.prompter.timeout"));
                                 case ConnectException ignored ->
-                                        player.sendMessage(getLocaleMessage("environment.prompter.unknown-host"));
+                                        player.sendMessage(getLocaleMessageComponent("environment.prompter.unknown-host"));
                                 case Exception exception ->
                                         sendPlayerErrorMessage(player, "Failed to generate a code with " + OpenCreative.getCodingPrompter().getName() + ".", exception);
                                 default ->
@@ -1041,7 +1041,7 @@ public class EnvironmentCommand extends CommandHandler {
         for (Player developer : planet.getPlayers()) {
             if (planet.getWorldPlayers().canDevelop(developer) && !developer.equals(player)) {
                 developer.sendMessage(getPlayerLocaleComponent("environment.prompter.broadcast." + messageID, player)
-                        .hoverEvent(HoverEvent.showText(getLocaleComponent("environment.prompter.broadcast.hover")
+                        .hoverEvent(HoverEvent.showText(MessageUtils.getLocaleMessageComponent("environment.prompter.broadcast.hover")
                                 .replaceText(TextReplacementConfig.builder().match("%idea%")
                                         .replacement(request)
                                         .build()))));

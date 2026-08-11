@@ -25,11 +25,12 @@ import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.menus.world.browsers.WorldsBrowserMenu;
 import ua.mcchickenstudio.opencreative.menus.world.browsers.WorldsPickerMenu;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.util.HashSet;
 import java.util.List;
 
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 
 public final class WorldDownloaderExperiment extends Experiment {
 
@@ -51,7 +52,7 @@ public final class WorldDownloaderExperiment extends Experiment {
     @Override
     public void handleCommand(@NotNull CommandSender sender, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(getLocaleMessage("only-players"));
+            sender.sendMessage(MessageUtils.getLocaleMessageComponent("only-players"));
             return;
         }
         WorldsBrowserMenu menu = new WorldsPickerMenu(player, new HashSet<>(OpenCreative.getPlanetsManager().getPlanets().stream().filter(planet -> planet.getInformation().isDownloadable()).toList()));

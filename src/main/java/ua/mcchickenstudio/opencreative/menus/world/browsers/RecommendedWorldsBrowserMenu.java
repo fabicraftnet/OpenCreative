@@ -39,7 +39,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getPlayerLocaleMessage;
 
 /**
@@ -54,7 +54,7 @@ public class RecommendedWorldsBrowserMenu extends ListBrowserMenu<Planet> {
     private int sortType = 1;
 
     public RecommendedWorldsBrowserMenu(Player player, PlanetInfo.Category category) {
-        super(player, getLocaleMessage("menus.recommended-worlds.items."
+        super(player, getLocaleMessageComponent("menus.recommended-worlds.items."
                                 + category.name().toLowerCase().replace("_", "-") + ".title",
                         false), PlacementLayout.BOTTOM_NO_DECORATION,
                 new int[]{45, 49}, new int[]{45, 46, 52, 53});

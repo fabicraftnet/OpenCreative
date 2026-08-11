@@ -29,19 +29,20 @@ import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
 import ua.mcchickenstudio.opencreative.menus.ListBrowserMenu;
 import ua.mcchickenstudio.opencreative.planets.DevPlanet;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 
 public final class ModulesBrowserMenu extends ListBrowserMenu<Module> {
 
     private final List<Module> modules = new ArrayList<>();
 
     public ModulesBrowserMenu(Player player, List<Module> modules) {
-        super(player, getLocaleMessage("menus.modules.title", false), PlacementLayout.BOTTOM_NO_DECORATION,
+        super(player, getLocaleMessageComponent("menus.modules.title", false), PlacementLayout.BOTTOM_NO_DECORATION,
                 new int[]{49}, new int[]{45, 46, 52, 53});
         this.modules.addAll(modules);
     }
@@ -105,7 +106,7 @@ public final class ModulesBrowserMenu extends ListBrowserMenu<Module> {
         DevPlanet devPlanet = OpenCreative.getPlanetsManager().getDevPlanet(getPlayer());
         event.getWhoClicked().closeInventory();
         if (devPlanet == null) {
-            getPlayer().sendMessage(getLocaleMessage("only-in-dev-world"));
+            getPlayer().sendMessage(MessageUtils.getLocaleMessageComponent("only-in-dev-world"));
             Sounds.PLAYER_FAIL.play(event.getWhoClicked());
             return;
         }

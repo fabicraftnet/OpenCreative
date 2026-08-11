@@ -30,7 +30,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Chicken;
@@ -70,7 +69,7 @@ import java.util.*;
 import java.util.function.Consumer;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendPlayerErrorMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 
 public final class TestificationExperiment extends Experiment {
 
@@ -96,7 +95,7 @@ public final class TestificationExperiment extends Experiment {
     @Override
     public void handleCommand(@NotNull CommandSender sender, @NotNull String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(getLocaleMessage("too-few-args"));
+            sender.sendMessage(MessageUtils.getLocaleMessageComponent("too-few-args"));
             return;
         }
         if (args[0].equalsIgnoreCase("sounds")) {

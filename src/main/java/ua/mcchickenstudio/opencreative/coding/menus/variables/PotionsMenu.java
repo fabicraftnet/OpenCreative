@@ -33,6 +33,7 @@ import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
 import ua.mcchickenstudio.opencreative.menus.ListBrowserMenu;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +46,7 @@ public final class PotionsMenu extends ListBrowserMenu<PotionEffectType> {
     private final Material potionMaterial;
 
     public PotionsMenu(Player player, Material material) {
-        super(player, getLocaleMessage("menus.developer.potions-list.title"), PlacementLayout.VALUE_CHOOSER);
+        super(player, getLocaleMessageComponent("menus.developer.potions-list.title"), PlacementLayout.VALUE_CHOOSER);
         if (material != Material.POTION && material != Material.LINGERING_POTION && material != Material.SPLASH_POTION) {
             material = Material.POTION;
         }
@@ -63,7 +64,7 @@ public final class PotionsMenu extends ListBrowserMenu<PotionEffectType> {
             meta.displayName(Component.translatable("effect.minecraft." + name)
                     .color(TextColor.color(type.getColor().asRGB())));
         } else {
-            meta.displayName(getLocaleComponent("menus.developer.potions-list.potions." + name, false));
+            meta.displayName(MessageUtils.getLocaleMessageComponent("menus.developer.potions-list.potions." + name, false));
         }
         meta.setBasePotionType(PotionType.WATER);
         meta.addCustomEffect(new PotionEffect(potionType, 3600, 0), true);

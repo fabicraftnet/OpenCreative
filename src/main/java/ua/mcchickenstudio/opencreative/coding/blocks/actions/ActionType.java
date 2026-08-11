@@ -18,7 +18,6 @@
 
 package ua.mcchickenstudio.opencreative.coding.blocks.actions;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -1227,7 +1226,7 @@ public enum ActionType implements CodingBlockType {
         ItemStack icon = createItem(this.material, 1, "items.developer." + (this.isCondition() ? "conditions" : "actions") + "." + this.name().toLowerCase().replace("_", "-"));
         if (isDisabled()) {
             icon.setType(Material.RED_STAINED_GLASS);
-            addLoreAtEnd(icon, getLocaleMessage("disabled"));
+            addLoreAtEnd(icon, getLocaleMessageComponent("disabled"));
         }
         setPersistentData(icon, getCodingValueKey(), name());
         return icon;

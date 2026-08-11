@@ -53,19 +53,19 @@ public class ModuleCommand extends CommandHandler {
         if (args.length == 0) {
             if (player != null) {
                 if (devPlanet == null) {
-                    sender.sendMessage(getLocaleMessage("only-in-dev-world"));
+                    sender.sendMessage(getLocaleMessageComponent("only-in-dev-world"));
                     return;
                 }
                 new ModulesBrowserMenu(player).open(player);
             } else {
-                sender.sendMessage(getLocaleMessage("only-players"));
+                sender.sendMessage(getLocaleMessageComponent("only-players"));
             }
             return;
         }
         switch (args[0].toLowerCase()) {
             case "load", "install" -> {
                 if (args.length == 1) {
-                    sender.sendMessage(getLocaleMessage("too-few-args"));
+                    sender.sendMessage(getLocaleMessageComponent("too-few-args"));
                     return;
                 }
                 if (!canUseCommand(sender, player, devPlanet)) {
@@ -83,7 +83,7 @@ public class ModuleCommand extends CommandHandler {
             }
             case "info" -> {
                 if (args.length == 1) {
-                    sender.sendMessage(getLocaleMessage("too-few-args"));
+                    sender.sendMessage(getLocaleMessageComponent("too-few-args"));
                     return;
                 }
                 Module module = OpenCreative.getModuleManager().getModuleById(args[1]);
@@ -97,11 +97,11 @@ public class ModuleCommand extends CommandHandler {
             }
             case "delete" -> {
                 if (args.length == 1) {
-                    sender.sendMessage(getLocaleMessage("too-few-args"));
+                    sender.sendMessage(getLocaleMessageComponent("too-few-args"));
                     return;
                 }
                 if (!sender.hasPermission("opencreative.modules.delete")) {
-                    sender.sendMessage(getLocaleMessage("no-perms"));
+                    sender.sendMessage(getLocaleMessageComponent("no-perms"));
                     return;
                 }
                 Module module = OpenCreative.getModuleManager().getModuleById(args[1]);
@@ -117,7 +117,7 @@ public class ModuleCommand extends CommandHandler {
             }
             case "list" -> {
                 if (!sender.hasPermission("opencreative.modules.list")) {
-                    sender.sendMessage(getLocaleMessage("no-perms"));
+                    sender.sendMessage(getLocaleMessageComponent("no-perms"));
                     return;
                 }
                 Set<Module> modules = OpenCreative.getModuleManager().getModules();
@@ -129,7 +129,7 @@ public class ModuleCommand extends CommandHandler {
             }
             case "like" -> {
                 if (args.length == 1) {
-                    sender.sendMessage(getLocaleMessage("too-few-args"));
+                    sender.sendMessage(getLocaleMessageComponent("too-few-args"));
                     return;
                 }
                 if (!canUseCommand(sender, player, devPlanet)) {
@@ -144,20 +144,20 @@ public class ModuleCommand extends CommandHandler {
                     return;
                 }
                 if (!module.getInformation().wasDownloadedBefore(devPlanet.getPlanet())) {
-                    sender.sendMessage(getLocaleMessage("modules.rating.not-installed"));
+                    sender.sendMessage(getLocaleMessageComponent("modules.rating.not-installed"));
                     return;
                 }
                 if (module.getInformation().addLike(player)) {
-                    sender.sendMessage(getLocaleMessage("modules.rating.liked"));
+                    sender.sendMessage(getLocaleMessageComponent("modules.rating.liked"));
                     Sounds.DEV_MODULE_LIKED.play(player);
                 } else {
-                    sender.sendMessage(getLocaleMessage("modules.rating.already-rated"));
+                    sender.sendMessage(getLocaleMessageComponent("modules.rating.already-rated"));
                     Sounds.PLAYER_FAIL.play(player);
                 }
             }
             case "dislike" -> {
                 if (args.length == 1) {
-                    sender.sendMessage(getLocaleMessage("too-few-args"));
+                    sender.sendMessage(getLocaleMessageComponent("too-few-args"));
                     return;
                 }
                 if (!canUseCommand(sender, player, devPlanet)) {
@@ -172,32 +172,32 @@ public class ModuleCommand extends CommandHandler {
                     return;
                 }
                 if (!module.getInformation().wasDownloadedBefore(devPlanet.getPlanet())) {
-                    sender.sendMessage(getLocaleMessage("modules.rating.not-installed"));
+                    sender.sendMessage(getLocaleMessageComponent("modules.rating.not-installed"));
                     return;
                 }
                 if (module.getInformation().addDislike(player)) {
-                    sender.sendMessage(getLocaleMessage("modules.rating.disliked"));
+                    sender.sendMessage(getLocaleMessageComponent("modules.rating.disliked"));
                     Sounds.DEV_MODULE_LIKED.play(player);
                 } else {
-                    sender.sendMessage(getLocaleMessage("modules.rating.already-rated"));
+                    sender.sendMessage(getLocaleMessageComponent("modules.rating.already-rated"));
                     Sounds.PLAYER_FAIL.play(player);
                 }
             }
-            default -> sender.sendMessage(getLocaleMessage("modules.help"));
+            default -> sender.sendMessage(getLocaleMessageComponent("modules.help"));
         }
     }
 
     private boolean canUseCommand(@NotNull CommandSender sender, @Nullable Player player, @Nullable DevPlanet devPlanet) {
         if (player == null) {
-            sender.sendMessage(getLocaleMessage("only-players"));
+            sender.sendMessage(getLocaleMessageComponent("only-players"));
             return false;
         }
         if (devPlanet == null) {
-            player.sendMessage(getLocaleMessage("only-in-dev-world"));
+            player.sendMessage(getLocaleMessageComponent("only-in-dev-world"));
             return false;
         }
         if (!devPlanet.getPlanet().getWorldPlayers().canDevelop(player)) {
-            player.sendMessage(getLocaleMessage("not-developer"));
+            player.sendMessage(getLocaleMessageComponent("not-developer"));
             return false;
         }
         return true;

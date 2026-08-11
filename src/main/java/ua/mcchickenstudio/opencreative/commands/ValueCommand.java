@@ -18,8 +18,6 @@
 
 package ua.mcchickenstudio.opencreative.commands;
 
-import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -38,6 +36,7 @@ import ua.mcchickenstudio.opencreative.planets.DevPlanet;
 import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
 import ua.mcchickenstudio.opencreative.utils.CooldownUtils;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,7 +46,7 @@ import static ua.mcchickenstudio.opencreative.listeners.player.InteractListener.
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.isOutOfBorders;
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.toComponent;
 
 /**
@@ -63,13 +62,13 @@ public class ValueCommand extends CommandHandler {
     @Override
     public void onExecute(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(getLocaleMessage("only-players"));
+            sender.sendMessage(MessageUtils.getLocaleMessageComponent("only-players"));
             return;
         }
         if (!checkAndSetCooldownWithMessage(player, CooldownUtils.CooldownType.GENERIC_COMMAND)) return;
         DevPlanet planet = OpenCreative.getPlanetsManager().getDevPlanet(player);
         if (planet == null) {
-            player.sendMessage(getLocaleMessage("only-in-dev-world"));
+            player.sendMessage(MessageUtils.getLocaleMessageComponent("only-in-dev-world"));
             return;
         }
         ItemStack itemStack = null;

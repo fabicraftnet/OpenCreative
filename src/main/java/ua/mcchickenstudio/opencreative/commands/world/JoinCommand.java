@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Set;
 
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.toComponent;
 
 /**
@@ -88,23 +88,23 @@ public class JoinCommand extends CommandHandler {
         }
 
         if (OpenCreative.getSettings().isMaintenance() && !sender.hasPermission("opencreative.maintenance.bypass")) {
-            sender.sendMessage(getLocaleMessage("maintenance"));
+            sender.sendMessage(MessageUtils.getLocaleMessageComponent("maintenance"));
             return;
         }
 
         if (OpenCreative.getStability().isVeryBad() && !sender.hasPermission("opencreative.stability.bypass")) {
-            sender.sendMessage(getLocaleMessage("creative.stability.cannot"));
+            sender.sendMessage(MessageUtils.getLocaleMessageComponent("creative.stability.cannot"));
             return;
         }
 
         if (args.length == 2) {
             if (!sender.hasPermission("opencreative.join.others")) {
-                sender.sendMessage(getLocaleMessage("no-perms"));
+                sender.sendMessage(MessageUtils.getLocaleMessageComponent("no-perms"));
                 return;
             }
             Player player = Bukkit.getPlayer(args[1]);
             if (player == null) {
-                sender.sendMessage(getLocaleMessage("not-found-player"));
+                sender.sendMessage(MessageUtils.getLocaleMessageComponent("not-found-player"));
                 return;
             }
             sender.sendMessage(toComponent(MessageUtils.getPlayerLocaleMessageString("commands.join.connecting", player).replace("%id%", args[0])));
@@ -112,15 +112,15 @@ public class JoinCommand extends CommandHandler {
                 sender.sendMessage(MessageUtils.getPlayerLocaleMessage("commands.join.failed", player));
             }
         } else if (args.length != 1) {
-            sender.sendMessage(getLocaleMessage("commands.join.help"));
+            sender.sendMessage(MessageUtils.getLocaleMessageComponent("commands.join.help"));
         } else if (sender instanceof Player player) {
             if (player.isDead()) {
-                player.sendMessage(getLocaleMessage("only-alive"));
+                player.sendMessage(MessageUtils.getLocaleMessageComponent("only-alive"));
                 return;
             }
             handlePlayerConnection(player, args[0]);
         } else {
-            sender.sendMessage(getLocaleMessage("only-players"));
+            sender.sendMessage(MessageUtils.getLocaleMessageComponent("only-players"));
         }
     }
 

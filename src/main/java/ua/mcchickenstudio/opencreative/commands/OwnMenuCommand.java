@@ -27,11 +27,12 @@ import org.jetbrains.annotations.Nullable;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.menus.world.browsers.OwnWorldsBrowserMenu;
 import ua.mcchickenstudio.opencreative.utils.CooldownUtils;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.util.List;
 
 import static ua.mcchickenstudio.opencreative.utils.CooldownUtils.checkAndSetCooldownWithMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 
 /**
  * <h1>OwnMenuCommand</h1>
@@ -45,27 +46,27 @@ public class OwnMenuCommand extends CommandHandler {
     public void onExecute(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (args.length >= 1) {
             if (!sender.hasPermission("opencreative.own-menu.others")) {
-                sender.sendMessage(getLocaleMessage("no-perms"));
+                sender.sendMessage(MessageUtils.getLocaleMessageComponent("no-perms"));
                 return;
             }
             Player player = Bukkit.getPlayer(args[0]);
             if (player == null) {
-                sender.sendMessage(getLocaleMessage("not-found-player"));
+                sender.sendMessage(MessageUtils.getLocaleMessageComponent("not-found-player"));
                 return;
             }
             new OwnWorldsBrowserMenu(player).open(player);
             return;
         }
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(getLocaleMessage("only-players"));
+            sender.sendMessage(MessageUtils.getLocaleMessageComponent("only-players"));
             return;
         }
         if (OpenCreative.getSettings().isMaintenance() && !player.hasPermission("opencreative.maintenance.bypass")) {
-            player.sendMessage(getLocaleMessage("maintenance"));
+            player.sendMessage(MessageUtils.getLocaleMessageComponent("maintenance"));
             return;
         }
         if (OpenCreative.getStability().isVeryBad() && !player.hasPermission("opencreative.stability.bypass")) {
-            player.sendMessage(getLocaleMessage("creative.stability.cannot"));
+            player.sendMessage(MessageUtils.getLocaleMessageComponent("creative.stability.cannot"));
             return;
         }
         if (!checkAndSetCooldownWithMessage(player, CooldownUtils.CooldownType.GENERIC_COMMAND)) return;

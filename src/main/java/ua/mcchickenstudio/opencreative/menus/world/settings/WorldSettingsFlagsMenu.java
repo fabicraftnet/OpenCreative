@@ -18,7 +18,6 @@
 
 package ua.mcchickenstudio.opencreative.menus.world.settings;
 
-import org.bukkit.GameRule;
 import org.bukkit.GameRules;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -45,7 +44,7 @@ public final class WorldSettingsFlagsMenu extends AbstractMenu {
     private final ItemStack BACK_ITEM = createItem(Material.ARROW, 1, "menus.world-settings-flags.items.back");
 
     public WorldSettingsFlagsMenu() {
-        super(6, MessageUtils.getLocaleMessage("menus.world-settings.title"));
+        super(6, MessageUtils.getLocaleMessageComponent("menus.world-settings.title"));
     }
 
     public static RadioButton getPlayerDamageFlagButton(Planet planet) {

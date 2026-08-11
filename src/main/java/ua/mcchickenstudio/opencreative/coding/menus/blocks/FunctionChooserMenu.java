@@ -46,8 +46,7 @@ import java.util.List;
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.getSignLine;
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.setSignLine;
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.toComponent;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.translateBlockSign;
 
 public final class FunctionChooserMenu extends ListBrowserMenu<Location> {
@@ -56,7 +55,7 @@ public final class FunctionChooserMenu extends ListBrowserMenu<Location> {
     private final Location signLocation;
 
     public FunctionChooserMenu(Player player, DevPlanet planet, Location location) {
-        super(player, getLocaleMessage("menus.developer.function-chooser.title",true), PlacementLayout.LOCATION_CHOOSER);
+        super(player, getLocaleMessageComponent("menus.developer.function-chooser.title",true), PlacementLayout.LOCATION_CHOOSER);
         this.devPlanet = planet;
         this.signLocation = location;
     }
@@ -125,7 +124,7 @@ public final class FunctionChooserMenu extends ListBrowserMenu<Location> {
                 setSignLine(signLocation, 3, name);
                 translateBlockSign(signLocation.getBlock());
                 getPlayer().showTitle(Title.title(
-                        (getLocaleMessage("menus.developer.function-chooser.chosen",true)), Component.text(name).color(NamedTextColor.BLUE),
+                        (getLocaleMessageComponent("menus.developer.function-chooser.chosen",true)), Component.text(name).color(NamedTextColor.BLUE),
                         Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
                 ));
                 Sounds.DEV_SET_FUNCTION.play(event.getWhoClicked());

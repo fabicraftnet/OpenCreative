@@ -351,7 +351,7 @@ public final class Watchdog implements StabilityManager, Toggleable {
         if (pluginState == StabilityState.NIGHTMARE) {
             if (oldState != StabilityState.NIGHTMARE && OpenCreative.getSettings().getWatchdogSettings().shouldUnloadWorldsWhenUnstable()) {
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    player.sendMessage(getLocaleMessage("creative.stability.unload"));
+                    player.sendMessage(getLocaleMessageComponent("creative.stability.unload"));
                     for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                         Sounds.MAINTENANCE_START.play(onlinePlayer);
                         for (Planet planet : OpenCreative.getPlanetsManager().getPlanets()) {

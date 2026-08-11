@@ -46,7 +46,7 @@ import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 import static ua.mcchickenstudio.opencreative.coding.arguments.Argument.parseEntity;
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.FileUtils.getFileSize;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
 
 /**

@@ -59,20 +59,20 @@ public class BuildCommand extends CommandHandler {
     @Override
     public void onExecute(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(getLocaleMessage("only-players"));
+            sender.sendMessage(getLocaleMessageComponent("only-players"));
             return;
         }
 
         if (!checkAndSetCooldownWithMessage(player, CooldownUtils.CooldownType.GENERIC_COMMAND)) return;
 
         if (player.isDead()) {
-            sender.sendMessage(getLocaleMessage("only-alive"));
+            sender.sendMessage(getLocaleMessageComponent("only-alive"));
             return;
         }
 
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer(player);
         if (planet == null) {
-            player.sendMessage(getLocaleMessage("only-in-world"));
+            player.sendMessage(getLocaleMessageComponent("only-in-world"));
             return;
         }
 
@@ -84,12 +84,12 @@ public class BuildCommand extends CommandHandler {
                     Player planetOwner = Bukkit.getPlayer(planet.getOwner());
                     if (!planet.getWorldPlayers().isTrustedBuilder(player) && !player.hasPermission("opencreative.world.build.switch")) {
                         if (planetOwner == null) {
-                            sender.sendMessage(getLocaleMessage("world.build-mode.cant-build-when-offline"));
+                            sender.sendMessage(getLocaleMessageComponent("world.build-mode.cant-build-when-offline"));
                             return;
                         }
                         Planet ownerPlanet = OpenCreative.getPlanetsManager().getPlanetByPlayer(planetOwner);
                         if (!(ownerPlanet == planet)) {
-                            sender.sendMessage(getLocaleMessage("world.build-mode.cant-build-when-offline"));
+                            sender.sendMessage(getLocaleMessageComponent("world.build-mode.cant-build-when-offline"));
                             return;
                         }
                     }
@@ -109,12 +109,12 @@ public class BuildCommand extends CommandHandler {
                     }
                     planet.getTerritory().showBorders(player);
                 } else {
-                    sender.sendMessage(getLocaleMessage("not-owner"));
+                    sender.sendMessage(getLocaleMessageComponent("not-owner"));
                 }
             } else {
                 clearPlayer(player);
                 player.showTitle(Title.title(
-                        (getLocaleMessage("world.build-mode.title")), (getLocaleMessage("world.build-mode.subtitle")),
+                        (getLocaleMessageComponent("world.build-mode.title")), (getLocaleMessageComponent("world.build-mode.subtitle")),
                         Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(750))
                 ));
                 player.teleport(planet.getTerritory().getSpawnLocation());
@@ -123,12 +123,12 @@ public class BuildCommand extends CommandHandler {
                     Player planetOwner = Bukkit.getPlayer(planet.getOwner());
                     if (planet.getWorldPlayers().getBuildersNotTrusted().contains(((Player) sender).getUniqueId())) {
                         if (planetOwner == null) {
-                            sender.sendMessage(getLocaleMessage("world.build-mode.cant-build-when-offline"));
+                            sender.sendMessage(getLocaleMessageComponent("world.build-mode.cant-build-when-offline"));
                             return;
                         }
                         Planet ownerPlanet = OpenCreative.getPlanetsManager().getPlanetByPlayer(planetOwner);
                         if (!(ownerPlanet == planet)) {
-                            sender.sendMessage(getLocaleMessage("world.build-mode.cant-build-when-offline"));
+                            sender.sendMessage(getLocaleMessageComponent("world.build-mode.cant-build-when-offline"));
                             return;
                         }
                     }
@@ -138,17 +138,17 @@ public class BuildCommand extends CommandHandler {
                     player.setGameMode(GameMode.CREATIVE);
                     planet.getTerritory().showBorders(player);
                     giveBuildPermissions(player);
-                    sender.sendMessage(getLocaleMessage("world.build-mode.message.owner"));
+                    sender.sendMessage(getLocaleMessageComponent("world.build-mode.message.owner"));
                     if (!planet.getTerritory().isAutoSave()) {
-                        player.sendMessage(getLocaleMessage("settings.autosave.warning"));
+                        player.sendMessage(getLocaleMessageComponent("settings.autosave.warning"));
                     }
                 } else {
-                    sender.sendMessage(getLocaleMessage("world.build-mode.message.players"));
+                    sender.sendMessage(getLocaleMessageComponent("world.build-mode.message.players"));
                 }
             }
         } else {
             if (!planet.isOwner(sender.getName())) {
-                sender.sendMessage(getLocaleMessage("not-owner"));
+                sender.sendMessage(getLocaleMessageComponent("not-owner"));
                 return;
             }
             String nickname = args[0];
@@ -160,7 +160,7 @@ public class BuildCommand extends CommandHandler {
                 }
             }
             if (planet.isOwner(uuid)) {
-                sender.sendMessage(getLocaleMessage("same-player"));
+                sender.sendMessage(getLocaleMessageComponent("same-player"));
                 return;
             }
             /*
@@ -192,10 +192,10 @@ public class BuildCommand extends CommandHandler {
                     sender.sendMessage(toComponent(getLocaleMessageString("world.players.builders.added").replace("%player%", onlinePlayer.getName())));
                     planet.getWorldPlayers().addBuilder(onlinePlayer.getName(), false);
                 } else {
-                    sender.sendMessage(getLocaleMessage("no-player-found"));
+                    sender.sendMessage(getLocaleMessageComponent("no-player-found"));
                 }
             } else {
-                sender.sendMessage(getLocaleMessage("no-player-found"));
+                sender.sendMessage(getLocaleMessageComponent("no-player-found"));
             }
         }
     }

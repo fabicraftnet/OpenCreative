@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessage;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.world.WorldUtils.isDevPlanet;
 
@@ -145,14 +145,14 @@ public final class ChangedWorld implements Listener {
                             if (oldPlanet.getMode() == Planet.Mode.BUILD) {
                                 if (notTrustedBuilders.contains(p.getUniqueId().toString())) {
                                     p.setGameMode(GameMode.ADVENTURE);
-                                    p.sendMessage(getLocaleMessage("world.build-mode.cant-build-when-offline"));
+                                    p.sendMessage(MessageUtils.getLocaleMessageComponent("world.build-mode.cant-build-when-offline"));
                                     clearWorldModePermissions(p);
                                 }
                             }
                             if (OpenCreative.getPlanetsManager().getDevPlanet(p) != null) {
                                 if (notTrustedDevelopers.contains(p.getUniqueId().toString())) {
                                     p.setGameMode(GameMode.ADVENTURE);
-                                    p.sendMessage(getLocaleMessage("world.dev-mode.cant-dev-when-offline"));
+                                    p.sendMessage(MessageUtils.getLocaleMessageComponent("world.dev-mode.cant-dev-when-offline"));
                                 }
                             }
                         }
