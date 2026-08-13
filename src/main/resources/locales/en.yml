@@ -279,7 +279,7 @@ environment:
     location-dialog:
       build: "&7RMB &f- Set location, &7LMB &f- Return to coding"
       dev: "&7LMB &f- Teleport to world, &7F &f- Teleport to location"
-    vector-dialog: "&7Chat &f- Set coordinates of vector"
+    vector-dialog: "&&7RMB &f- Edit in dialog"
     particle-dialog: "&7RMB &f- Select a type, &7Shift+RMB &f- Show particle"
     color-dialog: "&7Chat &f- Set color"
     lines-controller: "&7LMB/RMB &f- Move action or condition"
@@ -20689,32 +20689,43 @@ dialog:
       confirm: "Enter"
     hint: "Maximum line lenght is %max% charecters.<br>
           Format with legacy &0 - &f or minimessage \\<red>"
-  World-id:
+  world-id:
     title: "Edit world ID"
     inputs:
       id: "ID"
       confirm: "Enter"
-    hint: "ID must be alphanumeric and maximum<br>
-          of %max% charecters long."
+    hint: "ID must be alphanumeric and maximum<br>of %max% charecters long."
   dev:
     text:
       title: "Edit text"
       inputs:
         text: "Text"
-        Confirm: "Enter"
-      hint: "Formatting supports legacy and minimessage.<br>
-            Placeholders can be used in the text."
+        confirm: "Enter"
+      hint: "Formatting supports legacy and minimessage.<br>Placeholders can be used in the text."
     variable:
       title: "Edit variable"
       inputs:
         name: "Name"
-        Space:
+        confirm: "Enter"
+        space:
+          title: "Type"
           global: "Global"
           local: "Local"
           saved: "Saved"
-        Confirm: "Enter"
     number:
       title: "Edit number"
       inputs:
-        number: "NUmber"
-        Confirm: "Enter"
+        number: "Number"
+        confirm: "Enter"
+      hint: "Decimal point with .<br>
+          Time unitis like \"2m\" will<br>
+          automatically convert to ticks.<br>
+          recognized constants: pi"
+    vector:
+      title: "Edit vector"
+      inputs:
+        x: "X"
+        y: "Y"
+        z: "Z"
+        confirm: "Enter"
+      hint: "Decimal point with ."

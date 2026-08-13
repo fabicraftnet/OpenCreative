@@ -55,7 +55,7 @@ public final class DialogItemDescription {
 
                         .build())
                 .type(DialogType.notice(
-                        ActionButton.create(getLocaleMessageComponent("dialog.planet.inputs.confirm"),null,60,
+                        ActionButton.create(getLocaleMessageComponent("dialog.planet.inputs.confirm"),null,100,
                                 DialogAction.customClick(
                                         (view, audience) -> applyToWorld(view, player, planet)
                                         , ClickCallback.Options.builder().build()
@@ -69,25 +69,51 @@ public final class DialogItemDescription {
 
         return Dialog.create(buider -> buider.empty()
 
-                .base(DialogBase.builder(getLocaleMessageComponent("dialog.planet.title"))
+                .base(DialogBase.builder(getLocaleMessageComponent("dialog.world-id.title"))
                         .inputs(List.of(
-                                DialogInput.text("name", 240, getLocaleMessageComponent("dialog.world-id.inputs.id"),true,ID,16, TextDialogInput.MultilineOptions.create(1,null))
+                                DialogInput.text("id", 240, getLocaleMessageComponent("dialog.world-id.inputs.id"),true,ID,16, TextDialogInput.MultilineOptions.create(1,null))
                         ))
                         .body(List.of(
                                 DialogBody.item(icon).build(),
-                                DialogBody.plainMessage(toComponent("<sprite:gui:icon/info>").hoverEvent(miniMessage.deserialize(getLocaleMessageString("dialog.world-id.hint").replace("%max%",Integer.toString(OpenCreative.getSettings().getRequirements().getCustomIdMaxLength())))))
+                                DialogBody.plainMessage(toComponent("<sprite:gui:icon/info>").hoverEvent(toComponent(getLocaleMessageString("dialog.world-id.hint").replace("%max%",Integer.toString(OpenCreative.getSettings().getRequirements().getCustomIdMaxLength())))))
                         ))
 
 
                         .build())
                 .type(DialogType.notice(
-                        ActionButton.create(getLocaleMessageComponent("dialog.world-id.inputs.confirm"),null,60,
+                        ActionButton.create(getLocaleMessageComponent("dialog.world-id.inputs.confirm"),null,100,
                                 DialogAction.customClick(
-                                        (view, audience) -> applyToWorld(view, player, planet)
+                                        (view, audience) -> applyID(view, player, planet)
                                         , ClickCallback.Options.builder().build()
                                 )
                         ))
                 ));
+    }
+    private void applyID(DialogResponseView view, Player player, Planet planet)
+    {
+        String input = view.getText("id");
+        if (planet == null || !planet.isOwner(player)) return;
+        String pattern = OpenCreative.getSettings().getRequirements().getCustomIdPattern();
+        if (input.length() > OpenCreative.getSettings().getRequirements().getCustomIdMaxLength()
+                || input.length() < OpenCreative.getSettings().getRequirements().getCustomIdMinLength()
+                || Character.isDigit(input.charAt(0)) || !input.matches(pattern)) {
+            player.sendMessage(toComponent(getLocaleMessageString("settings.world-id.error")
+                    .replace("%min%", String.valueOf(OpenCreative.getSettings().getRequirements().getCustomIdMinLength()))
+                    .replace("%max%", String.valueOf(OpenCreative.getSettings().getRequirements().getCustomIdMaxLength()))));
+            return;
+        }
+        for (Planet searchablePlanet : OpenCreative.getPlanetsManager().getPlanets()) {
+            if (searchablePlanet.getInformation().getCustomID().equalsIgnoreCase(input)) {
+                player.sendMessage(getLocaleMessageComponent("settings.world-id.taken"));
+                return;
+            }
+        }
+        planet.getInformation().setCustomID(input);
+        player.sendMessage(toComponent(getLocaleMessageString("settings.world-id.changed").replace("%id%", input)));
+        planet.getInformation().updateIconAsync();
+        OpenCreative.getPlugin().getLogger().info("[WORLD-CHAT: " + planet.getId() + "] " + player.getName() + " changed world's ID to: " + input);
+        Sounds.WORLD_SETTINGS_CUSTOM_ID_SET.play(player);
+
     }
 
     private void applyToWorld(DialogResponseView view, Player player, Planet planet)
@@ -148,7 +174,7 @@ public final class DialogItemDescription {
 
                         .build())
                 .type(DialogType.notice(
-                        ActionButton.create(Component.text("Done"),null,60,
+                        ActionButton.create(getLocaleMessageComponent("dialog.module.inputs.confirm"),null,100,
                                 DialogAction.customClick(
                                         (view, audience) -> applyToModule(view, player, module)
                                         , ClickCallback.Options.builder().build()

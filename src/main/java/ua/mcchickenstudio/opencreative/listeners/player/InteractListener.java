@@ -195,14 +195,14 @@ public final class InteractListener implements Listener {
             return;
         }
         switch (currentItem.getType()) {
-            case BOOK -> handleBookClick(event, player, currentItem); //TODO: dialog
-            case SLIME_BALL -> handleSlimeBallClick(event, player, currentItem); //TODO: dialog
-            case BLACK_DYE -> handleDyeClick(event, player, currentItem); //what?
+            case BOOK -> handleBookClick(event, player, currentItem);
+            case SLIME_BALL -> handleSlimeBallClick(event, player, currentItem);
+            case BLACK_DYE -> handleDyeClick(event, player, currentItem);
             case FEATHER -> handleFeatherInteraction(event, player, currentItem);
             case CLOCK -> handleClockInteraction(event, player, currentItem);
-            case MAGMA_CREAM -> handleMagmaCreamInteraction(event, player, currentItem); //TODO: dialog
+            case MAGMA_CREAM -> handleMagmaCreamInteraction(event, player, currentItem);
             case PAPER -> handlePaperInteraction(event, player, currentItem); //TODO: dialog maybe?
-            case PRISMARINE_SHARD -> handlePrismarineShardClick(event, player, currentItem); //TODO: dialog
+            case PRISMARINE_SHARD -> handlePrismarineShardClick(event, player, currentItem);
             case NAME_TAG -> {
                 event.setCancelled(true);
                 if (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK)
@@ -559,6 +559,10 @@ public final class InteractListener implements Listener {
             if (meta == null || !meta.hasDisplayName()) {
                 return;
             }
+            if (OpenCreative.getSettings().isDialog()){
+                player.showDialog(dialogs.numberValue(event,player,currentItem));
+                return;
+            }
             Component displayName = meta.displayName();
             if (displayName != null) {
                 player.sendMessage(displayName.hoverEvent(HoverEvent.showText((getLocaleMessageComponent("world.dev-mode.click-to-copy")))).clickEvent(ClickEvent.suggestCommand(ChatColor.stripColor(meta.getDisplayName()))));
@@ -573,12 +577,12 @@ public final class InteractListener implements Listener {
             if (meta == null || !meta.hasDisplayName()) {
                 return;
             }
-            Component displayName = meta.displayName();
             if (OpenCreative.getSettings().isDialog())
             {
                 player.showDialog(dialogs.textValue(event,player,currentItem));
             }
             else {
+                Component displayName = meta.displayName();
                 if (displayName != null) {
                     player.sendMessage(displayName.hoverEvent(HoverEvent.showText((getLocaleMessageComponent("world.dev-mode.click-to-copy")))).clickEvent(ClickEvent.suggestCommand(meta.getDisplayName().replace("§", "&"))));
                     setPersistentData(currentItem, getCodingValueKey(), "TEXT");
@@ -605,6 +609,11 @@ public final class InteractListener implements Listener {
                     } catch (Exception ignored) {}
                 }
             } else {
+                if (OpenCreative.getSettings().isDialog())
+                {
+                    player.showDialog(dialogs.vectorValue(event,player,currentItem));
+                    return;
+                }
                 Component displayName = meta.displayName();
                 if (displayName != null) {
                     player.sendMessage(displayName.hoverEvent(HoverEvent.showText((getLocaleMessageComponent("world.dev-mode.click-to-copy")))).clickEvent(ClickEvent.suggestCommand(ChatColor.stripColor(meta.getDisplayName()))));
@@ -738,6 +747,10 @@ public final class InteractListener implements Listener {
             return;
         }
         event.setCancelled(true);
+        if (OpenCreative.getSettings().isDialog()){
+            player.showDialog(dialogs.variableValue(event,player,currentItem));
+            return;
+        }
         ItemMeta meta = currentItem.getItemMeta();
         VariableLink.VariableType type = getVariableType(meta);
         meta.setDisplayName(type.getColor() + ChatColor.stripColor(meta.getDisplayName()));

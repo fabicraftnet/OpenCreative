@@ -183,6 +183,10 @@ public final class WorldSettingsMenu extends AbstractMenu implements WorldMenu {
             }
             }
         } else if (itemEquals(currentItem, customID)) {
+            if (OpenCreative.getSettings().isDialog()){
+                player.showDialog(new DialogItemDescription().planetID(planet,player, planet.getInformation().getIcon()));
+                return;
+            }
             player.showTitle(Title.title(
                     (getLocaleMessageComponent("settings.world-id.title")), (getLocaleMessageComponent("settings.world-id.subtitle")),
                     Title.Times.times(Duration.ofMillis(100), Duration.ofSeconds(30), Duration.ofMillis(130))
