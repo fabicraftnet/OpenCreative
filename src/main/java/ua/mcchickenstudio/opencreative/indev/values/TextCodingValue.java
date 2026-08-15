@@ -53,8 +53,7 @@ public class TextCodingValue extends CodingValue<String> implements ChatEditable
     @Override
     public void onPlayerChat(@NotNull Player player, @NotNull ItemStack item, @NotNull String message) {
         ItemMeta meta = item.getItemMeta();
-        Component newName = LegacyComponentSerializer.legacyAmpersand()
-                .deserialize(message.replace("%space%", " "));
+        Component newName = fromInputToComponent(message.replace("%space%", " "));
         meta.displayName(newName);
         item.setItemMeta(meta);
         Sounds.DEV_TEXT_SET.play(player);

@@ -47,6 +47,7 @@ import static ua.mcchickenstudio.opencreative.utils.BlockUtils.getSignLine;
 import static ua.mcchickenstudio.opencreative.utils.BlockUtils.setSignLine;
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
 import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.textSerializer;
 import static ua.mcchickenstudio.opencreative.utils.PlayerUtils.translateBlockSign;
 
 public final class FunctionChooserMenu extends ListBrowserMenu<Location> {
@@ -107,7 +108,7 @@ public final class FunctionChooserMenu extends ListBrowserMenu<Location> {
             ItemStack item = event.getCurrentItem();
             if (item == null) return;
             if (item.getItemMeta() == null) return;
-            String name = ChatColor.stripColor(item.getItemMeta().getDisplayName());
+            String name = textSerializer.serialize(item.getItemMeta().displayName());
             event.getWhoClicked().closeInventory();
             if (event.isRightClick()) {
                 PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();

@@ -42,19 +42,19 @@ public final class SendMessageAction extends PlayerAction {
     public void executePlayer(@NotNull Player player) {
         String separator = getArguments().getText("type", "new-line", this);
         List<Component> messages = getArguments().getComponentList("messages", this);
-        TextComponent.Builder builder = Component.text();
+        Component message = Component.text("");
         Component separatorComponent = switch (separator) {
             case "new-line" -> Component.newline();
             case "join-spaces" -> Component.space();
             default -> Component.empty();
         };
         for (int i = 0; i < messages.size(); i++) {
-            builder.append(messages.get(i));
+            message = message.append(messages.get(i));
             if (i != messages.size() - 1) {
-                builder.append(separatorComponent);
+                message = message.append(separatorComponent);
             }
         }
-        Component message = builder.build();
+
         String plainText = PlainTextComponentSerializer.plainText().serialize(message);
         if (plainText.length() > 1024) {
             throw new TooLongTextException(1024);

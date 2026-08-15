@@ -183,6 +183,7 @@ public class PlanetInfo {
     public void updateIcon() {
         ItemStack item = icon.clone();
         ItemMeta meta = item.getItemMeta();
+        meta.customName(null);
         meta.itemName(
                 MessageUtils.getLocaleMessageComponent("menus.all-worlds.items.world.name")
                         .replaceText(TextReplacementConfig.builder()

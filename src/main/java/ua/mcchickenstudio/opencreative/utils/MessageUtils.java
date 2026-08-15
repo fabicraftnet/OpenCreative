@@ -22,12 +22,14 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -111,6 +113,7 @@ public final class MessageUtils {
                     .build())
         .build();
     public static final MiniMessage miniMessage = userMM;
+    public static final PlainTextComponentSerializer textSerializer = PlainTextComponentSerializer.builder().flattener(ComponentFlattener.textOnly()) .build();
     /**
      * Converts text into component by deserializing it with
      * legacy serializer (if message has & or § symbol), or with
@@ -880,6 +883,7 @@ public final class MessageUtils {
         if (input.contains("§")) {
             input = input.replace('§', '&');
         }
+
         if (!input.contains("&")) return input;
         StringBuilder result = new StringBuilder();
         boolean hadStyle = false;

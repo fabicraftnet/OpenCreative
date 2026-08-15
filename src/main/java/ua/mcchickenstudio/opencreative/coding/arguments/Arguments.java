@@ -19,9 +19,6 @@
 package ua.mcchickenstudio.opencreative.coding.arguments;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -31,6 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Action;
 import ua.mcchickenstudio.opencreative.coding.blocks.actions.Target;
 import ua.mcchickenstudio.opencreative.coding.exceptions.MissingArgumentException;
@@ -405,11 +403,33 @@ public class Arguments {
      * @param action action, that will be used for parsing variables.
      * @return list with components, or empty list - if not found.
      */
+    @SuppressWarnings("unchecked")
     public final @NotNull List<Component> getComponentList(@NotNull String path, @NotNull Action action) {
         List<Component> list = new ArrayList<>();
-        List<String> texts = getTextList(path, action);
-        for (String text : texts) {
-            list.add(textToComponent(text));
+        Argument arg = getArg(path);
+        if (arg != null && arg.isList()) {
+            try {
+                List<Argument> args = (List<Argument>) arg.getValue(action);
+                for (Argument ComponentArg : args) {
+                    Object textObject = ComponentArg.getValue(action);
+                    String textString = textObject.toString();
+                    if (textObject instanceof ItemStack item) {
+                        if (item.hasItemMeta() && item.getItemMeta() != null) {
+                            textString = item.getItemMeta().hasItemName() ?
+                                    MessageUtils.textSerializer.serialize(item.getItemMeta().itemName()):
+                                    MessageUtils.userMM.serialize(item.getItemMeta().displayName());
+                        } else {
+                            textString = item.getType().name();
+                        }
+                    }
+                    else {
+                        OpenCreative.getPlugin().getLogger().info(textString+" "+textObject.getClass());
+                    }
+                    list.add(MessageUtils.fromInputToComponent(Argument.parseEntity(textString, action.getHandler().getMainActionHandler(), action)));
+                }
+            } catch (ClassCastException e) {
+                return list;
+            }
         }
         sendCodingDebugVariable(planet, path, list);
         return list;
@@ -844,8 +864,11 @@ public class Arguments {
             return defaultValue;
         }
         sendCodingDebugVariable(planet, path, arg.getValue(action));
-        String text = arg.getValue(action).toString();
-        return textToComponent(text);
+         Object object = arg.getValue(action);
+         if (object instanceof ItemStack item) {
+            return item.getItemMeta().hasItemName() ? MessageUtils.miniMessage.deserialize(MessageUtils.textSerializer.serialize(item.getItemMeta().itemName())) : item.displayName();//FIX creative inventory can bypass component restrictions
+         }
+         return defaultValue;
     }
 
     public Component textToComponent(String text) {

@@ -52,8 +52,7 @@ import java.util.concurrent.CompletableFuture;
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCodingDebugLog;
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendPlanetCompileErrorMessage;
 import static ua.mcchickenstudio.opencreative.utils.ItemUtils.*;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageComponent;
-import static ua.mcchickenstudio.opencreative.utils.MessageUtils.getLocaleMessageString;
+import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 
 /**
  * <h1>CodingBlockParser</h1>
@@ -123,15 +122,15 @@ public class CodingBlockParser {
         if (itemDisplayName == null) {
             return item.serialize();
         }
-        String name = itemMeta.getDisplayName();
+        String name = textSerializer.serialize(itemMeta.displayName());
         switch (valueType) {
             case TEXT -> {
-                return name;
+                return  (itemMeta.hasItemName()) ? textSerializer.serialize(itemMeta.itemName()) : userMM.serialize(itemMeta.customName());
             }
             case BOOLEAN -> {
                 boolean bool;
                 try {
-                    bool = Boolean.parseBoolean(ChatColor.stripColor(name));
+                    bool = Boolean.parseBoolean(name);
                     return bool;
                 } catch (Exception ignored) {
                 }
@@ -139,15 +138,14 @@ public class CodingBlockParser {
             case NUMBER -> {
                 double number;
                 try {
-                    number = Double.parseDouble(ChatColor.stripColor(name));
+                    number = Double.parseDouble(name);
                     return number;
                 } catch (Exception ignored) {
                 }
             }
             case LOCATION -> {
                 Map<String, Object> locationMap = new HashMap<>();
-                String locationString = ChatColor.stripColor(name);
-                String[] locCoords = locationString.split(" ");
+                String[] locCoords = name.split(" ");
                 if (locCoords.length == 5) {
                     try {
                         locationMap.put("x", Double.parseDouble(locCoords[0]));
@@ -162,7 +160,7 @@ public class CodingBlockParser {
             }
             case VECTOR -> {
                 Map<String, Object> vectorMap = new HashMap<>();
-                String vectorString = ChatColor.stripColor(name);
+                String vectorString = name;
                 String[] coords = vectorString.split(" ");
                 if (coords.length == 3) {
                     try {
@@ -176,7 +174,7 @@ public class CodingBlockParser {
             }
             case COLOR -> {
                 Map<String, Object> colorMap = new HashMap<>();
-                String colorString = ChatColor.stripColor(name);
+                String colorString = name;
                 String[] colors = colorString.split(" ");
                 if (colors.length == 3) {
                     try {
@@ -196,7 +194,7 @@ public class CodingBlockParser {
                 Map<String, String> variableMap = new HashMap<>();
                 try {
                     type = VariableLink.VariableType.valueOf(variableType);
-                    variableMap.put("name", ChatColor.stripColor(name));
+                    variableMap.put("name", name);
                     variableMap.put("type", type.name());
                     return variableMap;
                 } catch (Exception ignored) {

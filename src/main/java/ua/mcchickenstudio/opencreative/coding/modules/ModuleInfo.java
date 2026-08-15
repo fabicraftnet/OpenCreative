@@ -186,6 +186,7 @@ public class ModuleInfo {
     public void updateIcon() {
         ItemStack item = icon.clone();
         ItemMeta meta = item.getItemMeta();
+        meta.customName(null);
         meta.itemName(
                 MessageUtils.getLocaleMessageComponent("menus.modules.items.module.name")
                         .replaceText(TextReplacementConfig.builder()

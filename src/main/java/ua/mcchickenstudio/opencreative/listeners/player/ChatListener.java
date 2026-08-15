@@ -256,8 +256,7 @@ public final class ChatListener implements Listener {
             ItemStack itemInHand = player.getInventory().getItemInMainHand();
             if (itemInHand.getType() == Material.BOOK) {
                 ItemMeta meta = itemInHand.getItemMeta();
-                Component newName = LegacyComponentSerializer.legacyAmpersand()
-                        .deserialize(message.replace("%space%", " "));
+                Component newName = fromInputToComponent(message.replace("%space%", " "));
                 meta.displayName(newName);
                 if (message.equals("{")) {
                     meta.setDisplayName("{");

@@ -135,8 +135,9 @@ public final class DialogItemDescription {
         String input = view.getText("desc");
         if (planet == null || !planet.isOwner(player)) return;
         String[] lines = input.split("\n");
-        int max = (Arrays.stream(lines).map(s -> ((TextComponent) fromInputToComponent(s)).content().length()).mapToInt(i->i).max().getAsInt());
-        OpenCreative.getPlugin().getLogger().info("Yo the max is "+max);
+        int max = (Arrays.stream(lines).
+                map(s -> (textSerializer.serialize(fromInputToComponent(s)).length()))
+                .mapToInt(i->i).max().orElse(0));
         if (max > OpenCreative.getSettings().getRequirements().getWorldNameMaxLength() ||
                 max < OpenCreative.getSettings().getRequirements().getWorldDescriptionMinLength()) {
             player.sendMessage(toComponent(getLocaleMessageString("settings.world-description.error")

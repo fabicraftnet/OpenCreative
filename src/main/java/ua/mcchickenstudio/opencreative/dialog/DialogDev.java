@@ -20,11 +20,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.variables.VariableLink;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
 
-import java.sql.Array;
 import java.time.Duration;
 import java.util.List;
 
@@ -48,7 +46,10 @@ public final class DialogDev {
     }
     public Dialog textValue(PlayerInteractEvent event, Player player, ItemStack currentItem)
     {
-        String serialized = userMM.serialize(currentItem.getItemMeta().displayName().compact()) ;
+
+        String serialized = currentItem.getItemMeta().hasItemName() ?
+                textSerializer.serialize(currentItem.getItemMeta().itemName())
+                : userMM.serialize(currentItem.getItemMeta().displayName().compact());
 
         return Dialog.create(buider -> buider.empty()
 
@@ -72,7 +73,8 @@ public final class DialogDev {
     {
         ItemMeta meta = item.getItemMeta();
 
-        Component newName = toComponent(view.getText("text"));
+        Component newName = toComponent(view.getText("text").split("\n")[0]);
+        meta.itemName(Component.text(view.getText("text")));
         meta.displayName(newName);
         item.setItemMeta(meta);
         Sounds.DEV_TEXT_SET.play(player);
