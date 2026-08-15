@@ -422,9 +422,6 @@ public class Arguments {
                             textString = item.getType().name();
                         }
                     }
-                    else {
-                        OpenCreative.getPlugin().getLogger().info(textString+" "+textObject.getClass());
-                    }
                     list.add(MessageUtils.fromInputToComponent(Argument.parseEntity(textString, action.getHandler().getMainActionHandler(), action)));
                 }
             } catch (ClassCastException e) {

@@ -23,7 +23,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
@@ -259,7 +258,7 @@ public final class ChatListener implements Listener {
                 Component newName = fromInputToComponent(message.replace("%space%", " "));
                 meta.displayName(newName);
                 if (message.equals("{")) {
-                    meta.setDisplayName("{");
+                    meta.displayName(Component.text("{"));
                 }
                 itemInHand.setItemMeta(meta);
                 Sounds.DEV_TEXT_SET.play(player);
