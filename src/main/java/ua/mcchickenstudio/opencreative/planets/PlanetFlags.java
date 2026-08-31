@@ -94,7 +94,8 @@ public class PlanetFlags {
         KEEP_INVENTORY("keep-inventory", Material.CHEST_MINECART, (byte) 1, (byte) 2, GameRule.KEEP_INVENTORY),
         IMMEDIATE_RESPAWN("immediate-respawn", Material.SKELETON_SKULL, (byte) 1, (byte) 2, GameRule.DO_IMMEDIATE_RESPAWN),
         LOCATOR_BAR("locator-bar", Material.RECOVERY_COMPASS, (byte) 1, (byte) 2),
-        WORLD_BORDERS("world-borders", Material.LIGHT_BLUE_STAINED_GLASS, (byte) 1, (byte) 4);
+        WORLD_BORDERS("world-borders", Material.LIGHT_BLUE_STAINED_GLASS, (byte) 1, (byte) 4),
+        VOICE_CHAT("voice-chat", Material.HEAVY_CORE, (byte)1,(byte)2);
 
         private final String configPath;
         private final byte defaultValue;

@@ -32,6 +32,7 @@ import ua.mcchickenstudio.opencreative.planets.Planet;
 import ua.mcchickenstudio.opencreative.planets.PlanetFlags;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
 import ua.mcchickenstudio.opencreative.utils.MessageUtils;
+import ua.mcchickenstudio.opencreative.utils.hooks.HookUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,6 +110,18 @@ public final class WorldSettingsFlagsMenu extends AbstractMenu {
         choicesActions.add(() -> planet.setFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING, (byte) 1));
         choicesActions.add(() -> planet.setFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING, (byte) 2));
         return new RadioButton(Material.ICE, MessageUtils.getLocaleItemName("menus.world-settings-flags.items.block-changing.name"), MessageUtils.getLocaleItemDescription("menus.world-settings-flags.items.block-changing.lore"), planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING), 2, choicesActions, "menus.world-settings-flags.items.block-changing.choices", "menus.world-settings-flags");
+    }
+    public static RadioButton getVoicechatFlagButton(Planet planet) {
+        List<Runnable> choicesActions = new ArrayList<>();
+        choicesActions.add(() -> {
+            planet.setFlagValue(PlanetFlags.PlanetFlag.VOICE_CHAT, (byte) 1);
+            OpenCreative.getVoiceManager().unmute(planet);
+        });
+        choicesActions.add(() -> {
+            planet.setFlagValue(PlanetFlags.PlanetFlag.VOICE_CHAT, (byte) 2);
+            OpenCreative.getVoiceManager().mute(planet);
+        });
+        return new RadioButton(Material.HEAVY_CORE, MessageUtils.getLocaleItemName("menus.world-settings-flags.items.voice-chat.name"), MessageUtils.getLocaleItemDescription("menus.world-settings-flags.items.voice-chat.lore"), planet.getFlagValue(PlanetFlags.PlanetFlag.VOICE_CHAT), 2, choicesActions, "menus.world-settings-flags.items.voice-chat.choices", "menus.world-settings-flags");
     }
 
     public static RadioButton getImmediateRespawnFlagButton(Planet planet) {
@@ -302,6 +315,9 @@ public final class WorldSettingsFlagsMenu extends AbstractMenu {
         setItem(29, getWorldBordersButton(planet).getButtonItem());
         if (GameRule.getByName("locator_bar") != null) {
             setItem(30, getLocatorBarButton(planet).getButtonItem());
+        }
+        if (HookUtils.isSimpleVoicechat) {
+            setItem(34, getVoicechatFlagButton(planet).getButtonItem());
         }
     }
 

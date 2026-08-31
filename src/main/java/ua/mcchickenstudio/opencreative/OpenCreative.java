@@ -37,6 +37,7 @@ import ua.mcchickenstudio.opencreative.commands.world.*;
 import ua.mcchickenstudio.opencreative.commands.world.modes.*;
 import ua.mcchickenstudio.opencreative.commands.world.reputation.*;
 import ua.mcchickenstudio.opencreative.managers.Managers;
+import ua.mcchickenstudio.opencreative.managers.voice.VoiceManager;
 import ua.mcchickenstudio.opencreative.managers.worlds.VanillaWorldManager;
 import ua.mcchickenstudio.opencreative.managers.worlds.WorldManager;
 import ua.mcchickenstudio.opencreative.wanders.OfflineWander;
@@ -232,10 +233,11 @@ public final class OpenCreative extends JavaPlugin {
         managers.register(PacketManager.class, HookUtils.getPacketManager());
         managers.register(BlocksManager.class, HookUtils.getBlocks());
         managers.register(DisguiseManager.class, HookUtils.getDisguises());
+        managers.register(VoiceManager.class, HookUtils.getVoice());
         managers.start(CodingPrompter.class, StabilityManager.class, DownloadManager.class,
                 Economy.class, Updater.class, BlocksManager.class, HintManager.class,
                 DisguiseManager.class, PacketManager.class, PhysicsManager.class,
-                WorldManager.class);
+                WorldManager.class, VoiceManager.class);
     }
 
     /**
@@ -550,6 +552,15 @@ public final class OpenCreative extends JavaPlugin {
      */
     public static StabilityManager getStability() {
         return getPlugin().managers.get(StabilityManager.class);
+    }
+
+    /**
+     * Gets Voice chat manager
+     *
+     * @return voice manager.
+     */
+    public static VoiceManager getVoiceManager() {
+        return getPlugin().managers.get(VoiceManager.class);
     }
 
     /**

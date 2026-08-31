@@ -57,6 +57,7 @@ repositories {
         name = "gitlab-maven"
         url = "https://gitlab.com/api/v4/projects/58168569/packages/maven"
     }
+    maven { url = 'https://maven.maxhenkel.de/repository/public' }
     mavenCentral()
 }
 
@@ -100,6 +101,9 @@ dependencies {
 
     // Addon: AdvancedSlimePaper - async world loading and unloading
     compileOnly 'com.infernalsuite.asp:api:4.0.0-SNAPSHOT'
+
+    // Addon: SimpleVoiceChat -
+    implementation "de.maxhenkel.voicechat:voicechat-api:2.6.20"
 }
 
 compileJava.options.encoding = "UTF-8"

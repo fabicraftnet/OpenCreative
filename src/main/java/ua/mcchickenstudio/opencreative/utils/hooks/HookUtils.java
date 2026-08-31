@@ -34,6 +34,9 @@ import ua.mcchickenstudio.opencreative.managers.packets.DisabledPacketManager;
 import ua.mcchickenstudio.opencreative.managers.packets.PacketEventsManager;
 import ua.mcchickenstudio.opencreative.managers.packets.PacketManager;
 import ua.mcchickenstudio.opencreative.managers.packets.ProtocolLibManager;
+import ua.mcchickenstudio.opencreative.managers.voice.DisabledVoice;
+import ua.mcchickenstudio.opencreative.managers.voice.SimpleVoiceChat;
+import ua.mcchickenstudio.opencreative.managers.voice.VoiceManager;
 
 import static ua.mcchickenstudio.opencreative.utils.ErrorUtils.sendCriticalErrorMessage;
 
@@ -45,7 +48,7 @@ public final class HookUtils {
     public static boolean isVaultEnabled = false;
     public static boolean isLibsDisguisesEnabled = false;
     public static boolean isWorldEditEnabled = false;
-
+    public static boolean isSimpleVoicechat = false;
     /**
      * Load hooks into other plugins for working with them. For example: Creative+ can hook into PlaceholderAPI.
      **/
@@ -56,6 +59,7 @@ public final class HookUtils {
         isVaultEnabled = isPluginEnabled("Vault");
         isWorldEditEnabled = isPluginEnabled("WorldEdit");
         isLibsDisguisesEnabled = isPluginEnabled("LibsDisguises");
+        isSimpleVoicechat = isPluginEnabled("voicechat");
         OpenCreative.getPlugin().getLogger().info((isPlaceholderAPIEnabled ? "Successfully integrated to PlaceholderAPI: Added placeholders." : "Didn't detect PlaceholderAPI."));
         OpenCreative.getPlugin().getLogger().info((isLibsDisguisesEnabled ? "Successfully integrated to LibsDisguises: Added morph actions." : "Didn't detect LibsDisguises, disguise actions will be not available."));
         OpenCreative.getPlugin().getLogger().info((isWorldEditEnabled ? "Successfully integrated to WorldEdit: Added out-of-borders limit." : "Didn't detect WorldEdit."));
@@ -109,6 +113,14 @@ public final class HookUtils {
             return new WorldEditManager();
         } else {
             return new VanillaBlocksManager();
+        }
+    }
+
+    public static VoiceManager getVoice() {
+        if (isSimpleVoicechat) {
+            return new SimpleVoiceChat();
+        } else {
+            return new DisabledVoice();
         }
     }
 

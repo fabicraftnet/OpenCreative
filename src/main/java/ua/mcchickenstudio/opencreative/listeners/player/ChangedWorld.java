@@ -33,6 +33,7 @@ import ua.mcchickenstudio.opencreative.planets.PlanetPlayer;
 import ua.mcchickenstudio.opencreative.utils.FileUtils;
 import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 import ua.mcchickenstudio.opencreative.utils.PlayerConfirmation;
+import ua.mcchickenstudio.opencreative.utils.hooks.HookUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -207,6 +208,10 @@ public final class ChangedWorld implements Listener {
                     } else if (!newPlanet.getWorldPlayers().canDevelop(player) && !newPlanet.getWorldPlayers().canBuild(player)) {
                         giveVisitorPermissions(player);
                     }
+                }
+                if (HookUtils.isSimpleVoicechat) {
+                    if (newPlanet.getFlagValue(PlanetFlags.PlanetFlag.VOICE_CHAT) == (byte)2 ) OpenCreative.getVoiceManager().mute(player);
+                    else OpenCreative.getVoiceManager().unmute(player);
                 }
                 newPlanet.getInformation().updateIconAsync();
             }

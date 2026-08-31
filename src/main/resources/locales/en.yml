@@ -19247,6 +19247,21 @@ menus:
           - "&fOptions:"
           - "%1%"
           - "%2%"
+      voice-chat:
+        choices:
+          1: "Allow voice chat"
+          2: "Disallow voice chat"
+        name: "&eVoice chat"
+        lore:
+          - " "
+          - "&7Players with a voice chat"
+          - "&7mod can communicate easily."
+          - ""
+          - "&eClick to change."
+          - ""
+          - "&fOptions:"
+          - "%1%"
+          - "%2%"
   world-creation:
     title: "&2☺ Customize Your New World..."
     turned-on: "&a  ⏺ &n"
