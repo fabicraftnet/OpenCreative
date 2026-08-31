@@ -40,6 +40,15 @@ import ua.mcchickenstudio.opencreative.commands.world.modes.DevCommand;
 import ua.mcchickenstudio.opencreative.commands.world.modes.PlayCommand;
 import ua.mcchickenstudio.opencreative.commands.world.reputation.DislikeCommand;
 import ua.mcchickenstudio.opencreative.commands.world.reputation.LikeCommand;
+import ua.mcchickenstudio.opencreative.commands.world.modes.*;
+import ua.mcchickenstudio.opencreative.commands.world.reputation.*;
+import ua.mcchickenstudio.opencreative.managers.Managers;
+import ua.mcchickenstudio.opencreative.managers.voice.VoiceManager;
+import ua.mcchickenstudio.opencreative.managers.worlds.VanillaWorldManager;
+import ua.mcchickenstudio.opencreative.managers.worlds.WorldManager;
+import ua.mcchickenstudio.opencreative.wanders.OfflineWander;
+import ua.mcchickenstudio.opencreative.wanders.Wander;
+import ua.mcchickenstudio.opencreative.coding.prompters.*;
 import ua.mcchickenstudio.opencreative.listeners.CreativeListener;
 import ua.mcchickenstudio.opencreative.listeners.creative.PlanetListener;
 import ua.mcchickenstudio.opencreative.listeners.entity.EntityDamageListener;
@@ -50,7 +59,6 @@ import ua.mcchickenstudio.opencreative.listeners.player.*;
 import ua.mcchickenstudio.opencreative.listeners.world.BlockChangeListener;
 import ua.mcchickenstudio.opencreative.listeners.world.RedstoneListener;
 import ua.mcchickenstudio.opencreative.listeners.world.WorldListener;
-import ua.mcchickenstudio.opencreative.managers.Managers;
 import ua.mcchickenstudio.opencreative.managers.blocks.BlocksManager;
 import ua.mcchickenstudio.opencreative.managers.disguises.DisguiseManager;
 import ua.mcchickenstudio.opencreative.managers.downloader.DisabledDownloader;
@@ -278,7 +286,14 @@ public final class OpenCreative extends JavaPlugin {
     public static StabilityManager getStability() {
         return getPlugin().managers.get(StabilityManager.class);
     }
-
+    /**
+     * Gets Voice chat manager
+     *
+     * @return voice manager.
+     */
+    public static VoiceManager getVoiceManager() {
+        return getPlugin().managers.get(VoiceManager.class);
+    }
     /**
      * Gets update manager, that has methods to
      * check available updates for plugin.
@@ -428,10 +443,11 @@ public final class OpenCreative extends JavaPlugin {
         managers.register(PacketManager.class, HookUtils.getPacketManager());
         managers.register(BlocksManager.class, HookUtils.getBlocks());
         managers.register(DisguiseManager.class, HookUtils.getDisguises());
+        managers.register(VoiceManager.class, HookUtils.getVoice());
         managers.start(CodingPrompter.class, StabilityManager.class, DownloadManager.class,
                 Economy.class, Updater.class, BlocksManager.class, HintManager.class,
                 DisguiseManager.class, PacketManager.class, PhysicsManager.class,
-                WorldManager.class);
+                WorldManager.class, VoiceManager.class);
     }
 
     /**

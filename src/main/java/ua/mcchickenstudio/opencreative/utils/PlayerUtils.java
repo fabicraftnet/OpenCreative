@@ -117,6 +117,7 @@ public final class PlayerUtils {
             }
         }
         resetSkin(player);
+        resetVoice(player);
         resetAttributes(player);
         player.resetPlayerTime();
         player.resetPlayerWeather();
@@ -228,6 +229,17 @@ public final class PlayerUtils {
         try {
             player.setPlayerProfile(updatedProfile.get());
         } catch (Exception ignored) {}
+    }
+    /**
+     * Resets voice chat for player.
+     *
+     * @param player player to reset.
+     */
+    public static void resetVoice(Player player) {
+        if (!HookUtils.isSimpleVoicechat) {
+            return;
+        }
+        OpenCreative.getVoiceManager().unmute(player);
     }
 
     /**

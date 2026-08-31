@@ -97,7 +97,8 @@ public class PlanetFlags {
         IMMEDIATE_RESPAWN("immediate-respawn", Material.SKELETON_SKULL, (byte) 1, (byte) 2, GameRules.IMMEDIATE_RESPAWN),
         LOCATOR_BAR("locator-bar", Material.RECOVERY_COMPASS, (byte) 1, (byte) 2),
         WORLD_BORDERS("world-borders", Material.LIGHT_BLUE_STAINED_GLASS, (byte) 1, (byte) 4),
-        VEHICLE_INTERACT("vehicle-interact", Material.MINECART, (byte) 1, (byte) 3);
+        VEHICLE_INTERACT("vehicle-interact", Material.MINECART, (byte) 1, (byte) 3),
+        VOICE_CHAT("voice-chat", Material.HEAVY_CORE, (byte)1,(byte)2);
 
         private final String configPath;
         private final byte defaultValue;
