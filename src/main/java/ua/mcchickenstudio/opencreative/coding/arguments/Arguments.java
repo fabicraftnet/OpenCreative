@@ -862,6 +862,9 @@ public class Arguments {
         }
         sendCodingDebugVariable(planet, path, arg.getValue(action));
          Object object = arg.getValue(action);
+         if (object instanceof String string) {
+             return MessageUtils.userMM.deserialize(string);
+         }
          if (object instanceof ItemStack item) {
             return item.getItemMeta().hasItemName() ? MessageUtils.miniMessage.deserialize(MessageUtils.textSerializer.serialize(item.getItemMeta().itemName())) : item.displayName();//FIX creative inventory can bypass component restrictions
          }
