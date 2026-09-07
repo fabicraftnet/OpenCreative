@@ -58,7 +58,7 @@ public final class DeathListener implements Listener {
             deathLocations.put(player.getUniqueId(), planet.getTerritory().getSpawnLocation());
             if (planet.getFlagValue(PlanetFlags.PlanetFlag.DEATH_MESSAGES) == 1) {
                 for (Player p : planet.getPlayers()) {
-                    p.sendMessage("§7 " + player.getName() + "§f " + translateDeathMessage(player));
+                    p.sendMessage(toComponent("§7 " + player.getName() + "§f " + translateDeathMessage(player)));
                 }
             }
             event.getDrops().remove(Items.WORLD_SETTINGS.get(player));

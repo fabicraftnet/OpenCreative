@@ -312,8 +312,8 @@ public class EditCommand extends CommandHandler {
                 level = 1;
             }
         } catch (Exception error) {
-            player.sendMessage(getLocaleMessageString("commands.edit.not-number")
-                    .replace("%argument%", args[2]));
+            player.sendMessage(toComponent(getLocaleMessageString("commands.edit.not-number")
+                    .replace("%argument%", args[2])));
             Sounds.PLAYER_FAIL.play(player);
             return;
         }

@@ -372,14 +372,14 @@ public final class ErrorUtils {
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(entity.getWorld());
         if (planet == null) return;
         for (Player player : planet.getPlayers()) {
-            player.sendMessage(
+            player.sendMessage(toComponent(
                     getLocaleMessageString("coding-error.message", true)
                             .replace("%event%", executor.getLocaleName())
                             .replace("%action%", action.getActionType().toString())
                             .replace("%error%", errorMessage)
                             .replace("%x%", String.valueOf(action.getX()))
                             .replace("%y%", String.valueOf(executor.getY()))
-                            .replace("%z%", String.valueOf(executor.getZ())));
+                            .replace("%z%", String.valueOf(executor.getZ()))));
             Sounds.WORLD_CODE_ERROR.play(player);
         }
     }
