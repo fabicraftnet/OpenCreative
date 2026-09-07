@@ -22,6 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import ua.mcchickenstudio.opencreative.coding.variables.VariableLink;
 import ua.mcchickenstudio.opencreative.settings.Sounds;
+import ua.mcchickenstudio.opencreative.utils.MessageUtils;
 
 import java.time.Duration;
 import java.util.List;
@@ -87,8 +88,7 @@ public final class DialogDev {
     }
     public Dialog numberValue(PlayerInteractEvent event, Player player, ItemStack currentItem)
     {
-        String serialized = ((TextComponent) currentItem.getItemMeta().displayName()).content();
-
+        String serialized =  MessageUtils.textSerializer.serialize(currentItem.getItemMeta().hasDisplayName() ? currentItem.getItemMeta().displayName() : currentItem.getItemMeta().itemName());
         return Dialog.create(buider -> buider.empty()
 
                 .base(DialogBase.builder(getLocaleMessageComponent("dialog.dev.number.title"))
