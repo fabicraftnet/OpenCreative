@@ -136,7 +136,7 @@ public final class DialogDev {
     }
     public Dialog variableValue(PlayerInteractEvent event, Player player, ItemStack currentItem)
     {
-        String serialized = ((TextComponent) currentItem.getItemMeta().displayName()).content();
+        String serialized = textSerializer.serialize(currentItem.getItemMeta().hasDisplayName() ? currentItem.getItemMeta().displayName() : currentItem.getItemMeta().itemName());
         VariableLink.VariableType type = getVariableType(currentItem.getItemMeta());
         return Dialog.create(buider -> buider.empty()
 
