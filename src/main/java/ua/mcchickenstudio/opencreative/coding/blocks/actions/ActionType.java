@@ -18,6 +18,8 @@
 
 package ua.mcchickenstudio.opencreative.coding.blocks.actions;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -532,7 +534,7 @@ public enum ActionType implements CodingBlockType {
     ),
     VAR_GET_LOCATION_Y(ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, GetLocationYAction.class, Material.GREEN_STAINED_GLASS, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("location", ValueType.LOCATION)),
     VAR_GET_LOCATION_Z(ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, GetLocationZAction.class, Material.BLUE_STAINED_GLASS, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("location", ValueType.LOCATION)),
-    VAR_GET_LOCATION_YAW(ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, ua.mcchickenstudio.opencreative.coding.blocks.actions.variableactions.location.GetLocationYawAction.class, Material.YELLOW_STAINED_GLASS_PANE, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("location", ValueType.LOCATION)),
+    VAR_GET_LOCATION_YAW(ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, GetLocationYawAction.class, Material.YELLOW_STAINED_GLASS_PANE, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("location", ValueType.LOCATION)),
     VAR_GET_LOCATION_PITCH(ActionCategory.VARIABLE_ACTION, MenusCategory.LOCATION_OPERATIONS, GetLocationPitchAction.class, Material.ORANGE_STAINED_GLASS_PANE, new ArgumentSlot("variable", ValueType.VARIABLE), new ArgumentSlot("location", ValueType.LOCATION)),
     VAR_MOVE_LOCATION_BY_VECTOR(
             ActionCategory.VARIABLE_ACTION,
@@ -1166,6 +1168,11 @@ public enum ActionType implements CodingBlockType {
         } else {
             return this.name().toLowerCase().replace("_", "-");
         }
+    }
+    public @NotNull Component getLocaleLore() {
+        String path = "items.developer." + (isCondition() ? "conditions" : "actions") + "." + this.name().toLowerCase().replace("_", "-") + ".lore";
+        List<Component> lore = getLocaleItemDescription(path + ".lore");
+        return Component.join(JoinConfiguration.newlines(),lore);
     }
 
     public @Nullable ArgumentSlot getArgumentSlotByPath(@NotNull String path) {

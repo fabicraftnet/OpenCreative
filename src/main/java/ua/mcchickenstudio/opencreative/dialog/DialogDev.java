@@ -36,7 +36,8 @@ import static ua.mcchickenstudio.opencreative.utils.MessageUtils.*;
 @SuppressWarnings("UnstableApiUsage")
 public final class DialogDev {
     private static VariableLink.VariableType getVariableType(ItemMeta meta) {
-        TextColor color = meta.displayName().color();
+        TextColor color = meta.hasDisplayName() ? meta.displayName().color() : meta.itemName().color();
+        if (color == null) return VariableLink.VariableType.LOCAL;
         VariableLink.VariableType type = VariableLink.VariableType.LOCAL;
         if (color.equals(NamedTextColor.YELLOW)) {
             type = VariableLink.VariableType.GLOBAL;
@@ -180,7 +181,7 @@ public final class DialogDev {
     }
     public Dialog vectorValue(PlayerInteractEvent event, Player player, ItemStack currentItem)
     {
-        String[] vector = ((TextComponent) currentItem.getItemMeta().displayName()).content().split(" ");
+        String[] vector = ((TextComponent) (currentItem.getItemMeta().hasDisplayName() ? currentItem.getItemMeta().displayName() : currentItem.getItemMeta().itemName())).content().split(" ");
         if (vector.length != 3) {
             vector = new String[]{"0.0","0.0","0.0"};
         }
