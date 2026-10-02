@@ -41,7 +41,6 @@ import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 import ua.mcchickenstudio.opencreative.OpenCreative;
 import ua.mcchickenstudio.opencreative.coding.variables.ValueType;
 import ua.mcchickenstudio.opencreative.indev.messages.PlaceholderReplacer;
@@ -814,7 +813,7 @@ public final class ItemUtils {
             ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
             BukkitObjectOutputStream objectOutputStream = new BukkitObjectOutputStream(arrayOutputStream);
             objectOutputStream.writeObject(item);
-            return Base64Coder.encodeLines(arrayOutputStream.toByteArray());
+            return Base64.getMimeEncoder().encodeToString(arrayOutputStream.toByteArray());
         } catch (Exception error) {
             sendDebugError("Failed to serialize item to bytes string: " + item, error);
             return "";
@@ -830,7 +829,7 @@ public final class ItemUtils {
     public static @NotNull ItemStack loadItemFromByteArray(@NotNull String text) {
         try {
             if (text.isEmpty()) return ItemStack.empty();
-            ByteArrayInputStream arrayInputStream = new ByteArrayInputStream(Base64Coder.decodeLines(text));
+            ByteArrayInputStream arrayInputStream = new ByteArrayInputStream(Base64.getMimeDecoder().decode(text));
             BukkitObjectInputStream objectInputStream = new BukkitObjectInputStream(arrayInputStream);
             return (ItemStack) objectInputStream.readObject();
         } catch (Exception error) {
