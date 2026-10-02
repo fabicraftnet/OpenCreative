@@ -24,6 +24,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -241,6 +242,10 @@ public class CodingBlockParser {
      * @param devPlanet developer planet to parse code.
      */
     public CompletableFuture<Boolean> parseCode(@NotNull DevPlanet devPlanet) {
+        if (!isSynced(devPlanet))
+        {
+            return recompileCode(devPlanet);
+        }
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         if (!devPlanet.isCodeChanged()) {
             sendCodingDebugLog(devPlanet.getPlanet(), "Not parsing code, nothing was changed.");
@@ -280,11 +285,12 @@ public class CodingBlockParser {
      */
     public CompletableFuture<Boolean> recompileCode(@NotNull DevPlanet devPlanet) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
+        /* I have no idea why this is checked. as I see it recompilation is for error correction and should not be optimized like this
         if (!devPlanet.isCodeChanged()) {
             sendCodingDebugLog(devPlanet.getPlanet(), "Not recompiling code, nothing was changed.");
             future.complete(true);
             return future;
-        }
+        }*/
         devPlanet.setCurrentlySavingCode(true);
         long time = System.currentTimeMillis();
         OpenCreative.getPlugin().getLogger().info("Recompiling code in planet " + devPlanet.getPlanet().getId() + "...");
@@ -308,6 +314,56 @@ public class CodingBlockParser {
             }
         });
         return future;
+    }
+
+    /**
+     * Rough check to see if the script has unregistered changes.
+     *
+     * Returns True if no unexpected changes where found.
+     */
+    private boolean isSynced(@NotNull DevPlanet devPlanet)
+    {
+
+        List<DevPlatform> platforms = devPlanet.getPlatforms();
+        Set<Location> changedColumns = devPlanet.getChangedColumns();
+        CodeScript script = devPlanet.getPlanet().getTerritory().getScript();
+
+        ConfigurationSection section = script.getConfig().getSection("code.blocks");
+        if (section == null){
+            OpenCreative.getPlugin().getLogger().info("Failed to load planet script! Recompiling code...");
+            return false;
+        }
+        // For platforms
+        for (DevPlatform platform : platforms) {
+            // For coding executors
+            Location begin = devPlanet.getDevPlatformer().getPlatformBeginLocation(platform);
+            Location end = devPlanet.getDevPlatformer().getPlatformEndLocation(platform);
+            int y = begin.getBlockY() + 1;
+            int x = begin.getBlockX() + 4;
+            for (int z = begin.getBlockZ() + 4; z <= end.getBlockZ() - 4; z = z + 4) {
+                Block executorBlock = devPlanet.getWorld().getBlockAt(x, y, z);
+                Location location = executorBlock.getLocation();
+                // changed columns should not trigger a recompile
+                if (changedColumns.contains(location)) continue;
+                String blockPath = "exec_block_"+y+"_"+x+"_"+z;
+                if (section.contains(blockPath)) {
+                    if (executorBlock.getType()==Material.AIR) return false;
+                    ConfigurationSection block = (ConfigurationSection) section.get(blockPath);
+                    Executor executor = Executors.getInstance().getByBlock(executorBlock);
+                    if (!block.get("type").toString().equalsIgnoreCase(executor.getID())) {
+                        OpenCreative.getPlugin().getLogger().info("Script/Code world desync at "+x+" "+y+" "+z+"! Recompiling code...");
+                        return false;
+                    }
+
+                } else if (executorBlock.getType() != Material.AIR) {
+                    OpenCreative.getPlugin().getLogger().info("Script/Code world desync at "+x+" "+y+" "+z+"! Recompiling code...");
+                    return false;
+                }
+
+            }
+        }
+
+        return true;
     }
 
     /**
