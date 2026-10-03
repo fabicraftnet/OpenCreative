@@ -323,15 +323,18 @@ public class DevPlatform {
         Menus.onBlockDestroy(signBlock.getLocation());
         Menus.onBlockDestroy(containerBlock.getLocation());
 
-        if (dropItems && containerBlock.getState() instanceof InventoryHolder container) {
-            Menus.onBlockDestroy(containerBlock.getLocation());
-            for (ItemStack item : container.getInventory().getContents()) {
-                if (item != null) {
-                    if (item.getItemMeta() == null || !item.getItemMeta().getPersistentDataContainer().has(getCodingDoNotDropMeKey())) {
+        if (containerBlock.getState() instanceof InventoryHolder container) {
+            if (dropItems){
+                Menus.onBlockDestroy(containerBlock.getLocation());
+                for (ItemStack item : container.getInventory().getContents()) {
+                    if (item != null) {
+                        if (item.getItemMeta() == null || !item.getItemMeta().getPersistentDataContainer().has(getCodingDoNotDropMeKey())) {
                         containerBlock.getWorld().dropItem(containerBlock.getLocation(), item);
+                        }
                     }
                 }
             }
+            container.getInventory().clear();
         }
         containerBlock.setType(Material.AIR);
         block.setType(Material.AIR);

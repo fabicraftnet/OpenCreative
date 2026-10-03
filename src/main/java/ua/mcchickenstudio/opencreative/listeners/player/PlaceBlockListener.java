@@ -208,6 +208,7 @@ public final class PlaceBlockListener implements Listener {
             }
             if (newContainerBlock.getState() instanceof InventoryHolder newContainer) {
                 newContainer.getInventory().setContents(container.getInventory().getContents());
+                container.getInventory().clear();
             }
         }
         oldSignBlock.setType(Material.AIR);
