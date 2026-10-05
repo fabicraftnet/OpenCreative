@@ -19,6 +19,7 @@
 package ua.mcchickenstudio.opencreative.listeners.world;
 
 import com.destroystokyo.paper.event.block.AnvilDamagedEvent;
+import com.destroystokyo.paper.event.block.BlockDestroyEvent;
 import io.papermc.paper.event.block.BeaconActivatedEvent;
 import io.papermc.paper.event.block.BeaconDeactivatedEvent;
 import io.papermc.paper.event.block.TargetHitEvent;
@@ -189,6 +190,13 @@ public final class BlockChangeListener implements Listener {
                 return;
             }
             new BlockPhysicsEvent(planet, event).callEvent();
+        }
+    }
+    @EventHandler
+    public void onBlockDestroy(BlockDestroyEvent event) {
+        Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(event.getBlock().getWorld());
+        if (!planet.getLimits().canBlockDestroy()) {
+            event.setCancelled(true);
         }
     }
 

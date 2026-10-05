@@ -50,6 +50,7 @@ public class PlanetLimits {
     private final Deque<Long> lastCodingErrors = new ArrayDeque<>();
     private final Deque<Long> lastActionsCalls = new ArrayDeque<>();
     private final Deque<Long> lastBlockFalls = new ArrayDeque<>();
+    private final Deque<Long> lastBlockDestroy = new ArrayDeque<>();
     private final Deque<Long> lastRedstoneOperations = new ArrayDeque<>();
 
     private final Map<UUID, Deque<Long>> lastPlayerMenuOpens = new HashMap<>();
@@ -483,6 +484,34 @@ public class PlanetLimits {
             return false;
         } else {
             lastBlockFalls.add(now);
+            return true;
+        }
+
+    }
+    /**
+     * Checks if block can be destroyed as result of a physics update
+     * or other natural block update
+     *
+     * @return true - if destruction is allowed, false - if limited.
+     */
+    public boolean canBlockDestroy() {
+
+        long now = System.currentTimeMillis();
+
+        // Removes time from list, if it's more than 3 seconds.
+        while (!lastBlockDestroy.isEmpty() && (now - lastBlockDestroy.peek()) > 3000) {
+            lastBlockDestroy.poll();
+        }
+
+
+        if (lastBlockDestroy.size() >= 100) {
+            if (System.currentTimeMillis() - lastBlockFallsNotificationTime > 5000) {
+                lastBlockFallsNotificationTime = System.currentTimeMillis();
+                OpenCreative.getPlugin().getLogger().info("[LIMITS: " + planet.getId() + "] Reached limit of destroyed blocks (" + lastBlockDestroy.size() + "/100)");
+            }
+            return false;
+        } else {
+            lastBlockDestroy.add(now);
             return true;
         }
 
