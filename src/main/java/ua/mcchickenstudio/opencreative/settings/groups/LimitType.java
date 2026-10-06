@@ -45,6 +45,8 @@ public enum LimitType {
     DEVELOPERS_AMOUNT("developers-amount", 10),
     BLACKLISTED_AMOUNT("blacklisted-amount", 10),
     WHITELISTED_AMOUNT("whitelisted-amount", 10),
+    DESTROYED_BLOCKS("destroyed-blocks",100),
+    FALLING_BLOCKS("falling-blocks",100),
     SELECTED_LINES_AMOUNT("selected-lines-amount", 3);
 
     private final String path;

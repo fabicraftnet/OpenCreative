@@ -150,7 +150,12 @@ public class PlanetLimits {
     public int getRedstoneOperationsLimit() {
         return planet.getGroup().getLimit(LimitType.REDSTONE_OPERATIONS).calculateLimit(planet.getInformation().getAsyncOnline());
     }
-
+    public int getBlockDestroyLimit() {
+        return planet.getGroup().getLimit(LimitType.DESTROYED_BLOCKS).calculateLimit(planet.getInformation().getAsyncOnline());
+    }
+    public int getBlockFallsLimit() {
+        return planet.getGroup().getLimit(LimitType.FALLING_BLOCKS).calculateLimit(planet.getInformation().getAsyncOnline());
+    }
     /**
      * Returns maximum targets changes per 1 second amount in the planet.
      *
@@ -475,11 +480,11 @@ public class PlanetLimits {
         while (!lastBlockFalls.isEmpty() && (now - lastBlockFalls.peek()) > 3000) {
             lastBlockFalls.poll();
         }
-
-        if (lastBlockFalls.size() >= 100) {
+        int limit = getBlockFallsLimit();
+        if (lastBlockFalls.size() >= limit) {
             if (System.currentTimeMillis() - lastBlockFallsNotificationTime > 5000) {
                 lastBlockFallsNotificationTime = System.currentTimeMillis();
-                OpenCreative.getPlugin().getLogger().info("[LIMITS: " + planet.getId() + "] Reached limit of falling blocks (" + lastBlockFalls.size() + "/100)");
+                OpenCreative.getPlugin().getLogger().info("[LIMITS: " + planet.getId() + "] Reached limit of falling blocks (" + lastBlockFalls.size() + ")");
             }
             return false;
         } else {
@@ -498,16 +503,16 @@ public class PlanetLimits {
 
         long now = System.currentTimeMillis();
 
-        // Removes time from list, if it's more than 3 seconds.
-        while (!lastBlockDestroy.isEmpty() && (now - lastBlockDestroy.peek()) > 3000) {
+        // Removes time from list, if it's more than 1 second.
+        while (!lastBlockDestroy.isEmpty() && (now - lastBlockDestroy.peek()) > 1000) {
             lastBlockDestroy.poll();
         }
 
-
-        if (lastBlockDestroy.size() >= 100) {
+        int limit = getBlockDestroyLimit();
+        if (lastBlockDestroy.size() >= limit) {
             if (System.currentTimeMillis() - lastBlockFallsNotificationTime > 5000) {
                 lastBlockFallsNotificationTime = System.currentTimeMillis();
-                OpenCreative.getPlugin().getLogger().info("[LIMITS: " + planet.getId() + "] Reached limit of destroyed blocks (" + lastBlockDestroy.size() + "/100)");
+                OpenCreative.getPlugin().getLogger().info("[LIMITS: " + planet.getId() + "] Reached limit of destroyed blocks (" + lastBlockDestroy.size() + ")");
             }
             return false;
         } else {
@@ -792,6 +797,7 @@ public class PlanetLimits {
         lastRedstoneLimitNotificationTime = 0;
         lastBlockFallsNotificationTime = 0;
         lastBlockFalls.clear();
+        lastBlockDestroy.clear();
         lastRedstoneOperations.clear();
         lastLightningsStrikes.clear();
         lastBeesSpawns.clear();
