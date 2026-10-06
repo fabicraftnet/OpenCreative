@@ -728,6 +728,7 @@ public enum ActionType implements CodingBlockType {
      */
 
     ENTITY_SET_SCALE(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_APPEARANCE, SetScaleAction.class, Material.SHULKER_SHELL, new ArgumentSlot("scale", ValueType.NUMBER), new ParameterSlot("add")),
+    ENTITY_SET_ATTRIBUTE(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_APPEARANCE, SetAttributeAction.class, Material.COMPARATOR, new ArgumentSlot("attribute", ValueType.TEXT), new ArgumentSlot("scale", ValueType.NUMBER), new ParameterSlot("add")),
     ENTITY_SET_VISUAL_FIRE(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_APPEARANCE, EntitySetVisualFireAction.class, Material.CAMPFIRE, new ParameterSlot("boolean")),
     ENTITY_SET_GLOWING(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_APPEARANCE, EntitySetGlowingAction.class, Material.DRAGON_BREATH, new ParameterSlot("glowing", Arrays.asList(false, true), Material.WHITE_STAINED_GLASS, Material.GLASS)),
     ENTITY_SET_DISGUISE_NAME(ActionCategory.ENTITY_ACTION, MenusCategory.ENTITY_APPEARANCE, SetDisguiseNameAction.class, Material.BOOK, new ArgumentSlot("name", ValueType.TEXT)),

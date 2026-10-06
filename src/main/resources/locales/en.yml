@@ -3537,6 +3537,35 @@ items:
             choices:
               false: "Set"
               true: "Add"
+      entity-set-attribute:
+        name: "&3Set attribute modifier"
+        lore:
+          - "&7Gives the entity an"
+          - "&7attribute modifier."
+          - " "
+          - "&fIn the chest:"
+          - "&6 Text &7- Attribute ID"
+          - "&a Number &7- Value"
+          - "&3 Option &7- Multiply or add"
+          - " "
+          - "&eClick to set action."
+        placeholders:
+          scale:
+            name: "&aValue"
+            lore:
+              - "&7By default: &a1"
+        arguments:
+          add:
+            name: "&fMultiply or add"
+            lore:
+              - "&eClick to change."
+              - ""
+              - "&fOptions:"
+              - "%1%"
+              - "%2%"
+            choices:
+              false: "Multiply"
+              true: "Add"
       entity-set-pose:
         name: "&dSet pose of entity"
         lore:
@@ -20225,6 +20254,7 @@ blocks:
   entity_clear_disguise: "Clear disguise"
   entity_set_step_height: "Step height"
   entity_set_scale: "Set scale"
+  entity_set_attribute: "Set attribute"
   entity_set_target: "Set target"
   entity_set_pose: "Set pose"
   entity_path_move_to_location: "Path location"
