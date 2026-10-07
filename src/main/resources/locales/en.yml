@@ -19619,7 +19619,8 @@ menus:
       block-changing:
         choices:
           1: "Let blocks change themselves"
-          2: "Disable block changes"
+          2: "Disable block fading"
+          3: "Disable block changes"
         name: "&bBlock changing"
         lore:
           - " "
@@ -19632,11 +19633,28 @@ menus:
           - "&fOptions:"
           - "%1%"
           - "%2%"
+          - "%3%"
       like-messages:
         choices:
           1: "Send /like notifications"
           2: "Hide /like notifications"
         name: "&aLike messages"
+        lore:
+          - " "
+          - "&7When a player gives a positive"
+          - "&7rating, a message about the like"
+          - "&7is displayed to everyone in chat."
+          - ""
+          - "&eClick to change."
+          - ""
+          - "&fOptions:"
+          - "%1%"
+          - "%2%"
+      spawn-protection:
+        choices:
+          1: "Protect spawn area"
+          2: "Allow damage"
+        name: "&bSpawn protection"
         lore:
           - " "
           - "&7When a player gives a positive"

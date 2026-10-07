@@ -293,7 +293,13 @@ public final class EntityStateListener implements Listener {
     @EventHandler
     public void onEntityInteract(EntityInteractEvent event) {
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(event.getEntity().getWorld());
-        if (planet != null) new EntityInteractedBlockEvent(event).callEvent();
+        if (planet != null){
+            if (planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING) == 3) {
+                event.setCancelled(true);
+                return;
+            }
+            new EntityInteractedBlockEvent(event).callEvent();
+        }
     }
 
     @EventHandler

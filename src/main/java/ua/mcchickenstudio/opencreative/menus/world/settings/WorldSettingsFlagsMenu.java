@@ -124,7 +124,8 @@ public final class WorldSettingsFlagsMenu extends AbstractMenu {
         List<Runnable> choicesActions = new ArrayList<>();
         choicesActions.add(() -> planet.setFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING, (byte) 1));
         choicesActions.add(() -> planet.setFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING, (byte) 2));
-        return new RadioButton(Material.ICE, MessageUtils.getLocaleItemName("menus.world-settings-flags.items.block-changing.name"), MessageUtils.getLocaleItemDescription("menus.world-settings-flags.items.block-changing.lore"), planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING), 2, choicesActions, "menus.world-settings-flags.items.block-changing.choices", "menus.world-settings-flags");
+        choicesActions.add(() -> planet.setFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING, (byte) 3));
+        return new RadioButton(Material.ICE, MessageUtils.getLocaleItemName("menus.world-settings-flags.items.block-changing.name"), MessageUtils.getLocaleItemDescription("menus.world-settings-flags.items.block-changing.lore"), planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING), 3, choicesActions, "menus.world-settings-flags.items.block-changing.choices", "menus.world-settings-flags");
     }
     public static RadioButton getVoicechatFlagButton(Planet planet) {
         List<Runnable> choicesActions = new ArrayList<>();
@@ -179,6 +180,13 @@ public final class WorldSettingsFlagsMenu extends AbstractMenu {
         choicesActions.add(() -> planet.setFlagValue(PlanetFlags.PlanetFlag.LIKE_MESSAGES, (byte) 1));
         choicesActions.add(() -> planet.setFlagValue(PlanetFlags.PlanetFlag.LIKE_MESSAGES, (byte) 2));
         return new RadioButton(Material.KNOWLEDGE_BOOK, MessageUtils.getLocaleItemName("menus.world-settings-flags.items.like-messages.name"), MessageUtils.getLocaleItemDescription("menus.world-settings-flags.items.like-messages.lore"), planet.getFlagValue(PlanetFlags.PlanetFlag.LIKE_MESSAGES), 2, choicesActions, "menus.world-settings-flags.items.like-messages.choices", "menus.world-settings-flags");
+    }
+
+    public static RadioButton getSpawnProtectionFlagButton(Planet planet) {
+        List<Runnable> choicesActions = new ArrayList<>();
+        choicesActions.add(() -> planet.setFlagValue(PlanetFlags.PlanetFlag.LIKE_MESSAGES, (byte) 1));
+        choicesActions.add(() -> planet.setFlagValue(PlanetFlags.PlanetFlag.LIKE_MESSAGES, (byte) 2));
+        return new RadioButton(Material.ALLAY_SPAWN_EGG, MessageUtils.getLocaleItemName("menus.world-settings-flags.items.spawn-protection.name"), MessageUtils.getLocaleItemDescription("menus.world-settings-flags.items.spawn-protection.lore"), planet.getFlagValue(PlanetFlags.PlanetFlag.SPAWN_PROTECTION), 2, choicesActions, "menus.world-settings-flags.items.spawn-protection.choices", "menus.world-settings-flags");
     }
 
     public static RadioButton getMobSpawnFlagButton(Planet planet) {
@@ -333,6 +341,7 @@ public final class WorldSettingsFlagsMenu extends AbstractMenu {
         setItem(30, getVehicleInteractFlagButton(planet).getButtonItem());
         setItem(31, getLocatorBarButton(planet).getButtonItem());
         setItem(32, getBlockUpdateFlagButton(planet).getButtonItem());
+        setItem(33, getSpawnProtectionFlagButton(planet).getButtonItem());
         if (HookUtils.isSimpleVoicechat) {
             setItem(34, getVoicechatFlagButton(planet).getButtonItem());
         }

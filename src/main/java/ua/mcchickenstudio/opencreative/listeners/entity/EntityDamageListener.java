@@ -187,6 +187,10 @@ public final class EntityDamageListener implements Listener {
     }
 
     public boolean isNearSpawn(@NotNull Player player) {
+        Planet planet = OpenCreative.getPlanetsManager().getPlanetByPlayer((Player) player);
+        if (planet.getFlagValue(PlanetFlags.PlanetFlag.SPAWN_PROTECTION) == 2) {
+            return  false;
+        }
         return player.getLocation().distance(player.getWorld().getSpawnLocation()) < 5;
     }
 }

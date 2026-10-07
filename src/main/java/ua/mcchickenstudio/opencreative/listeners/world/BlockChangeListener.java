@@ -66,7 +66,7 @@ public final class BlockChangeListener implements Listener {
         World world = event.getBlock().getWorld();
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(world);
         if (planet != null) {
-            if (planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING) == 2) {
+            if (planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING) >= 2) {
                 event.setCancelled(true);
             } else if (!planet.getLimits().canBlockDestroy()) {
                 event.setCancelled(true);
@@ -74,6 +74,26 @@ public final class BlockChangeListener implements Listener {
             else
             {
                 new BlockFadedEvent(planet, event).callEvent();
+            }
+        }
+    }
+    @EventHandler
+    public void onBlockChanged(MoistureChangeEvent event) {
+        World world = event.getBlock().getWorld();
+        Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(world);
+        if (planet != null) {
+            if (planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING) >= 2) {
+                event.setCancelled(true);
+            }
+        }
+    }
+    @EventHandler
+    public void onBlockChanged(EntityChangeBlockEvent event) {
+        World world = event.getBlock().getWorld();
+        Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(world);
+        if (planet != null) {
+            if (planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING) >= 2) {
+                event.setCancelled(true);
             }
         }
     }
@@ -93,7 +113,7 @@ public final class BlockChangeListener implements Listener {
         } else {
             Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(world);
             if (planet != null) {
-                if (planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING) == 2) {
+                if (planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING) >= 2) {
                     event.setCancelled(true);
                 } else {
                     new BlockFormedEvent(planet, event).callEvent();
@@ -199,14 +219,16 @@ public final class BlockChangeListener implements Listener {
     @EventHandler
     public void onBlockDestroy(BlockDestroyEvent event) {
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(event.getBlock().getWorld());
-        if (!planet.getLimits().canBlockDestroy()) {
+        if (planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING) == 3) {
+            event.setCancelled(true);
+        } else if (!planet.getLimits().canBlockDestroy()) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onPhysics(org.bukkit.event.block.BlockPhysicsEvent event) {
-        if (isOutOfBorders(event.getBlock().getLocation())) {
+        if (isOutOfBorders(event.getBlock().getLocation())||OpenCreative.getPlanetsManager().getPlanetByWorld(event.getBlock().getWorld()).getFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING) == 3) {
             event.setCancelled(true);
         }
     }
@@ -214,13 +236,25 @@ public final class BlockChangeListener implements Listener {
     @EventHandler
     public void onBlock(BlockGrowEvent event) {
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(event.getBlock().getWorld());
-        if (planet != null) new BlockGrownEvent(planet, event).callEvent();
+        if (planet != null) {
+            if (planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING) == 3) {
+                event.setCancelled(true);
+                return;
+            }
+            new BlockGrownEvent(planet, event).callEvent();
+        }
     }
 
     @EventHandler
     public void onBlock(BlockIgniteEvent event) {
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(event.getBlock().getWorld());
-        if (planet != null) new BlockIgnitedEvent(planet, event).callEvent();
+        if (planet != null){
+            if (planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING) == 3) {
+                event.setCancelled(true);
+                return;
+            }
+            new BlockIgnitedEvent(planet, event).callEvent();
+        }
     }
 
     @EventHandler
@@ -261,7 +295,13 @@ public final class BlockChangeListener implements Listener {
     @EventHandler
     public void onBlockBurn(BlockBurnEvent event) {
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(event.getBlock().getWorld());
-        if (planet != null) new BlockBurnedEvent(planet, event).callEvent();
+        if (planet != null) {
+            if (planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING) == 3) {
+                event.setCancelled(true);
+                return;
+            }
+            new BlockBurnedEvent(planet, event).callEvent();
+        }
     }
 
     @EventHandler
@@ -297,7 +337,13 @@ public final class BlockChangeListener implements Listener {
     @EventHandler
     public void onFluidChange(FluidLevelChangeEvent event) {
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(event.getBlock().getWorld());
-        if (planet != null) new BlockFluidChangeEvent(planet, event).callEvent();
+        if (planet != null) {
+            if (planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING) == 3) {
+                event.setCancelled(true);
+                return;
+            }
+            new BlockFluidChangeEvent(planet, event).callEvent();
+        }
     }
 
     @EventHandler
@@ -342,7 +388,13 @@ public final class BlockChangeListener implements Listener {
     @EventHandler
     public void onBlock(SculkBloomEvent event) {
         Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(event.getBlock().getWorld());
-        if (planet != null) new BlockSculkBloomedEvent(planet, event).callEvent();
+        if (planet != null) {
+            if (planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING) == 3) {
+                event.setCancelled(true);
+                return;
+            }
+            new BlockSculkBloomedEvent(planet, event).callEvent();
+        }
     }
 
     @EventHandler
