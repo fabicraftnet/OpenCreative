@@ -156,6 +156,9 @@ public class PlanetLimits {
     public int getBlockFallsLimit() {
         return planet.getGroup().getLimit(LimitType.FALLING_BLOCKS).calculateLimit(planet.getInformation().getAsyncOnline());
     }
+    public int getTimePeriod() {
+        return planet.getGroup().getLimit(LimitType.LIMIT_TIME_PERIOD).calculateLimit(planet.getInformation().getAsyncOnline());
+    }
     /**
      * Returns maximum targets changes per 1 second amount in the planet.
      *
@@ -443,9 +446,9 @@ public class PlanetLimits {
     public boolean canRedstoneWork(@NotNull Location location) {
 
         long now = System.currentTimeMillis();
-
+        int time = getTimePeriod();
         // Removes time from list, if it's more than 1 second.
-        while (!lastRedstoneOperations.isEmpty() && (now - lastRedstoneOperations.peek()) > 1000) {
+        while (!lastRedstoneOperations.isEmpty() && (now - lastRedstoneOperations.peek()) > time) {
             lastRedstoneOperations.poll();
         }
 
@@ -477,7 +480,7 @@ public class PlanetLimits {
         long now = System.currentTimeMillis();
 
         // Removes time from list, if it's more than 3 seconds.
-        while (!lastBlockFalls.isEmpty() && (now - lastBlockFalls.peek()) > 3000) {
+        while (!lastBlockFalls.isEmpty() && (now - lastBlockFalls.peek()) > getTimePeriod()) {
             lastBlockFalls.poll();
         }
         int limit = getBlockFallsLimit();
@@ -502,9 +505,9 @@ public class PlanetLimits {
     public boolean canBlockDestroy() {
 
         long now = System.currentTimeMillis();
-
+        int time = getTimePeriod();
         // Removes time from list, if it's more than 1 second.
-        while (!lastBlockDestroy.isEmpty() && (now - lastBlockDestroy.peek()) > 1000) {
+        while (!lastBlockDestroy.isEmpty() && (now - lastBlockDestroy.peek()) > getTimePeriod()) {
             lastBlockDestroy.poll();
         }
 
@@ -531,9 +534,9 @@ public class PlanetLimits {
     public boolean isTooManyExplosionsAtOnce() {
 
         long now = System.currentTimeMillis();
-
+        int time = getTimePeriod();
         // Removes time from list, if it's more than 1 second.
-        while (!lastExplosionSpawns.isEmpty() && (now - lastExplosionSpawns.peek()) > 1000) {
+        while (!lastExplosionSpawns.isEmpty() && (now - lastExplosionSpawns.peek()) > time) {
             lastExplosionSpawns.poll();
         }
 
@@ -603,9 +606,9 @@ public class PlanetLimits {
     public boolean isTooManyCodingErrors() {
 
         long now = System.currentTimeMillis();
-
+        int time = getTimePeriod();
         // Removes time from list, if it's more than 3 seconds.
-        while (!lastCodingErrors.isEmpty() && (now - lastCodingErrors.peek()) > 3000) {
+        while (!lastCodingErrors.isEmpty() && (now - lastCodingErrors.peek()) > time) {
             lastCodingErrors.poll();
         }
 
@@ -626,9 +629,9 @@ public class PlanetLimits {
     public boolean isTooManyActionsAtOnce(int count) {
 
         long now = System.currentTimeMillis();
-
+        int time = getTimePeriod();
         // Remove entries older than 3 seconds
-        while (!lastActionsCalls.isEmpty() && (now - lastActionsCalls.peek()) > 3000) {
+        while (!lastActionsCalls.isEmpty() && (now - lastActionsCalls.peek()) > time) {
             lastActionsCalls.poll();
         }
 
@@ -652,9 +655,9 @@ public class PlanetLimits {
     public boolean isTooManyRecipeOperationsAtOnce() {
 
         long now = System.currentTimeMillis();
-
+        int time = getTimePeriod();
         // Remove entries older than 3 seconds
-        while (!lastRecipeOperations.isEmpty() && (now - lastRecipeOperations.peek()) > 3000) {
+        while (!lastRecipeOperations.isEmpty() && (now - lastRecipeOperations.peek()) > time) {
             lastRecipeOperations.poll();
         }
 

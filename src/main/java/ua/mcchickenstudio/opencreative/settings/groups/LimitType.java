@@ -47,7 +47,8 @@ public enum LimitType {
     WHITELISTED_AMOUNT("whitelisted-amount", 10),
     DESTROYED_BLOCKS("destroyed-blocks",100),
     FALLING_BLOCKS("falling-blocks",100),
-    SELECTED_LINES_AMOUNT("selected-lines-amount", 3);
+    SELECTED_LINES_AMOUNT("selected-lines-amount", 3),
+    LIMIT_TIME_PERIOD("limit-time-period", 3000);
 
     private final String path;
     private final int defaultLimit;

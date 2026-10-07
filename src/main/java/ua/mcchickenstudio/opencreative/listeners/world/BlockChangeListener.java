@@ -68,7 +68,11 @@ public final class BlockChangeListener implements Listener {
         if (planet != null) {
             if (planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING) == 2) {
                 event.setCancelled(true);
-            } else {
+            } else if (!planet.getLimits().canBlockDestroy()) {
+                event.setCancelled(true);
+            }
+            else
+            {
                 new BlockFadedEvent(planet, event).callEvent();
             }
         }
