@@ -122,8 +122,11 @@ public final class WorldSettingsFlagsMenu extends AbstractMenu {
 
     public static RadioButton getBlockChangingFlagButton(Planet planet) {
         List<Runnable> choicesActions = new ArrayList<>();
-        choicesActions.add(() -> planet.setFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING, (byte) 1));
-        choicesActions.add(() -> planet.setFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING, (byte) 2));
+        choicesActions.add(() -> {planet.setFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING, (byte) 1);
+            planet.getTerritory().getWorld().setGameRule(GameRules.RANDOM_TICK_SPEED, 3);
+        });
+        choicesActions.add(() -> {planet.setFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING, (byte) 2);
+            planet.getTerritory().getWorld().setGameRule(GameRules.RANDOM_TICK_SPEED, 0);});
         choicesActions.add(() -> planet.setFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING, (byte) 3));
         return new RadioButton(Material.ICE, MessageUtils.getLocaleItemName("menus.world-settings-flags.items.block-changing.name"), MessageUtils.getLocaleItemDescription("menus.world-settings-flags.items.block-changing.lore"), planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING), 3, choicesActions, "menus.world-settings-flags.items.block-changing.choices", "menus.world-settings-flags");
     }

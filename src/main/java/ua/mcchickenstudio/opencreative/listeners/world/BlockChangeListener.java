@@ -97,7 +97,16 @@ public final class BlockChangeListener implements Listener {
             }
         }
     }
-
+    @EventHandler
+    public void onBlockChanged(BlockSpreadEvent event) {
+        World world = event.getBlock().getWorld();
+        Planet planet = OpenCreative.getPlanetsManager().getPlanetByWorld(world);
+        if (planet != null) {
+            if (planet.getFlagValue(PlanetFlags.PlanetFlag.BLOCK_CHANGING) >= 2) {
+                event.setCancelled(true);
+            }
+        }
+    }
     @EventHandler
     public void onBlockChanged(BlockFormEvent event) {
         World world = event.getBlock().getWorld();
