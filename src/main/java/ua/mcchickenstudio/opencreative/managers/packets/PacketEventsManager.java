@@ -193,9 +193,9 @@ public final class PacketEventsManager implements PacketManager, Toggleable, Sig
 
     private WrapperPlayServerEntityMetadata getFallingBlockDataPacket(int id) {
         List<EntityData<?>> entityData = new ArrayList<>();
-        entityData.add(new EntityData<>(0, EntityDataTypes.BYTE, (byte) (0x20 | 0x40)));
-        entityData.add(new EntityData<>(5, EntityDataTypes.BOOLEAN, true));
-        entityData.add(new EntityData<>(16, EntityDataTypes.INT, 2));
+        entityData.add(new EntityData<>(0, EntityDataTypes.BYTE, (byte) (0x20 | 0x40))); // set invis & glowing
+        entityData.add(new EntityData<>(5, EntityDataTypes.BOOLEAN, true)); // no gravity
+        entityData.add(new EntityData<>(18, EntityDataTypes.INT, 2)); // slime scale
         return new WrapperPlayServerEntityMetadata(id, entityData);
     }
 
